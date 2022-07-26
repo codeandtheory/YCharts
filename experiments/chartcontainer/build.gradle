@@ -1,3 +1,6 @@
+import com.ygraph.dependency.Version
+import com.ygraph.dependency.YChartDependency
+
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
@@ -36,7 +39,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerExtensionVersion Version.COMPOSE_COMPILER
     }
     packagingOptions {
         resources {
@@ -47,16 +50,16 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
-    implementation 'androidx.activity:activity-compose:1.3.1'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
-    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
-    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+    implementation YChartDependency.CORE_KTX
+    implementation YChartDependency.COMPOSE_UI
+    implementation YChartDependency.COMPOSE_MATERIAL
+    implementation YChartDependency.COMPOSE_TOOLING_PREVIEW
+    implementation YChartDependency.RUNTIME_KTX
+    implementation YChartDependency.COMPOSE_ACTIVITY
+    testImplementation YChartDependency.JUNIT
+    androidTestImplementation YChartDependency.TEST_EXTN
+    androidTestImplementation YChartDependency.ESPRESSO_CORE
+    androidTestImplementation YChartDependency.COMPOSE_JUNIT
+    debugImplementation YChartDependency.COMPOSE_UI_TOOLING
+    debugImplementation YChartDependency.COMPOSE_UI_TEST_MANIFEST
 }
