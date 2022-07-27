@@ -1,4 +1,5 @@
 import com.ygraph.dependency.YChartDependency
+import com.ygraph.dependency.Version
 
 plugins {
     id 'com.android.library'
@@ -29,6 +30,12 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion Version.COMPOSE_COMPILER
+    }
 }
 
 dependencies {
@@ -39,4 +46,8 @@ dependencies {
     testImplementation YChartDependency.JUNIT
     androidTestImplementation YChartDependency.TEST_EXTN
     androidTestImplementation YChartDependency.ESPRESSO_CORE
+
+    implementation YChartDependency.COMPOSE_UI
+    implementation YChartDependency.COMPOSE_MATERIAL
+    implementation YChartDependency.COMPOSE_TOOLING_PREVIEW
 }
