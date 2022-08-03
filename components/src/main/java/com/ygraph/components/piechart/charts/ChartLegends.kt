@@ -7,15 +7,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun Legends(
     values: List<Float>,
     legend: List<String>,
-    colors: List<Color>
+    colors: List<Color>,
+    padding: Dp = 15.dp
 ) {
-    Column {
+    Column(
+        modifier = Modifier.padding(start = padding)
+    ) {
         for (i in values.indices) {
             DisplayLegend(color = colors[i], legend = legend[i])
         }

@@ -8,13 +8,6 @@ sealed class ChartType{
     object DonutPieChart : ChartType()
 }
 
-fun Float.calculateSectorThickness(sliceThick: Float = 0f ,area: Size): Float {
-
-    val minSize = minOf(area.width, area.height)
-
-    return minSize * (sliceThick / 200f)
-}
-
 fun Size.calculateSectorThickness(sliceThick: Float = 0f ,area: Size): Float {
 
     val minSize = minOf(area.width, area.height)
@@ -22,15 +15,16 @@ fun Size.calculateSectorThickness(sliceThick: Float = 0f ,area: Size): Float {
     return minSize * (sliceThick / 200f)
 }
 
-fun Size.calculateDrawableArea(area: Size): Rect {
-    val sliceThicknessOffset =
-        calculateSectorThickness(area = area) / 2f
-    val offsetHorizontally = (area.width - area.height) / 2f
+fun convertTouchEventPointToAngle(
+    width: Float,
+    height: Float,
+    xPos: Float,
+    yPos: Float
+): Double {
+    var x = xPos - (width * 0.5f)
+    val y = yPos - (height * 0.5f)
 
-    return Rect(
-        left = sliceThicknessOffset + offsetHorizontally,
-        top = sliceThicknessOffset,
-        right = area.width - sliceThicknessOffset - offsetHorizontally,
-        bottom = area.height - sliceThicknessOffset
-    )
+    var angle = Math.toDegrees(Math.atan2(y.toDouble(), x.toDouble()) + Math.PI / 2)
+    angle = if (angle < 0) angle + 360 else angle
+    return angle
 }

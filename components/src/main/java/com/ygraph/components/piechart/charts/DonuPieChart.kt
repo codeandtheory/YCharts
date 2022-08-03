@@ -1,31 +1,27 @@
 package com.ygraph.components.piechart.charts
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.graphics.PaintingStyle
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
-import com.ygraph.components.piechart.utils.calculateDrawableArea
-import com.ygraph.components.piechart.utils.calculateSectorThickness
+import com.ygraph.components.piechart.utils.convertTouchEventPointToAngle
 
 @Composable
 fun DonutPieChart(
+    modifier: Modifier,
     values: List<Float>,
     colors: List<Color>,
-    sliceThickness : Float = 10f,
     startAngle: Float = -90f,
     isLegendVisible: Boolean = false,
     legends: List<String> = emptyList(),
-    sizeDp: Dp = 200.dp
 ) {
     // Sum of all the values
     val sumOfValues = values.sum()
@@ -40,30 +36,34 @@ fun DonutPieChart(
         360 * it / 100
     }
 
-    Column (
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Canvas(
-            modifier = Modifier
-                .size(size = sizeDp)
-        ) {
-            var sAngle =  startAngle
-            for (i in sweepAngles.indices) {
-                drawSlice(
-                    canvas = drawContext.canvas,
-                    area = size,
-                    startAngle = sAngle,
-                    sweepAngle = sweepAngles[i],
-                    colors = colors[i],
-                    sliceThickness = sliceThickness
-                )
-                sAngle += sweepAngles[i]
-            }
+    val progressSize = mutableListOf<Float>()
+    progressSize.add(sweepAngles.first())
+
+    sweepAngles.forEachIndexed { index, _ ->
+        progressSize.add(sweepAngles[index] + progressSize[index - 1])
+    }
+
+    var activePie by rememberSaveable {
+        mutableStateOf(-1)
+    }
+
+
+    BoxWithConstraints(modifier = modifier) {
+
+        val sideSize = Integer.min(constraints.maxWidth, constraints.maxHeight)
+        val padding = (sideSize * 20) / 100f
+        val size = Size(sideSize.toFloat() - padding, sideSize.toFloat() - padding)
+
+        val pathPortion = remember {
+            Animatable(initialValue = 0f)
         }
+
+        LaunchedEffect(key1 = true) {
+            pathPortion.animateTo(
+                1f, animationSpec = tween(1000)
+            )
+        }
+
         if (isLegendVisible) {
             Legends(
                 values = values,
@@ -71,30 +71,47 @@ fun DonutPieChart(
                 legend = legends
             )
         }
-    }
-}
 
-fun drawSlice(
-    canvas: Canvas,
-    area: Size,
-    startAngle: Float,
-    sweepAngle: Float,
-    colors: Color,
-    sliceThickness : Float
-) {
-    var sectionPaint = Paint().apply {
-        isAntiAlias = true
-        style = PaintingStyle.Stroke
-    }
+        Canvas(
+            modifier = Modifier
+                .width(sideSize.dp)
+                .height(sideSize.dp)
+                .pointerInput(true) {
 
-    canvas.drawArc(
-        rect = area.calculateDrawableArea(area),
-        paint = sectionPaint.apply {
-            color = colors
-            strokeWidth = sliceThickness.calculateSectorThickness(sliceThick = sliceThickness, area = area)
-        },
-        startAngle = startAngle,
-        sweepAngle = sweepAngle,
-        useCenter = false
-    )
+                    detectTapGestures {
+                        val clickedAngle = convertTouchEventPointToAngle(
+                            sideSize.toFloat(),
+                            sideSize.toFloat(),
+                            it.x,
+                            it.y
+                        )
+                        progressSize.forEachIndexed { index, item ->
+                            if (clickedAngle <= item) {
+                                if (activePie != index)
+                                    activePie = index
+
+                                return@detectTapGestures
+                            }
+                        }
+                    }
+                }
+
+        ) {
+
+            var sAngle = startAngle
+
+            sweepAngles.forEachIndexed { index, arcProgress ->
+                drawPie(
+                    color = colors[index],
+                    startAngle = sAngle,
+                    arcProgress = arcProgress * pathPortion.value,
+                    size = size,
+                    padding = padding,
+                    isDonut = true,
+                    isActive = activePie == index
+                )
+                sAngle += arcProgress
+            }
+        }
+    }
 }
