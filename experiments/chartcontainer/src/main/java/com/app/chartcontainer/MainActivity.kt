@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.chartcontainer.ui.theme.YGraphsTheme
-import com.ygraph.components.bar.YAxis
+import com.ygraph.components.bar.bar.YAxis
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
