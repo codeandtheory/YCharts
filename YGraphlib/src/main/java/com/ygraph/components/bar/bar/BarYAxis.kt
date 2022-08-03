@@ -1,18 +1,13 @@
-package com.ygraph.components.bar
+package com.ygraph.components.bar.bar
 
 import android.graphics.Paint
 import android.graphics.Rect
 import android.text.TextPaint
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.width
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -80,21 +75,8 @@ fun YAxis(
                 color = Color.Black.toArgb()
                 textAlign = if (axisPos == Gravity.LEFT) Paint.Align.LEFT else Paint.Align.RIGHT
             }
-            for (i in 0..reqYLabelsQuo.toInt()) {
-                //Draw the lines
-                if (i != reqYLabelsQuo.toInt()) {
-                    drawLine(
-                        start = Offset(
-                            x = yAxisWidth.toPx() - 3.dp.toPx(),
-                            y = yAxisHeight - (segmentHeight * (i * yStepValue))
-                        ),
-                        end = Offset(
-                            x = yAxisWidth.toPx() - 3.dp.toPx(),
-                            y = yAxisHeight - (segmentHeight * ((i + 1) * yStepValue))
-                        ),
-                        color = yAxisLineColor, strokeWidth = lineStrokeWidth.toPx()
-                    )
-                }
+            for (i in 0 until reqYLabelsQuo.toInt()) {
+
                 //drawing the text
                 drawContext.canvas.nativeCanvas.apply {
                     if (i != reqYLabelsQuo.toInt()) {
@@ -111,6 +93,35 @@ fun YAxis(
                             yAxisTextPaint
                         )
                     }
+                }
+
+                if (i != reqYLabelsQuo.toInt()) {
+                    //Draw Yaxis line
+                    drawLine(
+                        start = Offset(
+                            x = yAxisWidth.toPx(),
+                            y = yAxisHeight - (segmentHeight * (i * yStepValue))
+                        ),
+                        end = Offset(
+                            x = yAxisWidth.toPx(),
+                            y = yAxisHeight - (segmentHeight * ((i + 1) * yStepValue))
+                        ),
+                        color = yAxisLineColor, strokeWidth = lineStrokeWidth.toPx()
+                    )
+
+                    //Draw pointer lines on Yaxis
+                    val pointerLineWidth = 10.dp.toPx()
+                    drawLine(
+                        start = Offset(
+                            x = yAxisWidth.toPx() - (pointerLineWidth / 2),
+                            y = yAxisHeight - (segmentHeight * (i * yStepValue))
+                        ),
+                        end = Offset(
+                            x = yAxisWidth.toPx() + (pointerLineWidth / 2),
+                            y = yAxisHeight - (segmentHeight * (i * yStepValue))
+                        ),
+                        color = yAxisLineColor, strokeWidth = lineStrokeWidth.toPx()
+                    )
                 }
             }
         }
