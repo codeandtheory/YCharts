@@ -30,4 +30,5 @@ object YChartDependency {
     const val COMPOSE_UI_TOOLING = "androidx.compose.ui:ui-tooling:${Version.COMPOSE_UI}"
     const val COMPOSE_UI_TEST_MANIFEST = "androidx.compose.ui:ui-test-manifest:${Version.COMPOSE_UI}"
     const val RUNTIME_KTX = "androidx.lifecycle:lifecycle-runtime-ktx:${Version.RUNTIME_KTX}"
+
 }
