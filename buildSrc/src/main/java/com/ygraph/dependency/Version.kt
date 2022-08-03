@@ -11,4 +11,5 @@ object Version {
     const val COMPOSE_UI = "1.2.0-rc03"
     const val COMPOSE_ACTIVITY = "1.3.1"
     const val RUNTIME_KTX = "2.3.1'"
+    const val KOTLIN_COMPILER_EXT = "1.1.0"
 }

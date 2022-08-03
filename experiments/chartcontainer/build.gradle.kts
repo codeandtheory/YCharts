@@ -1,4 +1,5 @@
 import com.ygraph.dependency.YChartDependency
+import com.ygraph.dependency.Version
 
 plugins {
     id("com.android.application")
@@ -39,7 +40,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.1.0"
+        kotlinCompilerExtensionVersion = Version.KOTLIN_COMPILER_EXT
     }
     packagingOptions {
         resources {
