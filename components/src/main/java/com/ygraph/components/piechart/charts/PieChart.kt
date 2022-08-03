@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun PieChart(
     values: List<Float>,
-    colors: List<Color> = listOf(Color(0xFF58BDFF), Color(0xFF125B7F), Color(0xFF092D40)),
+    colors: List<Color>,
     isLegendVisible: Boolean = false,
     legends: List<String> = emptyList(),
     startAngle: Float = -90f,
