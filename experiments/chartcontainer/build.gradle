@@ -56,7 +56,6 @@ dependencies {
     implementation YChartDependency.COMPOSE_TOOLING_PREVIEW
     implementation YChartDependency.RUNTIME_KTX
     implementation YChartDependency.COMPOSE_ACTIVITY
-    implementation project(path: ':components')
     testImplementation YChartDependency.JUNIT
     androidTestImplementation YChartDependency.TEST_EXTN
     androidTestImplementation YChartDependency.ESPRESSO_CORE
