@@ -13,6 +13,7 @@ fun DrawScope.drawPie(
     startAngle: Float,
     arcProgress: Float,
     size: Size,
+    strokeWidth: Float =  100f,
     padding: Float,
     isDonut: Boolean = false,
     isActive: Boolean = false
@@ -26,7 +27,7 @@ fun DrawScope.drawPie(
             useCenter = !isDonut,
             size = size,
             style = if (isDonut) Stroke(
-                width = if (isActive) 120f else 100f,
+                width = if (isActive) (strokeWidth + 20f) else strokeWidth,
             ) else Fill,
 
             topLeft = Offset(padding / 2, padding / 2)

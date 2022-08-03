@@ -31,8 +31,8 @@ fun PieChart(
     modifier: Modifier,
     values: List<Float>,
     colors: List<Color>,
+    isLegendVisible: Boolean = false,
     legends: List<String> = emptyList(),
-    isLegendVisible: Boolean = legends.isNotEmpty(),
     startAngle: Float = 270f,
 ) {
     // Sum of all the values

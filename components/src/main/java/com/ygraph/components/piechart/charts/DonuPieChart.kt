@@ -1,5 +1,6 @@
 package com.ygraph.components.piechart.charts
 
+import android.graphics.Paint
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -10,18 +11,26 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.piechart.utils.convertTouchEventPointToAngle
+import kotlin.math.roundToInt
 
 @Composable
 fun DonutPieChart(
     modifier: Modifier,
     values: List<Float>,
     colors: List<Color>,
-    startAngle: Float = -90f,
+    strokeWidth: Float =  100f,
+    startAngle: Float = 270f,
     isLegendVisible: Boolean = false,
     legends: List<String> = emptyList(),
+    percentageFontSize: Dp = 60.dp,
+    percentVisible:Boolean = false,
+    percentColor: Color = Color.White
 ) {
     // Sum of all the values
     val sumOfValues = values.sum()
@@ -108,10 +117,25 @@ fun DonutPieChart(
                     size = size,
                     padding = padding,
                     isDonut = true,
+                    strokeWidth = strokeWidth,
                     isActive = activePie == index
                 )
                 sAngle += arcProgress
             }
+
+            if (activePie != -1 && percentVisible)
+                drawContext.canvas.nativeCanvas.apply {
+                    val fontSize = percentageFontSize.toPx()
+                    drawText(
+                        "${proportions[activePie].roundToInt()}%",
+                        (sideSize / 2) + fontSize / 4, (sideSize / 2) + fontSize / 3,
+                        Paint().apply {
+                            color = percentColor.toArgb()
+                            textSize = fontSize
+                            textAlign = Paint.Align.CENTER
+                        }
+                    )
+                }
         }
     }
 }
