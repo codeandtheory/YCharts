@@ -4,11 +4,12 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.text.TextPaint
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
@@ -43,31 +44,32 @@ fun YAxis(
     axisLabelFontSize: TextUnit = 14.sp,
     axisPos: Gravity = Gravity.LEFT,
     textLabelPadding: Dp = 4.dp,
-    yAxisOffset: Dp = 20.dp,
-    lineStrokeWidth: Dp = 1.dp
+    yAxisOffset: Dp = 30.dp,
+    lineStrokeWidth: Dp = 2.dp,
+    topPadding: Dp = 20.dp
 ) {
     var yAxisWidth by remember { mutableStateOf(0.dp) }
 
     Column(
-        modifier = Modifier
-            .width(yAxisWidth)
-            .then(modifier)
+        modifier = modifier.clipToBounds()
     ) {
         Canvas(
-            modifier = Modifier
-                .fillMaxHeight()
+            modifier = modifier
+                .clipToBounds()
                 .width(yAxisWidth)
+                .background(Color.Yellow)
         )
         {
             val yAxisHeight = size.height - labelOffSet.roundToPx()
             var yMax = yMaxValue
-            var reqYLabelsQuo = (yMaxValue / yStepValue)
+            var reqYLabelsQuo = (yMaxValue / yStepValue) + 1 // Added one since it starts from 0
             val reqYLabelsRem = yMaxValue.rem(yStepValue)
             if (reqYLabelsRem > 0f) {
                 reqYLabelsQuo += 2
                 yMax = (yMaxValue - reqYLabelsRem) + yStepValue * 2
             }
-            val segmentHeight = yAxisHeight / yMax
+            // Minus the top padding to avoid cropping at the top
+            val segmentHeight = (yAxisHeight - topPadding.toPx()) / yMax
 
             val yAxisTextPaint = TextPaint().apply {
                 textSize = axisLabelFontSize.toPx()
@@ -76,7 +78,7 @@ fun YAxis(
             }
             for (i in 0 until reqYLabelsQuo.toInt()) {
 
-                //drawing the text
+                //Drawing the axis labels
                 drawContext.canvas.nativeCanvas.apply {
                     val yAxisLabel = yLabelData(i)
                     val width = yAxisLabel.getTextWidth(yAxisTextPaint)
@@ -91,8 +93,8 @@ fun YAxis(
                         yAxisTextPaint
                     )
                 }
-
-                if (i != reqYLabelsQuo.toInt()) {
+                // Draw line only until reqYLabelsQuo -1 else will be a extra line at top with no label
+                if (i != (reqYLabelsQuo.toInt() - 1)) {
                     //Draw Yaxis line
                     drawLine(
                         start = Offset(
@@ -105,16 +107,18 @@ fun YAxis(
                         ),
                         color = yAxisLineColor, strokeWidth = lineStrokeWidth.toPx()
                     )
+                }
 
-                    //Draw pointer lines on Yaxis
-                    val pointerLineWidth = 10.dp.toPx()
+                //Draw pointer lines on Yaxis
+                val pointerLineWidth = 10.dp.toPx()
+                if (i != reqYLabelsQuo.toInt()) {
                     drawLine(
                         start = Offset(
                             x = yAxisWidth.toPx() - (pointerLineWidth / 2),
                             y = yAxisHeight - (segmentHeight * (i * yStepValue))
                         ),
                         end = Offset(
-                            x = yAxisWidth.toPx() + (pointerLineWidth / 2),
+                            x = yAxisWidth.toPx(),
                             y = yAxisHeight - (segmentHeight * (i * yStepValue))
                         ),
                         color = yAxisLineColor, strokeWidth = lineStrokeWidth.toPx()
