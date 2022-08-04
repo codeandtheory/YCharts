@@ -1,3 +1,4 @@
+import com.ygraph.dependency.Version
 import com.ygraph.dependency.YChartDependency
 
 plugins {
@@ -28,6 +29,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion Version.COMPOSE_COMPILER
     }
 }
 

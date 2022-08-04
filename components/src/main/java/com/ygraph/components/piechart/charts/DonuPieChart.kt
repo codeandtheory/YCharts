@@ -48,9 +48,8 @@ fun DonutPieChart(
     val progressSize = mutableListOf<Float>()
     progressSize.add(sweepAngles.first())
 
-    sweepAngles.forEachIndexed { index, _ ->
-        progressSize.add(sweepAngles[index] + progressSize[index - 1])
-    }
+    for (x in 1 until sweepAngles.size)
+        progressSize.add(sweepAngles[x] + progressSize[x - 1])
 
     var activePie by rememberSaveable {
         mutableStateOf(-1)

@@ -1,6 +1,5 @@
 package com.ygraph.components.piechart.utils
 
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 
 sealed class ChartType{
