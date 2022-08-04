@@ -14,3 +14,6 @@
 .cxx
 local.properties
 .idea
+/buildSrc/build
+/YGraphlib/build
+
