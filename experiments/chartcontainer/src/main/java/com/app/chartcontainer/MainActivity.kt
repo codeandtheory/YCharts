@@ -13,7 +13,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.chartcontainer.ui.theme.YGraphsTheme
-import com.ygraph.components.bar.bar.YAxis
+import com.ygraph.components.axis.Gravity
+import com.ygraph.components.axis.YAxis
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,8 +25,9 @@ class MainActivity : ComponentActivity() {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.Red)
+                        .background(Color.Yellow)
                 ) {
+                    // Left Aligned Yaxis
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Start
@@ -33,9 +35,26 @@ class MainActivity : ComponentActivity() {
                         YAxis(
                             modifier = Modifier
                                 .height(300.dp),
-                            yMaxValue = 600f,
+                            yMaxValue = 1000f,
                             yStepValue = 100f,
-                            labelOffSet = 10.dp,
+                            bottomPadding = 10.dp,
+                            axisLabelFontSize = 14.sp, yLabelData = { index ->
+                                return@YAxis index.toString() + "k"
+                            }
+                        )
+                    }
+                    // Right Aligned Yaxis
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        YAxis(
+                            modifier = Modifier
+                                .height(300.dp),
+                            yMaxValue = 1000f,
+                            yStepValue = 100f,
+                            bottomPadding = 10.dp,
+                            axisPos = Gravity.RIGHT,
                             axisLabelFontSize = 14.sp, yLabelData = { index ->
                                 return@YAxis index.toString() + "k"
                             }

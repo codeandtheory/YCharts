@@ -1,4 +1,4 @@
-package com.ygraph.components.bar
+package com.ygraph.components.axis
 
 /**
  * To specify gravity positions
