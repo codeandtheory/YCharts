@@ -5,11 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.chartcontainer.ui.theme.YGraphsTheme
@@ -39,7 +36,7 @@ class MainActivity : ComponentActivity() {
                             yStepValue = 100f,
                             bottomPadding = 10.dp,
                             axisLabelFontSize = 14.sp, yLabelData = { index ->
-                                return@YAxis index.toString() + "k"
+                                 index.toString() + "k"
                             }
                         )
                     }
@@ -56,25 +53,12 @@ class MainActivity : ComponentActivity() {
                             bottomPadding = 10.dp,
                             axisPos = Gravity.RIGHT,
                             axisLabelFontSize = 14.sp, yLabelData = { index ->
-                                return@YAxis index.toString() + "k"
+                                index.toString() + "k"
                             }
                         )
                     }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    YGraphsTheme {
-        Greeting("Android")
     }
 }
