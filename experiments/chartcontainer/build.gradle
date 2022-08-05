@@ -62,4 +62,5 @@ dependencies {
     androidTestImplementation YChartDependency.COMPOSE_JUNIT
     debugImplementation YChartDependency.COMPOSE_UI_TOOLING
     debugImplementation YChartDependency.COMPOSE_UI_TEST_MANIFEST
+    implementation project(path: ':YGraphlib')
 }
