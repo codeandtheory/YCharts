@@ -1,5 +1,8 @@
-package com.ygraph.components
+package com.ygraph.components.bar
 
+/**
+ * To specify gravity positions
+ */
 enum class Gravity {
-    TOP, LEFT,RIGHT,BOTTOM
+    TOP, LEFT, RIGHT, BOTTOM
 }
