@@ -13,6 +13,7 @@ import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
@@ -129,6 +130,8 @@ fun PieChart(
 
 
                         drawIntoCanvas {
+
+                            it.nativeCanvas.rotate(sAngle + (arcProgress / 2))
                             it.nativeCanvas.drawText(
                                 legends[index],
                                 x.toFloat(),
