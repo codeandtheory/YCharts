@@ -1,6 +1,7 @@
 package com.ygraph.components.piechart.charts
 
 import android.graphics.Paint
+import android.graphics.Rect
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -13,7 +14,6 @@ import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
@@ -23,6 +23,18 @@ import androidx.compose.ui.unit.sp
 import kotlin.math.cos
 import kotlin.math.sin
 
+
+/**
+ * All modifier related property [modifier].
+ * Value list for the pie chart [values].
+ * Colors for the pie chart [colors].
+ * Control the legends visibility[isLegendVisible].
+ * Label list  [legends].
+ * Starting angle [startAngle].
+ * Control the labels visibility [showSliceLabels].
+ * Text size of the labels [sliceLabelTextSize].
+ * Text color of the labels [sliceLabelTextColor].
+ */
 @Composable
 fun PieChart(
     modifier: Modifier,
@@ -75,7 +87,7 @@ fun PieChart(
         ) {
 
             val sideSize = Integer.min(constraints.maxWidth, constraints.maxHeight)
-            val padding = (sideSize * 20) / 100f
+            val padding = (sideSize * 10) / 100f
             val size = Size(sideSize.toFloat() - padding, sideSize.toFloat() - padding)
 
             val pathPortion = remember {
@@ -97,6 +109,13 @@ fun PieChart(
             ) {
 
                 var sAngle = startAngle
+
+                val paint = Paint().apply {
+                    isAntiAlias = true
+                    textSize = sliceLabelTextSize.toPx()
+                    textAlign = Paint.Align.CENTER
+                    color = sliceLabelTextColor.toArgb()
+                }
 
                 sweepAngles.forEachIndexed { index, arcProgress ->
                     drawPie(
@@ -123,32 +142,43 @@ fun PieChart(
 
                         val x =
                             (pointRadius * cos(Math.toRadians(arcCenter.toDouble()))) +
-                                    size.center.x +padding/2
+                                    size.center.x + padding / 2
                         val y =
                             (pointRadius * sin(Math.toRadians(arcCenter.toDouble()))) +
-                                    size.center.y +padding/2
+                                    size.center.y + padding / 2
 
 
                         drawIntoCanvas {
 
+                            val finalX = x.toFloat()
+                            val finalY = y.toFloat()
+
+                            // rotating canvas to adjust the text alignment
+                            it.nativeCanvas.rotate(
+                                arcCenter,
+                                finalX,
+                                finalY
+
+                            )
+
                             it.nativeCanvas.drawText(
                                 legends[index],
-                                x.toFloat(),
-                                y.toFloat(),
-                                Paint().apply {
-                                    isAntiAlias = true
-                                    textSize = sliceLabelTextSize.toPx()
-                                    textAlign = Paint.Align.CENTER
-                                    color = sliceLabelTextColor.toArgb()
-                                }
+                                finalX,
+                                finalY,
+                                paint
                             )
+                            // rotating back to the original position
+                            it.nativeCanvas.rotate(
+                                -arcCenter,
+                                finalX,
+                                finalY
+                            )
+
                         }
                     }
 
                     sAngle += arcProgress
                 }
-
-
             }
         }
 

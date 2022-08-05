@@ -24,9 +24,14 @@ fun ChartContainer() {
             chartType = ChartType.DonutPieChart)
         Spacer(modifier = Modifier.height(32.dp))
         DrawChart(
-            legends = listOf("Mango", "Banana", "Apple"),
-            color = listOf(Color(0xFF58BDFF), Color(0xFF125B7F), Color(0xFF092D40)),
-            values = listOf(15f, 35f, 50f),
+            legends = listOf("Mango", "Banana", "Apple","Orange","Grape"),
+            color = listOf(Color(0xFF58BDFF),
+                Color(0xFF125B7F),
+                Color(0xFF092D40),
+                Color(0xFF092D60),
+                Color(0xFF092D10)
+            ),
+            values = listOf(15f, 35f, 20f,20f,10f),
             modifier = Modifier.height(350.dp),
             chartType = ChartType.PieChart)
     }
