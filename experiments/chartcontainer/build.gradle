@@ -64,4 +64,5 @@ dependencies {
     debugImplementation YChartDependency.COMPOSE_UI_TEST_MANIFEST
 
     implementation project(path: ':components')
+    implementation project(path: ':YGraphlib')
 }
