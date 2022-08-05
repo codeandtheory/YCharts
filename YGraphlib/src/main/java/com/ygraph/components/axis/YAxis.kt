@@ -71,36 +71,38 @@ fun YAxis(yAxisData: YAxisData) {
                             )
                         }
                     }
-                    // Draw line only until reqYLabelsQuo -1 else will be a extra line at top with no label
-                    if (i != (reqYLabelsQuo.toInt() - 1)) {
-                        //Draw Yaxis line
+                    if (axisConfig.isAxisLineRequired) {
+                        // Draw line only until reqYLabelsQuo -1 else will be a extra line at top with no label
+                        if (i != (reqYLabelsQuo.toInt() - 1)) {
+                            //Draw Yaxis line
+                            drawLine(
+                                start = Offset(
+                                    x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
+                                    y = yAxisHeight - (segmentHeight * (i * yStepValue))
+                                ),
+                                end = Offset(
+                                    x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
+                                    y = yAxisHeight - (segmentHeight * ((i + 1) * yStepValue))
+                                ),
+                                color = yAxisLineColor, strokeWidth = lineStrokeWidth.toPx()
+                            )
+                        }
+
+                        //Draw pointer lines on Yaxis
                         drawLine(
                             start = Offset(
-                                x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
+                                x = if (isRightAligned) 0.dp.toPx() else {
+                                    yAxisWidth.toPx() - indicatorLineWidth.toPx()
+                                },
                                 y = yAxisHeight - (segmentHeight * (i * yStepValue))
                             ),
                             end = Offset(
-                                x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
-                                y = yAxisHeight - (segmentHeight * ((i + 1) * yStepValue))
+                                x = if (isRightAligned) indicatorLineWidth.toPx() else yAxisWidth.toPx(),
+                                y = yAxisHeight - (segmentHeight * (i * yStepValue))
                             ),
                             color = yAxisLineColor, strokeWidth = lineStrokeWidth.toPx()
                         )
                     }
-
-                    //Draw pointer lines on Yaxis
-                    drawLine(
-                        start = Offset(
-                            x = if (isRightAligned) 0.dp.toPx() else {
-                                yAxisWidth.toPx() - indicatorLineWidth.toPx()
-                            },
-                            y = yAxisHeight - (segmentHeight * (i * yStepValue))
-                        ),
-                        end = Offset(
-                            x = if (isRightAligned) indicatorLineWidth.toPx() else yAxisWidth.toPx(),
-                            y = yAxisHeight - (segmentHeight * (i * yStepValue))
-                        ),
-                        color = yAxisLineColor, strokeWidth = lineStrokeWidth.toPx()
-                    )
                 }
             }
         }

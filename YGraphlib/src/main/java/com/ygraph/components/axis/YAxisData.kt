@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.sp
 
 /**
  *
- * YAxis data class params used in drawing yAxis in bar graph.
+ * YAxis data class params used in drawing yAxis in any graph.
  * @param modifier : All modifier related property
  * @param yMaxValue: yAxis max value
  * @param yStepValue: Step value for label segmentation
@@ -22,21 +22,23 @@ import androidx.compose.ui.unit.sp
  * @param lineStrokeWidth: Thickness of yAxis line
  * @param topPadding: X,Y Label offset top padding
  * @param indicatorLineWidth: Indicator width on Y axis line for showing points
+ * @param axisConfig: All config related param to toggle the elements while drawing graph
  */
 data class YAxisData(
     val modifier: Modifier,
     val yMaxValue: Float,
     val yStepValue: Float,
     val yLabelData: (Int) -> String,
-    val yAxisLineColor: Color = Color.Black,
-    val axisLabelFontSize: TextUnit = 14.sp,
-    val axisPos: Gravity = Gravity.LEFT,
-    val textLabelPadding: Dp = 4.dp,
-    val yAxisOffset: Dp = 30.dp,
-    val lineStrokeWidth: Dp = 2.dp,
-    val topPadding: Dp = 20.dp,
+    val yAxisLineColor: Color,
+    val axisLabelFontSize: TextUnit,
+    val axisPos: Gravity,
+    val textLabelPadding: Dp,
+    val yAxisOffset: Dp,
+    val lineStrokeWidth: Dp,
+    val topPadding: Dp,
     val bottomPadding: Dp,
-    val indicatorLineWidth: Dp = 5.dp
+    val indicatorLineWidth: Dp,
+    val axisConfig: AxisConfig
 ) {
     class Builder {
         private var modifier: Modifier = Modifier
@@ -52,6 +54,7 @@ data class YAxisData(
         private var topPadding: Dp = 20.dp
         private var bottomPadding: Dp = 10.dp
         private var indicatorLineWidth: Dp = 5.dp
+        private var axisConfig = AxisConfig(isAxisLineRequired = true)
 
         fun modifier(modifier: Modifier) = apply { this.modifier = modifier }
 
@@ -79,6 +82,8 @@ data class YAxisData(
 
         fun indicatorLineWidth(lineWidth: Dp) = apply { this.indicatorLineWidth = lineWidth }
 
+        fun axisConfig(config: AxisConfig) = apply { this.axisConfig = config }
+
         fun build() = YAxisData(
             modifier,
             yMaxValue,
@@ -92,7 +97,15 @@ data class YAxisData(
             lineStrokeWidth,
             topPadding,
             bottomPadding,
-            indicatorLineWidth
+            indicatorLineWidth,
+            axisConfig
         )
     }
 }
+
+/**
+ *
+ * AxisConfig data class used to mention all config related param required to draw graph.
+ * @param isAxisLineRequired : true if should show the axis and points on the line else false
+ */
+data class AxisConfig(val isAxisLineRequired: Boolean)
