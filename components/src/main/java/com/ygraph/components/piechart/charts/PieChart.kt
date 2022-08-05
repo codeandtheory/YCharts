@@ -131,7 +131,6 @@ fun PieChart(
 
                         drawIntoCanvas {
 
-                            it.nativeCanvas.rotate(sAngle + (arcProgress / 2))
                             it.nativeCanvas.drawText(
                                 legends[index],
                                 x.toFloat(),
