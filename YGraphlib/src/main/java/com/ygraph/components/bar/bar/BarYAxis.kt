@@ -78,19 +78,22 @@ fun YAxis(
                 color = Color.Black.toArgb()
                 textAlign = if (axisPos == Gravity.LEFT) Paint.Align.LEFT else Paint.Align.RIGHT
             }
-            for (i in 0 until reqYLabelsQuo.toInt()) {
+            for (i in 0..reqYLabelsQuo.toInt()) {
+                println("Index:$i")
                 //Draw the lines
-                drawLine(
-                    start = Offset(
-                        x = yAxisWidth.toPx() - 3.dp.toPx(),
-                        y = yAxisHeight - (segmentHeight * (i * yStepValue))
-                    ),
-                    end = Offset(
-                        x = yAxisWidth.toPx() - 3.dp.toPx(),
-                        y = yAxisHeight - (segmentHeight * ((i + 1) * yStepValue))
-                    ),
-                    color = yAxisLineColor, strokeWidth = lineStrokeWidth.toPx()
-                )
+                if (i != reqYLabelsQuo.toInt()) {
+                    drawLine(
+                        start = Offset(
+                            x = yAxisWidth.toPx() - 3.dp.toPx(),
+                            y = yAxisHeight - (segmentHeight * (i * yStepValue))
+                        ),
+                        end = Offset(
+                            x = yAxisWidth.toPx() - 3.dp.toPx(),
+                            y = yAxisHeight - (segmentHeight * ((i + 1) * yStepValue))
+                        ),
+                        color = yAxisLineColor, strokeWidth = lineStrokeWidth.toPx()
+                    )
+                }
                 //drawing the text
                 drawContext.canvas.nativeCanvas.apply {
                     val yAxisLabel = yLabelData(i)

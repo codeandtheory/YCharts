@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -30,7 +31,7 @@ class MainActivity : ComponentActivity() {
                     YAxis(
                         modifier = Modifier
                             .height(200.dp)
-                            .width(20.dp),
+                            .width(20.dp).padding(top = 50.dp, bottom = 50.dp, start = 50.dp),
                         yMaxValue = 600f,
                         yStepValue = 100f,
                         labelOffSet = 10.dp,
