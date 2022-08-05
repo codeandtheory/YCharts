@@ -74,7 +74,7 @@ fun PieChart(
         ) {
 
             val sideSize = Integer.min(constraints.maxWidth, constraints.maxHeight)
-            val padding = (sideSize * 1) / 100f
+            val padding = (sideSize * 20) / 100f
             val size = Size(sideSize.toFloat() - padding, sideSize.toFloat() - padding)
 
             val pathPortion = remember {
@@ -122,10 +122,10 @@ fun PieChart(
 
                         val x =
                             (pointRadius * cos(Math.toRadians(arcCenter.toDouble()))) +
-                                    size.center.x
+                                    size.center.x +padding/2
                         val y =
                             (pointRadius * sin(Math.toRadians(arcCenter.toDouble()))) +
-                                    size.center.y
+                                    size.center.y +padding/2
 
 
                         drawIntoCanvas {
