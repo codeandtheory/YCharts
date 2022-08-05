@@ -32,10 +32,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         // Right Aligned Yaxis
                         val leftAlignYAxisData = YAxisData.Builder()
-                            .modifier(
-                                Modifier
-                                    .height(300.dp)
-                            )
+                            .modifier(Modifier.height(300.dp))
                             .yMaxValue(800f)
                             .yStepValue(100f)
                             .bottomPadding(10.dp)
@@ -52,10 +49,7 @@ class MainActivity : ComponentActivity() {
                         horizontalArrangement = Arrangement.End
                     ) {
                         val rightAlignYAxisData = YAxisData.Builder()
-                            .modifier(
-                                Modifier
-                                    .height(300.dp)
-                            )
+                            .modifier(Modifier.height(300.dp))
                             .yMaxValue(1000f)
                             .yStepValue(100f)
                             .bottomPadding(10.dp)

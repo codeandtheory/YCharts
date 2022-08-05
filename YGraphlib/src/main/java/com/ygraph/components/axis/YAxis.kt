@@ -8,15 +8,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.ygraph.components.common.extensions.getTextHeight
 import com.ygraph.components.common.extensions.getTextWidth
 
@@ -112,15 +112,15 @@ fun YAxis(yAxisData: YAxisData) {
 @Preview(showBackground = true)
 @Composable
 fun YAxisPreview() {
-    YAxis(
-        modifier = Modifier
-            .height(300.dp),
-        yMaxValue = 400f,
-        yStepValue = 100f,
-        bottomPadding = 10.dp,
-        axisLabelFontSize = 14.sp, yLabelData = { index ->
-            index.toString()
-        }
-    )
+    val yAxisData = YAxisData.Builder()
+        .modifier(Modifier.height(300.dp))
+        .yMaxValue(800f)
+        .yStepValue(100f)
+        .bottomPadding(10.dp)
+        .axisPos(Gravity.LEFT)
+        .axisLabelFontSize(14.sp)
+        .yLabelData { index -> index.toString() }
+        .build()
+    YAxis(yAxisData = yAxisData)
 }
 
