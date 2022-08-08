@@ -14,7 +14,8 @@ import androidx.compose.ui.unit.sp
  * @param yMaxValue: yAxis max value
  * @param yStepValue: Step value for label segmentation
  * @param bottomPadding: X,Y Label offset bottom padding
- * @param yLabelData(Int)->String: lambda method for providing labels,
+ * @param yLabelData(Int)-> String: lambda method for providing labels, @param Int will be the index
+ * given for each level in YAxis
  * @param axisLabelFontSize: Font size of axis lablel data
  * @param axisPos : Axis gravity
  * @param textLabelPadding: Text label padding from y Axis

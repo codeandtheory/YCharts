@@ -12,9 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ygraph.components.common.extensions.getTextHeight
@@ -56,58 +58,106 @@ fun YAxis(yAxisData: YAxisData) {
                 }
                 for (i in 0 until reqYLabelsQuo.toInt()) {
                     //Drawing the axis labels
-                    drawContext.canvas.nativeCanvas.apply {
-                        if (i != reqYLabelsQuo.toInt()) {
-                            val yAxisLabel = yLabelData(i)
-                            val width = yAxisLabel.getTextWidth(yAxisTextPaint)
-                            val height: Int = yAxisLabel.getTextHeight(yAxisTextPaint)
-                            if (width > yAxisWidth.toPx()) {
-                                yAxisWidth = width.toDp() + yAxisOffset
-                            }
-                            drawText(
-                                yAxisLabel,
-                                if (isRightAligned) yAxisWidth.toPx() - textLabelPadding.toPx() else textLabelPadding.toPx(),
-                                yAxisHeight + height / 2 - ((segmentHeight * (i * yStepValue))),
-                                yAxisTextPaint
-                            )
-                        }
-                    }
-                    if (axisConfig.isAxisLineRequired) {
-                        // Draw line only until reqYLabelsQuo -1 else will be a extra line at top with no label
-                        if (i != (reqYLabelsQuo.toInt() - 1)) {
-                            //Draw Yaxis line
-                            drawLine(
-                                start = Offset(
-                                    x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
-                                    y = yAxisHeight - (segmentHeight * (i * yStepValue))
-                                ),
-                                end = Offset(
-                                    x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
-                                    y = yAxisHeight - (segmentHeight * ((i + 1) * yStepValue))
-                                ),
-                                color = yAxisLineColor, strokeWidth = lineStrokeWidth.toPx()
-                            )
-                        }
-
-                        //Draw pointer lines on Yaxis
-                        drawLine(
-                            start = Offset(
-                                x = if (isRightAligned) 0.dp.toPx() else {
-                                    yAxisWidth.toPx() - indicatorLineWidth.toPx()
-                                },
-                                y = yAxisHeight - (segmentHeight * (i * yStepValue))
-                            ),
-                            end = Offset(
-                                x = if (isRightAligned) indicatorLineWidth.toPx() else yAxisWidth.toPx(),
-                                y = yAxisHeight - (segmentHeight * (i * yStepValue))
-                            ),
-                            color = yAxisLineColor, strokeWidth = lineStrokeWidth.toPx()
-                        )
-                    }
+                    yAxisWidth = drawAxisLabel(
+                        i,
+                        reqYLabelsQuo,
+                        yAxisData,
+                        yAxisTextPaint,
+                        yAxisWidth,
+                        isRightAligned,
+                        yAxisHeight,
+                        segmentHeight
+                    )
+                    drawAxisLineWithPointers(
+                        yAxisData,
+                        i,
+                        reqYLabelsQuo,
+                        isRightAligned,
+                        yAxisWidth,
+                        yAxisHeight,
+                        segmentHeight
+                    )
                 }
             }
         }
     }
+}
+
+
+private fun DrawScope.drawAxisLineWithPointers(
+    yAxisData: YAxisData,
+    i: Int,
+    reqYLabelsQuo: Float,
+    isRightAligned: Boolean,
+    yAxisWidth: Dp,
+    yAxisHeight: Float,
+    segmentHeight: Float
+) {
+    if (yAxisData.axisConfig.isAxisLineRequired) {
+        // Draw line only until reqYLabelsQuo -1 else will be a extra line at top with no label
+        if (i != (reqYLabelsQuo.toInt() - 1)) {
+            //Draw Yaxis line
+            drawLine(
+                start = Offset(
+                    x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
+                    y = yAxisHeight - (segmentHeight * (i * yAxisData.yStepValue))
+                ),
+                end = Offset(
+                    x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
+                    y = yAxisHeight - (segmentHeight * ((i + 1) * yAxisData.yStepValue))
+                ),
+                color = yAxisData.yAxisLineColor, strokeWidth = yAxisData.lineStrokeWidth.toPx()
+            )
+        }
+
+        //Draw pointer lines on Yaxis
+        drawLine(
+            start = Offset(
+                x = if (isRightAligned) 0.dp.toPx() else {
+                    yAxisWidth.toPx() - yAxisData.indicatorLineWidth.toPx()
+                },
+                y = yAxisHeight - (segmentHeight * (i * yAxisData.yStepValue))
+            ),
+            end = Offset(
+                x = if (isRightAligned) yAxisData.indicatorLineWidth.toPx() else yAxisWidth.toPx(),
+                y = yAxisHeight - (segmentHeight * (i * yAxisData.yStepValue))
+            ),
+            color = yAxisData.yAxisLineColor, strokeWidth = yAxisData.lineStrokeWidth.toPx()
+        )
+    }
+}
+
+
+private fun DrawScope.drawAxisLabel(
+    index: Int,
+    reqYLabelsQuo: Float,
+    yAxisData: YAxisData,
+    yAxisTextPaint: TextPaint,
+    yAxisWidth: Dp,
+    isRightAligned: Boolean,
+    yAxisHeight: Float,
+    segmentHeight: Float
+): Dp {
+    var calculatedYAxisWidth = yAxisWidth
+    drawContext.canvas.nativeCanvas.apply {
+        if (index != reqYLabelsQuo.toInt()) {
+            val yAxisLabel = yAxisData.yLabelData(index)
+            val width = yAxisLabel.getTextWidth(yAxisTextPaint)
+            val height: Int = yAxisLabel.getTextHeight(yAxisTextPaint)
+            if (width > calculatedYAxisWidth.toPx()) {
+                calculatedYAxisWidth = width.toDp() + yAxisData.yAxisOffset
+            }
+            drawText(
+                yAxisLabel,
+                if (isRightAligned) calculatedYAxisWidth.toPx() - yAxisData.textLabelPadding.toPx() else {
+                    yAxisData.textLabelPadding.toPx()
+                },
+                yAxisHeight + height / 2 - ((segmentHeight * (index * yAxisData.yStepValue))),
+                yAxisTextPaint
+            )
+        }
+    }
+    return calculatedYAxisWidth
 }
 
 @Preview(showBackground = true)
