@@ -40,24 +40,14 @@ fun YAxis(yAxisData: YAxisData) {
                     .width(yAxisWidth)
                     .background(Color.White)
             ) {
-                val yAxisHeight = size.height - bottomPadding.roundToPx()
-                var yMax = yMaxValue
-                var reqYLabelsQuo = (yMaxValue / yStepValue) + 1 // Added one since it starts from 0
-                val reqYLabelsRem = yMaxValue.rem(yStepValue)
-                if (reqYLabelsRem > 0f) {
-                    reqYLabelsQuo += 2
-                    yMax = (yMaxValue - reqYLabelsRem) + yStepValue * 2
-                }
-                // Minus the top padding to avoid cropping at the top
-                val segmentHeight = (yAxisHeight - topPadding.toPx()) / yMax
-
+                val (yAxisHeight, reqYLabelsQuo, segmentHeight) = getAxisInitValues(yAxisData)
                 val yAxisTextPaint = TextPaint().apply {
                     textSize = axisLabelFontSize.toPx()
                     color = yAxisLineColor.toArgb()
                     textAlign = if (isRightAligned) Paint.Align.RIGHT else Paint.Align.LEFT
                 }
                 for (i in 0 until reqYLabelsQuo.toInt()) {
-                    //Drawing the axis labels
+                    // Drawing the axis labels
                     yAxisWidth = drawAxisLabel(
                         i,
                         reqYLabelsQuo,
@@ -81,6 +71,23 @@ fun YAxis(yAxisData: YAxisData) {
             }
         }
     }
+}
+
+private fun DrawScope.getAxisInitValues(
+    yAxisData: YAxisData
+): Triple<Float, Float, Float> {
+    val yAxisHeight = size.height - yAxisData.bottomPadding.roundToPx()
+    var yMax = yAxisData.yMaxValue
+    var reqYLabelsQuo =
+        (yAxisData.yMaxValue / yAxisData.yStepValue) + 1 // Added one since it starts from 0
+    val reqYLabelsRem = yAxisData.yMaxValue.rem(yAxisData.yStepValue)
+    if (reqYLabelsRem > 0f) {
+        reqYLabelsQuo += 1
+        yMax = (yAxisData.yMaxValue - reqYLabelsRem) + yAxisData.yStepValue
+    }
+    // Minus the top padding to avoid cropping at the top
+    val segmentHeight = (yAxisHeight - yAxisData.topPadding.toPx()) / yMax
+    return Triple(yAxisHeight, reqYLabelsQuo, segmentHeight)
 }
 
 

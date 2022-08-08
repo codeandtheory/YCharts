@@ -30,15 +30,14 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Start
                     ) {
-                        // Right Aligned Yaxis
                         val leftAlignYAxisData = YAxisData.Builder()
                             .modifier(Modifier.height(300.dp))
                             .yMaxValue(800f)
-                            .yStepValue(100f)
+                            .yStepValue(90f)
                             .bottomPadding(10.dp)
                             .axisPos(Gravity.LEFT)
                             .axisLabelFontSize(14.sp)
-                            .yLabelData { index -> index.toString() + "k" }
+                            .yLabelData { index -> ((90f).toInt() * index).toString() }
                             .build()
                         YAxis(yAxisData = leftAlignYAxisData)
                     }
@@ -55,7 +54,7 @@ class MainActivity : ComponentActivity() {
                             .bottomPadding(10.dp)
                             .axisPos(Gravity.RIGHT)
                             .axisLabelFontSize(14.sp)
-                            .yLabelData { index -> index.toString() + "k" }
+                            .yLabelData { index -> ((100f).toInt() * index).toString() }
                             .build()
                         YAxis(yAxisData = rightAlignYAxisData)
                     }
