@@ -1,4 +1,4 @@
-package piechart.charts
+package com.ygraph.components.bar.piechart.charts
 
 import android.graphics.Paint
 import android.graphics.Rect
@@ -24,10 +24,10 @@ import com.ygraph.components.piechart.charts.drawPie
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
-import piechart.Constants.Companion.DEFAULT_PADDING
-import piechart.Constants.Companion.DEFAULT_START_ANGLE
-import piechart.Constants.Companion.DEFAULT_SLICE_LABEL_TEXT_SIZE
-import piechart.Constants.Companion.MINIMUM_PERCENTAGE_FOR_SLICE_LABELS
+import com.ygraph.components.bar.piechart.Constants.Companion.DEFAULT_PADDING
+import com.ygraph.components.bar.piechart.Constants.Companion.DEFAULT_START_ANGLE
+import com.ygraph.components.bar.piechart.Constants.Companion.DEFAULT_SLICE_LABEL_TEXT_SIZE
+import com.ygraph.components.bar.piechart.Constants.Companion.MINIMUM_PERCENTAGE_FOR_SLICE_LABELS
 
 /**
  * Used to Draw the pie chart
@@ -194,6 +194,5 @@ fun PieChart(
                 }
             }
         }
-
     }
 }

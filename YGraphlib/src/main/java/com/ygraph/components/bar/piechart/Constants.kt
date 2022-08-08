@@ -1,4 +1,4 @@
-package piechart
+package com.ygraph.components.bar.piechart
 
 internal class Constants {
     companion object {
