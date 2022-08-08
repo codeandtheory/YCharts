@@ -24,6 +24,7 @@ import com.ygraph.components.common.extensions.getTextWidth
  *
  * YAxis compose method using for drawing yAxis in bar graph.
  * @param yAxisData : All data needed to draw Yaxis
+ * @see com.ygraph.components.axis.YAxisData Data class to save all params related to Yaxis
  */
 @Composable
 fun YAxis(yAxisData: YAxisData) {
