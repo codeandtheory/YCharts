@@ -6,7 +6,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.piechart.charts.DonutPieChart
-import com.ygraph.components.piechart.charts.PieChart
+import piechart.charts.PieChart
 import com.ygraph.components.piechart.utils.ChartType
 
 object ChartWrapper {

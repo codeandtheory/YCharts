@@ -1,4 +1,4 @@
-package com.ygraph.components.piechart.charts
+package piechart.charts
 
 import android.graphics.Paint
 import android.graphics.Rect
@@ -16,16 +16,21 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ygraph.components.piechart.charts.Legends
+import com.ygraph.components.piechart.charts.drawPie
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
-
+import piechart.Constants.Companion.DEFAULT_PADDING
+import piechart.Constants.Companion.DEFAULT_START_ANGLE
+import piechart.Constants.Companion.DEFAULT_SLICE_LABEL_TEXT_SIZE
+import piechart.Constants.Companion.MINIMUM_PERCENTAGE_FOR_SLICE_LABELS
 
 /**
+ * Used to Draw the pie chart
  * All modifier related property [modifier].
  * Value list for the pie chart [values].
  * Colors for the pie chart [colors].
@@ -43,9 +48,9 @@ fun PieChart(
     colors: List<Color>,
     isLegendVisible: Boolean = false,
     legends: List<String> = emptyList(),
-    startAngle: Float = 270f,
+    startAngle: Float = DEFAULT_START_ANGLE,
     showSliceLabels: Boolean = true,
-    sliceLabelTextSize: TextUnit = 12.sp,
+    sliceLabelTextSize: TextUnit = DEFAULT_SLICE_LABEL_TEXT_SIZE.sp,
     sliceLabelTextColor: Color = White,
 ) {
     // Sum of all the values
@@ -88,14 +93,14 @@ fun PieChart(
         ) {
 
             val sideSize = Integer.min(constraints.maxWidth, constraints.maxHeight)
-            val padding = (sideSize * 10) / 100f
+            val padding = (sideSize * DEFAULT_PADDING) / 100f
             val size = Size(sideSize.toFloat() - padding, sideSize.toFloat() - padding)
 
             val pathPortion = remember {
                 Animatable(initialValue = 0f)
             }
 
-            LaunchedEffect(key1 = true) {
+            LaunchedEffect(key1 = Unit) {
                 pathPortion.animateTo(
                     1f, animationSpec = tween(1000)
                 )
@@ -105,13 +110,11 @@ fun PieChart(
                 modifier = Modifier
                     .width(sideSize.dp)
                     .height(sideSize.dp)
-                    .pointerInput(true) {
-                    }
             ) {
 
                 var sAngle = startAngle
 
-                val paint = Paint().apply {
+                val sliceLabelPaint = Paint().apply {
                     isAntiAlias = true
                     textSize = sliceLabelTextSize.toPx()
                     textAlign = Paint.Align.CENTER
@@ -129,7 +132,8 @@ fun PieChart(
                         isActive = activePie == index
                     )
 
-                    if (showSliceLabels && proportions[index]>5) {
+                    //  if percentage is less than 5 width of slice will be very small
+                    if (showSliceLabels && proportions[index] >= MINIMUM_PERCENTAGE_FOR_SLICE_LABELS) {
 
                         val arcCenter = sAngle + (arcProgress / 2)
 
@@ -150,9 +154,12 @@ fun PieChart(
 
                         // find the height of text
                         val rect = Rect()
-                        paint.getTextBounds(legends[index], 0, legends[index].length, rect)
-
-
+                        sliceLabelPaint.getTextBounds(
+                            legends[index],
+                            0,
+                            legends[index].length,
+                            rect
+                        )
 
                         drawIntoCanvas {
 
@@ -170,8 +177,8 @@ fun PieChart(
                             it.nativeCanvas.drawText(
                                 legends[index],
                                 finalX,
-                                finalY+ abs(rect.height())/2,
-                                paint
+                                finalY + abs(rect.height()) / 2,
+                                sliceLabelPaint
                             )
                             // rotating back to the original position
                             it.nativeCanvas.rotate(
