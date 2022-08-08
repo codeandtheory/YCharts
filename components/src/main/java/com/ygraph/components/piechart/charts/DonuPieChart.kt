@@ -19,17 +19,29 @@ import androidx.compose.ui.unit.dp
 import com.ygraph.components.piechart.utils.convertTouchEventPointToAngle
 import kotlin.math.roundToInt
 
+/**
+ * All modifier related property [modifier].
+ * Value list for the pie chart [values].
+ * Colors for the pie chart [colors].
+ * StrokeWidth for the pie chart [strokeWidth].
+ * StartAngle for the pie chart, from where to start draw [StartAngle].
+ * Legends should show or not  [isLegendVisible].
+ * Label list  [legends].
+ * Percentage text font size  [percentageFontSize].
+ * Percentage text visibility [percentVisible].
+ * Percentage text color [percentColor].
+ */
 @Composable
 fun DonutPieChart(
     modifier: Modifier,
     values: List<Float>,
     colors: List<Color>,
-    strokeWidth: Float =  100f,
+    strokeWidth: Float = 100f,
     startAngle: Float = 270f,
     isLegendVisible: Boolean = false,
     legends: List<String> = emptyList(),
     percentageFontSize: Dp = 60.dp,
-    percentVisible:Boolean = false,
+    percentVisible: Boolean = false,
     percentColor: Color = Color.White
 ) {
     // Sum of all the values
