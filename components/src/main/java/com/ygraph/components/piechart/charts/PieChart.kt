@@ -20,6 +20,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -128,7 +129,7 @@ fun PieChart(
                         isActive = activePie == index
                     )
 
-                    if (showSliceLabels) {
+                    if (showSliceLabels && proportions[index]>5) {
 
                         val arcCenter = sAngle + (arcProgress / 2)
 
@@ -147,6 +148,11 @@ fun PieChart(
                             (pointRadius * sin(Math.toRadians(arcCenter.toDouble()))) +
                                     size.center.y + padding / 2
 
+                        // find the height of text
+                        val rect = Rect()
+                        paint.getTextBounds(legends[index], 0, legends[index].length, rect)
+
+
 
                         drawIntoCanvas {
 
@@ -164,7 +170,7 @@ fun PieChart(
                             it.nativeCanvas.drawText(
                                 legends[index],
                                 finalX,
-                                finalY,
+                                finalY+ abs(rect.height())/2,
                                 paint
                             )
                             // rotating back to the original position
