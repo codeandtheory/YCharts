@@ -2,6 +2,7 @@ package com.ygraph.components.axis
 
 import android.graphics.Paint
 import android.text.TextPaint
+import android.text.TextUtils
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -52,7 +53,6 @@ fun YAxis(yAxisData: YAxisData) {
                         i,
                         reqYLabelsQuo,
                         yAxisData,
-                        yAxisTextPaint,
                         yAxisWidth,
                         isRightAligned,
                         yAxisHeight,
@@ -139,23 +139,38 @@ private fun DrawScope.drawAxisLabel(
     index: Int,
     reqYLabelsQuo: Float,
     yAxisData: YAxisData,
-    yAxisTextPaint: TextPaint,
     yAxisWidth: Dp,
     isRightAligned: Boolean,
     yAxisHeight: Float,
     segmentHeight: Float
 ): Dp {
     var calculatedYAxisWidth = yAxisWidth
-    drawContext.canvas.nativeCanvas.apply {
-        if (index != reqYLabelsQuo.toInt()) {
-            val yAxisLabel = yAxisData.yLabelData(index)
-            val width = yAxisLabel.getTextWidth(yAxisTextPaint)
-            val height: Int = yAxisLabel.getTextHeight(yAxisTextPaint)
-            if (width > calculatedYAxisWidth.toPx()) {
-                calculatedYAxisWidth = width.toDp() + yAxisData.yAxisOffset
-            }
+    val yAxisTextPaint = TextPaint().apply {
+        textSize = yAxisData.axisLabelFontSize.toPx()
+        color = yAxisData.yAxisLineColor.toArgb()
+        textAlign = if (isRightAligned) Paint.Align.RIGHT else Paint.Align.LEFT
+    }
+    if (index != reqYLabelsQuo.toInt()) {
+        val yAxisLabel = yAxisData.yLabelData(index)
+        val measuredWidth = yAxisLabel.getTextWidth(yAxisTextPaint)
+        val height: Int = yAxisLabel.getTextHeight(yAxisTextPaint)
+        if (measuredWidth > calculatedYAxisWidth.toPx()) {
+            val width =
+                if (yAxisData.axisConfig.shouldEllipsizeLabelEnd) {
+                    yAxisData.axisConfig.minTextWidthToEllipsize
+                } else measuredWidth.toDp()
+            calculatedYAxisWidth =
+                width + yAxisData.textLabelPadding + yAxisData.yAxisOffset
+        }
+        val ellipsizedText = TextUtils.ellipsize(
+            yAxisLabel,
+            yAxisTextPaint,
+            40.dp.toPx(),
+            TextUtils.TruncateAt.END
+        )
+        drawContext.canvas.nativeCanvas.apply {
             drawText(
-                yAxisLabel,
+                if (yAxisData.axisConfig.shouldEllipsizeLabelEnd) ellipsizedText.toString() else yAxisLabel,
                 if (isRightAligned) calculatedYAxisWidth.toPx() - yAxisData.textLabelPadding.toPx() else {
                     yAxisData.textLabelPadding.toPx()
                 },

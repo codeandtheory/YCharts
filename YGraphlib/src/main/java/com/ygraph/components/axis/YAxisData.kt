@@ -51,13 +51,18 @@ data class YAxisData(
         private var axisLabelFontSize: TextUnit = 14.sp
         private var axisPos: Gravity = Gravity.LEFT
         private var textLabelPadding: Dp = 4.dp
-        private var yAxisOffset: Dp = 30.dp
+        private var yAxisOffset: Dp = 10.dp
         private var lineStrokeWidth: Dp = 2.dp
         private var topPadding: Dp = 20.dp
         private var bottomPadding: Dp = 10.dp
         private var indicatorLineWidth: Dp = 5.dp
         private var backgroundColor: Color = Color.White
-        private var axisConfig = AxisConfig(isAxisLineRequired = true)
+        private var axisConfig =
+            AxisConfig(
+                isAxisLineRequired = true,
+                shouldEllipsizeLabelEnd = false,
+                minTextWidthToEllipsize = 40.dp
+            )
 
         fun modifier(modifier: Modifier) = apply { this.modifier = modifier }
 
@@ -113,5 +118,11 @@ data class YAxisData(
  *
  * AxisConfig data class used to mention all config related param required to draw graph.
  * @param isAxisLineRequired : true if should show the axis and points on the line else false
+ * @param shouldEllipsizeLabelEnd : true if should ellipsize the axis label at end  else false
+ * @param minTextWidthToEllipsize : minimum width of the axis label post which label will be ellipsized
  */
-data class AxisConfig(val isAxisLineRequired: Boolean)
+data class AxisConfig(
+    val isAxisLineRequired: Boolean = true,
+    val shouldEllipsizeLabelEnd: Boolean = false,
+    val minTextWidthToEllipsize: Dp
+)
