@@ -28,18 +28,17 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    ChartContainer()
-//                    YAxis(
-//                        modifier = Modifier
-//                            .height(200.dp)
-//                            .width(20.dp).padding(top = 50.dp, bottom = 50.dp, start = 50.dp),
-//                        yMaxValue = 600f,
-//                        yStepValue = 100f,
-//                        labelOffSet = 10.dp,
-//                        axisLabelFontSize = 14.sp, yLabelData = { index ->
-//                            return@YAxis index.toString()
-//                        }
-//                    )
+                    YAxis(
+                        modifier = Modifier
+                            .height(200.dp)
+                            .width(20.dp).padding(top = 50.dp, bottom = 50.dp, start = 50.dp),
+                        yMaxValue = 600f,
+                        yStepValue = 100f,
+                        labelOffSet = 10.dp,
+                        axisLabelFontSize = 14.sp, yLabelData = { index ->
+                            return@YAxis index.toString()
+                        }
+                    )
                 }
             }
         }
