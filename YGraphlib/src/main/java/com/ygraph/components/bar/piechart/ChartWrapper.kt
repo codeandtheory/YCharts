@@ -3,13 +3,28 @@ package com.ygraph.components.piechart
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 import com.ygraph.components.piechart.charts.DonutPieChart
 import com.ygraph.components.bar.piechart.charts.PieChart
 import com.ygraph.components.piechart.utils.ChartType
 
 object ChartWrapper {
+
+    /**
+     * Wrapper compose method for drawing Pie Chart and Donut chart.
+     * All modifier related property [modifier].
+     * Value list for the Pie/Donut chart [values].
+     * Colors for the pie/Donut chart [color].
+     * Type of the chart (Pie or Donut) [chartType].
+     * Label list  [legends].
+     * Legends visibility  [isLegendVisible].
+     * Stroke width of Donut Chart [strokeWidth].
+     * Percentage text font size  [percentageFontSize].
+     * Percentage text visibility [percentVisible].
+     * Percentage text color [percentColor].
+     */
+
     @Composable
     fun DrawChart(
         modifier: Modifier,
@@ -19,7 +34,7 @@ object ChartWrapper {
         legends: List<String> = emptyList(),
         isLegendVisible: Boolean = legends.isNotEmpty(),
         strokeWidth: Float = 100f,
-        percentageFontSize: Dp = 60.dp,
+        percentageFontSize: TextUnit = 60.sp,
         percentVisible: Boolean = false,
         percentColor: Color = Color.White
     ) {

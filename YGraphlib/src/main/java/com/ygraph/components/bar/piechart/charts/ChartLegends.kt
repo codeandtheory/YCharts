@@ -23,13 +23,14 @@ fun Legends(
     values: List<Float>,
     legend: List<String>,
     colors: List<Color>,
+    legendTextColor: Color,
     padding: Dp = 15.dp
 ) {
     Column(
         modifier = Modifier.padding(start = padding)
     ) {
         for (i in values.indices) {
-            DisplayLegend(color = colors[i], legend = legend[i])
+            DisplayLegend(color = colors[i], legend = legend[i], legendTextColor)
         }
     }
 }
@@ -42,7 +43,8 @@ fun Legends(
 @Composable
 fun DisplayLegend(
     color: Color,
-    legend: String
+    legend: String,
+    legendTextColor: Color
 ) {
     Row(
         horizontalArrangement = Arrangement.Center,
@@ -58,7 +60,7 @@ fun DisplayLegend(
 
         Text(
             text = legend,
-            color = Color.Black
+            color = legendTextColor
         )
     }
 }

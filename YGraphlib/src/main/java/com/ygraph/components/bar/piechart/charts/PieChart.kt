@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
@@ -40,6 +41,7 @@ import com.ygraph.components.bar.piechart.Constants.Companion.MINIMUM_PERCENTAGE
  * Control the labels visibility [showSliceLabels].
  * Text size of the labels [sliceLabelTextSize].
  * Text color of the labels [sliceLabelTextColor].
+ * Text color of the legend labels [legendLabelTextColor].
  */
 @Composable
 fun PieChart(
@@ -52,6 +54,7 @@ fun PieChart(
     showSliceLabels: Boolean = true,
     sliceLabelTextSize: TextUnit = DEFAULT_SLICE_LABEL_TEXT_SIZE.sp,
     sliceLabelTextColor: Color = White,
+    legendLabelTextColor: Color = Black,
 ) {
     // Sum of all the values
     val sumOfValues = values.sum()
@@ -84,7 +87,8 @@ fun PieChart(
             Legends(
                 values = values,
                 colors = colors,
-                legend = legends
+                legend = legends,
+                legendTextColor = legendLabelTextColor
             )
         }
 

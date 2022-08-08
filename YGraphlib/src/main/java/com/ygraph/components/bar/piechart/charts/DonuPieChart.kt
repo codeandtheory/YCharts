@@ -11,38 +11,48 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.ygraph.components.piechart.utils.convertTouchEventPointToAngle
 import kotlin.math.roundToInt
+import com.ygraph.components.bar.piechart.Constants.Companion.DEFAULT_PADDING
+import com.ygraph.components.bar.piechart.Constants.Companion.DEFAULT_START_ANGLE
+import com.ygraph.components.bar.piechart.Constants.Companion.DEFAULT_STROKE_WIDTH
+import com.ygraph.components.bar.piechart.Constants.Companion.TOTAL_ANGLE
+
 
 /**
  * All modifier related property [modifier].
  * Value list for the pie chart [values].
  * Colors for the pie chart [colors].
  * StrokeWidth for the pie chart [strokeWidth].
- * StartAngle for the pie chart, from where to start draw [StartAngle].
+ * StartAngle for the pie chart, from where to start draw [startAngle].
  * Legends should show or not  [isLegendVisible].
  * Label list  [legends].
  * Percentage text font size  [percentageFontSize].
  * Percentage text visibility [percentVisible].
  * Percentage text color [percentColor].
+ * Text color of the legend labels [legendLabelTextColor].
  */
 @Composable
 fun DonutPieChart(
     modifier: Modifier,
     values: List<Float>,
     colors: List<Color>,
-    strokeWidth: Float = 100f,
-    startAngle: Float = 270f,
+    strokeWidth: Float = DEFAULT_STROKE_WIDTH,
+    startAngle: Float = DEFAULT_START_ANGLE,
     isLegendVisible: Boolean = false,
     legends: List<String> = emptyList(),
-    percentageFontSize: Dp = 60.dp,
+    percentageFontSize: TextUnit = 60.sp,
     percentVisible: Boolean = false,
-    percentColor: Color = Color.White
+    percentColor: Color = Color.White,
+    legendLabelTextColor: Color = Black,
+
 ) {
     // Sum of all the values
     val sumOfValues = values.sum()
@@ -54,7 +64,7 @@ fun DonutPieChart(
 
     // Convert each proportions to angle
     val sweepAngles = proportions.map {
-        360 * it / 100
+        TOTAL_ANGLE * it / 100
     }
 
     val progressSize = mutableListOf<Float>()
@@ -71,14 +81,14 @@ fun DonutPieChart(
     BoxWithConstraints(modifier = modifier) {
 
         val sideSize = Integer.min(constraints.maxWidth, constraints.maxHeight)
-        val padding = (sideSize * 20) / 100f
+        val padding = (sideSize * DEFAULT_PADDING) / 100f
         val size = Size(sideSize.toFloat() - padding, sideSize.toFloat() - padding)
 
         val pathPortion = remember {
             Animatable(initialValue = 0f)
         }
 
-        LaunchedEffect(key1 = true) {
+        LaunchedEffect(key1 = Unit) {
             pathPortion.animateTo(
                 1f, animationSpec = tween(1000)
             )
@@ -88,7 +98,8 @@ fun DonutPieChart(
             Legends(
                 values = values,
                 colors = colors,
-                legend = legends
+                legend = legends,
+                legendTextColor = legendLabelTextColor
             )
         }
 
