@@ -10,6 +10,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+
+/**
+ * Value list for iterate the loop [values].
+ * List of Labels to display [legend]
+ * List of colors [colors]
+ * Padding of start [padding]
+ **/
+
 @Composable
 fun Legends(
     values: List<Float>,
@@ -26,8 +34,16 @@ fun Legends(
     }
 }
 
+/**
+ * Color of badge [color]
+ * Text of badge [legend]
+ * **/
+
 @Composable
-fun DisplayLegend(color: Color, legend: String) {
+fun DisplayLegend(
+    color: Color,
+    legend: String
+) {
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
