@@ -165,7 +165,7 @@ private fun DrawScope.drawAxisLabel(
         val ellipsizedText = TextUtils.ellipsize(
             yAxisLabel,
             yAxisTextPaint,
-            40.dp.toPx(),
+            yAxisData.axisConfig.minTextWidthToEllipsize.toPx(),
             TextUtils.TruncateAt.END
         )
         drawContext.canvas.nativeCanvas.apply {

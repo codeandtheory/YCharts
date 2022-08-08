@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
                             .axisConfig(
                                 AxisConfig(
                                     shouldEllipsizeLabelEnd = true,
-                                    minTextWidthToEllipsize = 30.dp
+                                    minTextWidthToEllipsize = 40.dp
                                 )
                             )
                             .yLabelData { index -> "$index Thousand" }
