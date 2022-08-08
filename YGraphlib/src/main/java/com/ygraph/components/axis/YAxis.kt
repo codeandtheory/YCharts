@@ -184,15 +184,15 @@ fun YAxisPreview() {
 @Preview(showBackground = true)
 @Composable
 fun YAxisPreview() {
-    YAxis(
-        modifier = Modifier
-            .height(300.dp),
-        yMaxValue = 400f,
-        yStepValue = 100f,
-        bottomPadding = 10.dp,
-        axisLabelFontSize = 14.sp, yLabelData = { index ->
-            index.toString()
-        }
-    )
+    val yAxisData = YAxisData.Builder()
+        .modifier(Modifier.height(300.dp))
+        .yMaxValue(800f)
+        .yStepValue(100f)
+        .bottomPadding(10.dp)
+        .axisPos(Gravity.LEFT)
+        .axisLabelFontSize(14.sp)
+        .yLabelData { index -> index.toString() }
+        .build()
+    YAxis(yAxisData = yAxisData)
 }
 
