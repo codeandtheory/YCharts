@@ -10,6 +10,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.YGraphs">
         <activity
+            android:name=".PieChartActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.YGraphs">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
