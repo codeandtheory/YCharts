@@ -50,7 +50,7 @@ fun YAxis(yAxisData: YAxisData) {
 
                 val yAxisTextPaint = TextPaint().apply {
                     textSize = axisLabelFontSize.toPx()
-                    color = Color.Black.toArgb()
+                    color = yAxisLineColor.toArgb()
                     textAlign = if (isRightAligned) Paint.Align.RIGHT else Paint.Align.LEFT
                 }
                 for (i in 0 until reqYLabelsQuo.toInt()) {
