@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
-import com.ygraph.components.bar.getTextHeight
+import com.ygraph.components.common.extensions.getTextHeight
 import com.ygraph.components.bar.piechart.Constants.DEFAULT_PADDING
 import com.ygraph.components.bar.piechart.Constants.MINIMUM_PERCENTAGE_FOR_SLICE_LABELS
 import com.ygraph.components.bar.piechart.models.PieChartConfig
