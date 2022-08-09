@@ -30,14 +30,14 @@ fun ChartContainer() {
             percentVisible = true,
             percentColor = Color.Black,
             chartType = ChartType.DonutPieChart,
-            animationDuration = 3000
+            animationDuration = 2000
         )
         Spacer(modifier = Modifier.height(32.dp))
         DrawChart(
             modifier = Modifier.height(350.dp),
             pieChartData = pieChartData,
             chartType = ChartType.PieChart,
-            animationDuration = 3000
+            animationDuration = 2000
         )
     }
 

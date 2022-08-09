@@ -38,10 +38,8 @@ import kotlin.math.sin
 /**
  * Compose function used to Draw the Pie Chart.
  * @param modifier : All modifier related property
- * @param values: Value list for the pie chart
- * @param colors: Colors for the pie chart
+ * @param pieChartData: data list for the pie chart
  * @param isLegendVisible: Control the legends visibility
- * @param legends: Label list
  * @param startAngle: Starting angle
  * @param showSliceLabels: Control the labels visibility
  * @param sliceLabelTextSize: Text size of the labels

@@ -13,10 +13,8 @@ import com.ygraph.components.bar.piechart.models.PieChartData
 
 
 /**
- * Value list for iterate the loop [values].
- * List of Labels to display [legend]
- * List of colors [colors]
- * Padding of start [padding]
+ * @param pieChartData: Data list for the pie chart
+ * @param padding: Padding of start
  **/
 
 @Composable
@@ -39,8 +37,8 @@ fun Legends(
 }
 
 /**
- * Color of badge [color]
- * Text of badge [legend]
+ * @param color: Color of the legend
+ * @param legend:Text of the badge
  * **/
 
 @Composable
