@@ -143,6 +143,7 @@ private fun DrawScope.drawAxisLabel(
         textSize = yAxisData.axisLabelFontSize.toPx()
         color = yAxisData.yAxisLineColor.toArgb()
         textAlign = if (isRightAligned) Paint.Align.RIGHT else Paint.Align.LEFT
+        typeface = yAxisData.typeface
     }
     if (index != reqYLabelsQuo.toInt()) {
         val yAxisLabel = yAxisData.yLabelData(index)

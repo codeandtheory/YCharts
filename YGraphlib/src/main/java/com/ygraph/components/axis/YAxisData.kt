@@ -1,5 +1,6 @@
 package com.ygraph.components.axis
 
+import android.graphics.Typeface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
@@ -40,6 +41,7 @@ data class YAxisData(
     val bottomPadding: Dp,
     val indicatorLineWidth: Dp,
     val backgroundColor: Color,
+    val typeface: Typeface,
     val axisConfig: AxisConfig
 ) {
     class Builder {
@@ -57,6 +59,7 @@ data class YAxisData(
         private var bottomPadding: Dp = 10.dp
         private var indicatorLineWidth: Dp = 5.dp
         private var backgroundColor: Color = Color.White
+        private var typeface: Typeface = Typeface.DEFAULT
         private var axisConfig =
             AxisConfig(
                 isAxisLineRequired = true,
@@ -92,6 +95,8 @@ data class YAxisData(
 
         fun backgroundColor(color: Color) = apply { this.backgroundColor = color }
 
+        fun typeFace(typeface: Typeface) = apply { this.typeface = typeface }
+
         fun axisConfig(config: AxisConfig) = apply { this.axisConfig = config }
 
         fun build() = YAxisData(
@@ -109,6 +114,7 @@ data class YAxisData(
             bottomPadding,
             indicatorLineWidth,
             backgroundColor,
+            typeface,
             axisConfig
         )
     }
@@ -124,5 +130,5 @@ data class YAxisData(
 data class AxisConfig(
     val isAxisLineRequired: Boolean = true,
     val shouldEllipsizeLabelEnd: Boolean = false,
-    val minTextWidthToEllipsize: Dp
+    val minTextWidthToEllipsize: Dp = 40.dp
 )
