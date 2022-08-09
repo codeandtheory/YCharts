@@ -2,8 +2,8 @@ package com.ygraph.components.piechart.utils
 
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.center
-import com.ygraph.components.bar.piechart.Constants
-import com.ygraph.components.bar.piechart.models.PieChartData
+import com.ygraph.components.piechart.Constants
+import com.ygraph.components.piechart.models.PieChartData
 import kotlin.math.cos
 import kotlin.math.sin
 

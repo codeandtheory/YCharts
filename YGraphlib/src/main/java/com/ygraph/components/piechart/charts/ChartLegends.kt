@@ -1,4 +1,4 @@
-package com.ygraph.components.bar.piechart.charts
+package com.ygraph.components.piechart.charts
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Badge
@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.ygraph.components.bar.piechart.models.PieChartData
+import com.ygraph.components.piechart.models.PieChartData
 
 
 /**

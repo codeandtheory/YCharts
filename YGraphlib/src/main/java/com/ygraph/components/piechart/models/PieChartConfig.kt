@@ -1,9 +1,9 @@
-package com.ygraph.components.bar.piechart.models
+package com.ygraph.components.piechart.models
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
-import com.ygraph.components.bar.piechart.Constants
+import com.ygraph.components.piechart.Constants
 
 /**
  * PieChartConfig data class used to mention all config related param required to draw PieChart.

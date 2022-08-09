@@ -7,8 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.ygraph.components.bar.piechart.models.PieChartConfig
-import com.ygraph.components.bar.piechart.models.PieChartData
+import com.ygraph.components.piechart.models.PieChartConfig
+import com.ygraph.components.piechart.models.PieChartData
 import com.ygraph.components.piechart.ChartWrapper.DrawChart
 import com.ygraph.components.piechart.utils.ChartType
 

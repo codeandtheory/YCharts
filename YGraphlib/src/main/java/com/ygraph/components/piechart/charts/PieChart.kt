@@ -1,4 +1,4 @@
-package com.ygraph.components.bar.piechart.charts
+package com.ygraph.components.piechart.charts
 
 import android.graphics.Paint
 import androidx.compose.animation.core.Animatable
@@ -14,11 +14,10 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.common.extensions.getTextHeight
-import com.ygraph.components.bar.piechart.Constants.DEFAULT_PADDING
-import com.ygraph.components.bar.piechart.Constants.MINIMUM_PERCENTAGE_FOR_SLICE_LABELS
-import com.ygraph.components.bar.piechart.models.PieChartConfig
-import com.ygraph.components.bar.piechart.models.PieChartData
-import com.ygraph.components.piechart.charts.drawPie
+import com.ygraph.components.piechart.Constants.DEFAULT_PADDING
+import com.ygraph.components.piechart.Constants.MINIMUM_PERCENTAGE_FOR_SLICE_LABELS
+import com.ygraph.components.piechart.models.PieChartConfig
+import com.ygraph.components.piechart.models.PieChartData
 import com.ygraph.components.piechart.utils.getSliceCenterPoints
 import com.ygraph.components.piechart.utils.proportion
 import com.ygraph.components.piechart.utils.sweepAngles

@@ -1,4 +1,4 @@
-package com.ygraph.components.bar.piechart.models
+package com.ygraph.components.piechart.models
 
 import androidx.compose.ui.graphics.Color
 import com.ygraph.components.piechart.utils.sum

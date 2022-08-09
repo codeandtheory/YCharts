@@ -1,4 +1,4 @@
-package com.ygraph.components.bar.piechart
+package com.ygraph.components.piechart
 
 
 object Constants {

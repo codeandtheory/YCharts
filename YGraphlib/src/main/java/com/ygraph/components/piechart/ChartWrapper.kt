@@ -2,13 +2,10 @@ package com.ygraph.components.piechart
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.sp
-import com.ygraph.components.bar.piechart.charts.DonutPieChart
-import com.ygraph.components.bar.piechart.charts.PieChart
-import com.ygraph.components.bar.piechart.models.PieChartConfig
-import com.ygraph.components.bar.piechart.models.PieChartData
+import com.ygraph.components.piechart.charts.DonutPieChart
+import com.ygraph.components.piechart.charts.PieChart
+import com.ygraph.components.piechart.models.PieChartConfig
+import com.ygraph.components.piechart.models.PieChartData
 import com.ygraph.components.piechart.utils.ChartType
 
 object ChartWrapper {
