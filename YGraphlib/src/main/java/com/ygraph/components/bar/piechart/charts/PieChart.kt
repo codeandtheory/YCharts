@@ -26,6 +26,7 @@ import com.ygraph.components.bar.piechart.Constants.DEFAULT_START_ANGLE
 import com.ygraph.components.bar.piechart.Constants.MINIMUM_PERCENTAGE_FOR_SLICE_LABELS
 import com.ygraph.components.bar.piechart.Constants.ONE_HUNDRED
 import com.ygraph.components.bar.piechart.Constants.TOTAL_ANGLE
+import com.ygraph.components.bar.piechart.models.PieChartConfig
 import com.ygraph.components.bar.piechart.models.PieChartData
 import com.ygraph.components.piechart.charts.drawPie
 import kotlin.math.abs
@@ -39,24 +40,13 @@ import kotlin.math.sin
  * Compose function used to Draw the Pie Chart.
  * @param modifier : All modifier related property
  * @param pieChartData: data list for the pie chart
- * @param isLegendVisible: Control the legends visibility
- * @param startAngle: Starting angle
- * @param showSliceLabels: Control the labels visibility
- * @param sliceLabelTextSize: Text size of the labels
- * @param sliceLabelTextColor: Text color of the labels
- * @param legendLabelTextColor: Text color of the legend labels
+ * @param pieChartConfig: configuration for the pie chart
  */
 @Composable
 fun PieChart(
     modifier: Modifier,
     pieChartData: PieChartData,
-    isLegendVisible: Boolean = false,
-    startAngle: Float = DEFAULT_START_ANGLE,
-    showSliceLabels: Boolean = true,
-    sliceLabelTextSize: TextUnit = DEFAULT_SLICE_LABEL_TEXT_SIZE.sp,
-    sliceLabelTextColor: Color = White,
-    legendLabelTextColor: Color = Black,
-    animationDuration: Int = 1000
+    pieChartConfig: PieChartConfig
 ) {
     // Sum of all the values
     val sumOfValues = pieChartData.totalLength
@@ -85,10 +75,10 @@ fun PieChart(
         modifier = modifier,
     ) {
 
-        if (isLegendVisible) {
+        if (pieChartConfig.isLegendVisible) {
             Legends(
                 pieChartData = pieChartData,
-                legendTextColor = legendLabelTextColor
+                legendTextColor = pieChartConfig.legendLabelTextColor
             )
         }
 
@@ -106,7 +96,7 @@ fun PieChart(
 
             LaunchedEffect(key1 = Unit) {
                 pathPortion.animateTo(
-                    1f, animationSpec = tween(animationDuration)
+                    1f, animationSpec = tween(pieChartConfig.animationDuration)
                 )
             }
 
@@ -116,13 +106,13 @@ fun PieChart(
                     .height(sideSize.dp)
             ) {
 
-                var sAngle = startAngle
+                var sAngle = pieChartConfig.startAngle
 
                 val sliceLabelPaint = Paint().apply {
                     isAntiAlias = true
-                    textSize = sliceLabelTextSize.toPx()
+                    textSize = pieChartConfig.sliceLabelTextSize.toPx()
                     textAlign = Paint.Align.CENTER
-                    color = sliceLabelTextColor.toArgb()
+                    color = pieChartConfig.sliceLabelTextColor.toArgb()
                 }
 
                 sweepAngles.forEachIndexed { index, arcProgress ->
@@ -137,7 +127,7 @@ fun PieChart(
                     )
 
                     //  if percentage is less than 5 width of slice will be very small
-                    if (showSliceLabels && proportions[index] >= MINIMUM_PERCENTAGE_FOR_SLICE_LABELS) {
+                    if (pieChartConfig.showSliceLabels && proportions[index] >= MINIMUM_PERCENTAGE_FOR_SLICE_LABELS) {
 
                         val arcCenter = sAngle + (arcProgress / 2)
 

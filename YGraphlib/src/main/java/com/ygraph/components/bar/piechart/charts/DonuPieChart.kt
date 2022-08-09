@@ -10,21 +10,16 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.ygraph.components.piechart.utils.convertTouchEventPointToAngle
 import kotlin.math.roundToInt
 import com.ygraph.components.bar.piechart.Constants.DEFAULT_PADDING
-import com.ygraph.components.bar.piechart.Constants.DEFAULT_START_ANGLE
-import com.ygraph.components.bar.piechart.Constants.DEFAULT_STROKE_WIDTH
 import com.ygraph.components.bar.piechart.Constants.ONE_HUNDRED
 import com.ygraph.components.bar.piechart.Constants.TOTAL_ANGLE
+import com.ygraph.components.bar.piechart.models.PieChartConfig
 import com.ygraph.components.bar.piechart.models.PieChartData
 import com.ygraph.components.piechart.charts.drawPie
 
@@ -33,26 +28,13 @@ import com.ygraph.components.piechart.charts.drawPie
  * Compose function for Drawing Donut chart
  * @param modifier : All modifier related property
  * @param pieChartData: data list for the pie chart
- * @param strokeWidth:  StrokeWidth for the pie chart
- * @param startAngle: StartAngle for the pie chart, from where to start draw
- * @param isLegendVisible: Legends should show or not
- * @param percentageFontSize: Percentage text font size
- * @param percentVisible: Percentage text visibility
- * @param percentColor: Percentage text color
- * @param legendLabelTextColor: Text color of the legend labels
+ * @param pieChartConfig: configuration for the pie chart
  */
 @Composable
 fun DonutPieChart(
     modifier: Modifier,
     pieChartData: PieChartData,
-    strokeWidth: Float = DEFAULT_STROKE_WIDTH,
-    startAngle: Float = DEFAULT_START_ANGLE,
-    isLegendVisible: Boolean = false,
-    percentageFontSize: TextUnit = 60.sp,
-    percentVisible: Boolean = false,
-    percentColor: Color = Color.White,
-    legendLabelTextColor: Color = Black,
-    animationDuration: Int = 1000
+    pieChartConfig: PieChartConfig
 ) {
     // Sum of all the values
     val sumOfValues = pieChartData.totalLength
@@ -90,14 +72,14 @@ fun DonutPieChart(
 
         LaunchedEffect(key1 = Unit) {
             pathPortion.animateTo(
-                1f, animationSpec = tween(animationDuration)
+                1f, animationSpec = tween(pieChartConfig.animationDuration)
             )
         }
 
-        if (isLegendVisible) {
+        if (pieChartConfig.isLegendVisible) {
             Legends(
                 pieChartData = pieChartData,
-                legendTextColor = legendLabelTextColor
+                legendTextColor = pieChartConfig.legendLabelTextColor
             )
         }
 
@@ -127,7 +109,7 @@ fun DonutPieChart(
 
         ) {
 
-            var sAngle = startAngle
+            var sAngle = pieChartConfig.startAngle
 
             sweepAngles.forEachIndexed { index, arcProgress ->
                 drawPie(
@@ -137,20 +119,20 @@ fun DonutPieChart(
                     size = size,
                     padding = padding,
                     isDonut = true,
-                    strokeWidth = strokeWidth,
+                    strokeWidth = pieChartConfig.strokeWidth,
                     isActive = activePie == index
                 )
                 sAngle += arcProgress
             }
 
-            if (activePie != -1 && percentVisible)
+            if (activePie != -1 && pieChartConfig.percentVisible)
                 drawContext.canvas.nativeCanvas.apply {
-                    val fontSize = percentageFontSize.toPx()
+                    val fontSize = pieChartConfig.percentageFontSize.toPx()
                     drawText(
                         "${proportions[activePie].roundToInt()}%",
                         (sideSize / 2) + fontSize / 4, (sideSize / 2) + fontSize / 3,
                         Paint().apply {
-                            color = percentColor.toArgb()
+                            color = pieChartConfig.percentColor.toArgb()
                             textSize = fontSize
                             textAlign = Paint.Align.CENTER
                         }

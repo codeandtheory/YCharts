@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.ygraph.components.bar.piechart.models.PieChartConfig
 import com.ygraph.components.bar.piechart.models.PieChartData
 import com.ygraph.components.piechart.ChartWrapper.DrawChart
 import com.ygraph.components.piechart.utils.ChartType
@@ -23,21 +24,27 @@ fun ChartContainer() {
             )
         )
 
+        val pieChartConfig =
+            PieChartConfig(
+                percentVisible = true,
+                strokeWidth = 120f,
+                percentColor = Color.Black,
+                isLegendVisible = pieChartData.legendVisible
+            )
+
+
         DrawChart(
             modifier = Modifier.height(350.dp),
             pieChartData = pieChartData,
-            strokeWidth = 120f,
-            percentVisible = true,
-            percentColor = Color.Black,
             chartType = ChartType.DonutPieChart,
-            animationDuration = 2000
+            pieChartConfig = pieChartConfig
         )
         Spacer(modifier = Modifier.height(32.dp))
         DrawChart(
             modifier = Modifier.height(350.dp),
             pieChartData = pieChartData,
             chartType = ChartType.PieChart,
-            animationDuration = 2000
+            pieChartConfig = pieChartConfig
         )
     }
 
