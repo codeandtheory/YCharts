@@ -29,17 +29,18 @@ import com.ygraph.components.bar.piechart.Constants.Companion.TOTAL_ANGLE
 
 /**
  * Compose function for Drawing Donut chart
- * All modifier related property [modifier].
- * Value list for the pie chart [values].
- * Colors for the pie chart [colors].
- * StrokeWidth for the pie chart [strokeWidth].
- * StartAngle for the pie chart, from where to start draw [startAngle].
- * Legends should show or not  [isLegendVisible].
- * Label list  [legends].
- * Percentage text font size  [percentageFontSize].
- * Percentage text visibility [percentVisible].
- * Percentage text color [percentColor].
- * Text color of the legend labels [legendLabelTextColor].
+ *
+ * @param modifier : All modifier related property
+ * @param values: Value list for the pie chart
+ * @param colors: Colors for the pie chart
+ * @param strokeWidth:  StrokeWidth for the pie chart
+ * @param startAngle: StartAngle for the pie chart, from where to start draw
+ * @param isLegendVisible: Legends should show or not
+ * @param legends: Label list
+ * @param percentageFontSize: Percentage text font size
+ * @param percentVisible: Percentage text visibility
+ * @param percentColor: Percentage text color
+ * @param legendLabelTextColor: Text color of the legend labels
  */
 @Composable
 fun DonutPieChart(

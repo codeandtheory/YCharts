@@ -13,16 +13,16 @@ object ChartWrapper {
 
     /**
      * Wrapper compose method for drawing Pie Chart and Donut chart.
-     * All modifier related property [modifier].
-     * Value list for the Pie/Donut chart [values].
-     * Colors for the pie/Donut chart [color].
-     * Type of the chart (Pie or Donut) [chartType].
-     * Label list  [legends].
-     * Legends visibility  [isLegendVisible].
-     * Stroke width of Donut Chart [strokeWidth].
-     * Percentage text font size  [percentageFontSize].
-     * Percentage text visibility [percentVisible].
-     * Percentage text color [percentColor].
+     * @param modifier : All modifier related property
+     * @param values: Value list for the pie chart
+     * @param colors: Colors for the pie chart
+     * @param chartType: Type of the chart (Pie or Donut)
+     * @param legends: Label list
+     * @param isLegendVisible: Legends should show or not
+     * @param strokeWidth: Stroke width of Donut Chart
+     * @param percentageFontSize: Percentage text font size
+     * @param percentVisible: Percentage text visibility
+     * @param percentColor: Percentage text color
      */
 
     @Composable

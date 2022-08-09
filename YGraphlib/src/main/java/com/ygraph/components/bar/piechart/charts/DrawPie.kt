@@ -9,14 +9,15 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 
 /**
- * Color for slice [color].
- * StartAngle for the slice, from where to start draw [startAngle].
- * Process of slice [arcProgress].
- * Size of the chart [size].
- * StrokeWidth for the pie chart [strokeWidth].
- * Padding from top left [padding].
- * DonutPieChart or PieChart to indicate  [isDonut].
- * DonutPieChart zoom slice if IsActive [isActive].
+ * Extension for drawing arcs
+ * @param color : Color for slice
+ * @param startAngle : StartAngle for the slice, from where to start draw
+ * @param arcProgress : Process of slice
+ * @param size : Size of the chart
+ * @param strokeWidth : StrokeWidth for the pie chart
+ * @param padding : Padding from top left
+ * @param isDonut : DonutPieChart or PieChart to indicate
+ * @param isActive : DonutPieChart zoom slice if IsActive
  */
 
 fun DrawScope.drawPie(

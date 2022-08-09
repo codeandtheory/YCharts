@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ygraph.components.bar.piechart.Constants
 import com.ygraph.components.piechart.charts.Legends
 import com.ygraph.components.piechart.charts.drawPie
 import kotlin.math.abs
@@ -33,18 +32,21 @@ import com.ygraph.components.bar.piechart.Constants.Companion.MINIMUM_PERCENTAGE
 import com.ygraph.components.bar.piechart.Constants.Companion.ONE_HUNDRED
 import com.ygraph.components.bar.piechart.Constants.Companion.TOTAL_ANGLE
 
+
+
+
 /**
- * Compose function used to Draw the Pie Chart
- * All modifier related property [modifier].
- * Value list for the pie chart [values].
- * Colors for the pie chart [colors].
- * Control the legends visibility[isLegendVisible].
- * Label list  [legends].
- * Starting angle [startAngle].
- * Control the labels visibility [showSliceLabels].
- * Text size of the labels [sliceLabelTextSize].
- * Text color of the labels [sliceLabelTextColor].
- * Text color of the legend labels [legendLabelTextColor].
+ * Compose function used to Draw the Pie Chart.
+ * @param modifier : All modifier related property
+ * @param values: Value list for the pie chart
+ * @param colors: Colors for the pie chart
+ * @param isLegendVisible: Control the legends visibility
+ * @param legends: Label list
+ * @param startAngle: Starting angle
+ * @param showSliceLabels: Control the labels visibility
+ * @param sliceLabelTextSize: Text size of the labels
+ * @param sliceLabelTextColor: Text color of the labels
+ * @param legendLabelTextColor: Text color of the legend labels
  */
 @Composable
 fun PieChart(
