@@ -1,4 +1,4 @@
-package com.app.chartcontainer
+package com.example.piechartcontainer
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

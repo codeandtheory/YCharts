@@ -1,4 +1,4 @@
-package com.ygraph.components.piechart.charts
+package com.ygraph.components.bar.piechart.charts
 
 import android.graphics.Paint
 import androidx.compose.animation.core.Animatable
@@ -20,11 +20,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ygraph.components.piechart.utils.convertTouchEventPointToAngle
 import kotlin.math.roundToInt
-import com.ygraph.components.bar.piechart.Constants.Companion.DEFAULT_PADDING
-import com.ygraph.components.bar.piechart.Constants.Companion.DEFAULT_START_ANGLE
-import com.ygraph.components.bar.piechart.Constants.Companion.DEFAULT_STROKE_WIDTH
-import com.ygraph.components.bar.piechart.Constants.Companion.ONE_HUNDRED
-import com.ygraph.components.bar.piechart.Constants.Companion.TOTAL_ANGLE
+import com.ygraph.components.bar.piechart.Constants.DEFAULT_PADDING
+import com.ygraph.components.bar.piechart.Constants.DEFAULT_START_ANGLE
+import com.ygraph.components.bar.piechart.Constants.DEFAULT_STROKE_WIDTH
+import com.ygraph.components.bar.piechart.Constants.ONE_HUNDRED
+import com.ygraph.components.bar.piechart.Constants.TOTAL_ANGLE
+import com.ygraph.components.piechart.charts.drawPie
 
 
 /**

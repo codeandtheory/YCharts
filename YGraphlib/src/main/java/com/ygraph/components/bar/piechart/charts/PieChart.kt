@@ -20,17 +20,16 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ygraph.components.piechart.charts.Legends
+import com.ygraph.components.bar.piechart.Constants.DEFAULT_PADDING
+import com.ygraph.components.bar.piechart.Constants.DEFAULT_SLICE_LABEL_TEXT_SIZE
+import com.ygraph.components.bar.piechart.Constants.DEFAULT_START_ANGLE
+import com.ygraph.components.bar.piechart.Constants.MINIMUM_PERCENTAGE_FOR_SLICE_LABELS
+import com.ygraph.components.bar.piechart.Constants.ONE_HUNDRED
+import com.ygraph.components.bar.piechart.Constants.TOTAL_ANGLE
 import com.ygraph.components.piechart.charts.drawPie
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
-import com.ygraph.components.bar.piechart.Constants.Companion.DEFAULT_PADDING
-import com.ygraph.components.bar.piechart.Constants.Companion.DEFAULT_START_ANGLE
-import com.ygraph.components.bar.piechart.Constants.Companion.DEFAULT_SLICE_LABEL_TEXT_SIZE
-import com.ygraph.components.bar.piechart.Constants.Companion.MINIMUM_PERCENTAGE_FOR_SLICE_LABELS
-import com.ygraph.components.bar.piechart.Constants.Companion.ONE_HUNDRED
-import com.ygraph.components.bar.piechart.Constants.Companion.TOTAL_ANGLE
 
 
 

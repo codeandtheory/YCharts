@@ -10,7 +10,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.app.chartcontainer.ChartContainer
 import com.example.piechartcontainer.ui.theme.YGraphsTheme
 
 class MainActivity : ComponentActivity() {
