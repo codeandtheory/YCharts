@@ -39,6 +39,7 @@ data class YAxisData(
     val topPadding: Dp,
     val bottomPadding: Dp,
     val indicatorLineWidth: Dp,
+    val backgroundColor: Color,
     val axisConfig: AxisConfig
 ) {
     class Builder {
@@ -55,6 +56,7 @@ data class YAxisData(
         private var topPadding: Dp = 20.dp
         private var bottomPadding: Dp = 10.dp
         private var indicatorLineWidth: Dp = 5.dp
+        private var backgroundColor: Color = Color.White
         private var axisConfig = AxisConfig(isAxisLineRequired = true)
 
         fun modifier(modifier: Modifier) = apply { this.modifier = modifier }
@@ -83,6 +85,8 @@ data class YAxisData(
 
         fun indicatorLineWidth(lineWidth: Dp) = apply { this.indicatorLineWidth = lineWidth }
 
+        fun backgroundColor(color: Color) = apply { this.backgroundColor = color }
+
         fun axisConfig(config: AxisConfig) = apply { this.axisConfig = config }
 
         fun build() = YAxisData(
@@ -99,6 +103,7 @@ data class YAxisData(
             topPadding,
             bottomPadding,
             indicatorLineWidth,
+            backgroundColor,
             axisConfig
         )
     }
