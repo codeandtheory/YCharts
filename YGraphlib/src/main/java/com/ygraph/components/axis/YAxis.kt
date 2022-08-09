@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,11 +41,6 @@ fun YAxis(yAxisData: YAxisData) {
                     .background(backgroundColor)
             ) {
                 val (yAxisHeight, reqYLabelsQuo, segmentHeight) = getAxisInitValues(yAxisData)
-                val yAxisTextPaint = TextPaint().apply {
-                    textSize = axisLabelFontSize.toPx()
-                    color = yAxisLineColor.toArgb()
-                    textAlign = if (isRightAligned) Paint.Align.RIGHT else Paint.Align.LEFT
-                }
                 for (i in 0 until reqYLabelsQuo.toInt()) {
                     // Drawing the axis labels
                     yAxisWidth = drawAxisLabel(
@@ -180,21 +174,6 @@ private fun DrawScope.drawAxisLabel(
         }
     }
     return calculatedYAxisWidth
-}
-
-@Preview(showBackground = true)
-@Composable
-fun YAxisPreview() {
-    val yAxisData = YAxisData.Builder()
-        .modifier(Modifier.height(300.dp))
-        .yMaxValue(800f)
-        .yStepValue(100f)
-        .bottomPadding(10.dp)
-        .axisPos(Gravity.LEFT)
-        .axisLabelFontSize(14.sp)
-        .yLabelData { index -> index.toString() }
-        .build()
-    YAxis(yAxisData = yAxisData)
 }
 
 @Preview(showBackground = true)

@@ -66,6 +66,7 @@ class MainActivity : ComponentActivity() {
                             .axisLabelFontSize(14.sp)
                             .yLabelData { index -> ((100f).toInt() * index).toString() }
                             .textLabelPadding(20.dp)
+                            .yAxisOffset(20.dp)
                             .yLabelData { index -> index.toString() + "Thousand" }
                             .build()
                         YAxis(yAxisData = rightAlignYAxisData)
