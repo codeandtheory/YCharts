@@ -1,6 +1,7 @@
 package com.ygraph.components.piechart.utils
 
 import androidx.compose.ui.geometry.Size
+import com.ygraph.components.bar.piechart.models.PieChartData
 
 sealed class ChartType{
     object PieChart : ChartType()
@@ -26,4 +27,8 @@ fun convertTouchEventPointToAngle(
     var angle = Math.toDegrees(Math.atan2(y.toDouble(), x.toDouble()) + Math.PI / 2)
     angle = if (angle < 0) angle + 360 else angle
     return angle
+}
+
+fun List<PieChartData.Slice>.sum(): Float {
+   return this.map { it.value }.sum()
 }

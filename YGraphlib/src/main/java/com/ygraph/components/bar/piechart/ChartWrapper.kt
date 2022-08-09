@@ -7,6 +7,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.ygraph.components.bar.piechart.charts.DonutPieChart
 import com.ygraph.components.bar.piechart.charts.PieChart
+import com.ygraph.components.bar.piechart.models.PieChartData
 import com.ygraph.components.piechart.utils.ChartType
 
 object ChartWrapper {
@@ -28,37 +29,35 @@ object ChartWrapper {
     @Composable
     fun DrawChart(
         modifier: Modifier,
-        values: List<Float>,
-        color: List<Color>,
         chartType: ChartType,
-        legends: List<String> = emptyList(),
-        isLegendVisible: Boolean = legends.isNotEmpty(),
+        pieChartData: PieChartData,
+        isLegendVisible: Boolean = pieChartData.legendVisible,
         strokeWidth: Float = 100f,
         percentageFontSize: TextUnit = 60.sp,
         percentVisible: Boolean = false,
-        percentColor: Color = Color.White
+        percentColor: Color = Color.White,
+        animationDuration: Int = 1000
     ) {
         when (chartType) {
             is ChartType.PieChart -> {
                 PieChart(
                     modifier = modifier,
-                    values = values,
+                    pieChartData = pieChartData,
                     isLegendVisible = isLegendVisible,
-                    colors = color,
-                    legends = legends
+                    animationDuration = animationDuration
                 )
             }
             is ChartType.DonutPieChart -> {
                 DonutPieChart(
                     modifier = modifier,
-                    values = values,
-                    colors = color,
-                    legends =legends,
+                    pieChartData = pieChartData,
                     strokeWidth = strokeWidth,
                     isLegendVisible = isLegendVisible,
                     percentVisible = percentVisible,
                     percentColor = percentColor,
-                    percentageFontSize = percentageFontSize
+                    percentageFontSize = percentageFontSize,
+                    animationDuration = animationDuration
+
                 )
             }
         }

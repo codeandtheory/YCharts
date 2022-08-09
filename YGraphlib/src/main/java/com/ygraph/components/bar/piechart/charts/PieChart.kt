@@ -26,6 +26,7 @@ import com.ygraph.components.bar.piechart.Constants.DEFAULT_START_ANGLE
 import com.ygraph.components.bar.piechart.Constants.MINIMUM_PERCENTAGE_FOR_SLICE_LABELS
 import com.ygraph.components.bar.piechart.Constants.ONE_HUNDRED
 import com.ygraph.components.bar.piechart.Constants.TOTAL_ANGLE
+import com.ygraph.components.bar.piechart.models.PieChartData
 import com.ygraph.components.piechart.charts.drawPie
 import kotlin.math.abs
 import kotlin.math.cos
@@ -50,22 +51,21 @@ import kotlin.math.sin
 @Composable
 fun PieChart(
     modifier: Modifier,
-    values: List<Float>,
-    colors: List<Color>,
+    pieChartData: PieChartData,
     isLegendVisible: Boolean = false,
-    legends: List<String> = emptyList(),
     startAngle: Float = DEFAULT_START_ANGLE,
     showSliceLabels: Boolean = true,
     sliceLabelTextSize: TextUnit = DEFAULT_SLICE_LABEL_TEXT_SIZE.sp,
     sliceLabelTextColor: Color = White,
     legendLabelTextColor: Color = Black,
+    animationDuration: Int = 1000
 ) {
     // Sum of all the values
-    val sumOfValues = values.sum()
+    val sumOfValues = pieChartData.totalLength
 
     // Calculate each proportion value
-    val proportions = values.map {
-        it * ONE_HUNDRED / sumOfValues
+    val proportions = pieChartData.slices.map {
+        it.value * ONE_HUNDRED / sumOfValues
     }
 
     // Convert each proportions to angle
@@ -89,9 +89,7 @@ fun PieChart(
 
         if (isLegendVisible) {
             Legends(
-                values = values,
-                colors = colors,
-                legend = legends,
+                pieChartData = pieChartData,
                 legendTextColor = legendLabelTextColor
             )
         }
@@ -110,7 +108,7 @@ fun PieChart(
 
             LaunchedEffect(key1 = Unit) {
                 pathPortion.animateTo(
-                    1f, animationSpec = tween(1000)
+                    1f, animationSpec = tween(animationDuration)
                 )
             }
 
@@ -131,7 +129,7 @@ fun PieChart(
 
                 sweepAngles.forEachIndexed { index, arcProgress ->
                     drawPie(
-                        color = colors[index],
+                        color = pieChartData.slices[index].color,
                         startAngle = sAngle,
                         arcProgress = arcProgress * pathPortion.value,
                         size = size,
@@ -163,9 +161,9 @@ fun PieChart(
                         // find the height of text
                         val rect = Rect()
                         sliceLabelPaint.getTextBounds(
-                            legends[index],
+                            pieChartData.slices[index].label,
                             0,
-                            legends[index].length,
+                            pieChartData.slices[index].label.length,
                             rect
                         )
 
@@ -183,7 +181,7 @@ fun PieChart(
                             )
 
                             it.nativeCanvas.drawText(
-                                legends[index],
+                                pieChartData.slices[index].label,
                                 finalX,
                                 finalY + abs(rect.height()) / 2,
                                 sliceLabelPaint

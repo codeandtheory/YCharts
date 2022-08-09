@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.ygraph.components.bar.piechart.models.PieChartData
 
 
 /**
@@ -20,17 +21,19 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun Legends(
-    values: List<Float>,
-    legend: List<String>,
-    colors: List<Color>,
+    pieChartData: PieChartData,
     legendTextColor: Color,
     padding: Dp = 15.dp
 ) {
     Column(
         modifier = Modifier.padding(start = padding)
     ) {
-        for (i in values.indices) {
-            DisplayLegend(color = colors[i], legend = legend[i], legendTextColor)
+        for (i in pieChartData.slices.indices) {
+            DisplayLegend(
+                color = pieChartData.slices[i].color,
+                legend = pieChartData.slices[i].label,
+                legendTextColor
+            )
         }
     }
 }

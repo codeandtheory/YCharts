@@ -25,6 +25,7 @@ import com.ygraph.components.bar.piechart.Constants.DEFAULT_START_ANGLE
 import com.ygraph.components.bar.piechart.Constants.DEFAULT_STROKE_WIDTH
 import com.ygraph.components.bar.piechart.Constants.ONE_HUNDRED
 import com.ygraph.components.bar.piechart.Constants.TOTAL_ANGLE
+import com.ygraph.components.bar.piechart.models.PieChartData
 import com.ygraph.components.piechart.charts.drawPie
 
 
@@ -45,24 +46,22 @@ import com.ygraph.components.piechart.charts.drawPie
 @Composable
 fun DonutPieChart(
     modifier: Modifier,
-    values: List<Float>,
-    colors: List<Color>,
+    pieChartData: PieChartData,
     strokeWidth: Float = DEFAULT_STROKE_WIDTH,
     startAngle: Float = DEFAULT_START_ANGLE,
     isLegendVisible: Boolean = false,
-    legends: List<String> = emptyList(),
     percentageFontSize: TextUnit = 60.sp,
     percentVisible: Boolean = false,
     percentColor: Color = Color.White,
     legendLabelTextColor: Color = Black,
-
+    animationDuration: Int = 1000
 ) {
     // Sum of all the values
-    val sumOfValues = values.sum()
+    val sumOfValues = pieChartData.totalLength
 
     // Calculate each proportion value
-    val proportions = values.map {
-        it * ONE_HUNDRED / sumOfValues
+    val proportions = pieChartData.slices.map {
+        it.value * ONE_HUNDRED / sumOfValues
     }
 
     // Convert each proportions to angle
@@ -93,15 +92,13 @@ fun DonutPieChart(
 
         LaunchedEffect(key1 = Unit) {
             pathPortion.animateTo(
-                1f, animationSpec = tween(1000)
+                1f, animationSpec = tween(animationDuration)
             )
         }
 
         if (isLegendVisible) {
             Legends(
-                values = values,
-                colors = colors,
-                legend = legends,
+                pieChartData = pieChartData,
                 legendTextColor = legendLabelTextColor
             )
         }
@@ -136,7 +133,7 @@ fun DonutPieChart(
 
             sweepAngles.forEachIndexed { index, arcProgress ->
                 drawPie(
-                    color = colors[index],
+                    color = pieChartData.slices[index].color,
                     startAngle = sAngle,
                     arcProgress = arcProgress * pathPortion.value,
                     size = size,
