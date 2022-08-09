@@ -17,11 +17,11 @@ import androidx.compose.ui.unit.dp
 import com.ygraph.components.piechart.utils.convertTouchEventPointToAngle
 import kotlin.math.roundToInt
 import com.ygraph.components.bar.piechart.Constants.DEFAULT_PADDING
-import com.ygraph.components.bar.piechart.Constants.ONE_HUNDRED
-import com.ygraph.components.bar.piechart.Constants.TOTAL_ANGLE
 import com.ygraph.components.bar.piechart.models.PieChartConfig
 import com.ygraph.components.bar.piechart.models.PieChartData
 import com.ygraph.components.piechart.charts.drawPie
+import com.ygraph.components.piechart.utils.proportion
+import com.ygraph.components.piechart.utils.sweepAngles
 
 
 /**
@@ -40,14 +40,10 @@ fun DonutPieChart(
     val sumOfValues = pieChartData.totalLength
 
     // Calculate each proportion value
-    val proportions = pieChartData.slices.map {
-        it.value * ONE_HUNDRED / sumOfValues
-    }
+    val proportions = pieChartData.slices.proportion(sumOfValues)
 
     // Convert each proportions to angle
-    val sweepAngles = proportions.map {
-        TOTAL_ANGLE * it / ONE_HUNDRED
-    }
+    val sweepAngles = proportions.sweepAngles()
 
     val progressSize = mutableListOf<Float>()
     progressSize.add(sweepAngles.first())

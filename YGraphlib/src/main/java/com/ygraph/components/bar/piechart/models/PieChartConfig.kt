@@ -26,7 +26,7 @@ data class PieChartConfig(
     val sliceLabelTextColor: Color = Color.White,
     val isLegendVisible: Boolean = false,
     val legendLabelTextColor: Color = Color.Black,
-    val animationDuration: Int = 1000,
+    val animationDuration: Int = 500,
     val strokeWidth: Float = 100f,
     val percentageFontSize: TextUnit = 60.sp,
     val percentVisible: Boolean = false,

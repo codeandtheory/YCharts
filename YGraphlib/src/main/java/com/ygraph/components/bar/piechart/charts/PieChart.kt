@@ -1,7 +1,6 @@
 package com.ygraph.components.bar.piechart.charts
 
 import android.graphics.Paint
-import android.graphics.Rect
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -10,28 +9,21 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.geometry.center
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Black
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.ygraph.components.bar.getTextHeight
 import com.ygraph.components.bar.piechart.Constants.DEFAULT_PADDING
-import com.ygraph.components.bar.piechart.Constants.DEFAULT_SLICE_LABEL_TEXT_SIZE
-import com.ygraph.components.bar.piechart.Constants.DEFAULT_START_ANGLE
 import com.ygraph.components.bar.piechart.Constants.MINIMUM_PERCENTAGE_FOR_SLICE_LABELS
-import com.ygraph.components.bar.piechart.Constants.ONE_HUNDRED
-import com.ygraph.components.bar.piechart.Constants.TOTAL_ANGLE
 import com.ygraph.components.bar.piechart.models.PieChartConfig
 import com.ygraph.components.bar.piechart.models.PieChartData
 import com.ygraph.components.piechart.charts.drawPie
+import com.ygraph.components.piechart.utils.getSliceCenterPoints
+import com.ygraph.components.piechart.utils.proportion
+import com.ygraph.components.piechart.utils.sweepAngles
 import kotlin.math.abs
-import kotlin.math.cos
-import kotlin.math.sin
+
 
 
 
@@ -52,14 +44,10 @@ fun PieChart(
     val sumOfValues = pieChartData.totalLength
 
     // Calculate each proportion value
-    val proportions = pieChartData.slices.map {
-        it.value * ONE_HUNDRED / sumOfValues
-    }
+    val proportions = pieChartData.slices.proportion(sumOfValues)
 
     // Convert each proportions to angle
-    val sweepAngles = proportions.map {
-        TOTAL_ANGLE * it / ONE_HUNDRED
-    }
+    val sweepAngles = proportions.sweepAngles()
 
     val progressSize = mutableListOf<Float>()
     progressSize.add(sweepAngles.first())
@@ -129,56 +117,33 @@ fun PieChart(
                     //  if percentage is less than 5 width of slice will be very small
                     if (pieChartConfig.showSliceLabels && proportions[index] >= MINIMUM_PERCENTAGE_FOR_SLICE_LABELS) {
 
-                        val arcCenter = sAngle + (arcProgress / 2)
-
-                        //middle point radius is half of the radius of the pie chart
-                        val pointRadius = size.width / 4
-
-                        /*Calculate the x & y co-ordinates to show the label/percentage tex
-                        * find points using angle and radius
-                        *https://en.wikipedia.org/wiki/Polar_coordinate_system#Converting_between_polar_and_Cartesian_coordinates
-                        * */
-
-                        val x =
-                            (pointRadius * cos(Math.toRadians(arcCenter.toDouble()))) +
-                                    size.center.x + padding / 2
-                        val y =
-                            (pointRadius * sin(Math.toRadians(arcCenter.toDouble()))) +
-                                    size.center.y + padding / 2
+                        val (arcCenter, x, y) = getSliceCenterPoints(sAngle, arcProgress, size, padding)
 
                         // find the height of text
-                        val rect = Rect()
-                        sliceLabelPaint.getTextBounds(
-                            pieChartData.slices[index].label,
-                            0,
-                            pieChartData.slices[index].label.length,
-                            rect
-                        )
+                       val height=  pieChartData.slices[index].label.getTextHeight(sliceLabelPaint)
 
                         drawIntoCanvas {
 
-                            val finalX = x.toFloat()
-                            val finalY = y.toFloat()
 
                             // rotating canvas to adjust the text alignment
                             it.nativeCanvas.rotate(
                                 arcCenter,
-                                finalX,
-                                finalY
+                                x,
+                                y
 
                             )
 
                             it.nativeCanvas.drawText(
                                 pieChartData.slices[index].label,
-                                finalX,
-                                finalY + abs(rect.height()) / 2,
+                                x,
+                                y + abs(height) / 2,
                                 sliceLabelPaint
                             )
                             // rotating back to the original position
                             it.nativeCanvas.rotate(
                                 -arcCenter,
-                                finalX,
-                                finalY
+                                x,
+                                y
                             )
 
                         }
