@@ -67,7 +67,7 @@ fun YAxis(yAxisData: YAxisData) {
     }
 }
 
-private fun DrawScope.getAxisInitValues(
+fun DrawScope.getAxisInitValues(
     yAxisData: YAxisData
 ): Triple<Float, Float, Float> {
     val yAxisHeight = size.height - yAxisData.bottomPadding.roundToPx()

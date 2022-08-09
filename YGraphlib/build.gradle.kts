@@ -1,5 +1,5 @@
-import com.ygraph.dependency.YChartDependency
 import com.ygraph.dependency.Version
+import com.ygraph.dependency.YChartDependency
 
 plugins {
     id("com.android.library")
@@ -55,6 +55,9 @@ dependencies {
     implementation(YChartDependency.COMPOSE_MATERIAL)
     implementation(YChartDependency.COMPOSE_TOOLING_PREVIEW)
     testImplementation(YChartDependency.JUNIT)
+    testImplementation(YChartDependency.MOCKK)
+    androidTestImplementation(YChartDependency.COMPOSE_JUNIT)
+    androidTestImplementation(YChartDependency.COMPOSE_UI_TEST_MANIFEST)
     androidTestImplementation(YChartDependency.TEST_EXTN)
     androidTestImplementation(YChartDependency.ESPRESSO_CORE)
 }
