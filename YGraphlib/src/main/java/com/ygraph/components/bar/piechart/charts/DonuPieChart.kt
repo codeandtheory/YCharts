@@ -23,10 +23,12 @@ import kotlin.math.roundToInt
 import com.ygraph.components.bar.piechart.Constants.Companion.DEFAULT_PADDING
 import com.ygraph.components.bar.piechart.Constants.Companion.DEFAULT_START_ANGLE
 import com.ygraph.components.bar.piechart.Constants.Companion.DEFAULT_STROKE_WIDTH
+import com.ygraph.components.bar.piechart.Constants.Companion.ONE_HUNDRED
 import com.ygraph.components.bar.piechart.Constants.Companion.TOTAL_ANGLE
 
 
 /**
+ * Compose function for Drawing Donut chart
  * All modifier related property [modifier].
  * Value list for the pie chart [values].
  * Colors for the pie chart [colors].
@@ -59,12 +61,12 @@ fun DonutPieChart(
 
     // Calculate each proportion value
     val proportions = values.map {
-        it * 100 / sumOfValues
+        it * ONE_HUNDRED / sumOfValues
     }
 
     // Convert each proportions to angle
     val sweepAngles = proportions.map {
-        TOTAL_ANGLE * it / 100
+        TOTAL_ANGLE * it / ONE_HUNDRED
     }
 
     val progressSize = mutableListOf<Float>()

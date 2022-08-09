@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ygraph.components.bar.piechart.Constants
 import com.ygraph.components.piechart.charts.Legends
 import com.ygraph.components.piechart.charts.drawPie
 import kotlin.math.abs
@@ -29,9 +30,11 @@ import com.ygraph.components.bar.piechart.Constants.Companion.DEFAULT_PADDING
 import com.ygraph.components.bar.piechart.Constants.Companion.DEFAULT_START_ANGLE
 import com.ygraph.components.bar.piechart.Constants.Companion.DEFAULT_SLICE_LABEL_TEXT_SIZE
 import com.ygraph.components.bar.piechart.Constants.Companion.MINIMUM_PERCENTAGE_FOR_SLICE_LABELS
+import com.ygraph.components.bar.piechart.Constants.Companion.ONE_HUNDRED
+import com.ygraph.components.bar.piechart.Constants.Companion.TOTAL_ANGLE
 
 /**
- * Used to Draw the pie chart
+ * Compose function used to Draw the Pie Chart
  * All modifier related property [modifier].
  * Value list for the pie chart [values].
  * Colors for the pie chart [colors].
@@ -61,12 +64,12 @@ fun PieChart(
 
     // Calculate each proportion value
     val proportions = values.map {
-        it * 100 / sumOfValues
+        it * ONE_HUNDRED / sumOfValues
     }
 
     // Convert each proportions to angle
     val sweepAngles = proportions.map {
-        360 * it / 100
+        TOTAL_ANGLE * it / ONE_HUNDRED
     }
 
     val progressSize = mutableListOf<Float>()
