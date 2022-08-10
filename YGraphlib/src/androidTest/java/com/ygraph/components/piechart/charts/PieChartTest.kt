@@ -6,7 +6,6 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import com.ygraph.components.piechart.models.PieChartConfig
 import com.ygraph.components.piechart.models.PieChartData
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -15,27 +14,19 @@ class PieChartTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private lateinit var pieChartConfig: PieChartConfig
-    private lateinit var pieChartData: PieChartData
-
-
-    @Before
-    fun setUp() {
-        pieChartData = PieChartData(
-            slices = listOf(
-                PieChartData.Slice("A", 15f, Color(0xFF58BDFF)),
-                PieChartData.Slice("B", 35f, Color(0xFF125B7F)),
-                PieChartData.Slice("C", 40f, Color(0xFF092D40)),
-            )
+    private val pieChartConfig = PieChartConfig(
+        percentVisible = false,
+        strokeWidth = 120f,
+        percentColor = Color.Black,
+        isLegendVisible = true
+    )
+    private val pieChartData = PieChartData(
+        slices = listOf(
+            PieChartData.Slice("A", 15f, Color(0xFF58BDFF)),
+            PieChartData.Slice("B", 35f, Color(0xFF125B7F)),
+            PieChartData.Slice("C", 40f, Color(0xFF092D40)),
         )
-        pieChartConfig =
-            PieChartConfig(
-                percentVisible = false,
-                strokeWidth = 120f,
-                percentColor = Color.Black,
-                isLegendVisible = true
-            )
-    }
+    )
 
 
     @Test

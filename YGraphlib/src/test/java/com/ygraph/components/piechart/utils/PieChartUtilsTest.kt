@@ -11,17 +11,13 @@ import org.junit.Test
 
 class PieChartUtilsTest {
 
-    private lateinit var sliceList: List<PieChartData.Slice>
-
-    @Before
-    fun setUp() {
-        sliceList = listOf(
-            PieChartData.Slice("A", 10f, Color.Cyan),
-            PieChartData.Slice("B", 20f, Color.Red),
-            PieChartData.Slice("C", 40f, Color.Black),
-            PieChartData.Slice("D", 30f, Color.Blue)
-        )
-    }
+    private val sliceList = listOf(
+        PieChartData.Slice("A", 10f, Color.Cyan),
+        PieChartData.Slice("B", 20f, Color.Red),
+        PieChartData.Slice("C", 40f, Color.Black),
+        PieChartData.Slice("D", 30f, Color.Blue)
+    )
+    
 
     @Test
     fun `Slice total calculation is correct`() {
