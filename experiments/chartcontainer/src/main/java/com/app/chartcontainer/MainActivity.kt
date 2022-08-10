@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.chartcontainer.ui.theme.YGraphsTheme
+import com.ygraph.components.axis.AxisConfig
 import com.ygraph.components.axis.Gravity
 import com.ygraph.components.axis.YAxis
 import com.ygraph.components.axis.YAxisData
@@ -38,6 +39,15 @@ class MainActivity : ComponentActivity() {
                             .axisPos(Gravity.LEFT)
                             .axisLabelFontSize(14.sp)
                             .yLabelData { index -> ((90f).toInt() * index).toString() }
+                            .textLabelPadding(20.dp)
+                            .yAxisOffset(20.dp)
+                            .axisConfig(
+                                AxisConfig(
+                                    shouldEllipsizeLabelEnd = true,
+                                    minTextWidthToEllipsize = 40.dp
+                                )
+                            )
+                            .yLabelData { index -> "$index Thousand" }
                             .build()
                         YAxis(yAxisData = leftAlignYAxisData)
                     }
@@ -55,6 +65,9 @@ class MainActivity : ComponentActivity() {
                             .axisPos(Gravity.RIGHT)
                             .axisLabelFontSize(14.sp)
                             .yLabelData { index -> ((100f).toInt() * index).toString() }
+                            .textLabelPadding(20.dp)
+                            .yAxisOffset(20.dp)
+                            .yLabelData { index -> index.toString() + "Thousand" }
                             .build()
                         YAxis(yAxisData = rightAlignYAxisData)
                     }
