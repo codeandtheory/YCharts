@@ -57,7 +57,7 @@ dependencies {
     testImplementation(YChartDependency.JUNIT)
     testImplementation(YChartDependency.MOCKK)
     androidTestImplementation(YChartDependency.COMPOSE_JUNIT)
-    androidTestImplementation(YChartDependency.COMPOSE_UI_TEST_MANIFEST)
+    debugImplementation(YChartDependency.COMPOSE_UI_TEST_MANIFEST)
     androidTestImplementation(YChartDependency.TEST_EXTN)
     androidTestImplementation(YChartDependency.ESPRESSO_CORE)
 }
