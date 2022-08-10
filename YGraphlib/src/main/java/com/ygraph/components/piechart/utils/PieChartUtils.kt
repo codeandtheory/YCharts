@@ -6,6 +6,7 @@ import com.ygraph.components.piechart.PieChartConstants
 import com.ygraph.components.piechart.PieChartConstants.ONE_HUNDRED
 import com.ygraph.components.piechart.PieChartConstants.TOTAL_ANGLE
 import com.ygraph.components.piechart.models.PieChartData
+import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -27,10 +28,10 @@ fun convertTouchEventPointToAngle(
     xPos: Float,
     yPos: Float
 ): Double {
-    var x = xPos - (width * 0.5f)
+    val x = xPos - (width * 0.5f)
     val y = yPos - (height * 0.5f)
 
-    var angle = Math.toDegrees(Math.atan2(y.toDouble(), x.toDouble()) + Math.PI / 2)
+    var angle = Math.toDegrees(atan2(y.toDouble(), x.toDouble()) + Math.PI / 2)
     angle = if (angle < 0) angle + 360 else angle
     return angle
 }
@@ -76,7 +77,7 @@ fun List<PieChartData.Slice>.proportion(total:Float): List<Float> {
 // Convert each proportion value to angles
 fun List<Float>.sweepAngles(): List<Float> {
     return this.map {
-        TOTAL_ANGLE * it / PieChartConstants.ONE_HUNDRED
+        TOTAL_ANGLE * it / ONE_HUNDRED
     }
 }
 
