@@ -16,6 +16,6 @@ rootProject.name = "YGraphs"
 include(
     ":app",
     ":YGraphlib",
-    ":experiments:chartcontainer"
+    ":experiments:chartcontainer",
+    ":experiments:piechartcontainer"
 )
-

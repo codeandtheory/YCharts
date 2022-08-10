@@ -4,6 +4,7 @@ object Version {
     const val CORE_KTX = "1.7.0"
     const val APPCOMPAT = "1.4.2"
     const val MATERIAL = "1.6.1"
+    const val MATERIAL_3 = "1.0.0-alpha01"
     const val JUNIT = "4.13.2"
     const val TEST_EXTN = "1.1.3"
     const val ESPRESSO_CORE = "3.4.0"

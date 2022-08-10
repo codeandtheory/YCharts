@@ -4,6 +4,7 @@ object YChartDependency {
     val CORE_KTX by lazy { "androidx.core:core-ktx:${Version.CORE_KTX}" }
     val APPCOMPAT by lazy { "androidx.appcompat:appcompat:${Version.APPCOMPAT}" }
     val MATERIAL by lazy { "com.google.android.material:material:${Version.MATERIAL}" }
+    val MATERIAL_3 by lazy{ "androidx.compose.material3:material3:${Version.MATERIAL_3}"}
     val JUNIT by lazy { "junit:junit:${Version.JUNIT}" }
     val TEST_EXTN by lazy { "androidx.test.ext:junit:${Version.TEST_EXTN}" }
     val ESPRESSO_CORE by lazy { "androidx.test.espresso:espresso-core:${Version.ESPRESSO_CORE}" }
