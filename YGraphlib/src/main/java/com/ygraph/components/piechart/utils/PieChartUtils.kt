@@ -2,7 +2,9 @@ package com.ygraph.components.piechart.utils
 
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.center
-import com.ygraph.components.piechart.Constants
+import com.ygraph.components.piechart.PieChartConstants
+import com.ygraph.components.piechart.PieChartConstants.ONE_HUNDRED
+import com.ygraph.components.piechart.PieChartConstants.TOTAL_ANGLE
 import com.ygraph.components.piechart.models.PieChartData
 import kotlin.math.cos
 import kotlin.math.sin
@@ -67,14 +69,14 @@ fun getSliceCenterPoints(sAngle: Float, arcProgress: Float, size: Size, padding:
 // Calculate each proportion value
 fun List<PieChartData.Slice>.proportion(total:Float): List<Float> {
     return this.map {
-        it.value * Constants.ONE_HUNDRED / total
+        it.value * ONE_HUNDRED / total
     }
 }
 
 // Convert each proportion value to angles
 fun List<Float>.sweepAngles(): List<Float> {
     return this.map {
-        Constants.TOTAL_ANGLE * it / Constants.ONE_HUNDRED
+        TOTAL_ANGLE * it / PieChartConstants.ONE_HUNDRED
     }
 }
 

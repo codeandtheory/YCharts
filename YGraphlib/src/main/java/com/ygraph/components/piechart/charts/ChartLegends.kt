@@ -18,7 +18,7 @@ import com.ygraph.components.piechart.models.PieChartData
  **/
 
 @Composable
-fun Legends(
+ fun Legends(
     pieChartData: PieChartData,
     legendTextColor: Color,
     padding: Dp = 15.dp
@@ -42,7 +42,7 @@ fun Legends(
  * **/
 
 @Composable
-fun DisplayLegend(
+private fun DisplayLegend(
     color: Color,
     legend: String,
     legendTextColor: Color

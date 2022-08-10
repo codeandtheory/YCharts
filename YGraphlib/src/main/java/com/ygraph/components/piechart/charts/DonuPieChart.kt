@@ -16,7 +16,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.piechart.utils.convertTouchEventPointToAngle
 import kotlin.math.roundToInt
-import com.ygraph.components.piechart.Constants.DEFAULT_PADDING
+import com.ygraph.components.piechart.PieChartConstants.DEFAULT_PADDING
 import com.ygraph.components.piechart.models.PieChartConfig
 import com.ygraph.components.piechart.models.PieChartData
 import com.ygraph.components.piechart.utils.proportion
@@ -47,8 +47,9 @@ fun DonutPieChart(
     val progressSize = mutableListOf<Float>()
     progressSize.add(sweepAngles.first())
 
-    for (x in 1 until sweepAngles.size)
+    for (x in 1 until sweepAngles.size) {
         progressSize.add(sweepAngles[x] + progressSize[x - 1])
+    }
 
     var activePie by rememberSaveable {
         mutableStateOf(-1)

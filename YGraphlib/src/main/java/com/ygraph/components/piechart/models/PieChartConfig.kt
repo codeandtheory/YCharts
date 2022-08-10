@@ -3,7 +3,8 @@ package com.ygraph.components.piechart.models
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
-import com.ygraph.components.piechart.Constants
+import com.ygraph.components.piechart.PieChartConstants.DEFAULT_SLICE_LABEL_TEXT_SIZE
+import com.ygraph.components.piechart.PieChartConstants.DEFAULT_START_ANGLE
 
 /**
  * PieChartConfig data class used to mention all config related param required to draw PieChart.
@@ -20,9 +21,9 @@ import com.ygraph.components.piechart.Constants
  * @param percentColor: Percentage text color
  */
 data class PieChartConfig(
-    val startAngle: Float = Constants.DEFAULT_START_ANGLE,
+    val startAngle: Float = DEFAULT_START_ANGLE,
     val showSliceLabels: Boolean = true,
-    val sliceLabelTextSize: TextUnit = Constants.DEFAULT_SLICE_LABEL_TEXT_SIZE.sp,
+    val sliceLabelTextSize: TextUnit = DEFAULT_SLICE_LABEL_TEXT_SIZE.sp,
     val sliceLabelTextColor: Color = Color.White,
     val isLegendVisible: Boolean = false,
     val legendLabelTextColor: Color = Color.Black,

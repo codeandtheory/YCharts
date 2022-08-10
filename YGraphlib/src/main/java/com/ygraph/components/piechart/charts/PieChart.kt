@@ -14,8 +14,8 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.common.extensions.getTextHeight
-import com.ygraph.components.piechart.Constants.DEFAULT_PADDING
-import com.ygraph.components.piechart.Constants.MINIMUM_PERCENTAGE_FOR_SLICE_LABELS
+import com.ygraph.components.piechart.PieChartConstants.DEFAULT_PADDING
+import com.ygraph.components.piechart.PieChartConstants.MINIMUM_PERCENTAGE_FOR_SLICE_LABELS
 import com.ygraph.components.piechart.models.PieChartConfig
 import com.ygraph.components.piechart.models.PieChartData
 import com.ygraph.components.piechart.utils.getSliceCenterPoints
@@ -51,8 +51,9 @@ fun PieChart(
     val progressSize = mutableListOf<Float>()
     progressSize.add(sweepAngles.first())
 
-    for (x in 1 until sweepAngles.size)
+    for (x in 1 until sweepAngles.size) {
         progressSize.add(sweepAngles[x] + progressSize[x - 1])
+    }
 
 
     val activePie by rememberSaveable {
