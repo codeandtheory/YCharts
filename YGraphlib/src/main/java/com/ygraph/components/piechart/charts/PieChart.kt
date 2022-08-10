@@ -7,6 +7,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
@@ -61,6 +62,7 @@ fun PieChart(
     }
     Column(
         modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         if (pieChartConfig.isLegendVisible) {
@@ -71,7 +73,7 @@ fun PieChart(
         }
 
         BoxWithConstraints(
-            modifier = modifier,
+            modifier = modifier.aspectRatio(1f),
         ) {
 
             val sideSize = Integer.min(constraints.maxWidth, constraints.maxHeight)
