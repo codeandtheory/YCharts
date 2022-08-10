@@ -1,6 +1,7 @@
 package com.ygraph.components.axis
 
 import android.graphics.Typeface
+import android.text.TextUtils
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
@@ -60,12 +61,7 @@ data class YAxisData(
         private var indicatorLineWidth: Dp = 5.dp
         private var backgroundColor: Color = Color.White
         private var typeface: Typeface = Typeface.DEFAULT
-        private var axisConfig =
-            AxisConfig(
-                isAxisLineRequired = true,
-                shouldEllipsizeLabelEnd = false,
-                minTextWidthToEllipsize = 40.dp
-            )
+        private var axisConfig = AxisConfig()
 
         fun modifier(modifier: Modifier) = apply { this.modifier = modifier }
 
@@ -126,9 +122,12 @@ data class YAxisData(
  * @param isAxisLineRequired : true if should show the axis and points on the line else false
  * @param shouldEllipsizeLabelEnd : true if should ellipsize the axis label at end  else false
  * @param minTextWidthToEllipsize : minimum width of the axis label post which label will be ellipsized
+ * @param ellipsizeAt : position at which the label will be truncated or ellipsized
+
  */
 data class AxisConfig(
     val isAxisLineRequired: Boolean = true,
     val shouldEllipsizeLabelEnd: Boolean = false,
-    val minTextWidthToEllipsize: Dp = 40.dp
+    val minTextWidthToEllipsize: Dp = 40.dp,
+    val ellipsizeAt: TextUtils.TruncateAt = TextUtils.TruncateAt.END
 )
