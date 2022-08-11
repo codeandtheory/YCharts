@@ -4,6 +4,7 @@ import android.graphics.Paint
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -13,12 +14,15 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.ygraph.components.common.extensions.getTextHeight
 import com.ygraph.components.piechart.PieChartConstants.DEFAULT_PADDING
 import com.ygraph.components.piechart.PieChartConstants.MINIMUM_PERCENTAGE_FOR_SLICE_LABELS
 import com.ygraph.components.piechart.models.PieChartConfig
 import com.ygraph.components.piechart.models.PieChartData
+import com.ygraph.components.piechart.utils.convertTouchEventPointToAngle
 import com.ygraph.components.piechart.utils.getSliceCenterPoints
 import com.ygraph.components.piechart.utils.proportion
 import com.ygraph.components.piechart.utils.sweepAngles
@@ -33,12 +37,14 @@ import kotlin.math.abs
  * @param modifier : All modifier related property
  * @param pieChartData: data list for the pie chart
  * @param pieChartConfig: configuration for the pie chart
+ * @param onSliceClick(pieChartData.Slice)->Unit: The event that captures the click
  */
 @Composable
 fun PieChart(
     modifier: Modifier,
     pieChartData: PieChartData,
-    pieChartConfig: PieChartConfig
+    pieChartConfig: PieChartConfig,
+    onSliceClick: (PieChartData.Slice) -> Unit = {}
 ) {
     // Sum of all the values
     val sumOfValues = pieChartData.totalLength
@@ -57,7 +63,7 @@ fun PieChart(
     }
 
 
-    val activePie by rememberSaveable {
+    var activePie by rememberSaveable {
         mutableStateOf(-1)
     }
     Column(
@@ -95,6 +101,27 @@ fun PieChart(
                 modifier = Modifier
                     .width(sideSize.dp)
                     .height(sideSize.dp)
+                    .pointerInput(true) {
+
+                        detectTapGestures {
+                            val clickedAngle = convertTouchEventPointToAngle(
+                                sideSize.toFloat(),
+                                sideSize.toFloat(),
+                                it.x,
+                                it.y
+                            )
+                            progressSize.forEachIndexed { index, item ->
+                                if (clickedAngle <= item) {
+                                    if (activePie != index)
+                                        activePie = index
+
+                                    onSliceClick(pieChartData.slices[index])
+
+                                    return@detectTapGestures
+                                }
+                            }
+                        }
+                    }
             ) {
 
                 var sAngle = pieChartConfig.startAngle
@@ -114,7 +141,8 @@ fun PieChart(
                         size = size,
                         padding = padding,
                         isDonut = false,
-                        isActive = activePie == index
+                        isActive = activePie == index,
+                        pieChartConfig = pieChartConfig
                     )
 
                     //  if percentage is less than 5 width of slice will be very small

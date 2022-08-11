@@ -20,6 +20,8 @@ import com.ygraph.components.piechart.PieChartConstants.DEFAULT_START_ANGLE
  * @param percentVisible: Percentage text visibility
  * @param percentColor: Percentage text color
  * @param legendGridSize: Number of legends on each row
+ * @param activeSliceAlpha: Opacity of the active slice
+ * @param inActiveSliceAlpha: Opacity of the inactive slice
  */
 data class PieChartConfig(
     val startAngle: Float = DEFAULT_START_ANGLE,
@@ -33,4 +35,6 @@ data class PieChartConfig(
     val percentageFontSize: TextUnit = 60.sp,
     val percentVisible: Boolean = false,
     val percentColor: Color = Color.White,
-    val legendGridSize: Int = 4)
+    val legendGridSize: Int = 4,
+    val activeSliceAlpha: Float = .8f,
+    val inActiveSliceAlpha: Float = 1f)

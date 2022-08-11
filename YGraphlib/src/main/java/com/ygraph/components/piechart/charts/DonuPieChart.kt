@@ -29,12 +29,14 @@ import com.ygraph.components.piechart.utils.sweepAngles
  * @param modifier : All modifier related property
  * @param pieChartData: data list for the pie chart
  * @param pieChartConfig: configuration for the pie chart
+ * @param onSliceClick(pieChartData.Slice)->Unit: The event that captures the click
  */
 @Composable
 fun DonutPieChart(
     modifier: Modifier,
     pieChartData: PieChartData,
-    pieChartConfig: PieChartConfig
+    pieChartConfig: PieChartConfig,
+    onSliceClick: (PieChartData.Slice) -> Unit = {}
 ) {
     // Sum of all the values
     val sumOfValues = pieChartData.totalLength
@@ -100,7 +102,7 @@ fun DonutPieChart(
                                 if (clickedAngle <= item) {
                                     if (activePie != index)
                                         activePie = index
-
+                                    onSliceClick(pieChartData.slices[index])
                                     return@detectTapGestures
                                 }
                             }
@@ -120,7 +122,8 @@ fun DonutPieChart(
                         padding = padding,
                         isDonut = true,
                         strokeWidth = pieChartConfig.strokeWidth,
-                        isActive = activePie == index
+                        isActive = activePie == index,
+                        pieChartConfig = pieChartConfig
                     )
                     sAngle += arcProgress
                 }

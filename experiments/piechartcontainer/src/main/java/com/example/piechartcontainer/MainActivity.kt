@@ -1,10 +1,12 @@
 package com.example.piechartcontainer
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -13,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.piechartcontainer.ui.theme.YGraphsTheme
@@ -31,6 +34,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
+                    val context = LocalContext.current
+                    
                     val pieChartData = PieChartData(
                         slices = listOf(
                             PieChartData.Slice("Windows", 15f, Color(0xFF58BDFF)),
@@ -38,16 +43,20 @@ class MainActivity : ComponentActivity() {
                             PieChartData.Slice("iOS", 40f, Color(0xFF092D40)),
                         )
                     )
-
+                    
                     val pieChartConfig =
                         PieChartConfig(
                             percentVisible = true,
                             strokeWidth = 120f,
                             percentColor = Color.Black,
                             isLegendVisible = pieChartData.legendVisible,
-                            legendGridSize = 3
+                            legendGridSize = 3,
+                            activeSliceAlpha = .9f
                         )
-                    PieChart(modifier = Modifier, pieChartData, pieChartConfig)
+                    
+                    PieChart(modifier = Modifier.padding(10.dp), pieChartData, pieChartConfig) { slice ->
+                        Toast.makeText(context, slice.label, Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
