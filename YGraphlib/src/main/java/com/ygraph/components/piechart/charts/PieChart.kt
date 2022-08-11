@@ -68,7 +68,8 @@ fun PieChart(
         if (pieChartConfig.isLegendVisible) {
             Legends(
                 pieChartData = pieChartData,
-                legendTextColor = pieChartConfig.legendLabelTextColor
+                legendTextColor = pieChartConfig.legendLabelTextColor,
+                gridSize = pieChartConfig.legendGridSize
             )
         }
 

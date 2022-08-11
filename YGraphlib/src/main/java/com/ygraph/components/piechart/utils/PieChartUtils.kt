@@ -15,13 +15,6 @@ sealed class ChartType{
     object DonutPieChart : ChartType()
 }
 
-fun Size.calculateSectorThickness(sliceThick: Float = 0f ,area: Size): Float {
-
-    val minSize = minOf(area.width, area.height)
-
-    return minSize * (sliceThick / 200f)
-}
-
 fun convertTouchEventPointToAngle(
     width: Float,
     height: Float,

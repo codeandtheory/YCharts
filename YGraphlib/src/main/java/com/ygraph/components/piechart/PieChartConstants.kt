@@ -2,7 +2,7 @@ package com.ygraph.components.piechart
 
 
 object PieChartConstants {
-        const val DEFAULT_PADDING = 20
+        const val DEFAULT_PADDING = 10
         const val DEFAULT_START_ANGLE = 270f
         const val DEFAULT_STROKE_WIDTH = 100f
         const val DEFAULT_SLICE_LABEL_TEXT_SIZE = 12

@@ -6,7 +6,6 @@ import com.ygraph.components.piechart.PieChartConstants.DEFAULT_PADDING
 import com.ygraph.components.piechart.PieChartConstants.DEFAULT_START_ANGLE
 import com.ygraph.components.piechart.models.PieChartData
 import org.junit.Assert.*
-import org.junit.Before
 import org.junit.Test
 
 class PieChartUtilsTest {
@@ -17,7 +16,7 @@ class PieChartUtilsTest {
         PieChartData.Slice("C", 40f, Color.Black),
         PieChartData.Slice("D", 30f, Color.Blue)
     )
-    
+
 
     @Test
     fun `Slice total calculation is correct`() {
@@ -56,5 +55,11 @@ class PieChartUtilsTest {
         assertEquals(285f, arcCenter)
         assertTrue(x > 0)
         assertTrue(y > 0)
+    }
+
+    @Test
+    fun `Calculated angle is in the correct range`() {
+        val angle = convertTouchEventPointToAngle(200f, 200f, 10f, 10f)
+        assertTrue(angle in 0.0..360.0)
     }
 }

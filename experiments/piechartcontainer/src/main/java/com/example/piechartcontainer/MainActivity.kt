@@ -16,6 +16,7 @@ import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.piechartcontainer.ui.theme.YGraphsTheme
+import com.ygraph.components.piechart.charts.DonutPieChart
 import com.ygraph.components.piechart.charts.PieChart
 import com.ygraph.components.piechart.models.PieChartConfig
 import com.ygraph.components.piechart.models.PieChartData
@@ -43,7 +44,8 @@ class MainActivity : ComponentActivity() {
                             percentVisible = true,
                             strokeWidth = 120f,
                             percentColor = Color.Black,
-                            isLegendVisible = pieChartData.legendVisible
+                            isLegendVisible = pieChartData.legendVisible,
+                            legendGridSize = 3
                         )
                     PieChart(modifier = Modifier, pieChartData, pieChartConfig)
                 }

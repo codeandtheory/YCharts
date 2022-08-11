@@ -19,6 +19,7 @@ import com.ygraph.components.piechart.PieChartConstants.DEFAULT_START_ANGLE
  * @param percentageFontSize: Percentage text font size
  * @param percentVisible: Percentage text visibility
  * @param percentColor: Percentage text color
+ * @param legendGridSize: Number of legends on each row
  */
 data class PieChartConfig(
     val startAngle: Float = DEFAULT_START_ANGLE,
@@ -31,4 +32,5 @@ data class PieChartConfig(
     val strokeWidth: Float = 100f,
     val percentageFontSize: TextUnit = 60.sp,
     val percentVisible: Boolean = false,
-    val percentColor: Color = Color.White)
+    val percentColor: Color = Color.White,
+    val legendGridSize: Int = 4)
