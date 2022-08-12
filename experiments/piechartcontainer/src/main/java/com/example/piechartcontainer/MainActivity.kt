@@ -1,6 +1,7 @@
 package com.example.piechartcontainer
 
 import android.os.Bundle
+import android.text.TextUtils
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -38,7 +39,7 @@ class MainActivity : ComponentActivity() {
                     
                     val pieChartData = PieChartData(
                         slices = listOf(
-                            PieChartData.Slice("Windows", 15f, Color(0xFF58BDFF)),
+                            PieChartData.Slice("Very looooong label", 15f, Color(0xFF58BDFF)),
                             PieChartData.Slice("Android", 35f, Color(0xFF125B7F)),
                             PieChartData.Slice("iOS", 40f, Color(0xFF092D40)),
                         )
@@ -51,7 +52,9 @@ class MainActivity : ComponentActivity() {
                             percentColor = Color.Black,
                             isLegendVisible = pieChartData.legendVisible,
                             legendGridSize = 3,
-                            activeSliceAlpha = .9f
+                            activeSliceAlpha = .9f,
+                            isEllipsizeEnabled = true,
+                            sliceLabelEllipsizeAt = TextUtils.TruncateAt.MIDDLE
                         )
                     
                     PieChart(modifier = Modifier.padding(10.dp), pieChartData, pieChartConfig) { slice ->

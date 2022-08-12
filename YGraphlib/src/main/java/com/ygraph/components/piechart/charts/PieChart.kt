@@ -1,6 +1,8 @@
 package com.ygraph.components.piechart.charts
 
 import android.graphics.Paint
+import android.text.TextPaint
+import android.text.TextUtils
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -16,7 +18,6 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.ygraph.components.common.extensions.getTextHeight
 import com.ygraph.components.piechart.PieChartConstants.DEFAULT_PADDING
 import com.ygraph.components.piechart.PieChartConstants.MINIMUM_PERCENTAGE_FOR_SLICE_LABELS
@@ -126,7 +127,7 @@ fun PieChart(
 
                 var sAngle = pieChartConfig.startAngle
 
-                val sliceLabelPaint = Paint().apply {
+                val sliceLabelPaint = TextPaint().apply {
                     isAntiAlias = true
                     textSize = pieChartConfig.sliceLabelTextSize.toPx()
                     textAlign = Paint.Align.CENTER
@@ -164,8 +165,19 @@ fun PieChart(
 
                             )
 
+                            val ellipsizedText by lazy {
+                                TextUtils.ellipsize(
+                                    pieChartData.slices[index].label,
+                                    sliceLabelPaint,
+                                    pieChartConfig.sliceMinTextWidthToEllipsize.toPx(),
+                                    pieChartConfig.sliceLabelEllipsizeAt
+                                ).toString()
+                            }
+
                             it.nativeCanvas.drawText(
-                                pieChartData.slices[index].label,
+                                if (pieChartConfig.isEllipsizeEnabled)
+                                    ellipsizedText
+                                else pieChartData.slices[index].label,
                                 x,
                                 y + abs(height) / 2,
                                 sliceLabelPaint

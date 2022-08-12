@@ -31,8 +31,7 @@ fun Legends(
         columns = GridCells.Fixed(gridSize),
         modifier = Modifier.padding(start = padding, top = padding),
         content = {
-            items(pieChartData.slices.size)
-            { index ->
+            items(pieChartData.slices.size) { index ->
                 DisplayLegend(
                     color = pieChartData.slices[index].color,
                     legend = pieChartData.slices[index].label,
