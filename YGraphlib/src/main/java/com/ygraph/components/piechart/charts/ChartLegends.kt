@@ -17,8 +17,7 @@ import com.ygraph.components.piechart.models.PieChartData
 
 /**
  * @param pieChartData: Data list for the pie chart
- * @param padding: Padding of start
- * @param gridSize: Number of legends on each row
+ * @param pieChartConfig: Configuration of the pie chart
  **/
 
 @Composable

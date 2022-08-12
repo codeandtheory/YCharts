@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ygraph.components.piechart.PieChartConstants.DEFAULT_SLICE_LABEL_TEXT_SIZE
 import com.ygraph.components.piechart.PieChartConstants.DEFAULT_START_ANGLE
+import com.ygraph.components.piechart.PieChartConstants.DEFAULT_STROKE_WIDTH
 
 /**
  * PieChartConfig data class used to mention all config related param required to draw PieChart.
@@ -42,7 +43,7 @@ data class PieChartConfig(
     val legendPadding: Dp = 15.dp,
     val legendFontStyle: FontStyle = FontStyle.Normal,
     val animationDuration: Int = 500,
-    val strokeWidth: Float = 100f,
+    val strokeWidth: Float = DEFAULT_STROKE_WIDTH,
     val percentageFontSize: TextUnit = 60.sp,
     val percentageTypeface: Typeface = Typeface.DEFAULT,
     val percentVisible: Boolean = false,
