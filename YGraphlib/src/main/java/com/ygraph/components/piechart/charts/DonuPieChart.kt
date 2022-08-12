@@ -64,8 +64,7 @@ fun DonutPieChart(
         if (pieChartConfig.isLegendVisible) {
             Legends(
                 pieChartData = pieChartData,
-                legendTextColor = pieChartConfig.legendLabelTextColor,
-                gridSize = pieChartConfig.legendGridSize
+                pieChartConfig = pieChartConfig
             )
         }
         
@@ -138,6 +137,8 @@ fun DonutPieChart(
                                 color = pieChartConfig.percentColor.toArgb()
                                 textSize = fontSize
                                 textAlign = Paint.Align.CENTER
+                                typeface= pieChartConfig.percentageTypeface
+
                             }
                         )
                     }

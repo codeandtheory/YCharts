@@ -75,8 +75,7 @@ fun PieChart(
         if (pieChartConfig.isLegendVisible) {
             Legends(
                 pieChartData = pieChartData,
-                legendTextColor = pieChartConfig.legendLabelTextColor,
-                gridSize = pieChartConfig.legendGridSize
+                pieChartConfig = pieChartConfig
             )
         }
 
@@ -132,6 +131,7 @@ fun PieChart(
                     textSize = pieChartConfig.sliceLabelTextSize.toPx()
                     textAlign = Paint.Align.CENTER
                     color = pieChartConfig.sliceLabelTextColor.toArgb()
+                    typeface = pieChartConfig.sliceLabelTypeface
                 }
 
                 sweepAngles.forEachIndexed { index, arcProgress ->

@@ -9,8 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
+import com.ygraph.components.piechart.models.PieChartConfig
 import com.ygraph.components.piechart.models.PieChartData
 
 
@@ -23,19 +24,22 @@ import com.ygraph.components.piechart.models.PieChartData
 @Composable
 fun Legends(
     pieChartData: PieChartData,
-    legendTextColor: Color,
-    padding: Dp = 15.dp,
-    gridSize:Int = 4
+    pieChartConfig: PieChartConfig,
 ) {
     LazyVerticalGrid(
-        columns = GridCells.Fixed(gridSize),
-        modifier = Modifier.padding(start = padding, top = padding),
+        columns = GridCells.Fixed(pieChartConfig.legendGridSize),
+        modifier = Modifier.padding(
+            start = pieChartConfig.legendPadding,
+            top = pieChartConfig.legendPadding,
+            end = pieChartConfig.legendPadding
+        ),
         content = {
             items(pieChartData.slices.size) { index ->
                 DisplayLegend(
                     color = pieChartData.slices[index].color,
                     legend = pieChartData.slices[index].label,
-                    legendTextColor
+                    pieChartConfig.legendLabelTextColor,
+                    pieChartConfig.legendFontStyle
                 )
             }
         })
@@ -52,7 +56,8 @@ fun Legends(
 private fun DisplayLegend(
     color: Color,
     legend: String,
-    legendTextColor: Color
+    legendTextColor: Color,
+    legendFontStyle: FontStyle
 ) {
     Row(
         horizontalArrangement = Arrangement.Center,
@@ -68,7 +73,8 @@ private fun DisplayLegend(
 
         Text(
             text = legend,
-            color = legendTextColor
-        )
+            color = legendTextColor,
+            fontStyle = legendFontStyle)
+        
     }
 }
