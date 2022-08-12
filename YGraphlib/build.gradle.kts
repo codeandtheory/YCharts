@@ -55,6 +55,7 @@ dependencies {
     implementation(YChartDependency.COMPOSE_MATERIAL)
     implementation(YChartDependency.COMPOSE_TOOLING_PREVIEW)
     testImplementation(YChartDependency.JUNIT)
+    testImplementation(YChartDependency.MOCKK)
     androidTestImplementation(YChartDependency.COMPOSE_JUNIT)
     debugImplementation(YChartDependency.COMPOSE_UI_TEST_MANIFEST)
     androidTestImplementation(YChartDependency.TEST_EXTN)

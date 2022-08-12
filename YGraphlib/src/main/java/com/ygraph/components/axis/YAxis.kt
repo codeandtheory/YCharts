@@ -40,7 +40,12 @@ fun YAxis(yAxisData: YAxisData) {
                     .width(yAxisWidth)
                     .background(backgroundColor)
             ) {
-                val (yAxisHeight, reqYLabelsQuo, segmentHeight) = getAxisInitValues(yAxisData)
+                val (yAxisHeight, reqYLabelsQuo, segmentHeight) = getAxisInitValues(
+                    yAxisData,
+                    size.height,
+                    bottomPadding.toPx(),
+                    topPadding.toPx()
+                )
                 for (i in 0 until reqYLabelsQuo.toInt()) {
                     // Drawing the axis labels
                     yAxisWidth = drawAxisLabel(
@@ -67,21 +72,24 @@ fun YAxis(yAxisData: YAxisData) {
     }
 }
 
-private fun DrawScope.getAxisInitValues(
-    yAxisData: YAxisData
-): Triple<Float, Float, Float> {
-    val yAxisHeight = size.height - yAxisData.bottomPadding.roundToPx()
-    var yMax = yAxisData.yMaxValue
+fun getAxisInitValues(
+    yAxisData: YAxisData,
+    canvasHeight: Float,
+    bottomPadding: Float,
+    topPadding: Float
+): Triple<Float, Float, Float> = with(yAxisData) {
+    val yAxisHeight = canvasHeight - bottomPadding
+    var yMax = yMaxValue
     var reqYLabelsQuo =
-        (yAxisData.yMaxValue / yAxisData.yStepValue) + 1 // Added one since it starts from 0
-    val reqYLabelsRem = yAxisData.yMaxValue.rem(yAxisData.yStepValue)
+        (yMaxValue / yStepValue) + 1 // Added one since it starts from 0
+    val reqYLabelsRem = yMaxValue.rem(yStepValue)
     if (reqYLabelsRem > 0f) {
         reqYLabelsQuo += 1
-        yMax = (yAxisData.yMaxValue - reqYLabelsRem) + yAxisData.yStepValue
+        yMax = (yMaxValue - reqYLabelsRem) + yStepValue
     }
     // Minus the top padding to avoid cropping at the top
-    val segmentHeight = (yAxisHeight - yAxisData.topPadding.toPx()) / yMax
-    return Triple(yAxisHeight, reqYLabelsQuo, segmentHeight)
+    val segmentHeight = (yAxisHeight - topPadding) / yMax
+    Triple(yAxisHeight, reqYLabelsQuo, segmentHeight)
 }
 
 
@@ -145,7 +153,7 @@ private fun DrawScope.drawAxisLabel(
         textSize = axisLabelFontSize.toPx()
         color = yAxisLineColor.toArgb()
         textAlign = if (isRightAligned) Paint.Align.RIGHT else Paint.Align.LEFT
-        typeface = typeface
+        typeface = yAxisData.typeface
     }
     if (index != reqYLabelsQuo.toInt()) {
         val yAxisLabel = yLabelData(index)
