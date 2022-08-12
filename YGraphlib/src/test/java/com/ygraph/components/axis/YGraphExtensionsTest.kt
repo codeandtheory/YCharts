@@ -13,7 +13,7 @@ class YGraphExtensionsTest {
     private val yAxisData: YAxisData = mockk()
 
     @Test
-    fun `When getAxisInitValues extension is invoked should not return values greater than zero`() {
+    fun `When getAxisInitValues extension is invoked should not return values lesser than zero`() {
         // Given
         every { yAxisData.yMaxValue }.returns(1000f)
         every { yAxisData.yStepValue }.returns(100f)
