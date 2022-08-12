@@ -13,6 +13,9 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "YGraphs"
-include ':app'
-include ':components'
-include ':experiments:chartcontainer'
+include(
+    ":app",
+    ":YGraphlib",
+    ":experiments:chartcontainer",
+    ":experiments:piechartcontainer"
+)
