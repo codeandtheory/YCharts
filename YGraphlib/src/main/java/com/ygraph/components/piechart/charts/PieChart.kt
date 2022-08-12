@@ -114,9 +114,7 @@ fun PieChart(
                                 if (clickedAngle <= item) {
                                     if (activePie != index)
                                         activePie = index
-
                                     onSliceClick(pieChartData.slices[index])
-
                                     return@detectTapGestures
                                 }
                             }

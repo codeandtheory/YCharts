@@ -37,7 +37,6 @@ class PieChartTest {
                 pieChartData = pieChartData,
                 pieChartConfig = pieChartConfig
             )
-
         }
         composeTestRule.onNodeWithText("A").assertIsDisplayed()
         composeTestRule.onNodeWithText("B").assertIsDisplayed()
@@ -51,7 +50,6 @@ class PieChartTest {
                 modifier = Modifier, pieChartData = pieChartData,
                 pieChartConfig = pieChartConfig.copy(isLegendVisible = false)
             )
-
         }
         composeTestRule.onNodeWithText("A").assertDoesNotExist()
         composeTestRule.onNodeWithText("B").assertDoesNotExist()
