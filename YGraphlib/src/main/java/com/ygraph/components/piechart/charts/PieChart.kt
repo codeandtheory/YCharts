@@ -28,9 +28,7 @@ import com.ygraph.components.piechart.utils.getSliceCenterPoints
 import com.ygraph.components.piechart.utils.proportion
 import com.ygraph.components.piechart.utils.sweepAngles
 import kotlin.math.abs
-
-
-
+import kotlin.math.roundToInt
 
 
 /**
@@ -163,10 +161,14 @@ fun PieChart(
                                 y
 
                             )
-
+                
+                            var label = pieChartData.slices[index].label
+                            if (pieChartConfig.percentVisible) {
+                                label = "$label ${proportions[index].roundToInt()}%"
+                            }
                             val ellipsizedText by lazy {
                                 TextUtils.ellipsize(
-                                    pieChartData.slices[index].label,
+                                    label,
                                     sliceLabelPaint,
                                     pieChartConfig.sliceMinTextWidthToEllipsize.toPx(),
                                     pieChartConfig.sliceLabelEllipsizeAt
@@ -176,7 +178,7 @@ fun PieChart(
                             it.nativeCanvas.drawText(
                                 if (pieChartConfig.isEllipsizeEnabled)
                                     ellipsizedText
-                                else pieChartData.slices[index].label,
+                                else label,
                                 x,
                                 y + abs(height) / 2,
                                 sliceLabelPaint

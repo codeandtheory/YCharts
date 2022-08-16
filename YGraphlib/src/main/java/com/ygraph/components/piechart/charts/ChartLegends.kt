@@ -59,7 +59,7 @@ private fun DisplayLegend(
     legendFontStyle: FontStyle
 ) {
     Row(
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
 

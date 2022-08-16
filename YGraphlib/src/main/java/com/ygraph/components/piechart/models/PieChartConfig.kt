@@ -2,6 +2,7 @@ package com.ygraph.components.piechart.models
 
 import android.graphics.Typeface
 import android.text.TextUtils
+import androidx.annotation.IntRange
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.Dp
@@ -44,7 +45,7 @@ data class PieChartConfig(
     val legendPadding: Dp = 15.dp,
     val legendFontStyle: FontStyle = FontStyle.Normal,
     val isAnimationEnable: Boolean = false,
-    val animationDuration: Int = 500,
+    @IntRange(from = 1) val animationDuration: Int = 500,
     val strokeWidth: Float = DEFAULT_STROKE_WIDTH,
     val percentageFontSize: TextUnit = 60.sp,
     val percentageTypeface: Typeface = Typeface.DEFAULT,
