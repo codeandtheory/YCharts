@@ -90,13 +90,13 @@ fun PieChart(
             val pathPortion = remember {
                 Animatable(initialValue = 0f)
             }
-
-            LaunchedEffect(key1 = Unit) {
-                pathPortion.animateTo(
-                    1f, animationSpec = tween(pieChartConfig.animationDuration)
-                )
+            if (pieChartConfig.isAnimationEnable){
+                LaunchedEffect(key1 = Unit) {
+                    pathPortion.animateTo(
+                        1f, animationSpec = tween(pieChartConfig.animationDuration)
+                    )
+                }   
             }
-
             Canvas(
                 modifier = Modifier
                     .width(sideSize.dp)
@@ -136,7 +136,8 @@ fun PieChart(
                     drawPie(
                         color = pieChartData.slices[index].color,
                         startAngle = sAngle,
-                        arcProgress = arcProgress * pathPortion.value,
+                        arcProgress = if (pieChartConfig.isAnimationEnable)
+                            arcProgress * pathPortion.value else arcProgress,
                         size = size,
                         padding = padding,
                         isDonut = false,

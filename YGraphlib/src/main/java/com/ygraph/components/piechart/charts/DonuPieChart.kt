@@ -78,10 +78,12 @@ fun DonutPieChart(
                 Animatable(initialValue = 0f)
             }
 
-            LaunchedEffect(key1 = Unit) {
-                pathPortion.animateTo(
-                    1f, animationSpec = tween(pieChartConfig.animationDuration)
-                )
+            if (pieChartConfig.isAnimationEnable) {
+                LaunchedEffect(key1 = Unit) {
+                    pathPortion.animateTo(
+                        1f, animationSpec = tween(pieChartConfig.animationDuration)
+                    )
+                }
             }
             
             Canvas(
@@ -116,7 +118,8 @@ fun DonutPieChart(
                     drawPie(
                         color = pieChartData.slices[index].color,
                         startAngle = sAngle,
-                        arcProgress = arcProgress * pathPortion.value,
+                        arcProgress = if (pieChartConfig.isAnimationEnable)
+                            arcProgress * pathPortion.value else arcProgress,
                         size = size,
                         padding = padding,
                         isDonut = true,

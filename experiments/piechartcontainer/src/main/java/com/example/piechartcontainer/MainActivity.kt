@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.piechartcontainer.ui.theme.YGraphsTheme
+import com.ygraph.components.piechart.charts.DonutPieChart
 import com.ygraph.components.piechart.charts.PieChart
 import com.ygraph.components.piechart.models.PieChartConfig
 import com.ygraph.components.piechart.models.PieChartData
@@ -52,7 +53,8 @@ class MainActivity : ComponentActivity() {
                             activeSliceAlpha = .9f,
                             isEllipsizeEnabled = true,
                             sliceLabelEllipsizeAt = TextUtils.TruncateAt.MIDDLE,
-                            percentageTypeface = Typeface.defaultFromStyle(Typeface.ITALIC)
+                            percentageTypeface = Typeface.defaultFromStyle(Typeface.ITALIC),
+                            isAnimationEnable = true
                         )
                     
                     PieChart(modifier = Modifier.padding(10.dp), pieChartData, pieChartConfig) { slice ->

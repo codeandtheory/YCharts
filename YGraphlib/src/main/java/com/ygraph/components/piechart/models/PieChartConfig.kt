@@ -20,6 +20,7 @@ import com.ygraph.components.piechart.PieChartConstants.DEFAULT_STROKE_WIDTH
  * @param sliceLabelTextColor: Text color of the labels
  * @param isLegendVisible: visibility of legends
  * @param legendLabelTextColor: Text color of the legend labels
+ * @param isAnimationEnable: Boolean Flag for enabling animation
  * @param animationDuration: Duration of animation
  * @param strokeWidth: Stroke width of Donut Chart
  * @param percentageFontSize: Percentage text font size
@@ -28,7 +29,7 @@ import com.ygraph.components.piechart.PieChartConstants.DEFAULT_STROKE_WIDTH
  * @param legendGridSize: Number of legends on each row
  * @param activeSliceAlpha: Opacity of the active slice
  * @param inActiveSliceAlpha: Opacity of the inactive slice
- * @param isEllipsizeEnabled: Flag for ellipsize enabling
+ * @param isEllipsizeEnabled: Boolean flag for enabling ellipsize
  * @param sliceMinTextWidthToEllipsize: Minimum width of the label post which label will be ellipsized
  * @param sliceLabelEllipsizeAt: Position at which the label will be truncated or ellipsized
  */
@@ -42,6 +43,7 @@ data class PieChartConfig(
     val legendLabelTextColor: Color = Color.Black,
     val legendPadding: Dp = 15.dp,
     val legendFontStyle: FontStyle = FontStyle.Normal,
+    val isAnimationEnable: Boolean = false,
     val animationDuration: Int = 500,
     val strokeWidth: Float = DEFAULT_STROKE_WIDTH,
     val percentageFontSize: TextUnit = 60.sp,
