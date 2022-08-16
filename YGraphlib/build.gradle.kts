@@ -50,7 +50,7 @@ dependencies {
     implementation(YChartDependency.CORE_KTX)
     implementation(YChartDependency.APPCOMPAT)
     implementation(YChartDependency.MATERIAL)
-    implementation (YChartDependency.MATERIAL_3)
+    implementation(YChartDependency.MATERIAL_3)
     implementation(YChartDependency.COMPOSE_UI)
     implementation(YChartDependency.COMPOSE_MATERIAL)
     implementation(YChartDependency.COMPOSE_TOOLING_PREVIEW)
