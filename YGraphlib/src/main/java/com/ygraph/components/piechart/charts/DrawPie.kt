@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
+import com.ygraph.components.piechart.models.PieChartConfig
 
 /**
  * Extension for drawing arcs
@@ -25,10 +26,11 @@ fun DrawScope.drawPie(
     startAngle: Float,
     arcProgress: Float,
     size: Size,
-    strokeWidth: Float =  100f,
+    strokeWidth: Float = 100f,
     padding: Float,
     isDonut: Boolean = false,
-    isActive: Boolean = false
+    isActive: Boolean = false,
+    pieChartConfig: PieChartConfig
 ): Path {
 
     return Path().apply {
@@ -38,6 +40,7 @@ fun DrawScope.drawPie(
             sweepAngle = arcProgress,
             useCenter = !isDonut,
             size = size,
+            alpha = if (isActive) pieChartConfig.activeSliceAlpha else pieChartConfig.inActiveSliceAlpha,
             style = if (isDonut) Stroke(
                 width = if (isActive) (strokeWidth + 20f) else strokeWidth,
             ) else Fill,

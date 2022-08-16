@@ -8,6 +8,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.nativeCanvas
@@ -28,12 +29,14 @@ import com.ygraph.components.piechart.utils.sweepAngles
  * @param modifier : All modifier related property
  * @param pieChartData: data list for the pie chart
  * @param pieChartConfig: configuration for the pie chart
+ * @param onSliceClick(pieChartData.Slice)->Unit: The event that captures the click
  */
 @Composable
 fun DonutPieChart(
     modifier: Modifier,
     pieChartData: PieChartData,
-    pieChartConfig: PieChartConfig
+    pieChartConfig: PieChartConfig,
+    onSliceClick: (PieChartData.Slice) -> Unit = {}
 ) {
     // Sum of all the values
     val sumOfValues = pieChartData.totalLength
@@ -56,84 +59,93 @@ fun DonutPieChart(
     }
 
 
-    BoxWithConstraints(modifier = modifier) {
-
-        val sideSize = Integer.min(constraints.maxWidth, constraints.maxHeight)
-        val padding = (sideSize * DEFAULT_PADDING) / 100f
-        val size = Size(sideSize.toFloat() - padding, sideSize.toFloat() - padding)
-
-        val pathPortion = remember {
-            Animatable(initialValue = 0f)
-        }
-
-        LaunchedEffect(key1 = Unit) {
-            pathPortion.animateTo(
-                1f, animationSpec = tween(pieChartConfig.animationDuration)
-            )
-        }
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
 
         if (pieChartConfig.isLegendVisible) {
             Legends(
                 pieChartData = pieChartData,
-                legendTextColor = pieChartConfig.legendLabelTextColor
+                pieChartConfig = pieChartConfig
             )
         }
+        
+        BoxWithConstraints(modifier = modifier.aspectRatio(1f)) {
 
-        Canvas(
-            modifier = Modifier
-                .width(sideSize.dp)
-                .height(sideSize.dp)
-                .pointerInput(true) {
+            val sideSize = Integer.min(constraints.maxWidth, constraints.maxHeight)
+            val padding = (sideSize * DEFAULT_PADDING) / 100f
+            val size = Size(sideSize.toFloat() - padding, sideSize.toFloat() - padding)
 
-                    detectTapGestures {
-                        val clickedAngle = convertTouchEventPointToAngle(
-                            sideSize.toFloat(),
-                            sideSize.toFloat(),
-                            it.x,
-                            it.y
-                        )
-                        progressSize.forEachIndexed { index, item ->
-                            if (clickedAngle <= item) {
-                                if (activePie != index)
-                                    activePie = index
+            val pathPortion = remember {
+                Animatable(initialValue = 0f)
+            }
 
-                                return@detectTapGestures
+            if (pieChartConfig.isAnimationEnable) {
+                LaunchedEffect(key1 = Unit) {
+                    pathPortion.animateTo(
+                        1f, animationSpec = tween(pieChartConfig.animationDuration)
+                    )
+                }
+            }
+            
+            Canvas(
+                modifier = Modifier
+                    .width(sideSize.dp)
+                    .height(sideSize.dp)
+                    .pointerInput(true) {
+
+                        detectTapGestures {
+                            val clickedAngle = convertTouchEventPointToAngle(
+                                sideSize.toFloat(),
+                                sideSize.toFloat(),
+                                it.x,
+                                it.y
+                            )
+                            progressSize.forEachIndexed { index, item ->
+                                if (clickedAngle <= item) {
+                                    if (activePie != index)
+                                        activePie = index
+                                    onSliceClick(pieChartData.slices[index])
+                                    return@detectTapGestures
+                                }
                             }
                         }
                     }
-                }
 
-        ) {
+            ) {
 
-            var sAngle = pieChartConfig.startAngle
+                var sAngle = pieChartConfig.startAngle
 
-            sweepAngles.forEachIndexed { index, arcProgress ->
-                drawPie(
-                    color = pieChartData.slices[index].color,
-                    startAngle = sAngle,
-                    arcProgress = arcProgress * pathPortion.value,
-                    size = size,
-                    padding = padding,
-                    isDonut = true,
-                    strokeWidth = pieChartConfig.strokeWidth,
-                    isActive = activePie == index
-                )
-                sAngle += arcProgress
-            }
-
-            if (activePie != -1 && pieChartConfig.percentVisible)
-                drawContext.canvas.nativeCanvas.apply {
-                    val fontSize = pieChartConfig.percentageFontSize.toPx()
-                    drawText(
-                        "${proportions[activePie].roundToInt()}%",
-                        (sideSize / 2) + fontSize / 4, (sideSize / 2) + fontSize / 3,
-                        Paint().apply {
-                            color = pieChartConfig.percentColor.toArgb()
-                            textSize = fontSize
-                            textAlign = Paint.Align.CENTER
-                        }
+                sweepAngles.forEachIndexed { index, arcProgress ->
+                    drawPie(
+                        color = pieChartData.slices[index].color,
+                        startAngle = sAngle,
+                        arcProgress = if (pieChartConfig.isAnimationEnable)
+                            arcProgress * pathPortion.value else arcProgress,
+                        size = size,
+                        padding = padding,
+                        isDonut = true,
+                        strokeWidth = pieChartConfig.strokeWidth,
+                        isActive = activePie == index,
+                        pieChartConfig = pieChartConfig
                     )
+                    sAngle += arcProgress
                 }
+
+                if (activePie != -1 && pieChartConfig.percentVisible)
+                    drawContext.canvas.nativeCanvas.apply {
+                        val fontSize = pieChartConfig.percentageFontSize.toPx()
+                        drawText(
+                            "${proportions[activePie].roundToInt()}%",
+                            (sideSize / 2) + fontSize / 4, (sideSize / 2) + fontSize / 3,
+                            Paint().apply {
+                                color = pieChartConfig.percentColor.toArgb()
+                                textSize = fontSize
+                                textAlign = Paint.Align.CENTER
+                                typeface= pieChartConfig.percentageTypeface
+
+                            }
+                        )
+                    }
+            }
         }
     }
 }
