@@ -1,0 +1,59 @@
+package com.ygraph.components.piechart.charts
+
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.test.*
+import androidx.compose.ui.test.junit4.createComposeRule
+import com.ygraph.components.piechart.models.PieChartConfig
+import com.ygraph.components.piechart.models.PieChartData
+import org.junit.Rule
+import org.junit.Test
+
+
+class DonutPieChartTest {
+    @get:Rule
+    val composeTestRule = createComposeRule()
+
+    private val pieChartConfig = PieChartConfig(
+        percentVisible = false,
+        strokeWidth = 120f,
+        percentColor = Color.Black,
+        isLegendVisible = true
+    )
+    private val pieChartData = PieChartData(
+        slices = listOf(
+            PieChartData.Slice("A", 15f, Color(0xFF58BDFF)),
+            PieChartData.Slice("B", 35f, Color(0xFF125B7F)),
+            PieChartData.Slice("C", 40f, Color(0xFF092D40)),
+        )
+    )
+
+
+    @Test
+    fun whenIsLegendVisibleIsTrueLegendLabelsAreVisible() {
+        composeTestRule.setContent {
+            DonutPieChart(
+                modifier = Modifier,
+                pieChartData = pieChartData,
+                pieChartConfig = pieChartConfig
+            )
+        }
+        composeTestRule.onNodeWithText("A").assertIsDisplayed()
+        composeTestRule.onNodeWithText("B").assertIsDisplayed()
+        composeTestRule.onNodeWithText("C").assertIsDisplayed()
+    }
+
+    @Test
+    fun whenIsLegendVisibleIsFalseNoLegendLabelsAreShown() {
+        composeTestRule.setContent {
+            DonutPieChart(
+                modifier = Modifier, pieChartData = pieChartData,
+                pieChartConfig = pieChartConfig.copy(isLegendVisible = false)
+            )
+        }
+        composeTestRule.onNodeWithText("A").assertDoesNotExist()
+        composeTestRule.onNodeWithText("B").assertDoesNotExist()
+        composeTestRule.onNodeWithText("C").assertDoesNotExist()
+    }
+}
+

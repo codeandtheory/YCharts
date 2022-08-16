@@ -22,21 +22,24 @@ object ChartWrapper {
         modifier: Modifier,
         chartType: ChartType,
         pieChartData: PieChartData,
-        pieChartConfig: PieChartConfig
+        pieChartConfig: PieChartConfig,
+        onSliceClick: (PieChartData.Slice) -> Unit = {}
     ) {
         when (chartType) {
             is ChartType.PieChart -> {
                 PieChart(
                     modifier = modifier,
                     pieChartData = pieChartData,
-                    pieChartConfig = pieChartConfig
+                    pieChartConfig = pieChartConfig,
+                    onSliceClick = onSliceClick
                 )
             }
             is ChartType.DonutPieChart -> {
                 DonutPieChart(
                     modifier = modifier,
                     pieChartData = pieChartData,
-                    pieChartConfig = pieChartConfig
+                    pieChartConfig = pieChartConfig,
+                    onSliceClick = onSliceClick
                 )
             }
         }
