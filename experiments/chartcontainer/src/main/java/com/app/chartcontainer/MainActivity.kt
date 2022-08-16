@@ -6,7 +6,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.chartcontainer.ui.theme.YGraphsTheme
@@ -14,6 +18,7 @@ import com.ygraph.components.axis.AxisConfig
 import com.ygraph.components.axis.Gravity
 import com.ygraph.components.axis.YAxis
 import com.ygraph.components.axis.YAxisData
+import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,18 +26,18 @@ class MainActivity : ComponentActivity() {
         setContent {
             YGraphsTheme {
                 // A surface container using the 'background' color from the theme
-                Box(
+                Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(Color.Yellow)
                 ) {
-                    // Left Aligned Yaxis
+                    // Left Aligned Yaxis inside scrollable container
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Start
                     ) {
                         val leftAlignYAxisData = YAxisData.Builder()
-                            .modifier(Modifier.height(300.dp))
+                            .modifier(Modifier.height(250.dp))
                             .yMaxValue(800f)
                             .yStepValue(90f)
                             .bottomPadding(10.dp)
@@ -49,7 +54,41 @@ class MainActivity : ComponentActivity() {
                             )
                             .yLabelData { index -> "$index Thousand" }
                             .build()
-                        YAxis(yAxisData = leftAlignYAxisData)
+                        ScrollableCanvasContainer(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(250.dp),
+                            calculateMaxDistance = { xZoom -> size.width * 3 },
+                            drawXAndYAxis = { scrollOffset, xZoom ->
+                                YAxis(yAxisData = leftAlignYAxisData)
+                            },
+                            onDraw = { xZoom, scrollOffset ->
+                                // Draw random shapes to make it scrollable
+                                val drawWidth = size.width * 4
+                                drawRoundRect(
+                                    color = Color.Blue,
+                                    topLeft = Offset(
+                                        x = 0f - scrollOffset, y = 0f
+                                    ),
+                                    size = Size(drawWidth, size.height - 40.dp.toPx()),
+                                    cornerRadius = CornerRadius(15f, 15f),
+                                    style = Fill
+                                )
+
+                                drawLine(
+                                    Color.White,
+                                    Offset(10f - scrollOffset, 0f),
+                                    Offset(drawWidth, size.height),
+                                    strokeWidth = 20f
+                                )
+                                drawLine(
+                                    Color.Yellow,
+                                    Offset(10f - scrollOffset, size.height),
+                                    Offset(drawWidth, 0f),
+                                    strokeWidth = 20f
+                                )
+                            }
+                        )
                     }
 
                     // Right Aligned Yaxis
