@@ -2,7 +2,6 @@ package com.ygraph.components.axis
 
 import android.graphics.Typeface
 import android.text.TextUtils
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -12,12 +11,13 @@ import androidx.compose.ui.unit.sp
 /**
  *
  * YAxis data class params used in drawing yAxis in any graph.
- * @param modifier : All modifier related property
  * @param yMaxValue: yAxis max value
  * @param yStepValue: Step value for label segmentation
  * @param bottomPadding: X,Y Label offset bottom padding
  * @param yLabelData(Int)-> String: lambda method for providing labels, @param Int will be the index
  * given for each level in YAxis
+ * @param xLabelData(Int)-> String: lambda method for providing labels, @param Int will be the index
+ * given for each level in XAxis
  * @param axisLabelFontSize: Font size of axis lablel data
  * @param axisPos : Axis gravity
  * @param textLabelPadding: Text label padding from y Axis
@@ -27,11 +27,11 @@ import androidx.compose.ui.unit.sp
  * @param indicatorLineWidth: Indicator width on Y axis line for showing points
  * @param axisConfig: All config related param to toggle the elements while drawing graph
  */
-data class YAxisData(
-    val modifier: Modifier,
+data class AxisData(
     val yMaxValue: Float,
     val yStepValue: Float,
     val yLabelData: (Int) -> String,
+    val xLabelData: (Int) -> String,
     val yAxisLineColor: Color,
     val axisLabelFontSize: TextUnit,
     val axisPos: Gravity,
@@ -43,13 +43,16 @@ data class YAxisData(
     val indicatorLineWidth: Dp,
     val backgroundColor: Color,
     val typeface: Typeface,
-    val axisConfig: AxisConfig
+    val axisConfig: AxisConfig,
+    val xAxisSteps: Int,
+    val xAxisStepSize: Dp,
+    val xTopPadding: Dp
 ) {
     class Builder {
-        private var modifier: Modifier = Modifier
         private var yMaxValue: Float = 0f
         private var yStepValue: Float = 0f
         private var yLabelData: (Int) -> String = { _ -> "" }
+        private var xLabelData: (Int) -> String = { _ -> "" }
         private var yAxisLineColor: Color = Color.Black
         private var axisLabelFontSize: TextUnit = 14.sp
         private var axisPos: Gravity = Gravity.LEFT
@@ -61,9 +64,10 @@ data class YAxisData(
         private var indicatorLineWidth: Dp = 5.dp
         private var backgroundColor: Color = Color.White
         private var typeface: Typeface = Typeface.DEFAULT
+        private val xAxisSteps: Int = 20
+        private val xAxisStepSize: Dp = 20.dp
         private var axisConfig = AxisConfig()
-
-        fun modifier(modifier: Modifier) = apply { this.modifier = modifier }
+        private val xTopPadding: Dp = 15.dp
 
         fun yMaxValue(maxValue: Float) = apply { this.yMaxValue = maxValue }
 
@@ -72,6 +76,8 @@ data class YAxisData(
         fun bottomPadding(padding: Dp) = apply { this.bottomPadding = padding }
 
         fun yLabelData(labelData: (Int) -> String) = apply { this.yLabelData = labelData }
+
+        fun xLabelData(labelData: (Int) -> String) = apply { this.xLabelData = labelData }
 
         fun yAxisLineColor(lineColor: Color) = apply { this.yAxisLineColor = lineColor }
 
@@ -95,11 +101,11 @@ data class YAxisData(
 
         fun axisConfig(config: AxisConfig) = apply { this.axisConfig = config }
 
-        fun build() = YAxisData(
-            modifier,
+        fun build() = AxisData(
             yMaxValue,
             yStepValue,
             yLabelData,
+            xLabelData,
             yAxisLineColor,
             axisLabelFontSize,
             axisPos,
@@ -111,7 +117,10 @@ data class YAxisData(
             indicatorLineWidth,
             backgroundColor,
             typeface,
-            axisConfig
+            axisConfig,
+            xAxisSteps,
+            xAxisStepSize,
+            xTopPadding
         )
     }
 }
