@@ -9,6 +9,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ygraph.components.piechart.PieChartConstants.DEFAULT_PADDING
 import com.ygraph.components.piechart.PieChartConstants.DEFAULT_SLICE_LABEL_TEXT_SIZE
 import com.ygraph.components.piechart.PieChartConstants.DEFAULT_START_ANGLE
 import com.ygraph.components.piechart.PieChartConstants.DEFAULT_STROKE_WIDTH
@@ -33,6 +34,8 @@ import com.ygraph.components.piechart.PieChartConstants.DEFAULT_STROKE_WIDTH
  * @param isEllipsizeEnabled: Boolean flag for enabling ellipsize
  * @param sliceMinTextWidthToEllipsize: Minimum width of the label post which label will be ellipsized
  * @param sliceLabelEllipsizeAt: Position at which the label will be truncated or ellipsized
+ * @param chartPadding: Padding for the Pie chart/Donut Chart
+ * @param legendBadgeWidth: Width of the legend badge
  */
 data class PieChartConfig(
     val startAngle: Float = DEFAULT_START_ANGLE,
@@ -47,7 +50,7 @@ data class PieChartConfig(
     val isAnimationEnable: Boolean = false,
     @IntRange(from = 1) val animationDuration: Int = 500,
     val strokeWidth: Float = DEFAULT_STROKE_WIDTH,
-    val percentageFontSize: TextUnit = 60.sp,
+    val percentageFontSize: TextUnit = 24.sp,
     val percentageTypeface: Typeface = Typeface.DEFAULT,
     val percentVisible: Boolean = false,
     val percentColor: Color = Color.White,
@@ -56,4 +59,6 @@ data class PieChartConfig(
     val inActiveSliceAlpha: Float = 1f,
     val isEllipsizeEnabled: Boolean = false,
     val sliceMinTextWidthToEllipsize: Dp = 80.dp,
-    val sliceLabelEllipsizeAt: TextUtils.TruncateAt = TextUtils.TruncateAt.END)
+    val sliceLabelEllipsizeAt: TextUtils.TruncateAt = TextUtils.TruncateAt.END,
+    val chartPadding: Int = DEFAULT_PADDING,
+    val legendBadgeWidth: Dp = 16.dp)

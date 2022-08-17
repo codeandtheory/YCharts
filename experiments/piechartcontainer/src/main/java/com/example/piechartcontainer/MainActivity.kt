@@ -6,8 +6,7 @@ import android.text.TextUtils
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -18,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.piechartcontainer.ui.theme.YGraphsTheme
+import com.ygraph.components.piechart.charts.DonutPieChart
 import com.ygraph.components.piechart.charts.PieChart
 import com.ygraph.components.piechart.models.PieChartConfig
 import com.ygraph.components.piechart.models.PieChartData
@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
             YGraphsTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier,
                     color = MaterialTheme.colors.background
                 ) {
                     val context = LocalContext.current
@@ -40,8 +40,8 @@ class MainActivity : ComponentActivity() {
                             PieChartData.Slice("Iphone", 35f, Color(0xFF125B7F)),
                             PieChartData.Slice("Windows", 10f, Color(0xFF092D40)),
                             PieChartData.Slice("Pixel", 10f, Color(0xFF092D10)),
-                            PieChartData.Slice("Samsung", 20f, Color(0xFF092D05)),
-                            PieChartData.Slice("Oneplus", 0f, Color(0xFF092D20)),
+                            PieChartData.Slice("Samsung", 20f, Color(0xFF092D70)),
+                            PieChartData.Slice("Oneplus", 0f, Color(0xFF092D80)),
                         )
                     )
                     
@@ -55,12 +55,14 @@ class MainActivity : ComponentActivity() {
                             activeSliceAlpha = .9f,
                             isEllipsizeEnabled = true,
                             sliceLabelEllipsizeAt = TextUtils.TruncateAt.MIDDLE,
-                            percentageTypeface = Typeface.defaultFromStyle(Typeface.ITALIC),
+                            percentageTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
                             isAnimationEnable = true,
-                            showSliceLabels = true
+                            showSliceLabels = true,
+                            chartPadding = 25,
+                            legendBadgeWidth = 20.dp
                         )
                     
-                    PieChart(modifier = Modifier.padding(10.dp), pieChartData, pieChartConfig) { slice ->
+                    PieChart(modifier = Modifier.fillMaxWidth().height(500.dp), pieChartData, pieChartConfig) { slice ->
                         Toast.makeText(context, slice.label, Toast.LENGTH_SHORT).show()
                     }
                 }
