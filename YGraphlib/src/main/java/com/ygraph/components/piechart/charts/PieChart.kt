@@ -101,7 +101,6 @@ fun PieChart(
                 modifier = Modifier
                     .width(sideSize.dp)
                     .height(sideSize.dp)
-                    .semantics { contentDescription="PieChart Canvas" }
                     .pointerInput(true) {
 
                         detectTapGestures {
