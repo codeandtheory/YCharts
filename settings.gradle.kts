@@ -19,5 +19,4 @@ include(
     ":experiments:chartcontainer",
     ":experiments:piechartcontainer",
     ":experiments:barchartcontainer"
-)
- 
+) 
