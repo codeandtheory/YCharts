@@ -11,7 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
@@ -85,13 +84,13 @@ private fun DrawScope.drawAxisLineWithPointers(
     with(axisData) {
         if (axisConfig.isAxisLineRequired) {
             drawLine(
-                Color.Black,
+                axisLineColor,
                 Offset(xPos, 0f),
                 Offset(xPos + ((xAxisStepSize.toPx() * (zoomScale * xAxisScale))), 0f),
                 strokeWidth = axisLineThickness.toPx()
             )
             drawLine(
-                Color.Black,
+                axisLineColor,
                 Offset(xPos, 0f),
                 Offset(xPos, indicatorLineWidth.toPx()),
                 strokeWidth = axisLineThickness.toPx()
