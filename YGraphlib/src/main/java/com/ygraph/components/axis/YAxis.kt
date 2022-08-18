@@ -24,15 +24,16 @@ import com.ygraph.components.common.extensions.getTextWidth
 
 /**
  *
- * YAxis compose method using for drawing yAxis in bar graph.
- * @param yAxisData : All data needed to draw Yaxis
- * @see com.ygraph.components.axis.YAxisData Data class to save all params related to Yaxis
+ * YAxis compose method used for drawing yAxis in any given graph.
+ * @param modifier : All modifier related property.
+ * @param axisData : All data needed to draw Yaxis.
+ * @see com.ygraph.components.axis.AxisData Data class to save all params related to Yaxis
  */
 @Composable
-fun YAxis(yAxisData: YAxisData) {
-    with(yAxisData) {
+fun YAxis(modifier: Modifier, axisData: AxisData) {
+    with(axisData) {
         var yAxisWidth by remember { mutableStateOf(0.dp) }
-        val isRightAligned = axisPos == Gravity.RIGHT
+        val isRightAligned = yAxisPos == Gravity.RIGHT
         Column(modifier = modifier.clipToBounds()) {
             Canvas(
                 modifier = modifier
@@ -41,7 +42,7 @@ fun YAxis(yAxisData: YAxisData) {
                     .background(backgroundColor)
             ) {
                 val (yAxisHeight, reqYLabelsQuo, segmentHeight) = getAxisInitValues(
-                    yAxisData,
+                    axisData,
                     size.height,
                     bottomPadding.toPx(),
                     topPadding.toPx()
@@ -51,14 +52,14 @@ fun YAxis(yAxisData: YAxisData) {
                     yAxisWidth = drawAxisLabel(
                         i,
                         reqYLabelsQuo,
-                        yAxisData,
+                        axisData,
                         yAxisWidth,
                         isRightAligned,
                         yAxisHeight,
                         segmentHeight
                     )
                     drawAxisLineWithPointers(
-                        yAxisData,
+                        axisData,
                         i,
                         reqYLabelsQuo,
                         isRightAligned,
@@ -73,11 +74,11 @@ fun YAxis(yAxisData: YAxisData) {
 }
 
 fun getAxisInitValues(
-    yAxisData: YAxisData,
+    axisData: AxisData,
     canvasHeight: Float,
     bottomPadding: Float,
     topPadding: Float
-): Triple<Float, Float, Float> = with(yAxisData) {
+): Triple<Float, Float, Float> = with(axisData) {
     val yAxisHeight = canvasHeight - bottomPadding
     var yMax = yMaxValue
     var reqYLabelsQuo =
@@ -94,7 +95,7 @@ fun getAxisInitValues(
 
 
 private fun DrawScope.drawAxisLineWithPointers(
-    yAxisData: YAxisData,
+    axisData: AxisData,
     i: Int,
     reqYLabelsQuo: Float,
     isRightAligned: Boolean,
@@ -102,7 +103,7 @@ private fun DrawScope.drawAxisLineWithPointers(
     yAxisHeight: Float,
     segmentHeight: Float
 ) {
-    with(yAxisData) {
+    with(axisData) {
         if (axisConfig.isAxisLineRequired) {
             // Draw line only until reqYLabelsQuo -1 else will be a extra line at top with no label
             if (i != (reqYLabelsQuo.toInt() - 1)) {
@@ -116,7 +117,7 @@ private fun DrawScope.drawAxisLineWithPointers(
                         x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
                         y = yAxisHeight - (segmentHeight * ((i + 1) * yStepValue))
                     ),
-                    color = yAxisLineColor, strokeWidth = lineStrokeWidth.toPx()
+                    color = axisLineColor, strokeWidth = axisLineThickness.toPx()
                 )
             }
 
@@ -132,7 +133,7 @@ private fun DrawScope.drawAxisLineWithPointers(
                     x = if (isRightAligned) indicatorLineWidth.toPx() else yAxisWidth.toPx(),
                     y = yAxisHeight - (segmentHeight * (i * yStepValue))
                 ),
-                color = yAxisLineColor, strokeWidth = lineStrokeWidth.toPx()
+                color = axisLineColor, strokeWidth = axisLineThickness.toPx()
             )
         }
     }
@@ -142,18 +143,18 @@ private fun DrawScope.drawAxisLineWithPointers(
 private fun DrawScope.drawAxisLabel(
     index: Int,
     reqYLabelsQuo: Float,
-    yAxisData: YAxisData,
+    axisData: AxisData,
     yAxisWidth: Dp,
     isRightAligned: Boolean,
     yAxisHeight: Float,
     segmentHeight: Float
-): Dp = with(yAxisData) {
+): Dp = with(axisData) {
     var calculatedYAxisWidth = yAxisWidth
     val yAxisTextPaint = TextPaint().apply {
         textSize = axisLabelFontSize.toPx()
-        color = yAxisLineColor.toArgb()
+        color = axisLineColor.toArgb()
         textAlign = if (isRightAligned) Paint.Align.RIGHT else Paint.Align.LEFT
-        typeface = yAxisData.typeface
+        typeface = axisData.typeface
     }
     if (index != reqYLabelsQuo.toInt()) {
         val yAxisLabel = yLabelData(index)
@@ -165,7 +166,7 @@ private fun DrawScope.drawAxisLabel(
                     axisConfig.minTextWidthToEllipsize
                 } else measuredWidth.toDp()
             calculatedYAxisWidth =
-                width + textLabelPadding + yAxisOffset
+                width + yLabelAndAxisLinePadding + yAxisOffset
         }
         val ellipsizedText = TextUtils.ellipsize(
             yAxisLabel,
@@ -176,8 +177,8 @@ private fun DrawScope.drawAxisLabel(
         drawContext.canvas.nativeCanvas.apply {
             drawText(
                 if (axisConfig.shouldEllipsizeLabelEnd) ellipsizedText.toString() else yAxisLabel,
-                if (isRightAligned) calculatedYAxisWidth.toPx() - textLabelPadding.toPx() else {
-                    textLabelPadding.toPx()
+                if (isRightAligned) calculatedYAxisWidth.toPx() - yLabelAndAxisLinePadding.toPx() else {
+                    yLabelAndAxisLinePadding.toPx()
                 },
                 yAxisHeight + height / 2 - ((segmentHeight * (index * yStepValue))),
                 yAxisTextPaint
@@ -190,15 +191,14 @@ private fun DrawScope.drawAxisLabel(
 @Preview(showBackground = true)
 @Composable
 fun YAxisPreview() {
-    val yAxisData = YAxisData.Builder()
-        .modifier(Modifier.height(300.dp))
+    val axisData = AxisData.Builder()
         .yMaxValue(800f)
         .yStepValue(100f)
         .bottomPadding(10.dp)
-        .axisPos(Gravity.LEFT)
+        .yAxisPos(Gravity.LEFT)
         .axisLabelFontSize(14.sp)
         .yLabelData { index -> index.toString() }
         .build()
-    YAxis(yAxisData = yAxisData)
+    YAxis(modifier = Modifier.height(300.dp), axisData = axisData)
 }
 
