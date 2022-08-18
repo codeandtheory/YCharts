@@ -33,7 +33,7 @@ import com.ygraph.components.common.extensions.getTextWidth
 fun YAxis(modifier: Modifier, axisData: AxisData) {
     with(axisData) {
         var yAxisWidth by remember { mutableStateOf(0.dp) }
-        val isRightAligned = axisPos == Gravity.RIGHT
+        val isRightAligned = yAxisPos == Gravity.RIGHT
         Column(modifier = modifier.clipToBounds()) {
             Canvas(
                 modifier = modifier
@@ -117,7 +117,7 @@ private fun DrawScope.drawAxisLineWithPointers(
                         x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
                         y = yAxisHeight - (segmentHeight * ((i + 1) * yStepValue))
                     ),
-                    color = yAxisLineColor, strokeWidth = lineStrokeWidth.toPx()
+                    color = axisLineColor, strokeWidth = axisLineThickness.toPx()
                 )
             }
 
@@ -133,7 +133,7 @@ private fun DrawScope.drawAxisLineWithPointers(
                     x = if (isRightAligned) indicatorLineWidth.toPx() else yAxisWidth.toPx(),
                     y = yAxisHeight - (segmentHeight * (i * yStepValue))
                 ),
-                color = yAxisLineColor, strokeWidth = lineStrokeWidth.toPx()
+                color = axisLineColor, strokeWidth = axisLineThickness.toPx()
             )
         }
     }
@@ -152,7 +152,7 @@ private fun DrawScope.drawAxisLabel(
     var calculatedYAxisWidth = yAxisWidth
     val yAxisTextPaint = TextPaint().apply {
         textSize = axisLabelFontSize.toPx()
-        color = yAxisLineColor.toArgb()
+        color = axisLineColor.toArgb()
         textAlign = if (isRightAligned) Paint.Align.RIGHT else Paint.Align.LEFT
         typeface = axisData.typeface
     }
@@ -166,7 +166,7 @@ private fun DrawScope.drawAxisLabel(
                     axisConfig.minTextWidthToEllipsize
                 } else measuredWidth.toDp()
             calculatedYAxisWidth =
-                width + textLabelPadding + yAxisOffset
+                width + yLabelAndAxisLinePadding + yAxisOffset
         }
         val ellipsizedText = TextUtils.ellipsize(
             yAxisLabel,
@@ -177,8 +177,8 @@ private fun DrawScope.drawAxisLabel(
         drawContext.canvas.nativeCanvas.apply {
             drawText(
                 if (axisConfig.shouldEllipsizeLabelEnd) ellipsizedText.toString() else yAxisLabel,
-                if (isRightAligned) calculatedYAxisWidth.toPx() - textLabelPadding.toPx() else {
-                    textLabelPadding.toPx()
+                if (isRightAligned) calculatedYAxisWidth.toPx() - yLabelAndAxisLinePadding.toPx() else {
+                    yLabelAndAxisLinePadding.toPx()
                 },
                 yAxisHeight + height / 2 - ((segmentHeight * (index * yStepValue))),
                 yAxisTextPaint
@@ -195,7 +195,7 @@ fun YAxisPreview() {
         .yMaxValue(800f)
         .yStepValue(100f)
         .bottomPadding(10.dp)
-        .axisPos(Gravity.LEFT)
+        .yAxisPos(Gravity.LEFT)
         .axisLabelFontSize(14.sp)
         .yLabelData { index -> index.toString() }
         .build()

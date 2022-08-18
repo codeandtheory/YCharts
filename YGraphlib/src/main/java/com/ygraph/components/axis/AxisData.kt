@@ -19,34 +19,39 @@ import androidx.compose.ui.unit.sp
  * @param xLabelData(Int)-> String: lambda method for providing labels, @param Int will be the index
  * given for each level in XAxis
  * @param axisLabelFontSize: Font size of axis lablel data
- * @param axisPos : Axis gravity
- * @param textLabelPadding: Text label padding from y Axis
+ * @param yAxisPos :Gravity of yAxis either right or left
+ * @param yLabelAndAxisLinePadding: Text label padding from y Axis
  * @param yAxisOffset: Drawing offset for yAxis.
- * @param lineStrokeWidth: Thickness of yAxis line
+ * @param axisLineThickness: Thickness of yAxis line
  * @param topPadding: X,Y Label offset top padding
  * @param indicatorLineWidth: Indicator width on Y axis line for showing points
  * @param axisConfig: All config related param to toggle the elements while drawing graph
+ * @param xAxisSteps: No of steps in the xAxis
+ * @param xAxisStepSize: Size of each xAxis step in Dp
+ * @param xLabelAndAxisLinePadding: Padding between xAxis line and the labels
+ * @param xAxisPos: Gravity of xAxis either bottom or top
  */
 data class AxisData(
     val yMaxValue: Float,
     val yStepValue: Float,
     val yLabelData: (Int) -> String,
-    val xLabelData: (Int) -> String,
-    val yAxisLineColor: Color,
+    val axisLineColor: Color,
     val axisLabelFontSize: TextUnit,
-    val axisPos: Gravity,
-    val textLabelPadding: Dp,
+    val yAxisPos: Gravity,
+    val yLabelAndAxisLinePadding: Dp,
     val yAxisOffset: Dp,
-    val lineStrokeWidth: Dp,
+    val axisLineThickness: Dp,
     val topPadding: Dp,
     val bottomPadding: Dp,
     val indicatorLineWidth: Dp,
     val backgroundColor: Color,
     val typeface: Typeface,
     val axisConfig: AxisConfig,
+    val xLabelData: (Int) -> String,
     val xAxisSteps: Int,
     val xAxisStepSize: Dp,
-    val xTopPadding: Dp
+    val xLabelAndAxisLinePadding: Dp,
+    val xAxisPos: Gravity,
 ) {
     class Builder {
         private var yMaxValue: Float = 0f
@@ -55,7 +60,7 @@ data class AxisData(
         private var xLabelData: (Int) -> String = { _ -> "" }
         private var yAxisLineColor: Color = Color.Black
         private var axisLabelFontSize: TextUnit = 14.sp
-        private var axisPos: Gravity = Gravity.LEFT
+        private var yAxisPos: Gravity = Gravity.LEFT
         private var textLabelPadding: Dp = 4.dp
         private var yAxisOffset: Dp = 10.dp
         private var lineStrokeWidth: Dp = 2.dp
@@ -67,7 +72,8 @@ data class AxisData(
         private val xAxisSteps: Int = 20
         private val xAxisStepSize: Dp = 20.dp
         private var axisConfig = AxisConfig()
-        private val xTopPadding: Dp = 15.dp
+        private var xLabelAndAxisLinePadding: Dp = 15.dp
+        private var xAxisPos: Gravity = Gravity.BOTTOM
 
         fun yMaxValue(maxValue: Float) = apply { this.yMaxValue = maxValue }
 
@@ -83,7 +89,9 @@ data class AxisData(
 
         fun axisLabelFontSize(fontSize: TextUnit) = apply { this.axisLabelFontSize = fontSize }
 
-        fun axisPos(pos: Gravity) = apply { this.axisPos = pos }
+        fun yAxisPos(pos: Gravity) = apply { this.yAxisPos = pos }
+
+        fun xAxisPos(pos: Gravity) = apply { this.xAxisPos = pos }
 
         fun textLabelPadding(padding: Dp) = apply { this.textLabelPadding = padding }
 
@@ -101,14 +109,16 @@ data class AxisData(
 
         fun axisConfig(config: AxisConfig) = apply { this.axisConfig = config }
 
+        fun xLabelAndAxisLinePadding(padding: Dp) =
+            apply { this.xLabelAndAxisLinePadding = padding }
+
         fun build() = AxisData(
             yMaxValue,
             yStepValue,
             yLabelData,
-            xLabelData,
             yAxisLineColor,
             axisLabelFontSize,
-            axisPos,
+            yAxisPos,
             textLabelPadding,
             yAxisOffset,
             lineStrokeWidth,
@@ -118,9 +128,11 @@ data class AxisData(
             backgroundColor,
             typeface,
             axisConfig,
+            xLabelData,
             xAxisSteps,
             xAxisStepSize,
-            xTopPadding
+            xLabelAndAxisLinePadding,
+            xAxisPos
         )
     }
 }

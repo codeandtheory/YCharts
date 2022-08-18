@@ -7,14 +7,18 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.ygraph.components.common.extensions.getTextHeight
 import com.ygraph.components.common.extensions.getTextWidth
 import kotlin.math.ceil
@@ -40,51 +44,88 @@ fun XAxis(
     chartData: List<PointF>
 ) {
     with(axisData) {
+        var xAxisHeight by remember { mutableStateOf(0.dp) }
         Row(modifier = modifier.clipToBounds()) {
             Canvas(
                 modifier = modifier
                     .fillMaxWidth()
-                    .height(40.dp) // Need to calculate the height dynamically
+                    .height(xAxisHeight)
             ) {
                 val xAxisTextPaint = TextPaint().apply {
                     textSize = axisLabelFontSize.toPx()
-                    color = yAxisLineColor.toArgb()
+                    color = axisLineColor.toArgb()
                     textAlign = Paint.Align.LEFT
                     typeface = axisData.typeface
                 }
                 val (xMin, xMax, xAxisScale) = getXAxisScale(chartData, xAxisSteps)
                 var xPos = xStart - scrollOffset
-                for (it in 0 until xAxisSteps + 1) {
-                    val xLabel = (it * xAxisScale).toInt().toString() // xLabelData()
-                    val labelHeight = xLabel.getTextHeight(xAxisTextPaint)
-                    val labelWidth = xLabel.getTextWidth(xAxisTextPaint)
-
-                    drawContext.canvas.nativeCanvas.apply {
-                        drawText(
-                            xLabel,
-                            xPos - (labelWidth / 2),
-                            labelHeight / 2 + indicatorLineWidth.toPx() + xTopPadding.toPx(),
-                            xAxisTextPaint
-                        )
-                    }
-
-                    drawLine(
-                        Color.Black,
-                        Offset(xPos, 0f),
-                        Offset(xPos + ((xAxisStepSize.toPx() * (zoomScale * xAxisScale))), 0f),
-                        strokeWidth = lineStrokeWidth.toPx()
+                for (it in 0..xAxisSteps) {
+                    xAxisHeight = drawXAxisLabel(
+                        axisData,
+                        it,
+                        xAxisScale,
+                        xAxisTextPaint,
+                        this,
+                        xPos
                     )
-                    drawLine(
-                        Color.Black,
-                        Offset(xPos, 0f),
-                        Offset(xPos, indicatorLineWidth.toPx()),
-                        strokeWidth = lineStrokeWidth.toPx()
-                    )
+                    drawAxisLineWithPointers(xPos, axisData, zoomScale, xAxisScale)
                     xPos += ((xAxisStepSize.toPx() * (zoomScale * xAxisScale)))
                 }
             }
         }
     }
+}
+
+private fun DrawScope.drawAxisLineWithPointers(
+    xPos: Float,
+    axisData: AxisData,
+    zoomScale: Float,
+    xAxisScale: Float
+) {
+    with(axisData) {
+        if (axisConfig.isAxisLineRequired) {
+            drawLine(
+                Color.Black,
+                Offset(xPos, 0f),
+                Offset(xPos + ((xAxisStepSize.toPx() * (zoomScale * xAxisScale))), 0f),
+                strokeWidth = axisLineThickness.toPx()
+            )
+            drawLine(
+                Color.Black,
+                Offset(xPos, 0f),
+                Offset(xPos, indicatorLineWidth.toPx()),
+                strokeWidth = axisLineThickness.toPx()
+            )
+        }
+    }
+}
+
+private fun DrawScope.drawXAxisLabel(
+    axisData: AxisData,
+    it: Int,
+    xAxisScale: Float,
+    xAxisTextPaint: TextPaint,
+    drawScope: DrawScope,
+    xPos: Float
+): Dp = with(axisData) {
+    val calculatedXAxisHeight: Dp
+    val xLabel = xLabelData((it * xAxisScale).toInt())
+    val labelHeight = xLabel.getTextHeight(xAxisTextPaint)
+    val labelWidth = xLabel.getTextWidth(xAxisTextPaint)
+    calculatedXAxisHeight =
+        if (axisConfig.isAxisLineRequired) {
+            labelHeight.toDp() + axisLineThickness +
+                    indicatorLineWidth + xLabelAndAxisLinePadding
+        } else labelHeight.toDp() + xLabelAndAxisLinePadding
+    drawScope.drawContext.canvas.nativeCanvas.apply {
+        drawText(
+            xLabel,
+            xPos - (labelWidth / 2),
+            labelHeight / 2 + indicatorLineWidth.toPx() + xLabelAndAxisLinePadding.toPx(),
+            xAxisTextPaint
+        )
+    }
+    calculatedXAxisHeight
 }
 
 fun getXAxisScale(
@@ -97,4 +138,23 @@ fun getXAxisScale(
     val temp = totalSteps / steps
     val scale = ceil(temp)
     return Triple(xMin, xMax, scale)
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun XAxisPreview() {
+    val axisData = AxisData.Builder()
+        .xLabelAndAxisLinePadding(10.dp)
+        .xAxisPos(Gravity.BOTTOM)
+        .axisLabelFontSize(14.sp)
+        .xLabelData { index -> index.toString() }
+        .build()
+    XAxis(
+        modifier = Modifier.height(40.dp),
+        axisData = axisData,
+        xStart = 0f,
+        scrollOffset = 0f,
+        zoomScale = 1f,
+        chartData = listOf()
+    )
 }

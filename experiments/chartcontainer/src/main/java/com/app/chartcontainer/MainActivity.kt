@@ -41,8 +41,7 @@ class MainActivity : ComponentActivity() {
                         val axisData = AxisData.Builder()
                             .yMaxValue(100f)
                             .yStepValue(20f)
-                            .bottomPadding(40.dp)
-                            .axisPos(Gravity.LEFT)
+                            .bottomPadding(32.5.dp)
                             .axisLabelFontSize(14.sp)
                             .yLabelData { index -> index.toString() }
                             .xLabelData { index -> index.toString() }
@@ -54,7 +53,7 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(250.dp),
-                            calculateMaxDistance = { xZoom -> size.width * 3 },
+                            calculateMaxDistance = { xZoom -> size.width * 3 }, // T0D0 need to calculate
                             drawXAndYAxis = { scrollOffset, xZoom ->
                                 YAxis(
                                     modifier = Modifier
