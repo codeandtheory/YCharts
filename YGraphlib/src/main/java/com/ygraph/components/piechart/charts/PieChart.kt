@@ -17,9 +17,11 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.withRotation
 import com.ygraph.components.common.extensions.getTextHeight
-import com.ygraph.components.piechart.PieChartConstants.DEFAULT_PADDING
 import com.ygraph.components.piechart.PieChartConstants.MINIMUM_PERCENTAGE_FOR_SLICE_LABELS
 import com.ygraph.components.piechart.models.PieChartConfig
 import com.ygraph.components.piechart.models.PieChartData
@@ -73,7 +75,7 @@ fun PieChart(
         if (pieChartConfig.isLegendVisible) {
             Legends(
                 pieChartData = pieChartData,
-                pieChartConfig = pieChartConfig
+                pieChartConfig = pieChartConfig,
             )
         }
 
@@ -82,7 +84,7 @@ fun PieChart(
         ) {
 
             val sideSize = Integer.min(constraints.maxWidth, constraints.maxHeight)
-            val padding = (sideSize * DEFAULT_PADDING) / 100f
+            val padding = (sideSize * pieChartConfig.chartPadding) / 100f
             val size = Size(sideSize.toFloat() - padding, sideSize.toFloat() - padding)
 
             val pathPortion = remember {
@@ -151,45 +153,35 @@ fun PieChart(
                         // find the height of text
                        val height=  pieChartData.slices[index].label.getTextHeight(sliceLabelPaint)
 
+                        var label = pieChartData.slices[index].label
+
+                        val ellipsizedText by lazy {
+                            TextUtils.ellipsize(
+                                label,
+                                sliceLabelPaint,
+                                pieChartConfig.sliceMinTextWidthToEllipsize.toPx(),
+                                pieChartConfig.sliceLabelEllipsizeAt
+                            ).toString()
+                        }
+
                         drawIntoCanvas {
-
-
-                            // rotating canvas to adjust the text alignment
-                            it.nativeCanvas.rotate(
+                            it.nativeCanvas.withRotation(
                                 arcCenter,
                                 x,
                                 y
-
-                            )
-                
-                            var label = pieChartData.slices[index].label
-                            if (pieChartConfig.percentVisible) {
-                                label = "$label ${proportions[index].roundToInt()}%"
+                            ) {
+                                if (pieChartConfig.percentVisible) {
+                                    label = "$label ${proportions[index].roundToInt()}%"
+                                }
+                                it.nativeCanvas.drawText(
+                                    if (pieChartConfig.isEllipsizeEnabled)
+                                        ellipsizedText
+                                    else label,
+                                    x,
+                                    y + abs(height) / 2,
+                                    sliceLabelPaint
+                                )
                             }
-                            val ellipsizedText by lazy {
-                                TextUtils.ellipsize(
-                                    label,
-                                    sliceLabelPaint,
-                                    pieChartConfig.sliceMinTextWidthToEllipsize.toPx(),
-                                    pieChartConfig.sliceLabelEllipsizeAt
-                                ).toString()
-                            }
-
-                            it.nativeCanvas.drawText(
-                                if (pieChartConfig.isEllipsizeEnabled)
-                                    ellipsizedText
-                                else label,
-                                x,
-                                y + abs(height) / 2,
-                                sliceLabelPaint
-                            )
-                            // rotating back to the original position
-                            it.nativeCanvas.rotate(
-                                -arcCenter,
-                                x,
-                                y
-                            )
-
                         }
                     }
 

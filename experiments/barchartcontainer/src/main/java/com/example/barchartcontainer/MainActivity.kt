@@ -2,10 +2,8 @@ package com.example.barchartcontainer
 
 import android.graphics.PointF
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.MaterialTheme
@@ -16,8 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.barchartcontainer.ui.theme.YGraphsTheme
-import com.ygraph.components.axis.YAxisData
+import com.ygraph.components.axis.AxisData
 import com.ygraph.components.barchart.BarChart
 import com.ygraph.components.barchart.models.BarChartData
 import com.ygraph.components.barchart.models.BarData
@@ -34,18 +33,26 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
 
-                    val barData = getBarChartData(50,50)
-                    val yAxisData = YAxisData.Builder()
-                        .modifier(Modifier.height(300.dp))
+                    val barData = getBarChartData(50, 50)
+
+                    val axisData = AxisData.Builder()
                         .yMaxValue(50f)
-                        .yStepValue(5f)
+                        .yStepValue(10f)
+                        .xAxisSteps(barData.size)
+                        .bottomPadding(1.dp)
+                        .topPadding(40.dp)
+                        .axisLabelFontSize(14.sp)
+                        .yLabelData { index -> (index * 10).toString() }
+                        .xLabelData { index -> index.toString() }
+                        .textLabelPadding(20.dp)
+                        .yAxisOffset(20.dp)
                         .build()
 
                     val barChartData = BarChartData(
-                        chartData = barData, yAxisData = yAxisData
+                        chartData = barData, axisData = axisData, yStepValue = 10
                     )
 
-                    BarChart(modifier = Modifier.height(300.dp), barChartData = barChartData)
+                    BarChart(modifier = Modifier.height(600.dp), barChartData = barChartData)
                 }
             }
         }
@@ -57,8 +64,10 @@ private fun getBarChartData(listSize: Int, maxRange: Int): List<BarData> {
     for (index in 0 until listSize) {
         list.add(
             BarData(
-                index.toFloat(),
-                Random.nextDouble(1.0, maxRange.toDouble()).toFloat(),
+                PointF(
+                    index.toFloat(),
+                    Random.nextDouble(1.0, maxRange.toDouble()).toFloat()
+                ),
                 Color(
                     Random.nextInt(256), Random.nextInt(256), Random.nextInt(256)
                 ),

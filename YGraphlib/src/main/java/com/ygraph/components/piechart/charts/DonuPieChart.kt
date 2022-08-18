@@ -17,7 +17,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.piechart.utils.convertTouchEventPointToAngle
 import kotlin.math.roundToInt
-import com.ygraph.components.piechart.PieChartConstants.DEFAULT_PADDING
 import com.ygraph.components.piechart.models.PieChartConfig
 import com.ygraph.components.piechart.models.PieChartData
 import com.ygraph.components.piechart.utils.proportion
@@ -71,7 +70,7 @@ fun DonutPieChart(
         BoxWithConstraints(modifier = modifier.aspectRatio(1f)) {
 
             val sideSize = Integer.min(constraints.maxWidth, constraints.maxHeight)
-            val padding = (sideSize * DEFAULT_PADDING) / 100f
+            val padding = (sideSize * pieChartConfig.chartPadding) / 100f
             val size = Size(sideSize.toFloat() - padding, sideSize.toFloat() - padding)
 
             val pathPortion = remember {

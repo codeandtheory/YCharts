@@ -6,21 +6,25 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.component1
 import androidx.core.graphics.component2
+import com.ygraph.components.axis.XAxis
+import com.ygraph.components.axis.YAxis
 import com.ygraph.components.barchart.models.BarChartData
-import com.ygraph.components.barchart.models.BarData
+import com.ygraph.components.barchart.utils.RowClip
 import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
 import kotlin.math.ceil
-
 
 
 /**
@@ -49,85 +53,121 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
         val paddingTop = barChartData.paddingTop
         val bgColor = MaterialTheme.colors.surface
 
-        val (xMin, xMax, xAxisScale) = getXAxisScale(points, 50) // todo : replace with AxisData
-        val (yMin, yMax, yAxisScale) = getYAxisScale(points, 10)
+        val (xMin, xMax, xAxisScale) = getXAxisScale(points, barChartData.xStepValue)
+        val (yMin, yMax, yAxisScale) = getYAxisScale(points, barChartData.yStepValue)
 
+        val maxElementInYAxis =
+            getMaxElementInYAxis(yAxisScale, barChartData.yStepValue)
 
+        ScrollableCanvasContainer(modifier = modifier,
+            containerBackgroundColor = barChartData.backgroundColor,
+            calculateMaxDistance = { xZoom ->
+                horizontalGap.value = barChartData.horizontalExtraSpace.toPx()
+                val xLeft = columnWidth.value + horizontalGap.value
+                xOffset.value =
+                    (barChartData.barWidth.toPx() + barChartData.paddingBetweenBars.toPx()) * xZoom
+                val xLastPoint =
+                    (xMax - xMin) * xOffset.value + xLeft + paddingRight.toPx() + 30.dp.toPx()
+                if (xLastPoint > size.width) {
+                    xLastPoint - size.width
+                } else 0f
+            },
+            onDraw = { scrollOffset, xZoom ->
 
-        val maxElementInYAxis = barChartData.yAxisData.yMaxValue
-        ScrollableCanvasContainer(modifier = modifier, containerBackgroundColor = barChartData.backgroundColor, calculateMaxDistance = { xZoom ->
-            horizontalGap.value = barChartData.horizontalExtraSpace.toPx()
-            val xLeft = columnWidth.value + horizontalGap.value
-            xOffset.value =
-                (barChartData.barWidth.toPx() + barChartData.paddingBetweenBars.toPx()) * xZoom
-            val xLastPoint =
-                (xMax - xMin) * xOffset.value + xLeft + paddingRight.toPx() + 30.dp.toPx()
-            if (xLastPoint > size.width) {
-                xLastPoint - size.width
-            } else 0f
-        },
-            onDraw = { xZoom, scrollOffset ->
+                val yBottom = size.height - rowHeight.value
+                val yOffset = ((yBottom - paddingTop.toPx()) / maxElementInYAxis)
+                xOffset.value =
+                    (barChartData.barWidth.toPx() + barChartData.paddingBetweenBars.toPx()) * xZoom
+                val xLeft = columnWidth.value + horizontalGap.value
 
-                    val yBottom = size.height - rowHeight.value
-                    val yOffset = ((yBottom - paddingTop.toPx()) / maxElementInYAxis) 
-                    xOffset.value =
-                        (barChartData.barWidth.toPx() + barChartData.paddingBetweenBars.toPx()) * xZoom
-                    val xLeft = columnWidth.value + horizontalGap.value
-                    val dragLocks = mutableMapOf<Int, Pair<BarData, Offset>>()
+                // Draw bar lines
+                barChartData.chartData.forEachIndexed { index, barData ->
+                    val (x, y) = (barData.point)
+                    val x1 = ((x - xMin) * xOffset.value) + xLeft - scrollOffset
+                    val y1 = yBottom - ((y - yMin) * yOffset)
+                    val drawOffset = Offset(x1, y1)
 
-                    // Draw bar lines
-                    barChartData.chartData.forEachIndexed { index, barData ->
-                        val (x, y) = (barData.point)
-                        val x1 = ((x - xMin) * xOffset.value ) + xLeft - scrollOffset
-                        val y1 = yBottom - ((y - yMin) * yOffset)
-                        val drawOffset = Offset(x1, y1)
-
-                        if (barChartData.isGradientEnabled) {
-                            val brush = Brush.verticalGradient(
-                                colors = barData.gradientColorList
-                            )
-                            drawRoundRect(
-                                brush = brush,
-                                topLeft = drawOffset,
-                                size = Size(barChartData.barWidth.toPx(), yBottom - y1),
-                                cornerRadius = CornerRadius(
-                                    barChartData.cornerRadius.toPx(),
-                                    barChartData.cornerRadius.toPx()
-                                ),
-                                style = Fill
-                            )
-                        } else {
-                            drawRoundRect(
-                                color = barData.color,
-                                topLeft = drawOffset,
-                                size = Size(barChartData.barWidth.toPx(), yBottom - y1),
-                                cornerRadius = CornerRadius(
-                                    barChartData.cornerRadius.toPx(),
-                                    barChartData.cornerRadius.toPx()
-                                ),
-                                style = Fill
-                            )
-                        }
+                    if (barChartData.isGradientEnabled) {
+                        val brush = Brush.verticalGradient(
+                            colors = barData.gradientColorList
+                        )
+                        drawRoundRect(
+                            brush = brush,
+                            topLeft = drawOffset,
+                            size = Size(barChartData.barWidth.toPx(), yBottom - y1),
+                            cornerRadius = CornerRadius(
+                                barChartData.cornerRadius.toPx(),
+                                barChartData.cornerRadius.toPx()
+                            ),
+                            style = Fill
+                        )
+                    } else {
+                        drawRoundRect(
+                            color = barData.color,
+                            topLeft = drawOffset,
+                            size = Size(barChartData.barWidth.toPx(), yBottom - y1),
+                            cornerRadius = CornerRadius(
+                                barChartData.cornerRadius.toPx(),
+                                barChartData.cornerRadius.toPx()
+                            ),
+                            style = Fill
+                        )
                     }
+                }
+                // Draw column to make graph look scrollable under Yaxis
+                drawRect(
+                    bgColor,
+                    Offset(0f, 0f),
+                    Size(columnWidth.value, size.height)
+                )
 
-                    // Draw column to make graph look scrollable under Yaxis
-                    drawRect(
-                        bgColor,
-                        Offset(0f, 0f),
-                        Size(columnWidth.value, size.height)
-                    )
+                // Draw right padding
+                drawRect(
+                    bgColor,
+                    Offset(size.width - paddingRight.toPx(), 0f),
+                    Size(paddingRight.toPx(), size.height)
+                )
 
-                    // Draw right padding
-                    drawRect(
-                        bgColor,
-                        Offset(size.width - paddingRight.toPx(), 0f),
-                        Size(paddingRight.toPx(), size.height)
-                    )
-
-                },
+            },
             drawXAndYAxis = { scrollOffset, xZoom ->
+                Spacer(modifier = Modifier.width(LocalDensity.current.run { columnWidth.value.toDp() }))
+                XAxis(
+                    axisData = barChartData.axisData,
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .clip(
+                            RowClip(
+                                columnWidth.value,
+                                paddingRight
+                            )
+                        )
+                        .onGloballyPositioned {
+                            rowHeight.value = it.size.height.toFloat()
+                        }
+                        .padding(
+                            bottom = barChartData.axisData.bottomPadding,
+                        ),
+                    xStart = columnWidth.value,
+                    scrollOffset = scrollOffset,
+                    zoomScale = xZoom,
+                    chartData = points
+                )
 
-               
+                YAxis(
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .fillMaxHeight()
+                        .wrapContentWidth()
+                        .padding(
+                            bottom = with(LocalDensity.current) { (rowHeight.value / 2).toDp() },
+                        )
+                        .onGloballyPositioned {
+                            columnWidth.value = it.size.width.toFloat()
+                        },
+                    axisData = barChartData.axisData,
+                )
             },
             onDragStart = { offset ->
                 dragOffset.value = offset.x
@@ -141,9 +181,6 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
             onDragging = { change, _ -> dragOffset.value = change.position.x }
         )
     }
-
-
-    
 }
 
 fun getXAxisScale(
@@ -172,3 +209,7 @@ fun getYAxisScale(
     return Triple(yMin, yMax, scale)
 }
 
+
+fun getMaxElementInYAxis(offset: Float, steps: Int): Float {
+    return (if (steps > 1) steps - 1 else 1) * offset
+}
