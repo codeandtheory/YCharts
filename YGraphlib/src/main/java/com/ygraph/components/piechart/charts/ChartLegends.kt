@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.piechart.models.PieChartConfig
 import com.ygraph.components.piechart.models.PieChartData
@@ -37,8 +36,7 @@ fun Legends(
                 DisplayLegend(
                     color = pieChartData.slices[index].color,
                     legend = pieChartData.slices[index].label,
-                    pieChartConfig.legendLabelTextColor,
-                    pieChartConfig.legendFontStyle
+                    pieChartConfig = pieChartConfig
                 )
             }
         })
@@ -55,8 +53,7 @@ fun Legends(
 private fun DisplayLegend(
     color: Color,
     legend: String,
-    legendTextColor: Color,
-    legendFontStyle: FontStyle
+    pieChartConfig: PieChartConfig
 ) {
     Row(
         horizontalArrangement = Arrangement.Start,
@@ -64,7 +61,7 @@ private fun DisplayLegend(
     ) {
 
         Badge(
-            modifier = Modifier.width(16.dp),
+            modifier = Modifier.width(pieChartConfig.legendBadgeWidth),
             containerColor = color
         )
 
@@ -72,8 +69,8 @@ private fun DisplayLegend(
 
         Text(
             text = legend,
-            color = legendTextColor,
-            fontStyle = legendFontStyle)
+            color = pieChartConfig.legendLabelTextColor,
+            fontStyle = pieChartConfig.legendFontStyle)
         
     }
 }
