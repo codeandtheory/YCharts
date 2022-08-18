@@ -26,6 +26,8 @@ import com.ygraph.components.barchart.utils.BarChartConstants.DEFAULT_YAXIS_BOTT
 import com.ygraph.components.common.extensions.*
 import com.ygraph.components.common.model.Point
 import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
+import kotlin.math.ceil
+
 
 
 /**
@@ -84,7 +86,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                     )
                 },
                 onDraw = { scrollOffset, xZoom ->
-                    
+
                     val yBottom = size.height - rowHeight
                     val yOffset = ((yBottom - axisData.yTopPadding.toPx()) / maxElementInYAxis)
                     xOffset =
@@ -364,6 +366,31 @@ private fun DrawScope.drawUnderScrollMask(columnWidth: Float, paddingRight: Dp, 
     )
 }
 
+fun getXAxisScale(
+    points: List<PointF>,
+    steps: Int,
+): Triple<Float, Float, Float> {
+    val xMin = points.minOf { it.x }
+    val xMax = points.maxOf { it.x }
+    val totalSteps = (xMax - xMin)
+    val temp = totalSteps / steps
+    val scale = ceil(temp)
+    return Triple(xMin, xMax, scale)
+}
+
+
+fun getYAxisScale(
+    points: List<PointF>,
+    steps: Int
+): Triple<Float, Float, Float> {
+    val yMin = points.minOf { it.y }
+    val yMax = points.maxOf { it.y }
+    val totalSteps = (yMax - yMin)
+    val temp =
+        totalSteps / if (steps > 1) (steps - 1) else 1 // First step starts from 0 by default
+    val scale = ceil(temp)
+    return Triple(yMin, yMax, scale)
+}
 
 /**
  * returns the draw offset for bar graph.
