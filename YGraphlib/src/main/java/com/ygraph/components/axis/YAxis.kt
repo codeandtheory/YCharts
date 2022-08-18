@@ -44,8 +44,8 @@ fun YAxis(modifier: Modifier, axisData: AxisData) {
                 val (yAxisHeight, reqYLabelsQuo, segmentHeight) = getAxisInitValues(
                     axisData,
                     size.height,
-                    bottomPadding.toPx(),
-                    topPadding.toPx()
+                    yBottomPadding.toPx(),
+                    yTopPadding.toPx()
                 )
                 for (i in 0 until reqYLabelsQuo.toInt()) {
                     // Drawing the axis labels
@@ -152,7 +152,7 @@ private fun DrawScope.drawAxisLabel(
     var calculatedYAxisWidth = yAxisWidth
     val yAxisTextPaint = TextPaint().apply {
         textSize = axisLabelFontSize.toPx()
-        color = axisLineColor.toArgb()
+        color = axisLabelColor.toArgb()
         textAlign = if (isRightAligned) Paint.Align.RIGHT else Paint.Align.LEFT
         typeface = axisData.typeface
     }
@@ -162,7 +162,7 @@ private fun DrawScope.drawAxisLabel(
         val height: Int = yAxisLabel.getTextHeight(yAxisTextPaint)
         if (measuredWidth > calculatedYAxisWidth.toPx()) {
             val width =
-                if (axisConfig.shouldEllipsizeLabelEnd) {
+                if (axisConfig.shouldEllipsizeAxisLabel) {
                     axisConfig.minTextWidthToEllipsize
                 } else measuredWidth.toDp()
             calculatedYAxisWidth =
@@ -176,7 +176,7 @@ private fun DrawScope.drawAxisLabel(
         )
         drawContext.canvas.nativeCanvas.apply {
             drawText(
-                if (axisConfig.shouldEllipsizeLabelEnd) ellipsizedText.toString() else yAxisLabel,
+                if (axisConfig.shouldEllipsizeAxisLabel) ellipsizedText.toString() else yAxisLabel,
                 if (isRightAligned) calculatedYAxisWidth.toPx() - yLabelAndAxisLinePadding.toPx() else {
                     yLabelAndAxisLinePadding.toPx()
                 },
@@ -194,7 +194,7 @@ fun YAxisPreview() {
     val axisData = AxisData.Builder()
         .yMaxValue(800f)
         .yStepValue(100f)
-        .bottomPadding(10.dp)
+        .yBottomPadding(10.dp)
         .yAxisPos(Gravity.LEFT)
         .axisLabelFontSize(14.sp)
         .yLabelData { index -> index.toString() }
