@@ -12,10 +12,9 @@ import androidx.compose.ui.unit.sp
 import com.ygraph.components.axis.AxisConfig
 import com.ygraph.components.axis.Gravity
 import com.ygraph.components.axis.YAxis
-import com.ygraph.components.axis.YAxisData
+import com.ygraph.components.axis.AxisData
 import org.junit.Ignore
 import org.junit.Rule
-import org.junit.Test
 
 class YGraphTest {
 
@@ -26,7 +25,7 @@ class YGraphTest {
     fun whenGraphAxisIsRenderedYaxisLabelShouldBeDisplayed(): Unit =
         with(composeTestRule) {
             // Given
-            val yAxisData = YAxisData.Builder()
+            val axisData = AxisData.Builder()
                 .modifier(Modifier.height(300.dp))
                 .yMaxValue(800f)
                 .yStepValue(100f)
@@ -38,7 +37,7 @@ class YGraphTest {
 
             // When
             setContent {
-                YAxis(yAxisData = yAxisData)
+                YAxis(axisData = axisData)
             }
 
             // Then
@@ -49,7 +48,7 @@ class YGraphTest {
     fun whenGivenYaxisLineNotRequiredIsConfiguredShouldNotBeVisible(): Unit =
         with(composeTestRule) {
             // Given
-            val yAxisData = YAxisData.Builder()
+            val axisData = AxisData.Builder()
                 .modifier(Modifier.height(300.dp))
                 .yMaxValue(800f)
                 .yStepValue(100f)
@@ -62,7 +61,7 @@ class YGraphTest {
 
             // When
             setContent {
-                YAxis(yAxisData = yAxisData)
+                YAxis(axisData = axisData)
             }
 
             // Then

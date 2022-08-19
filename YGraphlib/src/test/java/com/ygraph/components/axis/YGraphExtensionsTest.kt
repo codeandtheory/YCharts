@@ -10,17 +10,17 @@ import org.junit.Test
 class YGraphExtensionsTest {
 
     @MockK
-    private val yAxisData: YAxisData = mockk()
+    private val axisData: AxisData = mockk()
 
     @Test
     fun `When getAxisInitValues extension is invoked should not return values lesser than zero`() {
         // Given
-        every { yAxisData.yMaxValue }.returns(1000f)
-        every { yAxisData.yStepValue }.returns(100f)
+        every { axisData.yMaxValue }.returns(1000f)
+        every { axisData.yStepValue }.returns(100f)
 
         // When
         val values = getAxisInitValues(
-            yAxisData,
+            axisData,
             687f, // 250.dp.toPx()
             20f,
             20f
@@ -35,12 +35,12 @@ class YGraphExtensionsTest {
     @Test
     fun `Given yAxisData segmentHeight should be less than yaxisHeight `() {
         // Given
-        every { yAxisData.yMaxValue }.returns(1000f)
-        every { yAxisData.yStepValue }.returns(100f)
+        every { axisData.yMaxValue }.returns(1000f)
+        every { axisData.yStepValue }.returns(100f)
 
         // When
         val values = getAxisInitValues(
-            yAxisData,
+            axisData,
             687f, // 250.dp.toPx()
             20f,
             20f
@@ -53,12 +53,12 @@ class YGraphExtensionsTest {
     @Test
     fun `Given yAxisData product of segmentHeight and reqYLabelsQuo should be less than yaxisHeight `() {
         // Given
-        every { yAxisData.yMaxValue }.returns(1000f)
-        every { yAxisData.yStepValue }.returns(100f)
+        every { axisData.yMaxValue }.returns(1000f)
+        every { axisData.yStepValue }.returns(100f)
 
         // When
         val values = getAxisInitValues(
-            yAxisData,
+            axisData,
             687f, // 250.dp.toPx()
             20f,
             20f
@@ -71,11 +71,11 @@ class YGraphExtensionsTest {
     @Test
     fun `Given yMaxValue & yStepValue exact number of reqYLabelsQuo should be calculated`() {
         // Given
-        val yAxisDatEven: YAxisData = mockk()
+        val yAxisDatEven: AxisData = mockk()
         every { yAxisDatEven.yMaxValue }.returns(800f)
         every { yAxisDatEven.yStepValue }.returns(100f)
 
-        val yAxisDatOdd: YAxisData = mockk()
+        val yAxisDatOdd: AxisData = mockk()
         every { yAxisDatOdd.yMaxValue }.returns(800f)
         every { yAxisDatOdd.yStepValue }.returns(90f)
 

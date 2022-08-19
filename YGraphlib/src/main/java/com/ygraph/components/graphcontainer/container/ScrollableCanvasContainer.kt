@@ -105,7 +105,7 @@ fun ScrollableCanvasContainer(
                 },
                 onDraw = {
                     maxScrollOffset.value = calculateMaxDistance(xZoom.value)
-                    onDraw(xZoom.value, scrollOffset.value)
+                    onDraw(scrollOffset.value, xZoom.value)
                 })
             drawXAndYAxis(scrollOffset.value, xZoom.value)
         }
