@@ -1,6 +1,5 @@
 package com.example.barchartcontainer
 
-import android.graphics.PointF
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -21,6 +20,7 @@ import com.ygraph.components.axis.YAxisData
 import com.ygraph.components.barchart.BarChart
 import com.ygraph.components.barchart.models.BarChartData
 import com.ygraph.components.barchart.models.BarData
+import com.ygraph.components.common.datautils.getBarChartData
 import com.ygraph.components.common.model.Point
 import kotlin.random.Random
 
@@ -71,15 +71,3 @@ private fun getBarChartData(listSize: Int, maxRange: Int): List<BarData> {
 }
 
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    YGraphsTheme {
-        Greeting("Android")
-    }
-}

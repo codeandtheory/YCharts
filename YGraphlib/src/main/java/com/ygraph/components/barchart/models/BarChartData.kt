@@ -2,6 +2,7 @@ package com.ygraph.components.barchart.models
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.drawscope.DrawScope
