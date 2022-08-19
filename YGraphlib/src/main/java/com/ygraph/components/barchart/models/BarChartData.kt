@@ -30,7 +30,7 @@ data class BarChartData(
     val cornerRadius: Dp = 4.dp,
     val backgroundColor: Color = Color.White,
     val paddingBetweenBars: Dp = 10.dp,
-    val horizontalExtraSpace: Dp = 6.dp,
+    val horizontalExtraSpace: Dp = 0.dp,
     val paddingEnd: Dp = 12.dp,
     val paddingTop: Dp = 12.dp,
     val isGradientEnabled: Boolean = false

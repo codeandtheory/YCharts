@@ -20,6 +20,7 @@ import com.ygraph.components.axis.AxisData
 import com.ygraph.components.barchart.BarChart
 import com.ygraph.components.barchart.models.BarChartData
 import com.ygraph.components.barchart.models.BarData
+import com.ygraph.components.common.model.Point
 import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
@@ -39,8 +40,8 @@ class MainActivity : ComponentActivity() {
                         .yMaxValue(50f)
                         .yStepValue(10f)
                         .xAxisSteps(barData.size)
-                        .bottomPadding(1.dp)
-                        .topPadding(40.dp)
+                        .yBottomPadding(0.dp)
+                        .xTopPadding(40.dp)
                         .axisLabelFontSize(14.sp)
                         .yLabelData { index -> (index * 10).toString() }
                         .xLabelData { index -> index.toString() }
@@ -64,7 +65,7 @@ private fun getBarChartData(listSize: Int, maxRange: Int): List<BarData> {
     for (index in 0 until listSize) {
         list.add(
             BarData(
-                PointF(
+                Point(
                     index.toFloat(),
                     Random.nextDouble(1.0, maxRange.toDouble()).toFloat()
                 ),

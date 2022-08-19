@@ -1,7 +1,7 @@
 package com.ygraph.components.barchart.models
 
-import android.graphics.PointF
 import androidx.compose.ui.graphics.Color
+import com.ygraph.components.common.model.Point
 
 
 /**
@@ -13,6 +13,6 @@ import androidx.compose.ui.graphics.Color
 
  */
 data class BarData(
-    val point: PointF, val color: Color = Color.Red, val label: String,
+    val point: Point, val color: Color = Color.Red, val label: String,
     val gradientColorList: List<Color> = listOf(Color.Red, Color.Blue)
 )

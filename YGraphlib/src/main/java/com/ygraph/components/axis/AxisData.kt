@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.sp
  * YAxis data class params used in drawing yAxis in any graph.
  * @param yMaxValue: yAxis max value
  * @param yStepValue: Step value for label segmentation
- * @param bottomPadding: X,Y Label offset bottom padding
+ * @param yBottomPadding: Y Label offset bottom padding
  * @param yLabelData(Int)-> String: lambda method for providing labels, @param Int will be the index
  * given for each level in YAxis
  * @param xLabelData(Int)-> String: lambda method for providing labels, @param Int will be the index
@@ -23,71 +23,85 @@ import androidx.compose.ui.unit.sp
  * @param yLabelAndAxisLinePadding: Text label padding from y Axis
  * @param yAxisOffset: Drawing offset for yAxis.
  * @param axisLineThickness: Thickness of yAxis line
- * @param topPadding: X,Y Label offset top padding
+ * @param yTopPadding: Y Label offset top padding
  * @param indicatorLineWidth: Indicator width on Y axis line for showing points
  * @param axisConfig: All config related param to toggle the elements while drawing graph
  * @param xAxisSteps: No of steps in the xAxis
  * @param xAxisStepSize: Size of each xAxis step in Dp
  * @param xLabelAndAxisLinePadding: Padding between xAxis line and the labels
  * @param xAxisPos: Gravity of xAxis either bottom or top
+ * @param axisLineColor Color of the Y & X axis
+ * @param axisLabelColor Color of the Y & X axis labels
+ * @param backgroundColor Background color of the Y & X components
+ * @param typeface The type of font style
+ * @param xBottomPadding: X Label offset bottom padding
+ * @param xTopPadding: X Label offset top padding
+
  */
 data class AxisData(
+    // All Y-Axis params
     val yMaxValue: Float,
     val yStepValue: Float,
     val yLabelData: (Int) -> String,
-    val axisLineColor: Color,
-    val axisLabelFontSize: TextUnit,
     val yAxisPos: Gravity,
     val yLabelAndAxisLinePadding: Dp,
     val yAxisOffset: Dp,
-    val axisLineThickness: Dp,
-    val topPadding: Dp,
-    val bottomPadding: Dp,
-    val indicatorLineWidth: Dp,
-    val backgroundColor: Color,
-    val typeface: Typeface,
-    val axisConfig: AxisConfig,
+    val yTopPadding: Dp,
+    val yBottomPadding: Dp,
+    // All X-Axis params
     val xLabelData: (Int) -> String,
     val xAxisSteps: Int,
     val xAxisStepSize: Dp,
     val xLabelAndAxisLinePadding: Dp,
     val xAxisPos: Gravity,
+    val xTopPadding: Dp,
+    val xBottomPadding: Dp,
+    // All common params
+    val axisLineColor: Color,
+    val axisLabelColor: Color,
+    val axisLabelFontSize: TextUnit,
+    val axisLineThickness: Dp,
+    val indicatorLineWidth: Dp,
+    val backgroundColor: Color,
+    val typeface: Typeface,
+    val axisConfig: AxisConfig
 ) {
     class Builder {
         private var yMaxValue: Float = 0f
         private var yStepValue: Float = 0f
         private var yLabelData: (Int) -> String = { _ -> "" }
-        private var xLabelData: (Int) -> String = { _ -> "" }
-        private var yAxisLineColor: Color = Color.Black
-        private var axisLabelFontSize: TextUnit = 14.sp
         private var yAxisPos: Gravity = Gravity.LEFT
-        private var textLabelPadding: Dp = 4.dp
+        private var yLabelAndAxisLinePadding: Dp = 4.dp
         private var yAxisOffset: Dp = 10.dp
-        private var lineStrokeWidth: Dp = 2.dp
-        private var topPadding: Dp = 20.dp
-        private var bottomPadding: Dp = 10.dp
-        private var indicatorLineWidth: Dp = 5.dp
-        private var backgroundColor: Color = Color.White
-        private var typeface: Typeface = Typeface.DEFAULT
+        private var yTopPadding: Dp = 20.dp
+        private var yBottomPadding: Dp = 10.dp
         private var xAxisSteps: Int = 20
-        private val xAxisStepSize: Dp = 20.dp
-        private var axisConfig = AxisConfig()
+        private var xAxisStepSize: Dp = 20.dp
         private var xLabelAndAxisLinePadding: Dp = 15.dp
         private var xAxisPos: Gravity = Gravity.BOTTOM
+        private var xLabelData: (Int) -> String = { _ -> "" }
+        private var axisConfig = AxisConfig()
+        private var indicatorLineWidth: Dp = 5.dp
+        private var backgroundColor: Color = Color.Transparent
+        private var typeface: Typeface = Typeface.DEFAULT
+        private var axisLineColor: Color = Color.Black
+        private var axisLabelFontSize: TextUnit = 14.sp
+        private var lineStrokeWidth: Dp = 2.dp
+        private var axisLabelColor: Color = Color.Black
+        private var xTopPadding: Dp = 0.dp
+        private var xBottomPadding: Dp = 0.dp
 
         fun yMaxValue(maxValue: Float) = apply { this.yMaxValue = maxValue }
 
         fun yStepValue(stepValue: Float) = apply { this.yStepValue = stepValue }
-        
-        fun xAxisSteps(stepValue: Int) = apply { this.xAxisSteps = stepValue }
 
-        fun bottomPadding(padding: Dp) = apply { this.bottomPadding = padding }
+        fun yBottomPadding(padding: Dp) = apply { this.yBottomPadding = padding }
 
         fun yLabelData(labelData: (Int) -> String) = apply { this.yLabelData = labelData }
 
         fun xLabelData(labelData: (Int) -> String) = apply { this.xLabelData = labelData }
 
-        fun yAxisLineColor(lineColor: Color) = apply { this.yAxisLineColor = lineColor }
+        fun axisLineColor(lineColor: Color) = apply { this.axisLineColor = lineColor }
 
         fun axisLabelFontSize(fontSize: TextUnit) = apply { this.axisLabelFontSize = fontSize }
 
@@ -95,13 +109,13 @@ data class AxisData(
 
         fun xAxisPos(pos: Gravity) = apply { this.xAxisPos = pos }
 
-        fun textLabelPadding(padding: Dp) = apply { this.textLabelPadding = padding }
+        fun textLabelPadding(padding: Dp) = apply { this.yLabelAndAxisLinePadding = padding }
 
         fun yAxisOffset(offset: Dp) = apply { this.yAxisOffset = offset }
 
         fun lineStrokeWidth(strokeWidth: Dp) = apply { this.lineStrokeWidth = strokeWidth }
 
-        fun topPadding(padding: Dp) = apply { this.topPadding = padding }
+        fun yTopPadding(padding: Dp) = apply { this.yTopPadding = padding }
 
         fun indicatorLineWidth(lineWidth: Dp) = apply { this.indicatorLineWidth = lineWidth }
 
@@ -114,27 +128,40 @@ data class AxisData(
         fun xLabelAndAxisLinePadding(padding: Dp) =
             apply { this.xLabelAndAxisLinePadding = padding }
 
+        fun axisLabelColor(color: Color) = apply { this.axisLabelColor = color }
+
+        fun xAxisSteps(steps: Int) = apply { this.xAxisSteps = steps }
+
+        fun xAxisStepSize(size: Dp) = apply { this.xAxisStepSize = size }
+
+        fun xBottomPadding(padding: Dp) = apply { this.xBottomPadding = padding }
+
+        fun xTopPadding(padding: Dp) = apply { this.xTopPadding = padding }
+
         fun build() = AxisData(
             yMaxValue,
             yStepValue,
             yLabelData,
-            yAxisLineColor,
-            axisLabelFontSize,
             yAxisPos,
-            textLabelPadding,
+            yLabelAndAxisLinePadding,
             yAxisOffset,
-            lineStrokeWidth,
-            topPadding,
-            bottomPadding,
-            indicatorLineWidth,
-            backgroundColor,
-            typeface,
-            axisConfig,
+            yTopPadding,
+            yBottomPadding,
             xLabelData,
             xAxisSteps,
             xAxisStepSize,
             xLabelAndAxisLinePadding,
-            xAxisPos
+            xAxisPos,
+            xTopPadding,
+            xBottomPadding,
+            axisLineColor,
+            axisLabelColor,
+            axisLabelFontSize,
+            lineStrokeWidth,
+            indicatorLineWidth,
+            backgroundColor,
+            typeface,
+            axisConfig
         )
     }
 }
@@ -143,14 +170,14 @@ data class AxisData(
  *
  * AxisConfig data class used to mention all config related param required to draw graph.
  * @param isAxisLineRequired : true if should show the axis and points on the line else false
- * @param shouldEllipsizeLabelEnd : true if should ellipsize the axis label at end  else false
+ * @param shouldEllipsizeAxisLabel : true if should ellipsize the axis label at end  else false
  * @param minTextWidthToEllipsize : minimum width of the axis label post which label will be ellipsized
  * @param ellipsizeAt : position at which the label will be truncated or ellipsized
 
  */
 data class AxisConfig(
     val isAxisLineRequired: Boolean = true,
-    val shouldEllipsizeLabelEnd: Boolean = false,
+    val shouldEllipsizeAxisLabel: Boolean = false,
     val minTextWidthToEllipsize: Dp = 40.dp,
     val ellipsizeAt: TextUtils.TruncateAt = TextUtils.TruncateAt.END
 )

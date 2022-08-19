@@ -23,6 +23,7 @@ import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
 import com.ygraph.components.barchart.models.BarChartData
 import com.ygraph.components.barchart.utils.RowClip
+import com.ygraph.components.common.model.Point
 import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
 import kotlin.math.ceil
 
@@ -132,23 +133,24 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
             drawXAndYAxis = { scrollOffset, xZoom ->
                 Spacer(modifier = Modifier.width(LocalDensity.current.run { columnWidth.value.toDp() }))
                 XAxis(
-                    axisData = barChartData.axisData,
+                    axisData = barChartData.axisData.copy(xAxisStepSize = barChartData.barWidth+barChartData.paddingBetweenBars +10.dp),
                     modifier = Modifier
                         .align(Alignment.BottomStart)
+                        .padding(
+                            bottom = barChartData.axisData.xBottomPadding,
+                        )
                         .fillMaxWidth()
                         .wrapContentHeight()
-                        .clip(
-                            RowClip(
-                                columnWidth.value,
-                                paddingRight
-                            )
-                        )
+//                        .clip(
+//                            RowClip(
+//                                columnWidth.value,
+//                                paddingRight
+//                            )
+//                        )
                         .onGloballyPositioned {
                             rowHeight.value = it.size.height.toFloat()
                         }
-                        .padding(
-                            bottom = barChartData.axisData.bottomPadding,
-                        ),
+                       ,
                     xStart = columnWidth.value,
                     scrollOffset = scrollOffset,
                     zoomScale = xZoom,
@@ -160,13 +162,13 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                         .align(Alignment.TopStart)
                         .fillMaxHeight()
                         .wrapContentWidth()
-                        .padding(
-                            bottom = with(LocalDensity.current) { (rowHeight.value / 2).toDp() },
-                        )
+//                        .padding(
+//                            bottom = LocalDensity.current.run { (rowHeight.value).toDp() },
+//                        )
                         .onGloballyPositioned {
                             columnWidth.value = it.size.width.toFloat()
                         },
-                    axisData = barChartData.axisData,
+                    axisData = barChartData.axisData.copy(yBottomPadding =LocalDensity.current.run { (rowHeight.value).toDp() }  ),
                 )
             },
             onDragStart = { offset ->
@@ -184,7 +186,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
 }
 
 fun getXAxisScale(
-    points: List<PointF>,
+    points: List<Point>,
     steps: Int,
 ): Triple<Float, Float, Float> {
     val xMin = points.minOf { it.x }
@@ -197,7 +199,7 @@ fun getXAxisScale(
 
 
 fun getYAxisScale(
-    points: List<PointF>,
+    points: List<Point>,
     steps: Int
 ): Triple<Float, Float, Float> {
     val yMin = points.minOf { it.y }
