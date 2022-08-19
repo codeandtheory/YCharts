@@ -1,6 +1,5 @@
 package com.ygraph.components.barchart.models
 
-import android.graphics.PointF
 import androidx.compose.ui.graphics.Color
 import com.ygraph.components.common.model.Point
 

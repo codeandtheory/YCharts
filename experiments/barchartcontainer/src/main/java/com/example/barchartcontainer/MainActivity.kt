@@ -21,6 +21,7 @@ import com.ygraph.components.axis.YAxisData
 import com.ygraph.components.barchart.BarChart
 import com.ygraph.components.barchart.models.BarChartData
 import com.ygraph.components.barchart.models.BarData
+import com.ygraph.components.common.model.Point
 import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {

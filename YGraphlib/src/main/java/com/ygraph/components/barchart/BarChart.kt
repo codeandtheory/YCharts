@@ -367,7 +367,7 @@ private fun DrawScope.drawUnderScrollMask(columnWidth: Float, paddingRight: Dp, 
 }
 
 fun getXAxisScale(
-    points: List<PointF>,
+    points: List<Point>,
     steps: Int,
 ): Triple<Float, Float, Float> {
     val xMin = points.minOf { it.x }
@@ -380,7 +380,7 @@ fun getXAxisScale(
 
 
 fun getYAxisScale(
-    points: List<PointF>,
+    points: List<Point>,
     steps: Int
 ): Triple<Float, Float, Float> {
     val yMin = points.minOf { it.y }
