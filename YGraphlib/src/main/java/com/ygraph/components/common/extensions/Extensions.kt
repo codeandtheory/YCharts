@@ -2,6 +2,7 @@ package com.ygraph.components.common.extensions
 
 import android.graphics.Paint
 import android.graphics.Rect
+import com.ygraph.components.common.model.Point
 
 
 /**
@@ -23,4 +24,44 @@ fun String.getTextHeight(paint: Paint): Int {
         bounds
     )
     return bounds.height()
+}
+
+
+/**
+return the maximum and minimum points of X axis
+ */
+fun getXMaxAndMinPoints(
+    points: List<Point>,
+): Pair<Float, Float> {
+    val xMin = points.minOf { it.x }
+    val xMax = points.maxOf { it.x }
+    return Pair(xMin, xMax)
+}
+
+
+/**
+ * @param points List of points
+return the maximum and minimum points of Y axis
+ */
+fun getYMaxAndMinPoints(
+    points: List<Point>,
+): Pair<Float, Float> {
+    val xMin = points.minOf { it.y }
+    val xMax = points.maxOf { it.y }
+    return Pair(xMin, xMax)
+}
+
+/**
+ * @param yMax Maximum value in the Y axis
+ * @param yStepSize size of one step in the Y axis
+return the maximum value of Y axis
+ */
+fun getMaxElementInYAxis(yMax: Float, yStepSize: Int): Int {
+    var reqYLabelsQuo =
+        (yMax / yStepSize)
+    val reqYLabelsRem = yMax.rem(yStepSize)
+    if (reqYLabelsRem > 0f) {
+        reqYLabelsQuo += 1
+    }
+    return reqYLabelsQuo.toInt() * yStepSize
 }
