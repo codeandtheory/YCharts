@@ -1,9 +1,10 @@
 package com.ygraph.components.axis
 
 import android.graphics.Paint
-import android.graphics.PointF
 import android.text.TextPaint
+import android.text.TextUtils
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ygraph.components.common.extensions.getTextHeight
 import com.ygraph.components.common.extensions.getTextWidth
+import com.ygraph.components.common.model.Point
 import kotlin.math.ceil
 
 /**
@@ -40,7 +42,7 @@ fun XAxis(
     xStart: Float,
     scrollOffset: Float,
     zoomScale: Float,
-    chartData: List<PointF>
+    chartData: List<Point>
 ) {
     with(axisData) {
         var xAxisHeight by remember { mutableStateOf(0.dp) }
@@ -49,22 +51,15 @@ fun XAxis(
                 modifier = modifier
                     .fillMaxWidth()
                     .height(xAxisHeight)
+                    .background(backgroundColor)
             ) {
-                val xAxisTextPaint = TextPaint().apply {
-                    textSize = axisLabelFontSize.toPx()
-                    color = axisLineColor.toArgb()
-                    textAlign = Paint.Align.LEFT
-                    typeface = axisData.typeface
-                }
                 val (xMin, xMax, xAxisScale) = getXAxisScale(chartData, xAxisSteps)
                 var xPos = xStart - scrollOffset
-                for (it in 0..xAxisSteps) {
+                for (index in 0..xAxisSteps) {
                     xAxisHeight = drawXAxisLabel(
                         axisData,
-                        it,
+                        index,
                         xAxisScale,
-                        xAxisTextPaint,
-                        this,
                         xPos
                     )
                     drawAxisLineWithPointers(xPos, axisData, zoomScale, xAxisScale)
@@ -101,14 +96,18 @@ private fun DrawScope.drawAxisLineWithPointers(
 
 private fun DrawScope.drawXAxisLabel(
     axisData: AxisData,
-    it: Int,
+    index: Int,
     xAxisScale: Float,
-    xAxisTextPaint: TextPaint,
-    drawScope: DrawScope,
     xPos: Float
 ): Dp = with(axisData) {
     val calculatedXAxisHeight: Dp
-    val xLabel = xLabelData((it * xAxisScale).toInt())
+    val xAxisTextPaint = TextPaint().apply {
+        textSize = axisLabelFontSize.toPx()
+        color = axisLabelColor.toArgb()
+        textAlign = Paint.Align.LEFT
+        typeface = axisData.typeface
+    }
+    val xLabel = xLabelData((index * xAxisScale).toInt())
     val labelHeight = xLabel.getTextHeight(xAxisTextPaint)
     val labelWidth = xLabel.getTextWidth(xAxisTextPaint)
     calculatedXAxisHeight =
@@ -116,9 +115,15 @@ private fun DrawScope.drawXAxisLabel(
             labelHeight.toDp() + axisLineThickness +
                     indicatorLineWidth + xLabelAndAxisLinePadding
         } else labelHeight.toDp() + xLabelAndAxisLinePadding
-    drawScope.drawContext.canvas.nativeCanvas.apply {
+    val ellipsizedText = TextUtils.ellipsize(
+        xLabel,
+        xAxisTextPaint,
+        xAxisStepSize.toPx(),
+        axisConfig.ellipsizeAt
+    )
+    drawContext.canvas.nativeCanvas.apply {
         drawText(
-            xLabel,
+            if (axisConfig.shouldEllipsizeAxisLabel) ellipsizedText.toString() else xLabel,
             xPos - (labelWidth / 2),
             labelHeight / 2 + indicatorLineWidth.toPx() + xLabelAndAxisLinePadding.toPx(),
             xAxisTextPaint
@@ -128,11 +133,11 @@ private fun DrawScope.drawXAxisLabel(
 }
 
 fun getXAxisScale(
-    points: List<PointF>,
+    points: List<Point>,
     steps: Int,
 ): Triple<Float, Float, Float> {
-    val xMin = points.minOf { it.x }
-    val xMax = points.maxOf { it.x }
+    val xMin = points.takeIf { it.isNotEmpty() }?.minOf { it.x } ?: 0f
+    val xMax = points.takeIf { it.isNotEmpty() }?.maxOf { it.x } ?: 0f
     val totalSteps = (xMax - xMin)
     val temp = totalSteps / steps
     val scale = ceil(temp)

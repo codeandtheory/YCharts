@@ -1,6 +1,5 @@
 package com.app.chartcontainer
 
-import android.graphics.PointF
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,9 +15,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.chartcontainer.ui.theme.YGraphsTheme
 import com.ygraph.components.axis.AxisData
-import com.ygraph.components.axis.Gravity
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
+import com.ygraph.components.common.model.Point
 import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
 import kotlin.random.Random
 
@@ -41,7 +40,7 @@ class MainActivity : ComponentActivity() {
                         val axisData = AxisData.Builder()
                             .yMaxValue(100f)
                             .yStepValue(20f)
-                            .bottomPadding(32.5.dp)
+                            .yBottomPadding(32.5.dp)
                             .axisLabelFontSize(14.sp)
                             .yLabelData { index -> index.toString() }
                             .xLabelData { index -> index.toString() }
@@ -87,11 +86,11 @@ class MainActivity : ComponentActivity() {
 }
 
 // T0D0 pass data through the graph component
-private fun getLineChartData(listSize: Int, maxRange: Int): List<PointF> {
-    val list = arrayListOf<PointF>()
+private fun getLineChartData(listSize: Int, maxRange: Int): List<Point> {
+    val list = arrayListOf<Point>()
     for (index in 0..listSize) {
         list.add(
-            PointF(
+            Point(
                 index.toFloat(),
                 Random.nextDouble(1.0, maxRange.toDouble()).toFloat()
             )
