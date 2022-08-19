@@ -30,7 +30,8 @@ import kotlin.math.ceil
  * @param axisData : All data needed to draw Yaxis
  * @see com.ygraph.components.axis.AxisData Data class to save all params related to axis
  * @param modifier : All modifier related property.
- * @param xStart : Start position of xAxis.
+ * @param xStart : Start position of xAxis Points.
+ * @param xLineStart : Start position of xAxis Line.
  * @param scrollOffset : Offset of delta scrolled position.
  * @param zoomScale : Scale at which zoom transformation being applied.
  * @param chartData : List of data points used in the graph.
@@ -40,6 +41,7 @@ fun XAxis(
     axisData: AxisData,
     modifier: Modifier,
     xStart: Float,
+    xLineStart: Float,
     scrollOffset: Float,
     zoomScale: Float,
     chartData: List<Point>
@@ -55,6 +57,18 @@ fun XAxis(
             ) {
                 val (xMin, xMax, xAxisScale) = getXAxisScale(chartData, xAxisSteps)
                 var xPos = xStart - scrollOffset
+
+                // used in the case of barchart
+                if (xLineStart != xStart) {
+                    drawLine(
+                        axisLineColor,
+                        Offset(xLineStart, 0f),
+                        Offset(xPos, 0f),
+                        strokeWidth = axisLineThickness.toPx()
+                    )
+                }
+                
+                
                 for (index in 0..xAxisSteps) {
                     xAxisHeight = drawXAxisLabel(
                         axisData,
@@ -157,6 +171,7 @@ private fun XAxisPreview() {
         modifier = Modifier.height(40.dp),
         axisData = axisData,
         xStart = 0f,
+        xLineStart = 0f,
         scrollOffset = 0f,
         zoomScale = 1f,
         chartData = listOf()

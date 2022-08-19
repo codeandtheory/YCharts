@@ -78,8 +78,8 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                 val yBottom = size.height - rowHeight.value
                 val yOffset = ((yBottom - paddingTop.toPx()) / maxElementInYAxis)
                 xOffset.value =
-                    (barChartData.barWidth.toPx() + barChartData.paddingBetweenBars.toPx()) * xZoom
-                val xLeft = columnWidth.value + horizontalGap.value
+                    ((barChartData.barWidth).toPx() + barChartData.paddingBetweenBars.toPx()) * xZoom
+                val xLeft = columnWidth.value + horizontalGap.value+barChartData.barWidth.toPx()/2
 
                 // Draw bar lines
                 barChartData.chartData.forEachIndexed { index, barData ->
@@ -133,7 +133,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
             drawXAndYAxis = { scrollOffset, xZoom ->
                 Spacer(modifier = Modifier.width(LocalDensity.current.run { columnWidth.value.toDp() }))
                 XAxis(
-                    axisData = barChartData.axisData.copy(xAxisStepSize = barChartData.barWidth+barChartData.paddingBetweenBars +10.dp),
+                    axisData = barChartData.axisData.copy(xAxisStepSize = barChartData.barWidth+barChartData.paddingBetweenBars),
                     modifier = Modifier
                         .align(Alignment.BottomStart)
                         .padding(
@@ -151,10 +151,11 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                             rowHeight.value = it.size.height.toFloat()
                         }
                        ,
-                    xStart = columnWidth.value,
+                    xStart = columnWidth.value +horizontalGap.value + LocalDensity.current.run { (barChartData.barWidth.toPx())},
                     scrollOffset = scrollOffset,
                     zoomScale = xZoom,
-                    chartData = points
+                    chartData = points,
+                    xLineStart =  columnWidth.value
                 )
 
                 YAxis(
