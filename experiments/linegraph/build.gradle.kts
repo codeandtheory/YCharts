@@ -10,7 +10,7 @@ android {
     compileSdk = 32
 
     defaultConfig {
-        applicationId = "com.app.chartcontainer"
+        applicationId = "com.android.linegraph"
         minSdk = 26
         targetSdk = 32
         versionCode = 1
@@ -45,7 +45,7 @@ android {
     }
     packagingOptions {
         resources {
-          excludes.add("/META-INF/{AL2.0,LGPL2.1}")
+            excludes.add("/META-INF/{AL2.0,LGPL2.1}")
         }
     }
 }
