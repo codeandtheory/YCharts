@@ -27,10 +27,11 @@ class MainActivity : ComponentActivity() {
                     val barData = getBarChartData(50, 50)
                     val barChartData = BarChartData(
                         chartData = barData, yStepSize = 10,
+                        paddingBetweenBars = 30.dp,
                         yLabelAndAxisLinePadding = 20.dp,
                         yAxisOffset = 20.dp,
                         yLabelData = { index -> (index * 10).toString() },
-                        xLabelData = { index -> index.toString() }
+                        xLabelData = { index -> barData[index].label }
                     )
                     BarChart(modifier = Modifier.height(600.dp), barChartData = barChartData)
                 }
