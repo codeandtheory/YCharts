@@ -11,8 +11,8 @@ fun getYAxisScale(
     points: List<Point>,
     steps: Int
 ): Triple<Float, Float, Float> {
-    val yMin = points.minOf { it.y }
-    val yMax = points.maxOf { it.y }
+    val yMin = points.takeIf { it.isNotEmpty() }?.minOf { it.y } ?: 0f
+    val yMax = points.takeIf { it.isNotEmpty() }?.maxOf { it.y } ?: 0f
     val totalSteps = (yMax - yMin)
     val temp =
         totalSteps / if (steps > 1) (steps - 1) else 1 // First step starts from 0 by default
