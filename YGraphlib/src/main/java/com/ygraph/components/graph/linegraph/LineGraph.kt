@@ -1,6 +1,5 @@
 package com.ygraph.components.graph.linegraph
 
-import android.graphics.PointF
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,11 +26,19 @@ import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
 import com.ygraph.components.axis.getXAxisScale
 import com.ygraph.components.common.extensions.RowClip
+import com.ygraph.components.common.model.Point
 import com.ygraph.components.graph.linegraph.model.LineGraphData
 import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
 
+/**
+ *
+ * LineGraph compose method used for drawing a Line Graph.
+ * @param modifier :All modifier related property.
+ * @see com.ygraph.components.graph.linegraph.model.LineGraphData Data class to save all params needed to draw the line graph.
+ * @param lineGraphData : Add data related to line graph.
+ */
 @Composable
-fun LineGraph(lineGraphData: LineGraphData) {
+fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
     Column {
         with(lineGraphData) {
             var columnWidth by remember { mutableStateOf(0f) }
@@ -59,9 +66,7 @@ fun LineGraph(lineGraphData: LineGraphData) {
                 getMaxElementInYAxis(yAxisScale, yAxisSteps)
             var xOffset by remember { mutableStateOf(0f) }
             ScrollableCanvasContainer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(250.dp),
+                modifier = modifier,
                 calculateMaxDistance = { xZoom ->
                     // horizontalGap.value = lineGraphData.horizontalExtraSpace.toPx()
                     val xLeft = columnWidth //+ horizontalGap.value
@@ -107,18 +112,17 @@ fun LineGraph(lineGraphData: LineGraphData) {
                     val yOffset = ((yBottom - paddingTop.toPx()) / maxElementInYAxis)
                     xOffset = axisData.xAxisStepSize.toPx() * xZoom
                     val xLeft = columnWidth // To add extra space if needed
-                    val path = Path()
-                    val pointsData = mutableListOf<PointF>()
-                    lineGraphData.lineChartData.forEachIndexed { i, point ->
+                    val pointsData = mutableListOf<Point>()
+                    lineGraphData.lineChartData.forEachIndexed { _, point ->
                         val (x, y) = point
                         val x1 = ((x - xMin) * xOffset) + xLeft - scrollOffset
                         val y1 = yBottom - ((y - yMin) * yOffset)
-                        pointsData.add(PointF(x1, y1))
+                        pointsData.add(Point(x1, y1))
                     }
                     val (cubicPoints1, cubicPoints2) = getCubicPoints(pointsData)
 
                     // Draw cubic line using the points and form a line graph
-                    drawCubicLine(path, pointsData, cubicPoints1, cubicPoints2)
+                    drawCubicLine(pointsData, cubicPoints1, cubicPoints2)
 
                     // Draw Lines and Points and AreaUnderLine
                     // Draw area under curve
@@ -131,7 +135,60 @@ fun LineGraph(lineGraphData: LineGraphData) {
     }
 }
 
+/**
+ *
+ * DrawScope.drawCubicLine extension method used is used for drawing a cubic line for a given Point(x,y).
+ * @param pointsData : List of points to be drawn on the canvas
+ * @param cubicPoints1 List of average left side values for a given Point(x,y).
+ * @param cubicPoints2 : List of average right side values for a given Point(x,y).
+ */
+private fun DrawScope.drawCubicLine(
+    pointsData: MutableList<Point>,
+    cubicPoints1: MutableList<Point>,
+    cubicPoints2: MutableList<Point>
+) {
+    val path = Path()
+    path.moveTo(pointsData.first().x, pointsData.first().y)
 
+    for (i in 1 until pointsData.size) {
+        path.cubicTo(
+            cubicPoints1[i - 1].x,
+            cubicPoints1[i - 1].y,
+            cubicPoints2[i - 1].x,
+            cubicPoints2[i - 1].y,
+            pointsData[i].x,
+            pointsData[i].y
+        )
+    }
+
+    drawPath(path, color = Color.Blue, style = Stroke(width = 8f))
+}
+
+/**
+ *
+ * DrawScope.drawPointOnLine extension method  used for drawing a circle/mark on a line for a given Point(x,y).
+ * @param offset : Point at which circle/mark has to be drawn.
+ */
+private fun DrawScope.drawPointOnLine(offset: Point) {
+    // Move all params to builder class for customization
+    drawCircle(
+        Color.Blue,
+        5.dp.toPx(),
+        Offset(offset.x, offset.y),
+        1.0f,
+        Fill,
+        null,
+        DrawScope.DefaultBlendMode
+    )
+}
+
+/**
+ *
+ * DrawScope.drawUnderScrollMask extension method used  for drawing a rectangular mask to make graph scrollable under the YAxis.
+ * @param columnWidth : Width of the rectangular mask here width of Y Axis is used.
+ * @param paddingRight : Padding given at the end of the graph.
+ * @param bgColor : Background of the rectangular mask.
+ */
 private fun DrawScope.drawUnderScrollMask(columnWidth: Float, paddingRight: Dp, bgColor: Color) {
     drawRect(
         bgColor,
@@ -145,31 +202,14 @@ private fun DrawScope.drawUnderScrollMask(columnWidth: Float, paddingRight: Dp, 
     )
 }
 
-private fun getCubicPoints(pointsData: List<PointF>):
-        Pair<MutableList<PointF>, MutableList<PointF>> {
-    val cubicPoints1 = mutableListOf<PointF>()
-    val cubicPoints2 = mutableListOf<PointF>()
-
-    for (i in 1 until pointsData.size) {
-        cubicPoints1.add(
-            PointF(
-                (pointsData[i].x + pointsData[i - 1].x) / 2,
-                pointsData[i - 1].y
-            )
-        )
-        cubicPoints2.add(
-            PointF(
-                (pointsData[i].x + pointsData[i - 1].x) / 2,
-                pointsData[i].y
-            )
-        )
-    }
-    return Pair(cubicPoints1, cubicPoints2)
-}
-
-
+/**
+ *
+ * DrawScope.drawAreaShadowUnderLine extension method used  for drawing a shades below the line graph points.
+ * @param pointsData : List of the points on the Line graph.
+ * @param yBottom : Offset of X-Axis starting position i.e shade to be drawn until.
+ */
 private fun DrawScope.drawAreaShadowUnderLine(
-    pointsData: MutableList<PointF>,
+    pointsData: MutableList<Point>,
     yBottom: Float
 ) {
     val pointUnderAreaPath = Path()
@@ -194,37 +234,29 @@ private fun DrawScope.drawAreaShadowUnderLine(
     )
 }
 
-private fun DrawScope.drawPointOnLine(offset: PointF) {
-    // Move all params to builder class for customization
-    drawCircle(
-        Color.Blue,
-        5.dp.toPx(),
-        Offset(offset.x, offset.y),
-        1.0f,
-        Fill,
-        null,
-        DrawScope.DefaultBlendMode
-    )
-}
-
-private fun DrawScope.drawCubicLine(
-    path: Path,
-    pointsData: MutableList<PointF>,
-    cubicPoints1: MutableList<PointF>,
-    cubicPoints2: MutableList<PointF>
-) {
-    path.moveTo(pointsData.first().x, pointsData.first().y)
+/**
+ *
+ * getCubicPoints method provides left and right average value for a given point to get a smooth curve.
+ * @param pointsData : List of the points on the Line graph.
+ */
+private fun getCubicPoints(pointsData: List<Point>):
+        Pair<MutableList<Point>, MutableList<Point>> {
+    val cubicPoints1 = mutableListOf<Point>()
+    val cubicPoints2 = mutableListOf<Point>()
 
     for (i in 1 until pointsData.size) {
-        path.cubicTo(
-            cubicPoints1[i - 1].x,
-            cubicPoints1[i - 1].y,
-            cubicPoints2[i - 1].x,
-            cubicPoints2[i - 1].y,
-            pointsData[i].x,
-            pointsData[i].y
+        cubicPoints1.add(
+            Point(
+                (pointsData[i].x + pointsData[i - 1].x) / 2,
+                pointsData[i - 1].y
+            )
+        )
+        cubicPoints2.add(
+            Point(
+                (pointsData[i].x + pointsData[i - 1].x) / 2,
+                pointsData[i].y
+            )
         )
     }
-
-    drawPath(path, color = Color.Blue, style = Stroke(width = 8f))
+    return Pair(cubicPoints1, cubicPoints2)
 }

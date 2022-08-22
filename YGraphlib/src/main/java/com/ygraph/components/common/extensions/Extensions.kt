@@ -31,7 +31,14 @@ fun String.getTextHeight(paint: Paint): Int {
     return bounds.height()
 }
 
-internal class RowClip(private val leftPadding: Float, private val rightPadding: Dp) : Shape {
+/**
+return the shape that is used to mask a particular area for given leftPadding & rightPadding
+ */
+internal class RowClip(
+    private val leftPadding: Float,
+    private val rightPadding: Dp,
+    private val topPadding: Float = 0f
+) : Shape {
     override fun createOutline(
         size: Size,
         layoutDirection: LayoutDirection,
@@ -40,7 +47,7 @@ internal class RowClip(private val leftPadding: Float, private val rightPadding:
         return Outline.Rectangle(
             androidx.compose.ui.geometry.Rect(
                 leftPadding,
-                0f,
+                topPadding,
                 size.width - rightPadding.value * density.density,
                 size.height
             )
