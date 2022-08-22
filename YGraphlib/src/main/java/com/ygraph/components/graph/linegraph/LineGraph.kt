@@ -20,7 +20,6 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.ygraph.components.axis.AxisData
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
@@ -43,39 +42,43 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
         with(lineGraphData) {
             var columnWidth by remember { mutableStateOf(0f) }
             var rowHeight by remember { mutableStateOf(0f) }
+            var xOffset by remember { mutableStateOf(0f) }
             val bgColor = MaterialTheme.colors.surface
 
             val axisData = AxisData.Builder()
-                .yMaxValue(100f)
-                .yStepValue(20f)
+                .yMaxValue(dataPoints.maxOf { it.y })
+                .yStepValue(yStepValue)
                 .yBottomPadding(LocalDensity.current.run { rowHeight.toDp() })
-                .axisLabelFontSize(14.sp)
+                .axisLabelFontSize(axisLabelFontSize)
                 .yLabelData(yAxisLabelData)
                 .xLabelData(xAxisLabelData)
-                .yLabelAndAxisLinePadding(20.dp)
-                .yAxisOffset(20.dp)
-                .xAxisSteps(lineChartData.size - 1)
+                .yLabelAndAxisLinePadding(yLabelAndAxisLinePadding)
+                .yAxisOffset(yAxisOffset)
+                .xAxisSteps(dataPoints.size - 1)
                 .build()
-            val (xMin, xMax, xAxisScale) = getXAxisScale(lineChartData, axisData.xAxisSteps)
+
+            val (xMin, xMax, _) = getXAxisScale(dataPoints, axisData.xAxisSteps)
             val yAxisSteps = (axisData.yMaxValue / axisData.yStepValue).toInt()
-            val (yMin, yMax, yAxisScale) = getYAxisScale(
-                lineChartData,
+            val (yMin, _, yAxisScale) = getYAxisScale(
+                dataPoints,
                 (axisData.yMaxValue / axisData.yStepValue).toInt()
             )
             val maxElementInYAxis =
                 getMaxElementInYAxis(yAxisScale, yAxisSteps)
-            var xOffset by remember { mutableStateOf(0f) }
+
             ScrollableCanvasContainer(
                 modifier = modifier,
                 calculateMaxDistance = { xZoom ->
                     // horizontalGap.value = lineGraphData.horizontalExtraSpace.toPx()
-                    val xLeft = columnWidth //+ horizontalGap.value
-                    xOffset = 30.dp.toPx() * xZoom
-                    val xLastPoint =
-                        (xMax - xMin) * xOffset + xLeft + paddingRight.toPx() //+ horizontalGap.value
-                    if (xLastPoint > size.width) {
-                        xLastPoint - size.width
-                    } else 0f
+                    xOffset = axisData.xAxisStepSize.toPx() * xZoom
+                    getMaxScrollDistance(
+                        columnWidth,
+                        xMax,
+                        xMin,
+                        xOffset,
+                        paddingRight.toPx(),
+                        size.width
+                    )
                 },
                 drawXAndYAxis = { scrollOffset, xZoom ->
                     YAxis(
@@ -104,7 +107,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                         xStart = columnWidth,
                         scrollOffset = scrollOffset,
                         zoomScale = xZoom,
-                        chartData = lineChartData
+                        chartData = dataPoints
                     )
                 },
                 onDraw = { scrollOffset, xZoom ->
@@ -112,13 +115,16 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                     val yOffset = ((yBottom - paddingTop.toPx()) / maxElementInYAxis)
                     xOffset = axisData.xAxisStepSize.toPx() * xZoom
                     val xLeft = columnWidth // To add extra space if needed
-                    val pointsData = mutableListOf<Point>()
-                    lineGraphData.lineChartData.forEachIndexed { _, point ->
-                        val (x, y) = point
-                        val x1 = ((x - xMin) * xOffset) + xLeft - scrollOffset
-                        val y1 = yBottom - ((y - yMin) * yOffset)
-                        pointsData.add(Point(x1, y1))
-                    }
+                    val pointsData = getMappingPointsToGraph(
+                        lineGraphData.dataPoints,
+                        xMin,
+                        xOffset,
+                        xLeft,
+                        scrollOffset,
+                        yBottom,
+                        yMin,
+                        yOffset
+                    )
                     val (cubicPoints1, cubicPoints2) = getCubicPoints(pointsData)
 
                     // Draw cubic line using the points and form a line graph
@@ -137,9 +143,66 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
 
 /**
  *
- * DrawScope.drawCubicLine extension method used is used for drawing a cubic line for a given Point(x,y).
+ * returns the list of transformed points supported to be drawn on the container using the input points .
+ * @param lineGraphPoints :Input data points
+ * @param xMin: Min X-Axis value.
+ * @param xOffset : Total distance between two X-Axis points.
+ * @param xLeft: Total left padding in X-Axis.
+ * @param scrollOffset : Total scrolled offset.
+ * @param yBottom : Bottom start offset for X-Axis.
+ * @param yMin : Min Y-Axis value.
+ * @param yOffset : Distance between two Y-Axis points.
+ */
+fun getMappingPointsToGraph(
+    lineGraphPoints: List<Point>,
+    xMin: Float,
+    xOffset: Float,
+    xLeft: Float,
+    scrollOffset: Float,
+    yBottom: Float,
+    yMin: Float,
+    yOffset: Float,
+): MutableList<Point> {
+    val pointsData = mutableListOf<Point>()
+    lineGraphPoints.forEachIndexed { _, point ->
+        val (x, y) = point
+        val x1 = ((x - xMin) * xOffset) + xLeft - scrollOffset
+        val y1 = yBottom - ((y - yMin) * yOffset)
+        pointsData.add(Point(x1, y1))
+    }
+    return pointsData
+}
+
+/**
+ *
+ * returns the max scrollable distance based on the points to be drawn along with padding etc.
+ * @param columnWidth : Width of the Y-Axis.
+ * @param xMax : Max X-Axis value.
+ * @param xMin: Min X-Axis value.
+ * @param xOffset: Total distance between two X-Axis points.
+ * @param paddingRight : Padding at the end of the canvas.
+ * @param canvasWidth : Total available canvas width.
+ */
+fun getMaxScrollDistance(
+    columnWidth: Float,
+    xMax: Float,
+    xMin: Float,
+    xOffset: Float,
+    paddingRight: Float,
+    canvasWidth: Float
+): Float {
+    val xLastPoint =
+        (xMax - xMin) * xOffset + columnWidth + paddingRight //+ horizontalGap.value
+    return if (xLastPoint > canvasWidth) {
+        xLastPoint - canvasWidth
+    } else 0f
+}
+
+/**
+ *
+ * DrawScope.drawCubicLine extension method used for drawing a cubic line for a given Point(x,y).
  * @param pointsData : List of points to be drawn on the canvas
- * @param cubicPoints1 List of average left side values for a given Point(x,y).
+ * @param cubicPoints1 : List of average left side values for a given Point(x,y).
  * @param cubicPoints2 : List of average right side values for a given Point(x,y).
  */
 private fun DrawScope.drawCubicLine(
@@ -239,7 +302,7 @@ private fun DrawScope.drawAreaShadowUnderLine(
  * getCubicPoints method provides left and right average value for a given point to get a smooth curve.
  * @param pointsData : List of the points on the Line graph.
  */
-private fun getCubicPoints(pointsData: List<Point>):
+fun getCubicPoints(pointsData: List<Point>):
         Pair<MutableList<Point>, MutableList<Point>> {
     val cubicPoints1 = mutableListOf<Point>()
     val cubicPoints2 = mutableListOf<Point>()
