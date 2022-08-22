@@ -1,6 +1,7 @@
 package com.ygraph.components.common.extensions
 
 import androidx.compose.ui.geometry.Offset
+import com.ygraph.components.barchart.utils.getDrawOffset
 import com.ygraph.components.common.model.Point
 import org.junit.Assert.*
 import org.junit.Test
@@ -58,5 +59,39 @@ class ExtensionsTest{
 
         val isDragLocked = offset.isDragLocked(dragOffsetX, xOffset)
         assertEquals(isDragLocked, true)
+    }
+
+    @Test
+    fun `Given a point drawOffset should be positive`() {
+        val point = Point(100f, 20f)
+        val drawOffset = getDrawOffset(
+            point = point,
+            xMin = 0f,
+            xOffset = 10f,
+            xLeft = 20f,
+            scrollOffset = 50f,
+            yBottom = 1500f,
+            yOffset = 20f,
+            yMin = 0f
+        )
+        assertTrue(drawOffset.x > 0 && drawOffset.y > 0)
+    }
+
+
+    @Test
+    fun `Given scroll offset,xleft,xmin are zero drawOffset should be product of xOffset and xValue`() {
+        val point = Point(1f, 20f)
+        val xOffset = 20f
+        val drawOffset = getDrawOffset(
+            point = point,
+            xMin = 0f,
+            xOffset = xOffset,
+            xLeft = 0f,
+            scrollOffset = 0f,
+            yBottom = 1500f,
+            yOffset = 20f,
+            yMin = 0f
+        )
+        assertEquals(drawOffset.x, xOffset*point.x)
     }
 }

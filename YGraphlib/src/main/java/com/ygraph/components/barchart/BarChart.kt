@@ -411,3 +411,44 @@ fun getDrawOffset(
     val y1 = yBottom - ((y - yMin) * yOffset)
     return Offset(x1, y1)
 }
+
+/**
+ *
+ * Used to draw the individual bars
+ * @param barChartData : all meta data related to the bar graph
+ * @param barData : data related to a single bar
+ * @param drawOffset: topleft ffset for the drawing the bar
+ * @param height : height of the bar chart
+ */
+fun DrawScope.drawBarChart(
+    barChartData: BarChartData, barData: BarData, drawOffset: Offset,
+    height: Float
+) {
+    // Draw bar lines
+    if (barChartData.isGradientEnabled) {
+        val brush = Brush.verticalGradient(
+            colors = barData.gradientColorList
+        )
+        drawRoundRect(
+            brush = brush,
+            topLeft = drawOffset,
+            size = Size(barChartData.barWidth.toPx(), height),
+            cornerRadius = CornerRadius(
+                barChartData.cornerRadius.toPx(),
+                barChartData.cornerRadius.toPx()
+            ),
+            style = Fill
+        )
+    } else {
+        drawRoundRect(
+            color = barData.color,
+            topLeft = drawOffset,
+            size = Size(barChartData.barWidth.toPx(), height),
+            cornerRadius = CornerRadius(
+                barChartData.cornerRadius.toPx(),
+                barChartData.cornerRadius.toPx()
+            ),
+            style = Fill
+        )
+    }
+}
