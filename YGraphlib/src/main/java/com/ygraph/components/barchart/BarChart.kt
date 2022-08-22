@@ -1,5 +1,7 @@
 package com.ygraph.components.barchart
 
+import android.graphics.Paint
+import android.text.TextPaint
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -13,6 +15,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
@@ -20,10 +23,13 @@ import com.ygraph.components.axis.AxisData
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
 import com.ygraph.components.barchart.models.BarChartData
+import com.ygraph.components.barchart.models.BarData
 import com.ygraph.components.barchart.utils.RowClip
 import com.ygraph.components.common.extensions.getMaxElementInYAxis
 import com.ygraph.components.common.extensions.getXMaxAndMinPoints
 import com.ygraph.components.common.extensions.getYMaxAndMinPoints
+import com.ygraph.components.common.extensions.isDragLocked
+import com.ygraph.components.common.model.Point
 import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
 
 
@@ -40,36 +46,43 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
     Column(modifier.onGloballyPositioned {
         totalWidth.value = it.size.width
     }) {
-
+        val visibility = remember { mutableStateOf(false) }
+        val identifiedPoint = remember { mutableStateOf(BarData(Point(0f, 0f))) }
         val xOffset = remember { mutableStateOf(0f) }
         val dragOffset = remember { mutableStateOf(0f) }
         val isDragging = remember { mutableStateOf(false) }
-        val visibility = remember { mutableStateOf(false) }
         val columnWidth = remember { mutableStateOf(0f) }
         val horizontalGap = remember { mutableStateOf(0f) }
         val paddingRight = barChartData.paddingEnd
         val points = barChartData.chartData.map { it.point }
         val rowHeight = remember { mutableStateOf(0f) }
         val bgColor = MaterialTheme.colors.surface
-        
+
         val (xMin, xMax) = getXMaxAndMinPoints(points)
         val (_, yMax) = getYMaxAndMinPoints(points)
-        
-        val maxElementInYAxis = getMaxElementInYAxis(yMax,barChartData.yStepSize)
-        
+
+        val maxElementInYAxis = getMaxElementInYAxis(yMax, barChartData.yStepSize)
+
         val axisData = AxisData.Builder()
             .yMaxValue(yMax)
             .yStepValue(barChartData.yStepSize.toFloat())
-            .xAxisSteps(barChartData.chartData.size)
-            .xAxisStepSize(barChartData.barWidth+barChartData.paddingBetweenBars)
+            .xAxisSteps(barChartData.chartData.size - 1)
+            .xAxisStepSize(barChartData.barWidth + barChartData.paddingBetweenBars)
             .axisLabelFontSize(barChartData.axisLabelFontSize)
-            .yLabelData (barChartData.yLabelData)
-            .xLabelData (barChartData.xLabelData)
+            .yLabelData(barChartData.yLabelData)
+            .xLabelData(barChartData.xLabelData)
             .textLabelPadding(barChartData.yLabelAndAxisLinePadding)
             .yAxisOffset(barChartData.yAxisOffset)
             .yTopPadding(barChartData.yTopPadding)
             .yBottomPadding(LocalDensity.current.run { (rowHeight.value).toDp() })
             .build()
+
+        val highlightTextPaint = TextPaint().apply {
+            textSize = LocalDensity.current.run { barChartData.highlightTextSize.toPx() }
+            color = barChartData.highlightTextColor.toArgb()
+            textAlign = Paint.Align.CENTER
+            typeface = barChartData.highlightTextTypeface
+        }
 
         ScrollableCanvasContainer(modifier = modifier,
             containerBackgroundColor = barChartData.backgroundColor,
@@ -79,7 +92,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                 xOffset.value =
                     (barChartData.barWidth.toPx() + barChartData.paddingBetweenBars.toPx()) * xZoom
                 val xLastPoint =
-                    (xMax - xMin) * xOffset.value + xLeft + paddingRight.toPx() 
+                    (xMax - xMin) * xOffset.value + xLeft + paddingRight.toPx()
                 if (xLastPoint > size.width) {
                     xLastPoint - size.width
                 } else 0f
@@ -90,7 +103,9 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                 val yOffset = ((yBottom - axisData.yTopPadding.toPx()) / maxElementInYAxis)
                 xOffset.value =
                     ((barChartData.barWidth).toPx() + barChartData.paddingBetweenBars.toPx()) * xZoom
-                val xLeft = columnWidth.value + horizontalGap.value+barChartData.barWidth.toPx()/2
+                val xLeft =
+                    columnWidth.value + horizontalGap.value + barChartData.barWidth.toPx() / 2
+                val dragLocks = mutableMapOf<Int, Pair<BarData, Offset>>()
 
                 // Draw bar lines
                 barChartData.chartData.forEachIndexed { _, barData ->
@@ -125,6 +140,15 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                             style = Fill
                         )
                     }
+
+                    // store the drag points for selection
+                    if (isDragging.value && drawOffset.isDragLocked(
+                            dragOffset.value,
+                            xOffset.value
+                        )
+                    ) {
+                        dragLocks[0] = barData to drawOffset
+                    }
                 }
                 // Draw column to make graph look scrollable under Yaxis
                 drawRect(
@@ -132,7 +156,51 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                     Offset(0f, 0f),
                     Size(columnWidth.value, size.height)
                 )
-                
+
+                val selectedOffset = dragLocks.values.firstOrNull()?.second
+
+                if (visibility.value && selectedOffset != null) {
+                    drawContext.canvas.nativeCanvas.apply {
+                        drawText(
+                            "x : ${identifiedPoint.value.point.x}",
+                            selectedOffset.x + barChartData.barWidth.toPx() / 2,
+                            selectedOffset.y - (barChartData.highlightTextOffset.toPx()
+                                    + (highlightTextPaint.descent() - highlightTextPaint.ascent())),
+                            highlightTextPaint
+                        )
+                        drawText(
+                            "y : ${identifiedPoint.value.point.y}",
+                            selectedOffset.x + barChartData.barWidth.toPx() / 2,
+                            selectedOffset.y - barChartData.highlightTextOffset.toPx(),
+                            highlightTextPaint
+                        )
+                    }
+                }
+
+
+                // Handle the show the selected bar
+                if (isDragging.value) {
+                    val x = dragLocks.values.firstOrNull()?.second?.x
+                    if (x != null) {
+                        identifiedPoint.value = dragLocks.values.map { it.first }.first()
+                    }
+
+                    // Draw highlight bar on selection
+                    dragLocks.values.firstOrNull()?.let { (barData, location) ->
+                        val (xPoint, yPoint) = location
+                        if (xPoint >= columnWidth.value && xPoint <= size.width - paddingRight.toPx()) {
+                            val y1 = yBottom - ((barData.point.y - 0) * yOffset)
+                            drawRoundRect(
+                                color = Color.Black,
+                                topLeft = Offset(xPoint, yPoint),
+                                size = Size(barChartData.barWidth.toPx(), yBottom - y1),
+                                cornerRadius = CornerRadius(4.dp.toPx(), 4.dp.toPx()),
+                                style = Stroke(width = 2.dp.toPx())
+                            )
+                        }
+                    }
+                }
+
 
             },
             drawXAndYAxis = { scrollOffset, xZoom ->
@@ -153,13 +221,12 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                         )
                         .onGloballyPositioned {
                             rowHeight.value = it.size.height.toFloat()
-                        }
-                       ,
-                    xStart = columnWidth.value +horizontalGap.value + LocalDensity.current.run { (barChartData.barWidth.toPx())},
+                        },
+                    xStart = columnWidth.value + horizontalGap.value + LocalDensity.current.run { (barChartData.barWidth.toPx()) },
                     scrollOffset = scrollOffset,
                     zoomScale = xZoom,
                     chartData = points,
-                    xLineStart =  columnWidth.value
+                    xLineStart = columnWidth.value
                 )
 
                 YAxis(

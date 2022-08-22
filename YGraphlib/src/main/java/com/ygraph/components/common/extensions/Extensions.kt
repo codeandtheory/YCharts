@@ -2,6 +2,7 @@ package com.ygraph.components.common.extensions
 
 import android.graphics.Paint
 import android.graphics.Rect
+import androidx.compose.ui.geometry.Offset
 import com.ygraph.components.common.model.Point
 
 
@@ -46,6 +47,8 @@ return the maximum and minimum points of Y axis
 fun getYMaxAndMinPoints(
     points: List<Point>,
 ): Pair<Float, Float> {
+    if (points.isEmpty())
+        return Pair(0f, 0f)
     val xMin = points.minOf { it.y }
     val xMax = points.maxOf { it.y }
     return Pair(xMin, xMax)
@@ -65,3 +68,7 @@ fun getMaxElementInYAxis(yMax: Float, yStepSize: Int): Int {
     }
     return reqYLabelsQuo.toInt() * yStepSize
 }
+
+
+fun Offset.isDragLocked(dragOffset: Float, xOffset: Float) =
+    ((dragOffset) > x - xOffset / 2) && ((dragOffset) < x + xOffset / 2)

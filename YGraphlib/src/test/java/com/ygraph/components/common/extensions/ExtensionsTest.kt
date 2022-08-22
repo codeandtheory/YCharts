@@ -1,10 +1,11 @@
 package com.ygraph.components.common.extensions
 
+import androidx.compose.ui.geometry.Offset
 import com.ygraph.components.common.model.Point
 import org.junit.Assert.*
 import org.junit.Test
 
-class ExtensionsKtTest{
+class ExtensionsTest{
     @Test
     fun `Find proper maximum and minimum X values from the given points`() {
         val pointList = listOf(
@@ -30,12 +31,32 @@ class ExtensionsKtTest{
     }
 
     @Test
+    fun `Given empty list  maximum and minimum points should be zero`() {
+        val pointList = emptyList<Point>()
+
+        val (yMin, yMax) = getYMaxAndMinPoints(pointList)
+
+        assertEquals(yMin, 0f)
+        assertEquals(yMax, 0f)
+    }
+    
+    @Test
     fun `Find the maximum Y point from the steps size and max value `() {
-       val stepSize = 10
-       val maxValue = 45f
-        
+        val stepSize = 10
+        val maxValue = 45f
+
         val maximumYValue = getMaxElementInYAxis(maxValue,stepSize)
 
         assertEquals(maximumYValue, 50)
+    }
+    
+    @Test
+    fun `Given a point and drag lock status should be calculated `() {
+        val offset = Offset(30f,20f)
+        val dragOffsetX = 25f
+        val xOffset = 20f
+
+        val isDragLocked = offset.isDragLocked(dragOffsetX, xOffset)
+        assertEquals(isDragLocked, true)
     }
 }

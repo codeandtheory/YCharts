@@ -7,19 +7,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.barchartcontainer.ui.theme.YGraphsTheme
 import com.ygraph.components.barchart.BarChart
 import com.ygraph.components.barchart.models.BarChartData
-import com.ygraph.components.barchart.models.BarData
 import com.ygraph.components.common.datautils.getBarChartData
-import com.ygraph.components.common.model.Point
-import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
