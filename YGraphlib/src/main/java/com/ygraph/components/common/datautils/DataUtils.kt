@@ -17,7 +17,7 @@ fun getBarChartData(listSize: Int, maxRange: Int): List<BarData> {
             BarData(
                 Point(
                     index.toFloat(),
-                    Random.nextDouble(1.0, maxRange.toDouble()).toFloat()
+                    "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat()
                 ),
                 Color(
                     Random.nextInt(256), Random.nextInt(256), Random.nextInt(256)

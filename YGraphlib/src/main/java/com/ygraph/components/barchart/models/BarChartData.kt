@@ -21,6 +21,10 @@ import com.ygraph.components.axis.AxisData
  * @param horizontalExtraSpace: Extra space added in the horizontal axis
  * @param paddingEnd: End Padding
  * @param paddingTop: Top Padding
+ * @param highlightTextOffset: Padding between the highlighted bar and the text
+ * @param highlightTextSize: Text size of the highlighted bar text
+ * @param highlightTextColor: Text color of the highlighted bar text
+ * @param highlightTextTypeface: Typeface of the highlighted bar text
  * @param isGradientEnabled: Boolean Flag to enable/disable gradient bars
  * @param barBlendMode: Blend mode for the bars
  * @param barDrawStyle: Draw style for the bars
