@@ -48,13 +48,16 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
             val axisData = AxisData.Builder()
                 .yMaxValue(dataPoints.maxOf { it.y })
                 .yStepValue(yStepValue)
+                .xAxisStepSize(xStepSize)
+                .xAxisPos(xAxisPos)
+                .yAxisPos(yAxisPos)
                 .yBottomPadding(LocalDensity.current.run { rowHeight.toDp() })
                 .axisLabelFontSize(axisLabelFontSize)
                 .yLabelData(yAxisLabelData)
                 .xLabelData(xAxisLabelData)
                 .yLabelAndAxisLinePadding(yLabelAndAxisLinePadding)
                 .yAxisOffset(yAxisOffset)
-                .xAxisSteps(dataPoints.size - 1)
+                .xAxisSteps(xAxisSteps - 1)
                 .build()
 
             val (xMin, xMax, _) = getXAxisScale(dataPoints, axisData.xAxisSteps)
@@ -80,6 +83,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                         size.width
                     )
                 },
+                isPinchZoomEnabled = isZoomAllowed,
                 drawXAndYAxis = { scrollOffset, xZoom ->
                     YAxis(
                         modifier = Modifier

@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
                             .axisLabelFontSize(14.sp)
                             .yLabelData { index -> index.toString() }
                             .xLabelData { index -> index.toString() }
-                            .textLabelPadding(20.dp)
+                            .yLabelAndAxisLinePadding(20.dp)
                             .yAxisOffset(20.dp)
                             .yLabelData { index -> "$index" }
                             .build()

@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.sp
  * @param typeface The type of font style
  * @param xBottomPadding: X Label offset bottom padding
  * @param xTopPadding: X Label offset top padding
-
  */
 data class AxisData(
     // All Y-Axis params
