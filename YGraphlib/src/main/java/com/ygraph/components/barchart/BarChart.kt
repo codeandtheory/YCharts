@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.axis.AxisData
 import com.ygraph.components.axis.XAxis
@@ -138,7 +139,8 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                     drawHighlightText(
                         identifiedPoint,
                         selectedOffset,
-                        barChartData,
+                        barChartData.barWidth,
+                        barChartData.highlightTextOffset,
                         highlightTextPaint
                     )
                 }
@@ -223,27 +225,28 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
 /**
  *
  * Used to draw the highlighted text
- * @param identifiedPoint : selected points
- * @param selectedOffset: offset selected
- * @param barChartData : all meta data related to the bar graph
- * @param highlightTextPaint : text paint for the highlighted text
+ * @param identifiedPoint : Selected points
+ * @param selectedOffset: Offset selected
+ * @param barWidth : Width of single bar
+ * @param highlightTextOffset : Distance between bar and the highlighted text
+ * @param highlightTextPaint : Text paint for the highlighted text
  */
 fun DrawScope.drawHighlightText(
     identifiedPoint: BarData, selectedOffset: Offset,
-    barChartData: BarChartData, highlightTextPaint: TextPaint
+    barWidth: Dp, highlightTextOffset: Dp, highlightTextPaint: TextPaint
 ) {
     drawContext.canvas.nativeCanvas.apply {
         drawText(
             "x : ${identifiedPoint.point.x}",
-            selectedOffset.x + barChartData.barWidth.toPx() / 2,
-            selectedOffset.y - (barChartData.highlightTextOffset.toPx()
+            selectedOffset.x + barWidth.toPx() / 2,
+            selectedOffset.y - (highlightTextOffset.toPx()
                     + (highlightTextPaint.descent() - highlightTextPaint.ascent())),
             highlightTextPaint
         )
         drawText(
             "y : ${identifiedPoint.point.y}",
-            selectedOffset.x + barChartData.barWidth.toPx() / 2,
-            selectedOffset.y - barChartData.highlightTextOffset.toPx(),
+            selectedOffset.x + barWidth.toPx() / 2,
+            selectedOffset.y - highlightTextOffset.toPx(),
             highlightTextPaint
         )
     }
