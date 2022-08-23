@@ -420,7 +420,7 @@ fun getDrawOffset(
  * @param drawOffset: topleft ffset for the drawing the bar
  * @param height : height of the bar chart
  */
-fun DrawScope.drawBarChart(
+private fun DrawScope.drawBarChart(
     barChartData: BarChartData, barData: BarData, drawOffset: Offset,
     height: Float
 ) {
