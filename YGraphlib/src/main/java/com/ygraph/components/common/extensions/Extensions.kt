@@ -54,3 +54,5 @@ internal class RowClip(
         )
     }
 }
+
+fun Any?.isNotNull() = this != null

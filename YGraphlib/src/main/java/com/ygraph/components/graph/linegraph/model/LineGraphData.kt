@@ -10,7 +10,7 @@ import com.ygraph.components.common.model.Point
 /**
  *
  * LineGraphData data class that contains all params user need to define to draw a line graph.
- * @param dataPoints: List of Points to be ploted on the graph
+ * @param line: The path to be drawn on the graph represented by a line
  * @param yAxisLabelData(Int)-> String: lambda method for providing labels, @param Int will be the index
  * given for each level in YAxis
  * @param xAxisLabelData(Int)-> String: lambda method for providing labels, @param Int will be the index
@@ -26,7 +26,7 @@ import com.ygraph.components.common.model.Point
  * @param yAxisOffset: Drawing offset for yAxis.
  */
 data class LineGraphData(
-    val dataPoints: List<Point>,
+    val line: Line,
     val yAxisLabelData: (Int) -> String,
     val xAxisLabelData: (Int) -> String,
     val yStepValue: Float,
@@ -41,4 +41,21 @@ data class LineGraphData(
     val axisLabelFontSize: TextUnit = 14.sp,
     val yLabelAndAxisLinePadding: Dp = 20.dp,
     val yAxisOffset: Dp = 20.dp
+)
+
+/**
+ * Represent a Line in the [LineGraph]
+ *
+ * @param dataPoints list of points [Point] in the line
+ * @param intersectionPoint drawing logic to draw the point itself in [IntersectionPoint].
+ * If null, the point is not drawn.
+ * @param selectionHighlightPoint drawing logic to draw the highlight at the point when it is selected
+ * in [SelectionHighlightPoint] If null, the point won't be highlighted on selection
+ * @param shadowUnderLine drawing logic for the section under the line in [ShadowUnderLine].
+ */
+data class Line(
+    val dataPoints: List<Point>,
+    val intersectionPoint: IntersectionPoint? = null,
+    val selectionHighlightPoint: SelectionHighlightPoint? = null,
+    val shadowUnderLine: ShadowUnderLine? = null
 )
