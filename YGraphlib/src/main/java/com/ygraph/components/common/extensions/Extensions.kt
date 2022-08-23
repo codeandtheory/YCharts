@@ -3,6 +3,12 @@ package com.ygraph.components.common.extensions
 import android.graphics.Paint
 import android.graphics.Rect
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import com.ygraph.components.common.model.Point
 
 
@@ -72,3 +78,24 @@ fun getMaxElementInYAxis(yMax: Float, yStepSize: Int): Int {
 
 fun Offset.isDragLocked(dragOffset: Float, xOffset: Float) =
     ((dragOffset) > x - xOffset / 2) && ((dragOffset) < x + xOffset / 2)
+
+
+/**
+return the shape that is used to mask a particular area for given leftPadding & rightPadding
+ */
+class RowClip(private val leftPadding: Float, private val rightPadding: Dp) : Shape {
+    override fun createOutline(
+        size: Size,
+        layoutDirection: LayoutDirection,
+        density: Density
+    ): Outline {
+        return Outline.Rectangle(
+            androidx.compose.ui.geometry.Rect(
+                leftPadding,
+                0f,
+                size.width - rightPadding.value * density.density,
+                size.height
+            )
+        )
+    }
+}

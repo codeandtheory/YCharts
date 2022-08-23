@@ -6,6 +6,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import android.graphics.Typeface
+import com.ygraph.components.axis.AxisConfig
 
 
 /**
@@ -26,10 +27,14 @@ import android.graphics.Typeface
  * @param paddingEnd: End Padding
  * @param paddingTop: Top Padding
  * @param highlightTextOffset: Padding between the highlighted bar and the text
+ * @param highlightStrokeWidth: Stroke width of the highlighted bar
  * @param highlightTextSize: Text size of the highlighted bar text
  * @param highlightTextColor: Text color of the highlighted bar text
  * @param highlightTextTypeface: Typeface of the highlighted bar text
  * @param isGradientEnabled: Boolean Flag to enable/disable gradient bars
+ * @param showXAxis: Boolean Flag to enable/disable X axis
+ * @param showYAxis: Boolean Flag to enable/disable Y axis
+ * @param axisConfig: All config related param to toggle the elements while drawing graph
  */
 data class BarChartData(
     val chartData: List<BarData>,
@@ -46,11 +51,15 @@ data class BarChartData(
     val backgroundColor: Color = Color.White,
     val paddingBetweenBars: Dp = 15.dp,
     val horizontalExtraSpace: Dp = 0.dp,
-    val paddingEnd: Dp = 60.dp,
+    val paddingEnd: Dp = 10.dp,
     val paddingTop: Dp = 0.dp,
-    val highlightTextOffset: Dp = 20.dp,
+    val highlightTextOffset: Dp = 15.dp,
+    val highlightStrokeWidth: Dp = 2.dp,
     val highlightTextSize: TextUnit = 12.sp,
     val highlightTextColor: Color = Color.Black,
     val highlightTextTypeface: Typeface =  Typeface.DEFAULT,
-    val isGradientEnabled: Boolean = false
+    val isGradientEnabled: Boolean = false,
+    val showYAxis: Boolean = true,
+    val showXAxis: Boolean = true,
+    val axisConfig: AxisConfig = AxisConfig()
 )

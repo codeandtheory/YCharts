@@ -22,7 +22,7 @@ fun getBarChartData(listSize: Int, maxRange: Int): List<BarData> {
                 Color(
                     Random.nextInt(256), Random.nextInt(256), Random.nextInt(256)
                 ),
-                "Bar $index"
+                "Bar$index"
             )
         )
     }
