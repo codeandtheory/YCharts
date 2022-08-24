@@ -69,7 +69,7 @@ data class SelectionHighlightPopUp(
                 highlightTextPaint
             )
             drawRoundRect(
-                Color.White,
+                backgroundColor,
                 Offset(
                     background.left.toFloat(),
                     background.top.toFloat() - paddingBetweenPopUpAndPoint.toPx()
