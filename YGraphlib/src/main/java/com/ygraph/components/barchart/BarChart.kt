@@ -15,7 +15,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Fill
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
@@ -55,6 +54,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
         val paddingRight = barChartData.paddingEnd
         val points = barChartData.chartData.map { it.point }
         val bgColor = MaterialTheme.colors.surface
+        val highlightData = barChartData.selectionHighlightData
 
         val (xMin, xMax) = getXMaxAndMinPoints(points)
         val (_, yMax) = getYMaxAndMinPoints(points)
@@ -81,10 +81,10 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
             .build()
 
         val highlightTextPaint = TextPaint().apply {
-            textSize = LocalDensity.current.run { barChartData.highlightTextSize.toPx() }
-            color = barChartData.highlightTextColor.toArgb()
+            textSize = LocalDensity.current.run { highlightData.highlightTextSize.toPx() }
+            color = highlightData.highlightTextColor.toArgb()
             textAlign = Paint.Align.CENTER
-            typeface = barChartData.highlightTextTypeface
+            typeface = highlightData.highlightTextTypeface
         }
 
         ScrollableCanvasContainer(modifier = modifier,
@@ -150,6 +150,8 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                     yOffset,
                     maxElementInYAxis
                 )
+
+
             },
             drawXAndYAxis = { scrollOffset, xZoom ->
 
@@ -225,14 +227,16 @@ private fun DrawScope.drawHighlightText(
     yOffset: Float,
     maximumElementInYAxis: Int
 ) {
+
+    val highlightData = barChartData.selectionHighlightData
     val yMaximumDrawOffset = yBottom - ((maximumElementInYAxis - 1) * yOffset)
     // if the selected offset is very close to top then changing the highlight text position
     val highlightYValue = if (selectedOffset.y - yMaximumDrawOffset > yOffset) {
         // above the bar
-        selectedOffset.y - barChartData.highlightTextOffset.toPx()
+        selectedOffset.y - highlightData.highlightTextOffset.toPx()
     } else {
         // on the bar
-        selectedOffset.y + barChartData.highlightTextOffset.toPx()
+        selectedOffset.y + highlightData.highlightTextOffset.toPx()
     }
     drawContext.canvas.nativeCanvas.apply {
 
@@ -245,13 +249,13 @@ private fun DrawScope.drawHighlightText(
             highlightText,
             highlightTextPaint
         )
-        
+
         // drawing the background rect for the text
         drawRect(
-            barChartData.highlightTextBackgroundColor,
+            highlightData.highlightTextBackgroundColor,
             Offset(background.left.toFloat(), background.top.toFloat()),
             Size(background.width().toFloat(), background.height().toFloat()),
-            barChartData.highlightTextBackgroundAlpha
+            highlightData.highlightTextBackgroundAlpha
         )
 
         drawText(
@@ -378,20 +382,19 @@ private fun DrawScope.highlightBar(
         }
 
         // Draw highlight bar on selection
-        dragLocks.values.firstOrNull()?.let { (barData, location) ->
-            val (xPoint, yPoint) = location
-            if (xPoint >= columnWidth && xPoint <= size.width - paddingRight.toPx()) {
-                val y1 = yBottom - ((barData.point.y - 0) * yOffset)
-                drawRoundRect(
-                    color = Color.Black,
-                    topLeft = Offset(xPoint, yPoint),
-                    size = Size(barChartData.barWidth.toPx(), yBottom - y1),
-                    cornerRadius = CornerRadius(
-                        barChartData.cornerRadius.toPx(),
-                        barChartData.cornerRadius.toPx()
-                    ),
-                    style = Stroke(width = barChartData.highlightStrokeWidth.toPx())
-                )
+        if (barChartData.selectionHighlightData.isHighlightBarRequired) {
+            dragLocks.values.firstOrNull()?.let { (barData, location) ->
+                val (xPoint, yPoint) = location
+                if (xPoint >= columnWidth && xPoint <= size.width - paddingRight.toPx()) {
+                    val y1 = yBottom - ((barData.point.y - 0) * yOffset)
+                    barChartData.selectionHighlightData.drawHighlightBar(
+                        this,
+                        xPoint,
+                        yPoint,
+                        barChartData.barWidth.toPx(),
+                        yBottom - y1
+                    )
+                }
             }
         }
     }

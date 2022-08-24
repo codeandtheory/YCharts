@@ -26,13 +26,6 @@ import com.ygraph.components.axis.AxisConfig
  * @param horizontalExtraSpace: Extra space added in the horizontal axis
  * @param paddingEnd: End Padding
  * @param paddingTop: Top Padding
- * @param highlightTextOffset: Padding between the highlighted bar and the text
- * @param highlightStrokeWidth: Stroke width of the highlighted bar
- * @param highlightTextSize: Text size of the highlighted bar text
- * @param highlightTextColor: Text color of the highlighted bar text
- * @param highlightTextBackgroundColor: Background color of the highlight background 
- * @param highlightTextBackgroundAlpha: Alpha for the highlighted text background
- * @param highlightTextTypeface: Typeface of the highlighted bar text
  * @param isGradientEnabled: Boolean Flag to enable/disable gradient bars
  * @param showXAxis: Boolean Flag to enable/disable X axis
  * @param showYAxis: Boolean Flag to enable/disable Y axis
@@ -55,13 +48,7 @@ data class BarChartData(
     val horizontalExtraSpace: Dp = 0.dp,
     val paddingEnd: Dp = 10.dp,
     val paddingTop: Dp = 0.dp,
-    val highlightTextOffset: Dp = 15.dp,
-    val highlightStrokeWidth: Dp = 2.dp,
-    val highlightTextSize: TextUnit = 12.sp,
-    val highlightTextColor: Color = Color.Black,
-    val highlightTextBackgroundColor: Color = Color.Yellow,
-    val highlightTextBackgroundAlpha: Float = 0.7f,
-    val highlightTextTypeface: Typeface =  Typeface.DEFAULT,
+    val selectionHighlightData: SelectionHighlightData = SelectionHighlightData(),
     val isGradientEnabled: Boolean = false,
     val showYAxis: Boolean = true,
     val showXAxis: Boolean = true,

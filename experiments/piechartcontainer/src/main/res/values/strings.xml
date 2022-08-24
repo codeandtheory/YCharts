@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">piechartcontainer</string>
+    <string name="title_activity_pie_chart">PieChartActivity</string>
+    <string name="title_activity_bar_chart">BarChartActivity</string>
 </resources>
