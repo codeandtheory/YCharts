@@ -32,7 +32,8 @@ class MainActivity : ComponentActivity() {
                             dataPoints = pointsData,
                             IntersectionPoint(),
                             SelectionHighlightPoint(),
-                            ShadowUnderLine()
+                            ShadowUnderLine(),
+                            SelectionHighlightPopUp()
                         ),
                         yStepValue = 20f,
                         xStepSize = 30.dp,
@@ -45,7 +46,7 @@ class MainActivity : ComponentActivity() {
                     LineGraph(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(250.dp),
+                            .height(300.dp),
                         lineGraphData = data
                     )
                 }

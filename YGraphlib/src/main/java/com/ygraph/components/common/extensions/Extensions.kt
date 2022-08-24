@@ -2,6 +2,7 @@ package com.ygraph.components.common.extensions
 
 import android.graphics.Paint
 import android.graphics.Rect
+import android.text.TextPaint
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Shape
@@ -56,3 +57,27 @@ internal class RowClip(
 }
 
 fun Any?.isNotNull() = this != null
+
+
+/**
+ * returns the background rect for the highlighted text.
+ * @param x : X point.
+ * @param y: Y point.
+ * @param text: Text to be drawn inside the background.
+ * @param paint: Background paint.
+ */
+fun getTextBackgroundRect(
+    x: Float,
+    y: Float,
+    text: String,
+    paint: TextPaint
+): Rect {
+    val fontMetrics = paint.fontMetrics
+    val textLength = paint.measureText(text)
+    return Rect(
+        (x - (textLength / 2)).toInt(),
+        (y + fontMetrics.top).toInt(),
+        (x + (textLength / 2)).toInt(),
+        (y + fontMetrics.bottom).toInt()
+    )
+}

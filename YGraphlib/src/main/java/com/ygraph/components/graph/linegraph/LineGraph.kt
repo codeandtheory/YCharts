@@ -1,11 +1,8 @@
 package com.ygraph.components.graph.linegraph
 
-import android.graphics.Paint
-import android.graphics.Typeface
-import android.text.TextPaint
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
@@ -18,13 +15,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.ygraph.components.axis.AxisData
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
@@ -32,10 +25,7 @@ import com.ygraph.components.axis.getXAxisScale
 import com.ygraph.components.common.extensions.RowClip
 import com.ygraph.components.common.extensions.isNotNull
 import com.ygraph.components.common.model.Point
-import com.ygraph.components.graph.linegraph.model.IntersectionPoint
-import com.ygraph.components.graph.linegraph.model.Line
-import com.ygraph.components.graph.linegraph.model.LineGraphData
-import com.ygraph.components.graph.linegraph.model.SelectionHighlightPoint
+import com.ygraph.components.graph.linegraph.model.*
 import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
 
 /**
@@ -71,6 +61,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                 .yLabelAndAxisLinePadding(yLabelAndAxisLinePadding)
                 .yAxisOffset(yAxisOffset)
                 .xAxisSteps(xAxisSteps - 1)
+                .yTopPadding(paddingTop)
                 .build()
 
             val (xMin, xMax, _) = getXAxisScale(line.dataPoints, axisData.xAxisSteps)
@@ -81,13 +72,6 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
             )
             val maxElementInYAxis =
                 getMaxElementInYAxis(yAxisScale, yAxisSteps)
-
-            val highlightTextPaint = TextPaint().apply {
-                textSize = LocalDensity.current.run { 14.sp.toPx() }
-                color = Color.Black.toArgb()
-                textAlign = Paint.Align.CENTER
-                typeface = Typeface.DEFAULT
-            }
 
             ScrollableCanvasContainer(
                 modifier = modifier,
@@ -107,7 +91,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                 drawXAndYAxis = { scrollOffset, xZoom ->
                     YAxis(
                         modifier = Modifier
-                            .height(250.dp)
+                            .fillMaxHeight()
                             .onGloballyPositioned {
                                 columnWidth = it.size.width.toFloat()
                             },
@@ -174,8 +158,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                         drawHighlightText(
                             identifiedPoint,
                             selectedOffset ?: Offset(0f, 0f),
-                            10.dp,
-                            highlightTextPaint
+                            line.selectionHighlightPopUp
                         )
                     }
                     if (isDragging) {
@@ -379,29 +362,15 @@ fun getCubicPoints(pointsData: List<Offset>):
  * Used to draw the highlighted text
  * @param identifiedPoint : Selected points
  * @param selectedOffset: Offset selected
- * @param highlightTextOffset : Distance between point and the highlighted text
- * @param highlightTextPaint : Text paint for the highlighted text
+ * @param selectionHighlightPopUp : Data class with all styling related info [SelectionHighlightPopUp]
  */
 fun DrawScope.drawHighlightText(
     identifiedPoint: Point,
     selectedOffset: Offset,
-    highlightTextOffset: Dp,
-    highlightTextPaint: TextPaint
+    selectionHighlightPopUp: SelectionHighlightPopUp?
 ) {
-    drawContext.canvas.nativeCanvas.apply {
-        drawText(
-            "x : ${identifiedPoint.x.toInt()}",
-            selectedOffset.x,
-            selectedOffset.y - (highlightTextOffset.toPx()
-                    + (highlightTextPaint.descent() - highlightTextPaint.ascent())),
-            highlightTextPaint
-        )
-        drawText(
-            "y : ${String.format("%.2f", identifiedPoint.y)}",
-            selectedOffset.x,
-            selectedOffset.y - highlightTextOffset.toPx(),
-            highlightTextPaint
-        )
+    selectionHighlightPopUp?.run {
+        draw(selectedOffset, identifiedPoint)
     }
 }
 

@@ -35,7 +35,7 @@ data class LineGraphData(
     val xAxisPos: Gravity = Gravity.BOTTOM,
     val yAxisPos: Gravity = Gravity.LEFT,
     val isZoomAllowed: Boolean = true,
-    val paddingTop: Dp = 16.dp,
+    val paddingTop: Dp = 30.dp,
     val bottomPadding: Dp = 10.dp,
     val paddingRight: Dp = 10.dp,
     val axisLabelFontSize: TextUnit = 14.sp,
@@ -52,10 +52,12 @@ data class LineGraphData(
  * @param selectionHighlightPoint drawing logic to draw the highlight at the point when it is selected
  * in [SelectionHighlightPoint] If null, the point won't be highlighted on selection
  * @param shadowUnderLine drawing logic for the section under the line in [ShadowUnderLine].
+ * @param selectionHighlightPopUp All prams related to selection popup to be added here in [SelectionHighlightPopUp]
  */
 data class Line(
     val dataPoints: List<Point>,
     val intersectionPoint: IntersectionPoint? = null,
     val selectionHighlightPoint: SelectionHighlightPoint? = null,
-    val shadowUnderLine: ShadowUnderLine? = null
+    val shadowUnderLine: ShadowUnderLine? = null,
+    val selectionHighlightPopUp: SelectionHighlightPopUp? = null
 )
