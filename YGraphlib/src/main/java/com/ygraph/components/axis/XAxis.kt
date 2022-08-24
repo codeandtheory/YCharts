@@ -59,7 +59,7 @@ fun XAxis(
                 var xPos = xStart - scrollOffset
 
                 // used in the case of barchart
-                if (xLineStart != xStart) {
+                if (xLineStart != xStart && shouldXAxisStartWithPadding) {
                     drawLine(
                         axisLineColor,
                         Offset(xLineStart, 0f),

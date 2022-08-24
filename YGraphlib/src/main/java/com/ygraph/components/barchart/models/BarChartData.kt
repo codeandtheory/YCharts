@@ -48,7 +48,7 @@ data class BarChartData(
     val horizontalExtraSpace: Dp = 0.dp,
     val paddingEnd: Dp = 10.dp,
     val paddingTop: Dp = 0.dp,
-    val selectionHighlightData: SelectionHighlightData = SelectionHighlightData(),
+    val selectionHighlightData: SelectionHighlightData? = SelectionHighlightData(),
     val isGradientEnabled: Boolean = false,
     val showYAxis: Boolean = true,
     val showXAxis: Boolean = true,

@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
  * @param typeface The type of font style
  * @param xBottomPadding: X Label offset bottom padding
  * @param xTopPadding: X Label offset top padding
+ * @param shouldXAxisStartWithPadding: Used to append a line in front of the x Axis 
 
  */
 data class AxisData(
@@ -64,7 +65,8 @@ data class AxisData(
     val indicatorLineWidth: Dp,
     val backgroundColor: Color,
     val typeface: Typeface,
-    val axisConfig: AxisConfig
+    val axisConfig: AxisConfig,
+    val shouldXAxisStartWithPadding:Boolean
 ) {
     class Builder {
         private var yMaxValue: Float = 0f
@@ -90,6 +92,7 @@ data class AxisData(
         private var axisLabelColor: Color = Color.Black
         private var xTopPadding: Dp = 0.dp
         private var xBottomPadding: Dp = 0.dp
+        private var shouldStartXAxisWithPadding: Boolean = false
 
         fun yMaxValue(maxValue: Float) = apply { this.yMaxValue = maxValue }
 
@@ -137,6 +140,8 @@ data class AxisData(
         fun xBottomPadding(padding: Dp) = apply { this.xBottomPadding = padding }
 
         fun xTopPadding(padding: Dp) = apply { this.xTopPadding = padding }
+        
+        fun shouldXAxisStartWithPadding(flag: Boolean) = apply { this.shouldStartXAxisWithPadding = flag }
 
         fun build() = AxisData(
             yMaxValue,
@@ -161,7 +166,8 @@ data class AxisData(
             indicatorLineWidth,
             backgroundColor,
             typeface,
-            axisConfig
+            axisConfig,
+            shouldStartXAxisWithPadding
         )
     }
 }

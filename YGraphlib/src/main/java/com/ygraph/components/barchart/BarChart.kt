@@ -38,10 +38,7 @@ import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
  */
 @Composable
 fun BarChart(modifier: Modifier, barChartData: BarChartData) {
-    val totalWidth = remember { mutableStateOf(0) }
-    Column(modifier.onGloballyPositioned {
-        totalWidth.value = it.size.width
-    }) {
+    Column(modifier) {
         var visibility by remember { mutableStateOf(false) }
         var identifiedPoint by remember { mutableStateOf(BarData(Point(0f, 0f))) }
         var xOffset by remember { mutableStateOf(0f) }
@@ -74,6 +71,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
             .textLabelPadding(barChartData.yLabelAndAxisLinePadding)
             .yAxisOffset(barChartData.yAxisOffset)
             .yTopPadding(barChartData.yTopPadding)
+            .shouldXAxisStartWithPadding(true)
             .yBottomPadding(LocalDensity.current.run { rowHeight.toDp() })
             .axisConfig(barChartData.axisConfig)
             .build()
@@ -128,18 +126,20 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
 
                 drawUnderScrollMask(columnWidth, paddingRight, bgColor)
 
-                // highlighting the selected bar and showing the data points
-                identifiedPoint = highlightBar(
-                    dragLocks,
-                    visibility,
-                    identifiedPoint,
-                    barChartData,
-                    isDragging,
-                    columnWidth,
-                    yBottom,
-                    paddingRight,
-                    yOffset
-                )
+                if (barChartData.selectionHighlightData != null) {
+                    // highlighting the selected bar and showing the data points
+                    identifiedPoint = highlightBar(
+                        dragLocks,
+                        visibility,
+                        identifiedPoint,
+                        barChartData,
+                        isDragging,
+                        columnWidth,
+                        yBottom,
+                        paddingRight,
+                        yOffset
+                    )
+                }
 
 
             },
@@ -322,7 +322,7 @@ private fun DrawScope.highlightBar(
         }
 
         // Draw highlight bar on selection
-        if (barChartData.selectionHighlightData.isHighlightBarRequired) {
+        if (barChartData.selectionHighlightData?.isHighlightBarRequired == true) {
             dragLocks.values.firstOrNull()?.let { (barData, location) ->
                 val (xPoint, yPoint) = location
                 if (xPoint >= columnWidth && xPoint <= size.width - paddingRight.toPx()) {
@@ -340,9 +340,7 @@ private fun DrawScope.highlightBar(
     }
 
     val selectedOffset = dragLocks.values.firstOrNull()?.second
-    if (visibility && selectedOffset != null) {
-
-
+    if (visibility && selectedOffset != null && barChartData.selectionHighlightData != null) {
         drawHighlightText(
             mutableIdentifiedPoint,
             selectedOffset,
@@ -350,7 +348,6 @@ private fun DrawScope.highlightBar(
             barChartData.selectionHighlightData
         )
     }
-
     return mutableIdentifiedPoint
 }
 
