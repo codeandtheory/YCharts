@@ -1,5 +1,6 @@
 package com.ygraph.components.graph.linegraph
 
+import androidx.compose.ui.geometry.Offset
 import com.ygraph.components.common.model.Point
 import org.junit.Assert
 import org.junit.Test
@@ -9,7 +10,7 @@ class LineGraphTest {
     @Test
     fun `Given few points data n-1 size of cubicPoints1 & cubicPoints2 should be returned`() {
         // Given
-        val pointsData = listOf(Point(1f, 30f), Point(2f, 10f), Point(3f, 55f))
+        val pointsData = listOf(Offset(1f, 30f), Offset(2f, 10f), Offset(3f, 55f))
 
         // When
         val pairCubicPoints = getCubicPoints(pointsData)
@@ -22,13 +23,13 @@ class LineGraphTest {
     @Test
     fun `Given two points calculated cubicPoints1 value should be returned`() {
         // Given
-        val pointsData = listOf(Point(1f, 30f), Point(2f, 10f))
+        val pointsData = listOf(Offset(1f, 30f), Offset(2f, 10f))
 
         // When
         val pairCubicPoints = getCubicPoints(pointsData)
 
         //Then
-        val expectedCubic1Point = Point(
+        val expectedCubic1Point = Offset(
             (pointsData[1].x + pointsData.first().x) / 2,
             pointsData.first().y
         )
@@ -39,13 +40,13 @@ class LineGraphTest {
     @Test
     fun `Given two points calculated cubicPoints2 value should be returned`() {
         // Given
-        val pointsData = listOf(Point(1f, 30f), Point(2f, 10f))
+        val pointsData = listOf(Offset(1f, 30f), Offset(2f, 10f))
 
         // When
         val pairCubicPoints = getCubicPoints(pointsData)
 
         //Then
-        val expectedCubic1Point = Point(
+        val expectedCubic1Point = Offset(
             (pointsData[1].x + pointsData.first().x) / 2,
             pointsData[1].y
         )

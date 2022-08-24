@@ -1,8 +1,8 @@
 package com.ygraph.components.graph.linegraph
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
@@ -14,26 +14,25 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.ygraph.components.axis.AxisData
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
 import com.ygraph.components.axis.getXAxisScale
 import com.ygraph.components.common.extensions.RowClip
+import com.ygraph.components.common.extensions.isNotNull
 import com.ygraph.components.common.model.Point
-import com.ygraph.components.graph.linegraph.model.LineGraphData
+import com.ygraph.components.graph.linegraph.model.*
 import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
 
 /**
  *
- * LineGraph compose method used for drawing a Line Graph.
+ * [LineGraph] compose method used for drawing a Line Graph.
  * @param modifier :All modifier related property.
- * @see com.ygraph.components.graph.linegraph.model.LineGraphData Data class to save all params needed to draw the line graph.
+ * Data class [LineGraphData] to save all params needed to draw the line graph.
  * @param lineGraphData : Add data related to line graph.
  */
 @Composable
@@ -44,9 +43,13 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
             var rowHeight by remember { mutableStateOf(0f) }
             var xOffset by remember { mutableStateOf(0f) }
             val bgColor = MaterialTheme.colors.surface
+            var isDragging by remember { mutableStateOf(false) }
+            var dragOffset by remember { mutableStateOf(0f) }
+            var selectionTextVisibility by remember { mutableStateOf(false) }
+            var identifiedPoint by remember { mutableStateOf(Point(0f, 0f)) }
 
             val axisData = AxisData.Builder()
-                .yMaxValue(dataPoints.maxOf { it.y })
+                .yMaxValue(line.dataPoints.maxOf { it.y })
                 .yStepValue(yStepValue)
                 .xAxisStepSize(xStepSize)
                 .xAxisPos(xAxisPos)
@@ -58,12 +61,13 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                 .yLabelAndAxisLinePadding(yLabelAndAxisLinePadding)
                 .yAxisOffset(yAxisOffset)
                 .xAxisSteps(xAxisSteps - 1)
+                .yTopPadding(paddingTop)
                 .build()
 
-            val (xMin, xMax, _) = getXAxisScale(dataPoints, axisData.xAxisSteps)
+            val (xMin, xMax, _) = getXAxisScale(line.dataPoints, axisData.xAxisSteps)
             val yAxisSteps = (axisData.yMaxValue / axisData.yStepValue).toInt()
             val (yMin, _, yAxisScale) = getYAxisScale(
-                dataPoints,
+                line.dataPoints,
                 (axisData.yMaxValue / axisData.yStepValue).toInt()
             )
             val maxElementInYAxis =
@@ -87,7 +91,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                 drawXAndYAxis = { scrollOffset, xZoom ->
                     YAxis(
                         modifier = Modifier
-                            .height(250.dp)
+                            .fillMaxHeight()
                             .onGloballyPositioned {
                                 columnWidth = it.size.width.toFloat()
                             },
@@ -111,7 +115,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                         xStart = columnWidth,
                         scrollOffset = scrollOffset,
                         zoomScale = xZoom,
-                        chartData = dataPoints
+                        chartData = line.dataPoints
                     )
                 },
                 onDraw = { scrollOffset, xZoom ->
@@ -120,7 +124,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                     xOffset = axisData.xAxisStepSize.toPx() * xZoom
                     val xLeft = columnWidth // To add extra space if needed
                     val pointsData = getMappingPointsToGraph(
-                        lineGraphData.dataPoints,
+                        lineGraphData.line.dataPoints,
                         xMin,
                         xOffset,
                         xLeft,
@@ -130,17 +134,55 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                         yOffset
                     )
                     val (cubicPoints1, cubicPoints2) = getCubicPoints(pointsData)
+                    val dragLocks = mutableMapOf<Int, Pair<Point, Offset>>()
 
                     // Draw cubic line using the points and form a line graph
                     drawCubicLine(pointsData, cubicPoints1, cubicPoints2)
 
                     // Draw Lines and Points and AreaUnderLine
                     // Draw area under curve
-                    drawAreaShadowUnderLine(pointsData, yBottom)
+                    drawAreaShadowUnderLine(pointsData, yBottom, line)
 
                     // Draw column to make graph look scrollable under Yaxis
                     drawUnderScrollMask(columnWidth, paddingRight, bgColor)
-                })
+
+                    pointsData.forEachIndexed { index, point ->
+                        if (isDragging && point.isDragLocked(dragOffset, xOffset)) {
+                            // Dealing with only one line graph hence  dragLocks[0]
+                            dragLocks[0] = lineGraphData.line.dataPoints[index] to point
+                        }
+                    }
+
+                    val selectedOffset = dragLocks.values.firstOrNull()?.second
+                    if (selectionTextVisibility && selectedOffset.isNotNull()) {
+                        drawHighlightText(
+                            identifiedPoint,
+                            selectedOffset ?: Offset(0f, 0f),
+                            line.selectionHighlightPopUp
+                        )
+                    }
+                    if (isDragging) {
+                        val x = dragLocks.values.firstOrNull()?.second?.x
+                        if (x != null) identifiedPoint = dragLocks.values.map { it.first }.first()
+                        drawHighLightOnSelectedPoint(
+                            dragLocks,
+                            columnWidth,
+                            paddingRight,
+                            yBottom,
+                            line.selectionHighlightPoint
+                        )
+                    }
+                },
+                onDragStart = { offset ->
+                    dragOffset = offset.x
+                    isDragging = true
+                    selectionTextVisibility = true
+                },
+                onDragEnd = {
+                    isDragging = false
+                    selectionTextVisibility = false
+                },
+                onDragging = { change, _ -> dragOffset = change.position.x })
         }
     }
 }
@@ -166,13 +208,13 @@ fun getMappingPointsToGraph(
     yBottom: Float,
     yMin: Float,
     yOffset: Float,
-): MutableList<Point> {
-    val pointsData = mutableListOf<Point>()
+): MutableList<Offset> {
+    val pointsData = mutableListOf<Offset>()
     lineGraphPoints.forEachIndexed { _, point ->
         val (x, y) = point
         val x1 = ((x - xMin) * xOffset) + xLeft - scrollOffset
         val y1 = yBottom - ((y - yMin) * yOffset)
-        pointsData.add(Point(x1, y1))
+        pointsData.add(Offset(x1, y1))
     }
     return pointsData
 }
@@ -210,9 +252,9 @@ fun getMaxScrollDistance(
  * @param cubicPoints2 : List of average right side values for a given Point(x,y).
  */
 private fun DrawScope.drawCubicLine(
-    pointsData: MutableList<Point>,
-    cubicPoints1: MutableList<Point>,
-    cubicPoints2: MutableList<Point>
+    pointsData: MutableList<Offset>,
+    cubicPoints1: MutableList<Offset>,
+    cubicPoints2: MutableList<Offset>
 ) {
     val path = Path()
     path.moveTo(pointsData.first().x, pointsData.first().y)
@@ -236,17 +278,8 @@ private fun DrawScope.drawCubicLine(
  * DrawScope.drawPointOnLine extension method  used for drawing a circle/mark on a line for a given Point(x,y).
  * @param offset : Point at which circle/mark has to be drawn.
  */
-private fun DrawScope.drawPointOnLine(offset: Point) {
-    // Move all params to builder class for customization
-    drawCircle(
-        Color.Blue,
-        5.dp.toPx(),
-        Offset(offset.x, offset.y),
-        1.0f,
-        Fill,
-        null,
-        DrawScope.DefaultBlendMode
-    )
+private fun DrawScope.drawPointOnLine(offset: Offset, intersectionPoint: IntersectionPoint?) {
+    intersectionPoint?.draw?.let { it(this, offset) }
 }
 
 /**
@@ -274,10 +307,12 @@ private fun DrawScope.drawUnderScrollMask(columnWidth: Float, paddingRight: Dp, 
  * DrawScope.drawAreaShadowUnderLine extension method used  for drawing a shades below the line graph points.
  * @param pointsData : List of the points on the Line graph.
  * @param yBottom : Offset of X-Axis starting position i.e shade to be drawn until.
+ * @param line : line on which shadow & intersectionPoints has to be drawn.
  */
 private fun DrawScope.drawAreaShadowUnderLine(
-    pointsData: MutableList<Point>,
-    yBottom: Float
+    pointsData: MutableList<Offset>,
+    yBottom: Float,
+    line: Line
 ) {
     val pointUnderAreaPath = Path()
     pointsData.forEachIndexed { index, offset ->
@@ -285,20 +320,15 @@ private fun DrawScope.drawAreaShadowUnderLine(
             pointUnderAreaPath.moveTo(offset.x, yBottom)
         }
         pointUnderAreaPath.lineTo(offset.x, offset.y)
-        drawPointOnLine(offset)
+        if (line.intersectionPoint.isNotNull()) drawPointOnLine(offset, line.intersectionPoint)
     }
-    val last = pointsData.last()
-    val first = pointsData.first()
-    pointUnderAreaPath.lineTo(last.x, yBottom)
-    pointUnderAreaPath.lineTo(first.x, yBottom)
-    drawPath(
-        pointUnderAreaPath,
-        Color.Blue,
-        0.1f,
-        Fill,
-        null,
-        DrawScope.DefaultBlendMode
-    )
+    if (line.shadowUnderLine.isNotNull()) {
+        val last = pointsData.last()
+        val first = pointsData.first()
+        pointUnderAreaPath.lineTo(last.x, yBottom)
+        pointUnderAreaPath.lineTo(first.x, yBottom)
+        line.shadowUnderLine?.draw?.let { it(this, pointUnderAreaPath) }
+    }
 }
 
 /**
@@ -306,24 +336,74 @@ private fun DrawScope.drawAreaShadowUnderLine(
  * getCubicPoints method provides left and right average value for a given point to get a smooth curve.
  * @param pointsData : List of the points on the Line graph.
  */
-fun getCubicPoints(pointsData: List<Point>):
-        Pair<MutableList<Point>, MutableList<Point>> {
-    val cubicPoints1 = mutableListOf<Point>()
-    val cubicPoints2 = mutableListOf<Point>()
+fun getCubicPoints(pointsData: List<Offset>):
+        Pair<MutableList<Offset>, MutableList<Offset>> {
+    val cubicPoints1 = mutableListOf<Offset>()
+    val cubicPoints2 = mutableListOf<Offset>()
 
     for (i in 1 until pointsData.size) {
         cubicPoints1.add(
-            Point(
+            Offset(
                 (pointsData[i].x + pointsData[i - 1].x) / 2,
                 pointsData[i - 1].y
             )
         )
         cubicPoints2.add(
-            Point(
+            Offset(
                 (pointsData[i].x + pointsData[i - 1].x) / 2,
                 pointsData[i].y
             )
         )
     }
     return Pair(cubicPoints1, cubicPoints2)
+}
+
+/**
+ * Used to draw the highlighted text
+ * @param identifiedPoint : Selected points
+ * @param selectedOffset: Offset selected
+ * @param selectionHighlightPopUp : Data class with all styling related info [SelectionHighlightPopUp]
+ */
+fun DrawScope.drawHighlightText(
+    identifiedPoint: Point,
+    selectedOffset: Offset,
+    selectionHighlightPopUp: SelectionHighlightPopUp?
+) {
+    selectionHighlightPopUp?.run {
+        draw(selectedOffset, identifiedPoint)
+    }
+}
+
+/**
+ *
+ * DrawScope.drawHighLightOnSelectedPoint extension method used for drawing and  highlight the selected
+ * point when dragging.
+ * @param dragLocks : List of points to be drawn on the canvas and that can be selected.
+ * @param columnWidth : Width of the Axis in the left or right.
+ * @param paddingRight : Padding given to the right side of the canvas.
+ * @param yBottom : Start position from below of the canvas.
+ * @param selectionHighlightPoint : Data class to define all the styles to be drawn in [SelectionHighlightPoint]
+ */
+private fun DrawScope.drawHighLightOnSelectedPoint(
+    dragLocks: MutableMap<Int, Pair<Point, Offset>>,
+    columnWidth: Float,
+    paddingRight: Dp,
+    yBottom: Float,
+    selectionHighlightPoint: SelectionHighlightPoint?
+) {
+    if (selectionHighlightPoint.isNotNull()) {
+        dragLocks.values.firstOrNull()?.let { (_, location) ->
+            val (x, y) = location
+            if (x >= columnWidth && x <= size.width - paddingRight.toPx()) {
+                selectionHighlightPoint?.draw?.let { it(this, Offset(x, y)) }
+                if (selectionHighlightPoint?.isHighlightLineRequired == true) {
+                    selectionHighlightPoint.drawHighlightLine(
+                        this,
+                        Offset(x, yBottom),
+                        Offset(x, y)
+                    )
+                }
+            }
+        }
+    }
 }

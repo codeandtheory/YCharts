@@ -1,5 +1,6 @@
 package com.ygraph.components.graph.linegraph
 
+import androidx.compose.ui.geometry.Offset
 import com.ygraph.components.common.model.Point
 import kotlin.math.ceil
 
@@ -19,3 +20,9 @@ fun getYAxisScale(
     val scale = ceil(temp)
     return Triple(yMin, yMax, scale)
 }
+
+/**
+ * Returns true if the given drag offset is selected point or not else false
+ */
+fun Offset.isDragLocked(dragOffset: Float, xOffset: Float) =
+    ((dragOffset) > x - xOffset / 2) && ((dragOffset) < x + xOffset / 2)

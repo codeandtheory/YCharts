@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.ygraph.components.axis.Gravity
 import com.ygraph.components.common.utils.DataUtils
 import com.ygraph.components.graph.linegraph.LineGraph
-import com.ygraph.components.graph.linegraph.model.LineGraphData
+import com.ygraph.components.graph.linegraph.model.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +28,13 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val pointsData = DataUtils.getLineChartData(100, 100)
                     val data = LineGraphData(
-                        dataPoints = pointsData,
+                        line = Line(
+                            dataPoints = pointsData,
+                            IntersectionPoint(),
+                            SelectionHighlightPoint(),
+                            ShadowUnderLine(),
+                            SelectionHighlightPopUp()
+                        ),
                         yStepValue = 20f,
                         xStepSize = 30.dp,
                         xAxisSteps = pointsData.size,
@@ -40,7 +46,7 @@ class MainActivity : ComponentActivity() {
                     LineGraph(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(250.dp),
+                            .height(300.dp),
                         lineGraphData = data
                     )
                 }
