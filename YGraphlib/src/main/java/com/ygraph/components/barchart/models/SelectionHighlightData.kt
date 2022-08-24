@@ -57,6 +57,7 @@ data class SelectionHighlightData(
     val backgroundColorFilter: ColorFilter? = null,
     val backgroundBlendMode: BlendMode = DrawScope.DefaultBlendMode,
     val backgroundStyle: DrawStyle = Fill,
+    val highlightLabelAlignment: Paint.Align = Paint.Align.CENTER,
     val isHighlightBarRequired: Boolean = true,
     val popUpLabel: (Float, Float) -> (String) = { x, y ->
         val xLabel = "x : ${x.toInt()} "
@@ -68,7 +69,7 @@ data class SelectionHighlightData(
         val highlightTextPaint = TextPaint().apply {
             textSize = highlightTextSize.toPx()
             color = highlightTextColor.toArgb()
-            textAlign = Paint.Align.CENTER
+            textAlign = highlightLabelAlignment
             typeface = highlightTextTypeface
         }
         val label = popUpLabel(identifiedPoint.point.x, identifiedPoint.point.y)

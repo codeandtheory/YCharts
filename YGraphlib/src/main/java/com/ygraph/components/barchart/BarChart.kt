@@ -140,11 +140,8 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                         yOffset
                     )
                 }
-
-
             },
             drawXAndYAxis = { scrollOffset, xZoom ->
-
                 if (barChartData.showXAxis) {
                     XAxis(
                         axisData = axisData,
