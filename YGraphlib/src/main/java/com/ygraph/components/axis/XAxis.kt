@@ -68,7 +68,6 @@ fun XAxis(
                     )
                 }
                 
-                
                 for (index in 0..xAxisSteps) {
                     xAxisHeight = drawXAxisLabel(
                         axisData,

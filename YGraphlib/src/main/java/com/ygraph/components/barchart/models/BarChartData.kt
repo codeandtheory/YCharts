@@ -37,7 +37,7 @@ data class BarChartData(
     val yLabelData: (Int) -> String = { _ -> "" },
     val yLabelAndAxisLinePadding: Dp = 4.dp,
     val yAxisOffset: Dp = 10.dp,
-    val yTopPadding: Dp = 20.dp,
+    val yTopPadding: Dp = 40.dp,
     val xStepSize: Int = chartData.size,
     val xLabelData: (Int) -> String = { _ -> "" },
     val axisLabelFontSize: TextUnit = 14.sp,

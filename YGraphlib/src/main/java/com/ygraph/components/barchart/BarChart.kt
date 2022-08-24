@@ -1,8 +1,6 @@
 package com.ygraph.components.barchart
 
-import android.graphics.Paint
-import android.graphics.Rect
-import android.text.TextPaint
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
@@ -24,6 +22,7 @@ import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
 import com.ygraph.components.barchart.models.BarChartData
 import com.ygraph.components.barchart.models.BarData
+import com.ygraph.components.barchart.models.SelectionHighlightData
 import com.ygraph.components.barchart.utils.BarChartConstants.DEFAULT_YAXIS_BOTTOM_PADDING
 import com.ygraph.components.common.extensions.*
 import com.ygraph.components.common.model.Point
@@ -54,7 +53,6 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
         val paddingRight = barChartData.paddingEnd
         val points = barChartData.chartData.map { it.point }
         val bgColor = MaterialTheme.colors.surface
-        val highlightData = barChartData.selectionHighlightData
 
         val (xMin, xMax) = getXMaxAndMinPoints(points)
         val (_, yMax) = getYMaxAndMinPoints(points)
@@ -80,12 +78,6 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
             .axisConfig(barChartData.axisConfig)
             .build()
 
-        val highlightTextPaint = TextPaint().apply {
-            textSize = LocalDensity.current.run { highlightData.highlightTextSize.toPx() }
-            color = highlightData.highlightTextColor.toArgb()
-            textAlign = Paint.Align.CENTER
-            typeface = highlightData.highlightTextTypeface
-        }
 
         ScrollableCanvasContainer(modifier = modifier,
             containerBackgroundColor = barChartData.backgroundColor,
@@ -142,13 +134,11 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                     visibility,
                     identifiedPoint,
                     barChartData,
-                    highlightTextPaint,
                     isDragging,
                     columnWidth,
                     yBottom,
                     paddingRight,
-                    yOffset,
-                    maxElementInYAxis
+                    yOffset
                 )
 
 
@@ -214,64 +204,18 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
  * Used to draw the highlighted text
  * @param identifiedPoint : Selected points
  * @param selectedOffset: Offset selected
- * @param barChartData: Data related to the bar chart
- * @param highlightTextPaint : Text paint for the highlighted text
- * @param maximumElementInYAxis : Maximum value on the Y axis
+ * @param barWidth: Width of single bar
+ * @param highlightData: Data for the highlight section
  */
 private fun DrawScope.drawHighlightText(
     identifiedPoint: BarData,
     selectedOffset: Offset,
-    barChartData: BarChartData,
-    highlightTextPaint: TextPaint,
-    yBottom: Float,
-    yOffset: Float,
-    maximumElementInYAxis: Int
+    barWidth: Dp,
+    highlightData: SelectionHighlightData
 ) {
-
-    val highlightData = barChartData.selectionHighlightData
-    val yMaximumDrawOffset = yBottom - ((maximumElementInYAxis - 1) * yOffset)
-    // if the selected offset is very close to top then changing the highlight text position
-    val highlightYValue = if (selectedOffset.y - yMaximumDrawOffset > yOffset) {
-        // above the bar
-        selectedOffset.y - highlightData.highlightTextOffset.toPx()
-    } else {
-        // on the bar
-        selectedOffset.y + highlightData.highlightTextOffset.toPx()
-    }
-    drawContext.canvas.nativeCanvas.apply {
-
-        val highlightText = "x : ${identifiedPoint.point.x}"
-        val centerPointOfBar = selectedOffset.x + barChartData.barWidth.toPx() / 2
-
-        val background = getTextBackgroundSize(
-            centerPointOfBar,
-            highlightYValue,
-            highlightText,
-            highlightTextPaint
-        )
-
-        // drawing the background rect for the text
-        drawRect(
-            highlightData.highlightTextBackgroundColor,
-            Offset(background.left.toFloat(), background.top.toFloat()),
-            Size(background.width().toFloat(), background.height().toFloat()),
-            highlightData.highlightTextBackgroundAlpha
-        )
-
-        drawText(
-            highlightText,
-            centerPointOfBar,
-            highlightYValue
-                    - (highlightTextPaint.descent() - highlightTextPaint.ascent()),
-            highlightTextPaint
-        )
-        drawText(
-            "y : ${identifiedPoint.point.y}",
-            centerPointOfBar,
-            highlightYValue,
-            highlightTextPaint
-        )
-    }
+    val centerPointOfBar = selectedOffset.x + barWidth.toPx() / 2
+    // Drawing the highlighted background and text
+    highlightData.drawPopUp(this, selectedOffset, identifiedPoint, centerPointOfBar)
 }
 
 
@@ -352,26 +296,22 @@ fun getMaxScrollDistance(
  * @param visibility : Flag to control the visibility of highlighted text.
  * @param identifiedPoint: selected bar data.
  * @param barChartData: Data related to the bar chart.
- * @param highlightTextPaint: Text paint for the highlighted text.
  * @param isDragging : Boolean flag for the dragging status.
  * @param columnWidth : Width of the Y axis.
  * @param yBottom : Bottom padding.
  * @param paddingRight : Right padding.
  * @param yOffset : Distance between two y points.
- * @param yMaximumElement : Maximum value on the Y axis
  */
 private fun DrawScope.highlightBar(
     dragLocks: MutableMap<Int, Pair<BarData, Offset>>,
     visibility: Boolean,
     identifiedPoint: BarData,
     barChartData: BarChartData,
-    highlightTextPaint: TextPaint,
     isDragging: Boolean,
     columnWidth: Float,
     yBottom: Float,
     paddingRight: Dp,
     yOffset: Float,
-    yMaximumElement: Int
 ): BarData {
     var mutableIdentifiedPoint: BarData = identifiedPoint
     // Handle the show the selected bar
@@ -401,14 +341,13 @@ private fun DrawScope.highlightBar(
 
     val selectedOffset = dragLocks.values.firstOrNull()?.second
     if (visibility && selectedOffset != null) {
+
+
         drawHighlightText(
             mutableIdentifiedPoint,
             selectedOffset,
-            barChartData,
-            highlightTextPaint,
-            yBottom,
-            yOffset,
-            yMaximumElement
+            barChartData.barWidth,
+            barChartData.selectionHighlightData
         )
     }
 
@@ -457,28 +396,4 @@ fun getDrawOffset(
     val x1 = ((x - xMin) * xOffset) + xLeft - scrollOffset
     val y1 = yBottom - ((y - yMin) * yOffset)
     return Offset(x1, y1)
-}
-
-
-/**
- * returns the background rect for the highlighted text.
- * @param x : X point.
- * @param y: Y point.
- * @param text: Text to be drawn inside the background.
- * @param paint: Background paint.
- */
-private fun getTextBackgroundSize(
-    x: Float,
-    y: Float,
-    text: String,
-    paint: TextPaint
-): Rect {
-    val fontMetrics = paint.fontMetrics
-    val textLength = paint.measureText(text)
-    return Rect(
-        (x - textLength).toInt(),
-        (y + fontMetrics.top * 2).toInt(),
-        (x + textLength).toInt(),
-        (y + fontMetrics.bottom * 2).toInt()
-    )
 }
