@@ -30,6 +30,8 @@ import com.ygraph.components.axis.AxisConfig
  * @param highlightStrokeWidth: Stroke width of the highlighted bar
  * @param highlightTextSize: Text size of the highlighted bar text
  * @param highlightTextColor: Text color of the highlighted bar text
+ * @param highlightTextBackgroundColor: Background color of the highlight background 
+ * @param highlightTextBackgroundAlpha: Alpha for the highlighted text background
  * @param highlightTextTypeface: Typeface of the highlighted bar text
  * @param isGradientEnabled: Boolean Flag to enable/disable gradient bars
  * @param showXAxis: Boolean Flag to enable/disable X axis
@@ -57,6 +59,8 @@ data class BarChartData(
     val highlightStrokeWidth: Dp = 2.dp,
     val highlightTextSize: TextUnit = 12.sp,
     val highlightTextColor: Color = Color.Black,
+    val highlightTextBackgroundColor: Color = Color.Yellow,
+    val highlightTextBackgroundAlpha: Float = 0.7f,
     val highlightTextTypeface: Typeface =  Typeface.DEFAULT,
     val isGradientEnabled: Boolean = false,
     val showYAxis: Boolean = true,
