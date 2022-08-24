@@ -17,5 +17,6 @@ include(
     ":app",
     ":YGraphlib",
     ":experiments:chartcontainer",
-    ":experiments:piechartcontainer"
-) 
+    ":experiments:piechartcontainer",
+    ":experiments:linegraph"
+)

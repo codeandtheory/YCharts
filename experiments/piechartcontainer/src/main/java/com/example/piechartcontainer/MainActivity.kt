@@ -34,7 +34,6 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier,
                     color = MaterialTheme.colors.background
                 ) {
-
                     Column {
                         Spacer(modifier = Modifier.height(10.dp))
                         Text(text = "Charts")
@@ -44,9 +43,9 @@ class MainActivity : ComponentActivity() {
                             .fillMaxWidth(), onClick = {
                             startActivity(
                                 Intent(
-                                this@MainActivity,
-                                BarChartActivity::class.java
-                            )
+                                    this@MainActivity,
+                                    BarChartActivity::class.java
+                                )
                             )
                         }) {
                             Text(text = "Bar Chart")
@@ -57,17 +56,14 @@ class MainActivity : ComponentActivity() {
                             .fillMaxWidth(), onClick = {
                             startActivity(
                                 Intent(
-                                this@MainActivity,
-                                PieChartActivity::class.java
-                            )
+                                    this@MainActivity,
+                                    PieChartActivity::class.java
+                                )
                             )
                         }) {
                             Text(text = "Pie Chart")
                         }
                     }
-
-
-                    
                 }
             }
         }
