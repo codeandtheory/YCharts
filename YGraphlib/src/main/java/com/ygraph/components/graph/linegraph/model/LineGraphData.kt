@@ -10,20 +10,23 @@ import com.ygraph.components.common.model.Point
 /**
  *
  * LineGraphData data class that contains all params user need to define to draw a line graph.
- * @param line: The path to be drawn on the graph represented by a line
+ * @param line: The path to be drawn on the graph represented by a line.
  * @param yAxisLabelData(Int)-> String: lambda method for providing labels, @param Int will be the index
- * given for each level in YAxis
+ * given for each level in YAxis.
  * @param xAxisLabelData(Int)-> String: lambda method for providing labels, @param Int will be the index
- * given for each level in XAxis
- * @param yStepValue: Step value for label segmentation
- * @param xStepSize: Size of each step in X-Axis in Dp
- * @param xAxisSteps: Number of steps in X-Axis
- * @param yAxisPos :Gravity of yAxis either right or left
- * @param xAxisPos: Gravity of xAxis either bottom or top
- * @param isZoomAllowed: True if zoom in X-Axis is allowed else false
- * @param axisLabelFontSize: Font size of axis lablel data
- * @param yLabelAndAxisLinePadding: Text label padding from y Axis and the labels
+ * given for each level in XAxis.
+ * @param yStepValue: Step value for label segmentation.
+ * @param xStepSize: Size of each step in X-Axis in Dp.
+ * @param xAxisSteps: Number of steps in X-Axis.
+ * @param yAxisPos :Gravity of yAxis either right or left defined by [Gravity].
+ * @param xAxisPos: Gravity of xAxis either bottom or top defined by [Gravity].
+ * @param isZoomAllowed: True if zoom in X-Axis is allowed else false.
+ * @param axisLabelFontSize: Font size of axis label data.
+ * @param yLabelAndAxisLinePadding: Text label padding from y Axis and the labels.
  * @param yAxisOffset: Drawing offset for yAxis.
+ * @param paddingTop: Padding from the top of the canvas to start of the graph container.
+ * @param paddingRight: Padding from the end of the canvas to end of the graph container.
+ * @param bottomPadding: Padding from the bottom of the canvas to bottom of the graph container.
  */
 data class LineGraphData(
     val line: Line,
