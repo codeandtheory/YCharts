@@ -42,7 +42,7 @@ fun XAxis(
     axisData: AxisData,
     modifier: Modifier,
     xStart: Float,
-    xLineStart: Float,
+    xLineStart: Float = 0f,
     scrollOffset: Float,
     zoomScale: Float,
     chartData: List<Point>
@@ -127,7 +127,7 @@ private fun DrawScope.drawXAxisLabel(
     calculatedXAxisHeight =
         if (axisConfig.isAxisLineRequired) {
             labelHeight.toDp() + axisLineThickness +
-                    indicatorLineWidth + xLabelAndAxisLinePadding+ xBottomPadding
+                    indicatorLineWidth + xLabelAndAxisLinePadding + xBottomPadding 
         } else labelHeight.toDp() + xLabelAndAxisLinePadding
     val ellipsizedText = TextUtils.ellipsize(
         xLabel,
@@ -135,13 +135,9 @@ private fun DrawScope.drawXAxisLabel(
         xAxisStepSize.toPx(),
         axisConfig.ellipsizeAt
     )
-
-
     drawContext.canvas.nativeCanvas.apply {
-
         val x = xPos - (labelWidth / 2)
         val y = labelHeight / 2 + indicatorLineWidth.toPx() + xLabelAndAxisLinePadding.toPx()
-
         withRotation(xAxisLabelAngle, x, y) {
             drawText(
                 if (axisConfig.shouldEllipsizeAxisLabel) ellipsizedText.toString() else xLabel,

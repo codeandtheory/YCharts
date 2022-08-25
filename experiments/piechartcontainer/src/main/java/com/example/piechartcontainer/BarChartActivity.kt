@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.example.piechartcontainer.ui.theme.YGraphsTheme
 import com.ygraph.components.barchart.BarChart
 import com.ygraph.components.barchart.models.BarChartData
-import com.ygraph.components.common.datautils.getBarChartData
+import com.ygraph.components.common.utils.DataUtils.getBarChartData
 
 class BarChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +29,6 @@ class BarChartActivity : ComponentActivity() {
                     val barChartData = BarChartData(
                         chartData = barData, yStepSize = yStepSize,
                         paddingBetweenBars = 30.dp,
-                        xLabelAngle = 20f,
                         yLabelAndAxisLinePadding = 20.dp,
                         yAxisOffset = 20.dp,
                         yLabelData = { index -> (index * yStepSize).toString() },
@@ -37,7 +36,7 @@ class BarChartActivity : ComponentActivity() {
                         showYAxis = true,
                         showXAxis = true,
                         horizontalExtraSpace = 10.dp,
-                        xBottomPadding = 50.dp
+                        xLabelAngle = 20f
                     )
                     BarChart(modifier = Modifier.height(600.dp), barChartData = barChartData)
                 }

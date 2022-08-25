@@ -37,8 +37,7 @@ import androidx.compose.ui.unit.sp
  * @param xBottomPadding: X Label offset bottom padding,
  * @param xAxisLabelAngle: Angle for the X axis labels
  * @param xTopPadding: X Label offset top padding
- * @param shouldXAxisStartWithPadding: Used to append a line in front of the x Axis 
-
+ * @param shouldXAxisStartWithPadding: Used to append a line in front of the x Axis
  */
 data class AxisData(
     // All Y-Axis params
@@ -80,7 +79,7 @@ data class AxisData(
         private var yTopPadding: Dp = 20.dp
         private var yBottomPadding: Dp = 10.dp
         private var xAxisSteps: Int = 20
-        private var xAxisStepSize: Dp = 20.dp
+        private var xAxisStepSize: Dp = 30.dp
         private var xLabelAndAxisLinePadding: Dp = 15.dp
         private var xAxisPos: Gravity = Gravity.BOTTOM
         private var xLabelData: (Int) -> String = { _ -> "" }
@@ -115,7 +114,7 @@ data class AxisData(
 
         fun xAxisPos(pos: Gravity) = apply { this.xAxisPos = pos }
 
-        fun textLabelPadding(padding: Dp) = apply { this.yLabelAndAxisLinePadding = padding }
+        fun yLabelAndAxisLinePadding(padding: Dp) = apply { this.yLabelAndAxisLinePadding = padding }
 
         fun yAxisOffset(offset: Dp) = apply { this.yAxisOffset = offset }
 
@@ -147,6 +146,7 @@ data class AxisData(
         fun shouldXAxisStartWithPadding(flag: Boolean) = apply { this.shouldStartXAxisWithPadding = flag }
         
         fun xAxisLabelAngle(angle: Float) = apply { this.xAxisLabelAngle = angle }
+
 
         fun build() = AxisData(
             yMaxValue,

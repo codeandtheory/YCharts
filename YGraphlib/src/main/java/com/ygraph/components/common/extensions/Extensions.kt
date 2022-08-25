@@ -34,6 +34,55 @@ fun String.getTextHeight(paint: Paint): Int {
     return bounds.height()
 }
 
+/**
+return the shape that is used to mask a particular area for given leftPadding & rightPadding
+ */
+internal class RowClip(
+    private val leftPadding: Float,
+    private val rightPadding: Dp,
+    private val topPadding: Float = 0f
+) : Shape {
+    override fun createOutline(
+        size: Size,
+        layoutDirection: LayoutDirection,
+        density: Density
+    ): Outline {
+        return Outline.Rectangle(
+            androidx.compose.ui.geometry.Rect(
+                leftPadding,
+                topPadding,
+                size.width - rightPadding.value * density.density,
+                size.height
+            )
+        )
+    }
+}
+
+fun Any?.isNotNull() = this != null
+
+
+/**
+ * returns the background rect for the highlighted text.
+ * @param x : X point.
+ * @param y: Y point.
+ * @param text: Text to be drawn inside the background.
+ * @param paint: Background paint.
+ */
+fun getTextBackgroundRect(
+    x: Float,
+    y: Float,
+    text: String,
+    paint: TextPaint
+): Rect {
+    val fontMetrics = paint.fontMetrics
+    val textLength = paint.measureText(text)
+    return Rect(
+        (x - (textLength / 2)).toInt(),
+        (y + fontMetrics.top).toInt(),
+        (x + (textLength / 2)).toInt(),
+        (y + fontMetrics.bottom).toInt()
+    )
+}
 
 /**
 return the maximum and minimum points of X axis
@@ -81,45 +130,3 @@ fun Offset.isDragLocked(dragOffset: Float, xOffset: Float) =
     ((dragOffset) > x - xOffset / 2) && ((dragOffset) < x + xOffset / 2)
 
 
-/**
-return the shape that is used to mask a particular area for given leftPadding & rightPadding
- */
-class RowClip(private val leftPadding: Float, private val rightPadding: Dp) : Shape {
-    override fun createOutline(
-        size: Size,
-        layoutDirection: LayoutDirection,
-        density: Density
-    ): Outline {
-        return Outline.Rectangle(
-            androidx.compose.ui.geometry.Rect(
-                leftPadding,
-                0f,
-                size.width - rightPadding.value * density.density,
-                size.height
-            )
-        )
-    }
-}
-
-/**
- * returns the background rect for the highlighted text.
- * @param x : X point.
- * @param y: Y point.
- * @param text: Text to be drawn inside the background.
- * @param paint: Background paint.
- */
-fun getTextBackgroundRect(
-    x: Float,
-    y: Float,
-    text: String,
-    paint: TextPaint
-): Rect {
-    val fontMetrics = paint.fontMetrics
-    val textLength = paint.measureText(text)
-    return Rect(
-        (x - (textLength / 2)).toInt(),
-        (y + fontMetrics.top).toInt(),
-        (x + (textLength / 2)).toInt(),
-        (y + fontMetrics.bottom).toInt()
-    )
-}
