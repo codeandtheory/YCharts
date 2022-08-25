@@ -71,7 +71,8 @@ class MainActivity : ComponentActivity() {
                                     xStart = columnWidth.value,
                                     scrollOffset = scrollOffset,
                                     zoomScale = xZoom,
-                                    chartData = getLineChartData(100, 100)
+                                    chartData = getLineChartData(100, 100),
+                                    xLineStart = 0f
                                 )
                             },
                             onDraw = { _, _ ->
