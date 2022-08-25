@@ -29,6 +29,7 @@ class BarChartActivity : ComponentActivity() {
                     val barChartData = BarChartData(
                         chartData = barData, yStepSize = yStepSize,
                         paddingBetweenBars = 30.dp,
+                        xLabelAngle = 20f,
                         yLabelAndAxisLinePadding = 20.dp,
                         yAxisOffset = 20.dp,
                         yLabelData = { index -> (index * yStepSize).toString() },
@@ -36,6 +37,7 @@ class BarChartActivity : ComponentActivity() {
                         showYAxis = true,
                         showXAxis = true,
                         horizontalExtraSpace = 10.dp,
+                        xBottomPadding = 50.dp
                     )
                     BarChart(modifier = Modifier.height(600.dp), barChartData = barChartData)
                 }

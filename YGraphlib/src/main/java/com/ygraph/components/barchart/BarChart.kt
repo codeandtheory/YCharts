@@ -62,6 +62,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
 
         val axisData = AxisData.Builder()
             .yMaxValue(yMax)
+            .xBottomPadding(barChartData.xBottomPadding)
             .yStepValue(barChartData.yStepSize.toFloat())
             .xAxisSteps(barChartData.chartData.size - 1)
             .xAxisStepSize(barChartData.barWidth + barChartData.paddingBetweenBars)
@@ -74,6 +75,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
             .shouldXAxisStartWithPadding(true)
             .yBottomPadding(LocalDensity.current.run { rowHeight.toDp() })
             .axisConfig(barChartData.axisConfig)
+            .xAxisLabelAngle(barChartData.xLabelAngle)
             .build()
 
 
@@ -147,9 +149,6 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                         axisData = axisData,
                         modifier = Modifier
                             .align(Alignment.BottomStart)
-                            .padding(
-                                bottom = axisData.xBottomPadding,
-                            )
                             .fillMaxWidth()
                             .wrapContentHeight()
                             .clip(
