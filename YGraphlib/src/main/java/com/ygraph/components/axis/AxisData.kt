@@ -147,7 +147,6 @@ data class AxisData(
         
         fun xAxisLabelAngle(angle: Float) = apply { this.xAxisLabelAngle = angle }
 
-
         fun build() = AxisData(
             yMaxValue,
             yStepValue,
