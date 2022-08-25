@@ -13,7 +13,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -84,7 +86,8 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                         xMin,
                         xOffset,
                         paddingRight.toPx(),
-                        size.width
+                        size.width,
+                        containerPaddingEnd.toPx()
                     )
                 },
                 isPinchZoomEnabled = isZoomAllowed,
@@ -137,7 +140,8 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                     val dragLocks = mutableMapOf<Int, Pair<Point, Offset>>()
 
                     // Draw cubic line using the points and form a line graph
-                    val cubicPath = drawCubicLine(pointsData, cubicPoints1, cubicPoints2)
+                    val cubicPath =
+                        drawCubicLine(pointsData, cubicPoints1, cubicPoints2, line.lineStyle)
 
                     // Draw Lines and Points and AreaUnderLine
                     // Draw area under curve
@@ -228,6 +232,7 @@ fun getMappingPointsToGraph(
  * @param xOffset: Total distance between two X-Axis points.
  * @param paddingRight : Padding at the end of the canvas.
  * @param canvasWidth : Total available canvas width.
+ * @param containerPaddingEnd : Container inside padding end after the last point of the graph.
  */
 fun getMaxScrollDistance(
     columnWidth: Float,
@@ -235,10 +240,11 @@ fun getMaxScrollDistance(
     xMin: Float,
     xOffset: Float,
     paddingRight: Float,
-    canvasWidth: Float
+    canvasWidth: Float,
+    containerPaddingEnd: Float = 0f
 ): Float {
     val xLastPoint =
-        (xMax - xMin) * xOffset + columnWidth + paddingRight //+ horizontalGap.value
+        (xMax - xMin) * xOffset + columnWidth + paddingRight + containerPaddingEnd
     return if (xLastPoint > canvasWidth) {
         xLastPoint - canvasWidth
     } else 0f
@@ -250,29 +256,60 @@ fun getMaxScrollDistance(
  * @param pointsData : List of points to be drawn on the canvas
  * @param cubicPoints1 : List of average left side values for a given Point(x,y).
  * @param cubicPoints2 : List of average right side values for a given Point(x,y).
+ * @param lineStyle : All styles related to the path are included in [LineStyle].
  */
 private fun DrawScope.drawCubicLine(
     pointsData: MutableList<Offset>,
     cubicPoints1: MutableList<Offset>,
-    cubicPoints2: MutableList<Offset>
+    cubicPoints2: MutableList<Offset>,
+    lineStyle: LineStyle
 ): Path {
     val path = Path()
     path.moveTo(pointsData.first().x, pointsData.first().y)
-
     for (i in 1 until pointsData.size) {
-        path.cubicTo(
-            cubicPoints1[i - 1].x,
-            cubicPoints1[i - 1].y,
-            cubicPoints2[i - 1].x,
-            cubicPoints2[i - 1].y,
-            pointsData[i].x,
-            pointsData[i].y
+        when (lineStyle.lineType) {
+            is LineType.Straight -> {
+                path.lineTo(pointsData[i].x, pointsData[i].y)
+
+            }
+            is LineType.SmoothCurve -> {
+                path.cubicTo(
+                    cubicPoints1[i - 1].x,
+                    cubicPoints1[i - 1].y,
+                    cubicPoints2[i - 1].x,
+                    cubicPoints2[i - 1].y,
+                    pointsData[i].x,
+                    pointsData[i].y
+                )
+            }
+        }
+    }
+    with(lineStyle) {
+        drawPath(
+            path,
+            color = color,
+            style = getDrawStyleForPath(lineStyle.lineType, lineStyle),
+            alpha = alpha,
+            colorFilter = colorFilter,
+            blendMode = blendMode
         )
     }
-
-    drawPath(path, color = Color.Blue, style = Stroke(width = 8f))
     return path
 }
+
+/**
+ *
+ * Returns the Drawstyle for the path.
+ * @param lineType : Type of the line [LineType]
+ * @param lineStyle : The style for the path [lineStyle]
+ */
+private fun getDrawStyleForPath(
+    lineType: LineType,
+    lineStyle: LineStyle
+): DrawStyle = if (lineType.isDotted) Stroke(
+    width = lineStyle.width, pathEffect = PathEffect.dashPathEffect(lineType.intervals)
+) else lineStyle.style
+
 
 /**
  *
@@ -329,6 +366,7 @@ private fun DrawScope.drawShadowUnderLineAndIntersectionPoint(
         }
     }
 }
+
 
 /**
  *
