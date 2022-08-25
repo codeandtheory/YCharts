@@ -69,8 +69,8 @@ data class SelectionHighlightPopUp(
                 highlightTextPaint
             )
             drawRoundRect(
-                backgroundColor,
-                Offset(
+                color = backgroundColor,
+                topLeft = Offset(
                     background.left.toFloat(),
                     background.top.toFloat() - paddingBetweenPopUpAndPoint.toPx()
                 ),
