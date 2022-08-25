@@ -141,7 +141,12 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
 
                     // Draw cubic line using the points and form a line graph
                     val cubicPath =
-                        drawCubicLine(pointsData, cubicPoints1, cubicPoints2, line.lineStyle)
+                        drawStraightOrCubicLine(
+                            pointsData,
+                            cubicPoints1,
+                            cubicPoints2,
+                            line.lineStyle
+                        )
 
                     // Draw Lines and Points and AreaUnderLine
                     // Draw area under curve
@@ -252,13 +257,13 @@ fun getMaxScrollDistance(
 
 /**
  *
- * DrawScope.drawCubicLine extension method used for drawing a cubic line for a given Point(x,y).
+ * DrawScope.drawStraightOrCubicLine extension method used for drawing a straight/cubic line for a given Point(x,y).
  * @param pointsData : List of points to be drawn on the canvas
  * @param cubicPoints1 : List of average left side values for a given Point(x,y).
  * @param cubicPoints2 : List of average right side values for a given Point(x,y).
  * @param lineStyle : All styles related to the path are included in [LineStyle].
  */
-private fun DrawScope.drawCubicLine(
+private fun DrawScope.drawStraightOrCubicLine(
     pointsData: MutableList<Offset>,
     cubicPoints1: MutableList<Offset>,
     cubicPoints2: MutableList<Offset>,
@@ -270,7 +275,6 @@ private fun DrawScope.drawCubicLine(
         when (lineStyle.lineType) {
             is LineType.Straight -> {
                 path.lineTo(pointsData[i].x, pointsData[i].y)
-
             }
             is LineType.SmoothCurve -> {
                 path.cubicTo(
