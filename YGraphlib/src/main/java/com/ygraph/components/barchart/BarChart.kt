@@ -118,10 +118,11 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                         // drawing each individual bars
                         drawBarChart(barChartData, barData, drawOffset, height)
 
+                        val middleOffset = Offset(drawOffset.x + barWidth.toPx() / 2, drawOffset.y)
                         // store the drag points for selection
-                        if (isDragging && drawOffset.isDragLocked(
+                        if (isDragging && middleOffset.isDragLocked(
                                 dragOffset,
-                                xOffset
+                                barWidth.toPx()
                             )
                         ) {
                             dragLocks[0] = barData to drawOffset

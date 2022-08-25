@@ -13,6 +13,7 @@ import com.example.piechartcontainer.ui.theme.YGraphsTheme
 import com.ygraph.components.barchart.BarChart
 import com.ygraph.components.barchart.models.BarChartData
 import com.ygraph.components.common.utils.DataUtils.getBarChartData
+import com.ygraph.components.common.utils.DataUtils.getGradientBarChartData
 
 class BarChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +25,7 @@ class BarChartActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    val barData = getBarChartData(50, 50)
+                    val barData = getGradientBarChartData(50, 50)
                     val yStepSize = 10
                     val barChartData = BarChartData(
                         chartData = barData, yStepSize = yStepSize,
@@ -36,7 +37,8 @@ class BarChartActivity : ComponentActivity() {
                         showYAxis = true,
                         showXAxis = true,
                         horizontalExtraSpace = 10.dp,
-                        xLabelAngle = 20f
+                        xLabelAngle = 20f,
+                        isGradientEnabled = true
                     )
                     BarChart(modifier = Modifier.height(600.dp), barChartData = barChartData)
                 }

@@ -44,4 +44,41 @@ object DataUtils {
         return list
     }
 
+
+    /**
+     * @param listSize Size of the list
+     * @param maxRange Maximum range for the values
+    return the sample gradient bar chart data
+     */
+    fun getGradientBarChartData(listSize: Int, maxRange: Int): List<BarData> {
+        val list = arrayListOf<BarData>()
+        for (index in 0 until listSize) {
+            list.add(
+                BarData(
+                    point = Point(
+                        index.toFloat(),
+                        "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat()
+                    ),
+                    gradientColorList = listOf(
+                        Color(
+                            Random.nextInt(256), Random.nextInt(256), Random.nextInt(256)
+                        ),
+                        Color(
+                            Random.nextInt(256), Random.nextInt(256), Random.nextInt(256)
+                        ),
+                        Color(
+                            Random.nextInt(256), Random.nextInt(256), Random.nextInt(256)
+                        ),
+                        Color(
+                            Random.nextInt(256), Random.nextInt(256), Random.nextInt(256)
+                        )
+                    ),
+                    label = "Bar$index"
+                )
+            )
+        }
+        return list
+    }
+    
+
 }
