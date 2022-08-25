@@ -137,11 +137,11 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                     val dragLocks = mutableMapOf<Int, Pair<Point, Offset>>()
 
                     // Draw cubic line using the points and form a line graph
-                    drawCubicLine(pointsData, cubicPoints1, cubicPoints2)
+                    val cubicPath = drawCubicLine(pointsData, cubicPoints1, cubicPoints2)
 
                     // Draw Lines and Points and AreaUnderLine
                     // Draw area under curve
-                    drawAreaShadowUnderLine(pointsData, yBottom, line)
+                    drawShadowUnderLineAndIntersectionPoint(cubicPath, pointsData, yBottom, line)
 
                     // Draw column to make graph look scrollable under Yaxis
                     drawUnderScrollMask(columnWidth, paddingRight, bgColor)
@@ -255,7 +255,7 @@ private fun DrawScope.drawCubicLine(
     pointsData: MutableList<Offset>,
     cubicPoints1: MutableList<Offset>,
     cubicPoints2: MutableList<Offset>
-) {
+): Path {
     val path = Path()
     path.moveTo(pointsData.first().x, pointsData.first().y)
 
@@ -271,6 +271,7 @@ private fun DrawScope.drawCubicLine(
     }
 
     drawPath(path, color = Color.Blue, style = Stroke(width = 8f))
+    return path
 }
 
 /**
@@ -304,30 +305,28 @@ private fun DrawScope.drawUnderScrollMask(columnWidth: Float, paddingRight: Dp, 
 
 /**
  *
- * DrawScope.drawAreaShadowUnderLine extension method used  for drawing a shades below the line graph points.
+ * DrawScope.drawShadowUnderLineAndIntersectionPoint extension method used  for drawing a
+ * shadow below the line graph points and also drawing intersection points on the line graph.
+ * @param cubicPath : Path used to draw the shadow
  * @param pointsData : List of the points on the Line graph.
  * @param yBottom : Offset of X-Axis starting position i.e shade to be drawn until.
  * @param line : line on which shadow & intersectionPoints has to be drawn.
  */
-private fun DrawScope.drawAreaShadowUnderLine(
+private fun DrawScope.drawShadowUnderLineAndIntersectionPoint(
+    cubicPath: Path,
     pointsData: MutableList<Offset>,
     yBottom: Float,
     line: Line
 ) {
-    val pointUnderAreaPath = Path()
-    pointsData.forEachIndexed { index, offset ->
-        if (index == 0) {
-            pointUnderAreaPath.moveTo(offset.x, yBottom)
-        }
-        pointUnderAreaPath.lineTo(offset.x, offset.y)
-        if (line.intersectionPoint.isNotNull()) drawPointOnLine(offset, line.intersectionPoint)
-    }
     if (line.shadowUnderLine.isNotNull()) {
-        val last = pointsData.last()
-        val first = pointsData.first()
-        pointUnderAreaPath.lineTo(last.x, yBottom)
-        pointUnderAreaPath.lineTo(first.x, yBottom)
-        line.shadowUnderLine?.draw?.let { it(this, pointUnderAreaPath) }
+        cubicPath.lineTo(pointsData.last().x, yBottom)
+        cubicPath.lineTo(pointsData.first().x, yBottom)
+        line.shadowUnderLine?.draw?.let { it(this, cubicPath) }
+    }
+    if (line.intersectionPoint.isNotNull()) {
+        pointsData.forEach { offset ->
+            drawPointOnLine(offset, line.intersectionPoint)
+        }
     }
 }
 
