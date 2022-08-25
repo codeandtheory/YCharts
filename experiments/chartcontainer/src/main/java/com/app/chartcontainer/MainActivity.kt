@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
                             .axisLabelFontSize(14.sp)
                             .yLabelData { index -> index.toString() }
                             .xLabelData { index -> index.toString() }
-                            .textLabelPadding(20.dp)
+                            .yLabelAndAxisLinePadding(20.dp)
                             .yAxisOffset(20.dp)
                             .yLabelData { index -> "$index" }
                             .build()
@@ -71,7 +71,8 @@ class MainActivity : ComponentActivity() {
                                     xStart = columnWidth.value,
                                     scrollOffset = scrollOffset,
                                     zoomScale = xZoom,
-                                    chartData = getLineChartData(100, 100)
+                                    chartData = getLineChartData(100, 100),
+                                    xLineStart = 0f
                                 )
                             },
                             onDraw = { _, _ ->

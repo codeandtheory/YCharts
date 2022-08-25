@@ -10,9 +10,9 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ygraph.components.axis.AxisConfig
+import com.ygraph.components.axis.AxisData
 import com.ygraph.components.axis.Gravity
 import com.ygraph.components.axis.YAxis
-import com.ygraph.components.axis.AxisData
 import org.junit.Ignore
 import org.junit.Rule
 
@@ -26,18 +26,16 @@ class YGraphTest {
         with(composeTestRule) {
             // Given
             val axisData = AxisData.Builder()
-                .modifier(Modifier.height(300.dp))
                 .yMaxValue(800f)
                 .yStepValue(100f)
-                .bottomPadding(10.dp)
-                .axisPos(Gravity.LEFT)
+                .xAxisPos(Gravity.LEFT)
                 .axisLabelFontSize(14.sp)
                 .yLabelData { index -> index.toString() }
                 .build()
 
             // When
             setContent {
-                YAxis(axisData = axisData)
+                YAxis(modifier = Modifier.height(250.dp), axisData = axisData)
             }
 
             // Then
@@ -49,11 +47,9 @@ class YGraphTest {
         with(composeTestRule) {
             // Given
             val axisData = AxisData.Builder()
-                .modifier(Modifier.height(300.dp))
                 .yMaxValue(800f)
                 .yStepValue(100f)
-                .bottomPadding(10.dp)
-                .axisPos(Gravity.LEFT)
+                .xAxisPos(Gravity.LEFT)
                 .axisLabelFontSize(14.sp)
                 .axisConfig(AxisConfig(isAxisLineRequired = false))
                 .yLabelData { index -> index.toString() }
@@ -61,7 +57,7 @@ class YGraphTest {
 
             // When
             setContent {
-                YAxis(axisData = axisData)
+                YAxis(modifier = Modifier.height(250.dp), axisData = axisData)
             }
 
             // Then

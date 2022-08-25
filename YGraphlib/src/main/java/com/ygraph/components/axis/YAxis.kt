@@ -47,10 +47,10 @@ fun YAxis(modifier: Modifier, axisData: AxisData) {
                     yBottomPadding.toPx(),
                     yTopPadding.toPx()
                 )
-                for (i in 0 until reqYLabelsQuo.toInt()) {
+                for (index in 0 until reqYLabelsQuo.toInt()) {
                     // Drawing the axis labels
                     yAxisWidth = drawAxisLabel(
-                        i,
+                        index,
                         reqYLabelsQuo,
                         axisData,
                         yAxisWidth,
@@ -60,7 +60,7 @@ fun YAxis(modifier: Modifier, axisData: AxisData) {
                     )
                     drawAxisLineWithPointers(
                         axisData,
-                        i,
+                        index,
                         reqYLabelsQuo,
                         isRightAligned,
                         yAxisWidth,
