@@ -1,10 +1,13 @@
 package com.app.chartcontainer
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -26,65 +29,90 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             YGraphsTheme {
-                // A surface container using the 'background' color from the theme
                 Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Yellow)
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    val columnWidth = remember { mutableStateOf(0f) }
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        val axisData = AxisData.Builder()
-                            .yMaxValue(100f)
-                            .yStepValue(20f)
-                            .yBottomPadding(32.5.dp)
-                            .axisLabelFontSize(14.sp)
-                            .yLabelData { index -> index.toString() }
-                            .xLabelData { index -> index.toString() }
-                            .yLabelAndAxisLinePadding(20.dp)
-                            .yAxisOffset(20.dp)
-                            .yLabelData { index -> "$index" }
-                            .build()
-                        ScrollableCanvasContainer(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(250.dp),
-                            calculateMaxDistance = { xZoom -> size.width * 3 }, // T0D0 need to calculate
-                            drawXAndYAxis = { scrollOffset, xZoom ->
-                                YAxis(
-                                    modifier = Modifier
-                                        .height(250.dp)
-                                        .onGloballyPositioned {
-                                            columnWidth.value = it.size.width.toFloat()
-                                        },
-                                    axisData = axisData
-                                )
-                                XAxis(
-                                    axisData = axisData,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .wrapContentHeight()
-                                        .align(Alignment.BottomStart),
-                                    xStart = columnWidth.value,
-                                    scrollOffset = scrollOffset,
-                                    zoomScale = xZoom,
-                                    chartData = getLineChartData(100, 100),
-                                    xLineStart = 0f
-                                )
-                            },
-                            onDraw = { _, _ ->
-                                // T0D0 draw any type of graph here
-                            }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(text = "Charts")
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Button(modifier = Modifier
+                        .padding(5.dp)
+                        .fillMaxWidth(), onClick = {
+                        startActivity(
+                            Intent(
+                                this@MainActivity,
+                                LineChartActivity::class.java
+                            )
                         )
+                    }) {
+                        Text(text = "Line Chart")
                     }
+                    Spacer(modifier = Modifier.height(20.dp))
+                    ScrollableContainer()
                 }
             }
         }
     }
 }
+
+@Composable
+private fun ScrollableContainer() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        val columnWidth = remember { mutableStateOf(0f) }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start
+        ) {
+            val axisData = AxisData.Builder()
+                .yMaxValue(100f)
+                .yStepValue(20f)
+                .yBottomPadding(32.5.dp)
+                .axisLabelFontSize(14.sp)
+                .yLabelData { index -> index.toString() }
+                .xLabelData { index -> index.toString() }
+                .yLabelAndAxisLinePadding(20.dp)
+                .yAxisOffset(20.dp)
+                .yLabelData { index -> "$index" }
+                .build()
+            ScrollableCanvasContainer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(250.dp),
+                containerBackgroundColor = Color.Yellow,
+                calculateMaxDistance = { xZoom -> size.width * 3 }, // T0D0 need to calculate
+                drawXAndYAxis = { scrollOffset, xZoom ->
+                    YAxis(
+                        modifier = Modifier
+                            .height(250.dp)
+                            .onGloballyPositioned {
+                                columnWidth.value = it.size.width.toFloat()
+                            },
+                        axisData = axisData
+                    )
+                    XAxis(
+                        axisData = axisData,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .align(Alignment.BottomStart),
+                        xStart = columnWidth.value,
+                        scrollOffset = scrollOffset,
+                        zoomScale = xZoom,
+                        chartData = getLineChartData(100, 100),
+                        xLineStart = 0f
+                    )
+                },
+                onDraw = { _, _ ->
+                    // T0D0 draw any type of graph here
+                }
+            )
+        }
+    }
+}
+
 
 // T0D0 pass data through the graph component
 private fun getLineChartData(listSize: Int, maxRange: Int): List<Point> {
