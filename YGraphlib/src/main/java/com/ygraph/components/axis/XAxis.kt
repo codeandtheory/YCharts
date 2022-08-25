@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.withRotation
 import com.ygraph.components.common.extensions.getTextHeight
 import com.ygraph.components.common.extensions.getTextWidth
 import com.ygraph.components.common.model.Point
@@ -126,7 +127,7 @@ private fun DrawScope.drawXAxisLabel(
     calculatedXAxisHeight =
         if (axisConfig.isAxisLineRequired) {
             labelHeight.toDp() + axisLineThickness +
-                    indicatorLineWidth + xLabelAndAxisLinePadding
+                    indicatorLineWidth + xLabelAndAxisLinePadding + xBottomPadding 
         } else labelHeight.toDp() + xLabelAndAxisLinePadding
     val ellipsizedText = TextUtils.ellipsize(
         xLabel,
@@ -135,12 +136,16 @@ private fun DrawScope.drawXAxisLabel(
         axisConfig.ellipsizeAt
     )
     drawContext.canvas.nativeCanvas.apply {
-        drawText(
-            if (axisConfig.shouldEllipsizeAxisLabel) ellipsizedText.toString() else xLabel,
-            xPos - (labelWidth / 2),
-            labelHeight / 2 + indicatorLineWidth.toPx() + xLabelAndAxisLinePadding.toPx(),
-            xAxisTextPaint
-        )
+        val x = xPos - (labelWidth / 2)
+        val y = labelHeight / 2 + indicatorLineWidth.toPx() + xLabelAndAxisLinePadding.toPx()
+        withRotation(xAxisLabelAngle, x, y) {
+            drawText(
+                if (axisConfig.shouldEllipsizeAxisLabel) ellipsizedText.toString() else xLabel,
+                x,
+                y,
+                xAxisTextPaint
+            )
+        }
     }
     calculatedXAxisHeight
 }

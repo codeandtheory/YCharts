@@ -12,7 +12,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
@@ -67,6 +66,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                 .yStepValue(yStepSize.toFloat())
                 .xAxisSteps(chartData.size - 1)
                 .xAxisStepSize(barWidth + paddingBetweenBars)
+                .xAxisLabelAngle(xLabelAngle)
                 .axisLabelFontSize(axisLabelFontSize)
                 .yLabelData(yLabelData)
                 .xLabelData(xLabelData)
@@ -75,6 +75,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                 .yTopPadding(yTopPadding)
                 .shouldXAxisStartWithPadding(true)
                 .yBottomPadding(LocalDensity.current.run { rowHeight.toDp() })
+                .xBottomPadding(xBottomPadding)
                 .axisConfig(axisConfig)
                 .build()
 
@@ -150,9 +151,6 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                             axisData = axisData,
                             modifier = Modifier
                                 .align(Alignment.BottomStart)
-                                .padding(
-                                    bottom = axisData.xBottomPadding,
-                                )
                                 .fillMaxWidth()
                                 .wrapContentHeight()
                                 .clip(

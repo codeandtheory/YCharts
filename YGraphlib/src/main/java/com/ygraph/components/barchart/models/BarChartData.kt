@@ -5,7 +5,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import android.graphics.Typeface
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.DrawStyle
@@ -23,7 +22,9 @@ import com.ygraph.components.axis.AxisConfig
  * @param xStepSize: Number of steps needed in X axis
  * @param xStepSize: Number of steps needed in X axis
  * @param xLabelData(Int)-> String: lambda method for providing labels, @param Int will be the index
- * @param axisLabelFontSize: Font size of axis lablel data
+ * @param xLabelAngle: Angle of the x axis labels
+ * @param xBottomPadding: Bottom padding for the X axis
+ * @param axisLabelFontSize: Font size of axis label data
  * @param barWidth: Width of a bar
  * @param cornerRadius: Corner radius for the bars
  * @param paddingBetweenBars: Space between adjacent bars
@@ -46,6 +47,8 @@ data class BarChartData(
     val yTopPadding: Dp = 40.dp,
     val xStepSize: Int = chartData.size,
     val xLabelData: (Int) -> String = { _ -> "" },
+    val xLabelAngle: Float = 0f,
+    val xBottomPadding: Dp = 10.dp,
     val axisLabelFontSize: TextUnit = 14.sp,
     val barWidth: Dp = 30.dp,
     val cornerRadius: Dp = 4.dp,

@@ -36,6 +36,7 @@ class BarChartActivity : ComponentActivity() {
                         showYAxis = true,
                         showXAxis = true,
                         horizontalExtraSpace = 10.dp,
+                        xLabelAngle = 20f
                     )
                     BarChart(modifier = Modifier.height(600.dp), barChartData = barChartData)
                 }
