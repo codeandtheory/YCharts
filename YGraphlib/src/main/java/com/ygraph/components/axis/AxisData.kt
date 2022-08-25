@@ -36,8 +36,7 @@ import androidx.compose.ui.unit.sp
  * @param typeface The type of font style
  * @param xBottomPadding: X Label offset bottom padding
  * @param xTopPadding: X Label offset top padding
- * @param shouldXAxisStartWithPadding: Used to append a line in front of the x Axis 
-
+ * @param shouldXAxisStartWithPadding: Used to append a line in front of the x Axis
  */
 data class AxisData(
     // All Y-Axis params
@@ -78,7 +77,7 @@ data class AxisData(
         private var yTopPadding: Dp = 20.dp
         private var yBottomPadding: Dp = 10.dp
         private var xAxisSteps: Int = 20
-        private var xAxisStepSize: Dp = 20.dp
+        private var xAxisStepSize: Dp = 30.dp
         private var xLabelAndAxisLinePadding: Dp = 15.dp
         private var xAxisPos: Gravity = Gravity.BOTTOM
         private var xLabelData: (Int) -> String = { _ -> "" }
@@ -112,7 +111,7 @@ data class AxisData(
 
         fun xAxisPos(pos: Gravity) = apply { this.xAxisPos = pos }
 
-        fun textLabelPadding(padding: Dp) = apply { this.yLabelAndAxisLinePadding = padding }
+        fun yLabelAndAxisLinePadding(padding: Dp) = apply { this.yLabelAndAxisLinePadding = padding }
 
         fun yAxisOffset(offset: Dp) = apply { this.yAxisOffset = offset }
 

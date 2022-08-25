@@ -70,7 +70,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                 .axisLabelFontSize(axisLabelFontSize)
                 .yLabelData(yLabelData)
                 .xLabelData(xLabelData)
-                .textLabelPadding(yLabelAndAxisLinePadding)
+                .yLabelAndAxisLinePadding(yLabelAndAxisLinePadding)
                 .yAxisOffset(yAxisOffset)
                 .yTopPadding(yTopPadding)
                 .shouldXAxisStartWithPadding(true)

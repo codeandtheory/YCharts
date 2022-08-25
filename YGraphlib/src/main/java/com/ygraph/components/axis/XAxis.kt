@@ -41,7 +41,7 @@ fun XAxis(
     axisData: AxisData,
     modifier: Modifier,
     xStart: Float,
-    xLineStart: Float,
+    xLineStart: Float = 0f,
     scrollOffset: Float,
     zoomScale: Float,
     chartData: List<Point>

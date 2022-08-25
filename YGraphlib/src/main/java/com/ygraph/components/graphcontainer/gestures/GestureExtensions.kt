@@ -82,7 +82,7 @@ internal suspend fun PointerInputScope.detectDragZoomGesture(
     }
 }
 
-private suspend fun PointerInputScope.awaitLongPressOrCancellation(
+suspend fun PointerInputScope.awaitLongPressOrCancellation(
     initialDown: PointerInputChange,
     longPressTimeout: Long
 ): PointerInputChange? {
@@ -139,5 +139,5 @@ private suspend fun PointerInputScope.awaitLongPressOrCancellation(
     }
 }
 
-private fun PointerEvent.isPointerUp(pointerId: PointerId): Boolean =
+fun PointerEvent.isPointerUp(pointerId: PointerId): Boolean =
     changes.firstOrNull { it.id == pointerId }?.pressed != true
