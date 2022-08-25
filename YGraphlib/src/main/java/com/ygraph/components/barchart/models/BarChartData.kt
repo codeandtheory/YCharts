@@ -6,6 +6,10 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import android.graphics.Typeface
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.DrawStyle
+import androidx.compose.ui.graphics.drawscope.Fill
 import com.ygraph.components.axis.AxisConfig
 
 
@@ -27,6 +31,8 @@ import com.ygraph.components.axis.AxisConfig
  * @param paddingEnd: End Padding
  * @param paddingTop: Top Padding
  * @param isGradientEnabled: Boolean Flag to enable/disable gradient bars
+ * @param barBlendMode: Blend mode for the bars
+ * @param barDrawStyle: Draw style for the bars
  * @param showXAxis: Boolean Flag to enable/disable X axis
  * @param showYAxis: Boolean Flag to enable/disable Y axis
  * @param axisConfig: All config related param to toggle the elements while drawing graph
@@ -50,6 +56,8 @@ data class BarChartData(
     val paddingTop: Dp = 0.dp,
     val selectionHighlightData: SelectionHighlightData? = SelectionHighlightData(),
     val isGradientEnabled: Boolean = false,
+    val barBlendMode: BlendMode = DrawScope.DefaultBlendMode,
+    val barDrawStyle: DrawStyle = Fill,
     val showYAxis: Boolean = true,
     val showXAxis: Boolean = true,
     val axisConfig: AxisConfig = AxisConfig()
