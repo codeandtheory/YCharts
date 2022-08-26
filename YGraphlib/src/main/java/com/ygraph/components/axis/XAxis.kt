@@ -76,7 +76,13 @@ fun XAxis(
                         xAxisScale,
                         xPos
                     )
-                    drawAxisLineWithPointers(xPos, axisData, zoomScale, xAxisScale)
+                    drawAxisLineWithPointers(
+                        xPos,
+                        axisData,
+                        zoomScale,
+                        xAxisScale,
+                        index != xAxisSteps
+                    )
                     xPos += ((xAxisStepSize.toPx() * (zoomScale * xAxisScale)))
                 }
             }
@@ -88,16 +94,19 @@ private fun DrawScope.drawAxisLineWithPointers(
     xPos: Float,
     axisData: AxisData,
     zoomScale: Float,
-    xAxisScale: Float
+    xAxisScale: Float,
+    canDrawEndLine: Boolean // Added check to avoid drawing an extra line post the last point
 ) {
     with(axisData) {
         if (axisConfig.isAxisLineRequired) {
-            drawLine(
-                axisLineColor,
-                Offset(xPos, 0f),
-                Offset(xPos + ((xAxisStepSize.toPx() * (zoomScale * xAxisScale))), 0f),
-                strokeWidth = axisLineThickness.toPx()
-            )
+            if (canDrawEndLine) {
+                drawLine(
+                    axisLineColor,
+                    Offset(xPos, 0f),
+                    Offset(xPos + ((xAxisStepSize.toPx() * (zoomScale * xAxisScale))), 0f),
+                    strokeWidth = axisLineThickness.toPx()
+                )
+            }
             drawLine(
                 axisLineColor,
                 Offset(xPos, 0f),
