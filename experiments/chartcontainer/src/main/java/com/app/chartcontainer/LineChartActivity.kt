@@ -37,6 +37,7 @@ class LineChartActivity : ComponentActivity() {
                         val data = LineGraphData(
                             line = Line(
                                 dataPoints = pointsData,
+                                LineStyle(),
                                 IntersectionPoint(),
                                 SelectionHighlightPoint(),
                                 ShadowUnderLine(),
