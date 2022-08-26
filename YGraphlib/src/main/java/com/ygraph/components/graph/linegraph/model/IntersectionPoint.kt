@@ -25,7 +25,7 @@ import com.ygraph.components.common.model.Point
  * with the actual [Point] that represents the intersection.
  */
 data class IntersectionPoint(
-    val color: Color = Color.Blue,
+    val color: Color = Color.Black,
     val radius: Dp = 6.dp,
     val alpha: Float = 1.0f,
     val style: DrawStyle = Fill,

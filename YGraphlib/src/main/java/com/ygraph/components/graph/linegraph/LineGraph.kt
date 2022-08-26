@@ -64,6 +64,8 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                 .yAxisOffset(yAxisOffset)
                 .xAxisSteps(xAxisSteps - 1)
                 .yTopPadding(paddingTop)
+                .xAxisLabelAngle(xAxisLabelAngle)
+                .xBottomPadding(bottomPadding)
                 .build()
 
             val (xMin, xMax, _) = getXAxisScale(line.dataPoints, axisData.xAxisSteps)

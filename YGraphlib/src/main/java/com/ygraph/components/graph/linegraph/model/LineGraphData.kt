@@ -28,6 +28,7 @@ import com.ygraph.components.common.model.Point
  * @param paddingRight: Padding from the end of the canvas to end of the graph container.
  * @param bottomPadding: Padding from the bottom of the canvas to bottom of the graph container.
  * @param containerPaddingEnd: Container inside padding end after the last point of the graph.
+ * @param xAxisLabelAngle: Angle for the X axis labels
  */
 data class LineGraphData(
     val line: Line,
@@ -45,7 +46,8 @@ data class LineGraphData(
     val axisLabelFontSize: TextUnit = 14.sp,
     val yLabelAndAxisLinePadding: Dp = 20.dp,
     val yAxisOffset: Dp = 20.dp,
-    val containerPaddingEnd: Dp = 15.dp
+    val containerPaddingEnd: Dp = 15.dp,
+    val xAxisLabelAngle: Float = 0f
 )
 
 /**
