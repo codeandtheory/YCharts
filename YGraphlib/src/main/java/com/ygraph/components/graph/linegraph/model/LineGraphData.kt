@@ -27,6 +27,7 @@ import com.ygraph.components.common.model.Point
  * @param paddingTop: Padding from the top of the canvas to start of the graph container.
  * @param paddingRight: Padding from the end of the canvas to end of the graph container.
  * @param bottomPadding: Padding from the bottom of the canvas to bottom of the graph container.
+ * @param containerPaddingEnd: Container inside padding end after the last point of the graph.
  */
 data class LineGraphData(
     val line: Line,
@@ -43,13 +44,15 @@ data class LineGraphData(
     val paddingRight: Dp = 10.dp,
     val axisLabelFontSize: TextUnit = 14.sp,
     val yLabelAndAxisLinePadding: Dp = 20.dp,
-    val yAxisOffset: Dp = 20.dp
+    val yAxisOffset: Dp = 20.dp,
+    val containerPaddingEnd: Dp = 15.dp
 )
 
 /**
  * Represent a Line in the [LineGraph]
  *
  * @param dataPoints list of points [Point] in the line
+ * @param lineStyle Adds styling options in [LineStyle] to the line path drawn.
  * @param intersectionPoint drawing logic to draw the point itself in [IntersectionPoint].
  * If null, the point is not drawn.
  * @param selectionHighlightPoint drawing logic to draw the highlight at the point when it is selected
@@ -59,6 +62,7 @@ data class LineGraphData(
  */
 data class Line(
     val dataPoints: List<Point>,
+    val lineStyle: LineStyle = LineStyle(),
     val intersectionPoint: IntersectionPoint? = null,
     val selectionHighlightPoint: SelectionHighlightPoint? = null,
     val shadowUnderLine: ShadowUnderLine? = null,
