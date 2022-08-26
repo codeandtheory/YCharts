@@ -40,6 +40,7 @@ class MainActivity : ComponentActivity() {
                                     BarChartActivity::class.java
                                 )
                             )
+                            addActivityInOutAnim()
                         })
                         ChartButton(title = getString(R.string.title_line_chart), onClick = {
                             startActivity(
@@ -48,6 +49,7 @@ class MainActivity : ComponentActivity() {
                                     LineChartActivity::class.java
                                 )
                             )
+                            addActivityInOutAnim()
                         })
                         ChartButton(title = getString(R.string.title_pie_chart), onClick = {
                             startActivity(
@@ -56,6 +58,7 @@ class MainActivity : ComponentActivity() {
                                     PieChartActivity::class.java
                                 )
                             )
+                            addActivityInOutAnim()
                         })
                         ChartButton(title = getString(R.string.title_donut_chart), onClick = {
                             startActivity(
@@ -64,11 +67,20 @@ class MainActivity : ComponentActivity() {
                                     DonutChartActivity::class.java
                                 )
                             )
+                            addActivityInOutAnim()
                         })
                     }
                 }
             }
         }
+    }
+
+
+    private fun addActivityInOutAnim() {
+        overridePendingTransition(
+            R.anim.move_right_in_activity,
+            R.anim.move_left_out_activity
+        )
     }
 }
 
