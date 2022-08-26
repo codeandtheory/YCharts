@@ -130,3 +130,14 @@ fun Offset.isDragLocked(dragOffset: Float, xOffset: Float) =
     ((dragOffset) > x - xOffset / 2) && ((dragOffset) < x + xOffset / 2)
 
 
+/**
+ * @param tapOffset Tapped offset
+ * @param xOffset in the X axis
+ * @param bottom bottom Value
+return true if the point is selected
+ */
+fun Offset.isTapped(tapOffset: Offset, xOffset: Float, bottom: Float, tapPadding: Float) =
+    ((tapOffset.x) > x - (xOffset + tapPadding) / 2) && ((tapOffset.x) < x + (xOffset + tapPadding) / 2) &&
+            ((tapOffset.plus(Offset(0f, tapPadding))).y > y) && ((tapOffset.y) < bottom)
+
+

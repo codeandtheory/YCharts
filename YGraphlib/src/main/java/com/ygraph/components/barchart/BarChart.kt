@@ -1,7 +1,6 @@
 package com.ygraph.components.barchart
 
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
@@ -43,7 +42,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
             var visibility by remember { mutableStateOf(false) }
             var identifiedPoint by remember { mutableStateOf(BarData(Point(0f, 0f))) }
             var xOffset by remember { mutableStateOf(0f) }
-            var tapOffset by remember { mutableStateOf(0f) }
+            var tapOffset by remember { mutableStateOf(Offset(0f,0f)) }
             var isTapped by remember { mutableStateOf(false) }
             var columnWidth by remember { mutableStateOf(0f) }
             var horizontalGap by remember { mutableStateOf(0f) }
@@ -123,9 +122,11 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
 
                         val middleOffset = Offset(drawOffset.x + barWidth.toPx() / 2, drawOffset.y)
                         // store the tap points for selection
-                        if (isTapped && middleOffset.isDragLocked(
+                        if (isTapped && middleOffset.isTapped(
                                 tapOffset,
-                                barWidth.toPx()
+                                barWidth.toPx(),
+                                yBottom,
+                                tapPadding.toPx()
                             )
                         ) {
                             dragLocks[0] = barData to drawOffset
@@ -190,7 +191,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                 onPointSelected = { offset: Offset, _: Float ->
                     isTapped = true
                     visibility = true
-                    tapOffset = offset.x
+                    tapOffset = offset
                 },
                 onScrolling = {
                     isTapped = false
