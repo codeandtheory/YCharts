@@ -56,12 +56,12 @@ class PieChartActivity : ComponentActivity() {
 private fun PieChart1(context: Context) {
     val pieChartData = PieChartData(
         slices = listOf(
-            PieChartData.Slice("MI", 15f, Color(0xFF58BDFF)),
-            PieChartData.Slice("Iphone", 35f, Color(0xFF125B7F)),
-            PieChartData.Slice("Windows", 10f, Color(0xFF092D40)),
-            PieChartData.Slice("Pixel", 10f, Color(0xFF092D10)),
-            PieChartData.Slice("Samsung", 20f, Color(0xFF092D70)),
-            PieChartData.Slice("Oneplus", 0f, Color(0xFF092D80)),
+            PieChartData.Slice("SciFi", 15f, Color(0xFF58BDFF)),
+            PieChartData.Slice("Comedy", 35f, Color(0xFF125B7F)),
+            PieChartData.Slice("Drama", 10f, Color(0xFF092D40)),
+            PieChartData.Slice("Romance", 10f, Color(0xFF092D10)),
+            PieChartData.Slice("Action", 20f, Color(0xFF092D70)),
+            PieChartData.Slice("Thriller", 0f, Color(0xFF092D80)),
         )
     )
 
@@ -77,9 +77,9 @@ private fun PieChart1(context: Context) {
             sliceLabelEllipsizeAt = TextUtils.TruncateAt.MIDDLE,
             percentageTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
             isAnimationEnable = true,
-            showSliceLabels = true,
-            chartPadding = 25,
-            legendBadgeWidth = 20.dp
+            chartPadding = 10,
+            legendBadgeWidth = 20.dp,
+            showSliceLabels = false
         )
 
     PieChart(
