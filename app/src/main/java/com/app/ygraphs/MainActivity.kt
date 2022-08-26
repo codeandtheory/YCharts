@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,15 +16,17 @@ import com.app.ygraphs.presentation.BarChartActivity
 import com.app.ygraphs.presentation.DonutChartActivity
 import com.app.ygraphs.presentation.LineChartActivity
 import com.app.ygraphs.presentation.PieChartActivity
+import com.app.ygraphs.ui.theme.YGraphsTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme {
-                Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
-                    AppBar()
-                }) {
+            YGraphsTheme {
+                Scaffold(modifier = Modifier.fillMaxSize(),
+                    backgroundColor = YGraphsTheme.colors.background,
+                    topBar = { AppBar() })
+                {
                     Column(
                         modifier = Modifier
                             .padding(it)
@@ -76,14 +77,14 @@ private fun AppBar() {
     TopAppBar(
         modifier = Modifier
             .fillMaxWidth(),
-        backgroundColor = Color.Black,
+        backgroundColor = YGraphsTheme.colors.button,
         elevation = 6.dp,
         title = {
             Text(
                 text = stringResource(R.string.app_name),
-                color = Color.White,
+                color = YGraphsTheme.colors.text,
                 textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.h5
+                style = YGraphsTheme.typography.header
             )
         }
     )
@@ -92,15 +93,19 @@ private fun AppBar() {
 @Composable
 private fun ChartButton(title: String, onClick: () -> Unit) {
     Column {
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         Button(
             modifier = Modifier
                 .padding(end = 10.dp, start = 10.dp)
                 .fillMaxWidth()
                 .height(50.dp), onClick = onClick,
-            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black)
+            colors = ButtonDefaults.buttonColors(backgroundColor = YGraphsTheme.colors.button)
         ) {
-            Text(text = title, color = Color.White)
+            Text(
+                text = title,
+                style = YGraphsTheme.typography.button,
+                color = YGraphsTheme.colors.text
+            )
         }
     }
 }
