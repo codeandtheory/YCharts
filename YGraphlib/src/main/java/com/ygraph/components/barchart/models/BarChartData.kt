@@ -62,7 +62,7 @@ data class BarChartData(
     val isGradientEnabled: Boolean = false,
     val barBlendMode: BlendMode = DrawScope.DefaultBlendMode,
     val barDrawStyle: DrawStyle = Fill,
-    val tapPadding:Dp = 0.dp,
+    val tapPadding:Dp = 10.dp,
     val showYAxis: Boolean = true,
     val showXAxis: Boolean = true,
     val axisConfig: AxisConfig = AxisConfig()
