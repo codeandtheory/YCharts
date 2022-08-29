@@ -10,10 +10,10 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.piechartcontainer.ui.theme.YGraphsTheme
-import com.ygraph.components.barchart.BarChart
-import com.ygraph.components.barchart.models.BarChartData
-import com.ygraph.components.common.utils.DataUtils.getBarChartData
-import com.ygraph.components.common.utils.DataUtils.getGradientBarChartData
+import com.ygraph.components.barchart.GroupBarChart
+import com.ygraph.components.barchart.models.GroupBarChartData
+import com.ygraph.components.common.utils.DataUtils.getColorList
+import com.ygraph.components.common.utils.DataUtils.getGroupBarChartData
 
 class BarChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,22 +25,23 @@ class BarChartActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    val barData = getGradientBarChartData(50, 50)
+
+                    val groupBarData = getGroupBarChartData(50, 50, 3)
                     val yStepSize = 10
-                    val barChartData = BarChartData(
-                        chartData = barData, yStepSize = yStepSize,
-                        paddingBetweenBars = 30.dp,
+                    val groupBarChartData = GroupBarChartData(
+                        groupedBarList = groupBarData,
+                        yStepSize = yStepSize,
                         yLabelAndAxisLinePadding = 20.dp,
                         yAxisOffset = 20.dp,
+                        colorTemplate = getColorList(3),
                         yLabelData = { index -> (index * yStepSize).toString() },
-                        xLabelData = { index -> barData[index].label },
-                        showYAxis = true,
-                        showXAxis = true,
-                        horizontalExtraSpace = 10.dp,
-                        xLabelAngle = 20f,
-                        isGradientEnabled = true
+                        xLabelData = { index -> groupBarData[index].label },
                     )
-                    BarChart(modifier = Modifier.height(600.dp), barChartData = barChartData)
+
+                    GroupBarChart(
+                        modifier = Modifier.height(600.dp),
+                        groupBarChartData = groupBarChartData
+                    )
                 }
             }
         }
