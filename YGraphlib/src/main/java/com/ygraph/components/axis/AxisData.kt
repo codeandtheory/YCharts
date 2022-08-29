@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
  * @param yAxisOffset: Drawing offset for yAxis.
  * @param axisLineThickness: Thickness of yAxis line
  * @param yTopPadding: Y Label offset top padding
+ * @param yStartPadding: Y Axis start padding.
  * @param indicatorLineWidth: Indicator width on Y axis line for showing points
  * @param axisConfig: All config related param to toggle the elements while drawing graph
  * @param xAxisSteps: No of steps in the xAxis
@@ -49,6 +50,7 @@ data class AxisData(
     val yAxisOffset: Dp,
     val yTopPadding: Dp,
     val yBottomPadding: Dp,
+    val yStartPadding: Dp,
     // All X-Axis params
     val xLabelData: (Int) -> String,
     val xAxisSteps: Int,
@@ -57,7 +59,7 @@ data class AxisData(
     val xAxisPos: Gravity,
     val xTopPadding: Dp,
     val xBottomPadding: Dp,
-    val xAxisLabelAngle:Float,
+    val xAxisLabelAngle: Float,
     // All common params
     val axisLineColor: Color,
     val axisLabelColor: Color,
@@ -67,7 +69,7 @@ data class AxisData(
     val backgroundColor: Color,
     val typeface: Typeface,
     val axisConfig: AxisConfig,
-    val shouldXAxisStartWithPadding:Boolean
+    val shouldXAxisStartWithPadding: Boolean
 ) {
     class Builder {
         private var yMaxValue: Float = 0f
@@ -75,6 +77,7 @@ data class AxisData(
         private var yLabelData: (Int) -> String = { _ -> "" }
         private var yAxisPos: Gravity = Gravity.LEFT
         private var yLabelAndAxisLinePadding: Dp = 4.dp
+        private var yStartPadding: Dp = 10.dp
         private var yAxisOffset: Dp = 10.dp
         private var yTopPadding: Dp = 20.dp
         private var yBottomPadding: Dp = 10.dp
@@ -89,7 +92,7 @@ data class AxisData(
         private var typeface: Typeface = Typeface.DEFAULT
         private var axisLineColor: Color = Color.Black
         private var axisLabelFontSize: TextUnit = 14.sp
-        private var lineStrokeWidth: Dp = 2.dp
+        private var axisLineThickness: Dp = 2.dp
         private var axisLabelColor: Color = Color.Black
         private var xTopPadding: Dp = 0.dp
         private var xBottomPadding: Dp = 0.dp
@@ -118,9 +121,11 @@ data class AxisData(
 
         fun yAxisOffset(offset: Dp) = apply { this.yAxisOffset = offset }
 
-        fun lineStrokeWidth(strokeWidth: Dp) = apply { this.lineStrokeWidth = strokeWidth }
+        fun axisLineThickness(thickness: Dp) = apply { this.axisLineThickness = thickness }
 
         fun yTopPadding(padding: Dp) = apply { this.yTopPadding = padding }
+
+        fun yStartPadding(padding: Dp) = apply { this.yStartPadding = padding }
 
         fun indicatorLineWidth(lineWidth: Dp) = apply { this.indicatorLineWidth = lineWidth }
 
@@ -156,6 +161,7 @@ data class AxisData(
             yAxisOffset,
             yTopPadding,
             yBottomPadding,
+            yStartPadding,
             xLabelData,
             xAxisSteps,
             xAxisStepSize,
@@ -167,7 +173,7 @@ data class AxisData(
             axisLineColor,
             axisLabelColor,
             axisLabelFontSize,
-            lineStrokeWidth,
+            axisLineThickness,
             indicatorLineWidth,
             backgroundColor,
             typeface,

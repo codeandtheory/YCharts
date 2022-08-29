@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.ygraph.components.axis.AxisData
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
@@ -64,6 +65,13 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                 .yAxisOffset(yAxisOffset)
                 .xAxisSteps(xAxisSteps - 1)
                 .yTopPadding(paddingTop)
+                .xAxisLabelAngle(xAxisLabelAngle)
+                .xBottomPadding(bottomPadding)
+                .axisLineColor(axisLineColor)
+                .axisLabelColor(axisLabelColor)
+                .axisLineThickness(axisLineThickness)
+                .indicatorLineWidth(indicatorLineWidth)
+                .typeFace(typeface)
                 .build()
 
             val (xMin, xMax, _) = getXAxisScale(line.dataPoints, axisData.xAxisSteps)

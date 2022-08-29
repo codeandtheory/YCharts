@@ -16,7 +16,7 @@ object DataUtils {
             list.add(
                 Point(
                     index.toFloat(),
-                    Random.nextDouble(1.0, maxRange.toDouble()).toFloat()
+                    (0 until maxRange).random().toFloat()
                 )
             )
         }
