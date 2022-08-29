@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
  * @param blendMode All prams related to selection popup to be added here in [SelectionHighlightPopUp]
  */
 data class LineStyle(
-    val lineType: LineType = LineType.SmoothCurve(isDotted = true),
+    val lineType: LineType = LineType.SmoothCurve(isDotted = false),
     val color: Color = Color.Black,
     val width: Float = 8f,
     val alpha: Float = 1.0f,
