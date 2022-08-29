@@ -34,6 +34,7 @@ import com.ygraph.components.axis.AxisConfig
  * @param isGradientEnabled: Boolean Flag to enable/disable gradient bars
  * @param barBlendMode: Blend mode for the bars
  * @param barDrawStyle: Draw style for the bars
+ * @param tapPadding: Extra padding area for tapping
  * @param showXAxis: Boolean Flag to enable/disable X axis
  * @param showYAxis: Boolean Flag to enable/disable Y axis
  * @param axisConfig: All config related param to toggle the elements while drawing graph
@@ -61,6 +62,7 @@ data class BarChartData(
     val isGradientEnabled: Boolean = false,
     val barBlendMode: BlendMode = DrawScope.DefaultBlendMode,
     val barDrawStyle: DrawStyle = Fill,
+    val tapPadding:Dp = 10.dp,
     val showYAxis: Boolean = true,
     val showXAxis: Boolean = true,
     val axisConfig: AxisConfig = AxisConfig()

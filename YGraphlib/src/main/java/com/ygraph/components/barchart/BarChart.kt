@@ -42,8 +42,8 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
             var visibility by remember { mutableStateOf(false) }
             var identifiedPoint by remember { mutableStateOf(BarData(Point(0f, 0f))) }
             var xOffset by remember { mutableStateOf(0f) }
-            var dragOffset by remember { mutableStateOf(0f) }
-            var isDragging by remember { mutableStateOf(false) }
+            var tapOffset by remember { mutableStateOf(Offset(0f,0f)) }
+            var isTapped by remember { mutableStateOf(false) }
             var columnWidth by remember { mutableStateOf(0f) }
             var horizontalGap by remember { mutableStateOf(0f) }
             var rowHeight by remember { mutableStateOf(0f) }
@@ -83,6 +83,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
 
             ScrollableCanvasContainer(modifier = modifier,
                 containerBackgroundColor = backgroundColor,
+                isTapGestureEnabled = true,
                 calculateMaxDistance = { xZoom ->
                     horizontalGap = horizontalExtraSpace.toPx()
                     val xLeft = columnWidth + horizontalGap
@@ -99,6 +100,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                     )
                 },
                 onDraw = { scrollOffset, xZoom ->
+                    
                     val yBottom = size.height - rowHeight
                     val yOffset = ((yBottom - axisData.yTopPadding.toPx()) / maxElementInYAxis)
                     xOffset =
@@ -119,10 +121,12 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                         drawBarChart(barChartData, barData, drawOffset, height)
 
                         val middleOffset = Offset(drawOffset.x + barWidth.toPx() / 2, drawOffset.y)
-                        // store the drag points for selection
-                        if (isDragging && middleOffset.isDragLocked(
-                                dragOffset,
-                                barWidth.toPx()
+                        // store the tap points for selection
+                        if (isTapped && middleOffset.isTapped(
+                                tapOffset,
+                                barWidth.toPx(),
+                                yBottom,
+                                tapPadding.toPx()
                             )
                         ) {
                             dragLocks[0] = barData to drawOffset
@@ -138,7 +142,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                             visibility,
                             identifiedPoint,
                             barChartData,
-                            isDragging,
+                            isTapped,
                             columnWidth,
                             yBottom,
                             paddingRight,
@@ -184,16 +188,15 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                         )
                     }
                 },
-                onDragStart = { offset ->
-                    dragOffset = offset.x
-                    isDragging = true
+                onPointSelected = { offset: Offset, _: Float ->
+                    isTapped = true
                     visibility = true
+                    tapOffset = offset
                 },
-                onDragEnd = {
-                    isDragging = false
+                onScrolling = {
+                    isTapped = false
                     visibility = false
-                },
-                onDragging = { change, _ -> dragOffset = change.position.x }
+                }
             )
         }
     }

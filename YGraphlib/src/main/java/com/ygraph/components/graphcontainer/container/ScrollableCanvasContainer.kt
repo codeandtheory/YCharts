@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
@@ -57,11 +58,24 @@ fun ScrollableCanvasContainer(
     isPinchZoomEnabled: Boolean = true,
     onDragStart: (Offset) -> Unit = {},
     onDragEnd: () -> Unit = {},
-    onDragging: (change: PointerInputChange, dragAmount: Offset) -> Unit = { _, _ -> }
+    onDragging: (change: PointerInputChange, dragAmount: Offset) -> Unit = { _, _ -> },
+    onScrolling: () -> Unit = {}
 ) {
     val scrollOffset = remember { mutableStateOf(0f) }
     val maxScrollOffset = remember { mutableStateOf(0f) }
     val xZoom = remember { mutableStateOf(1f) }
+    val scrollState = rememberScrollableState { delta ->
+        scrollOffset.value -= delta
+        scrollOffset.value = checkAndGetMaxScrollOffset(
+            scrollOffset.value,
+            maxScrollOffset.value
+        )
+        delta
+    }
+
+    if (scrollState.isScrollInProgress){
+        onScrolling()
+    }
 
     CompositionLocalProvider(
         LocalLayoutDirection provides layoutDirection,
@@ -75,14 +89,7 @@ fun ScrollableCanvasContainer(
                 .fillMaxWidth()
                 .background(containerBackgroundColor)
                 .scrollable(
-                    state = rememberScrollableState { delta ->
-                        scrollOffset.value -= delta
-                        scrollOffset.value = checkAndGetMaxScrollOffset(
-                            scrollOffset.value,
-                            maxScrollOffset.value
-                        )
-                        delta
-                    }, Orientation.Horizontal, enabled = true
+                    state = scrollState, Orientation.Horizontal, enabled = true
                 )
                 .pointerInput(Unit) {
                     // Only one gesture can be supported at a time either tap or drag

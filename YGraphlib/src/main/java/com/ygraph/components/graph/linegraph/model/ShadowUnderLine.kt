@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.drawscope.Fill
  * the [Path] of the line
  */
 data class ShadowUnderLine(
-    val color: Color = Color.Blue,
+    val color: Color = Color.Black,
     val alpha: Float = 0.1f,
     val style: DrawStyle = Fill,
     val colorFilter: ColorFilter? = null,
