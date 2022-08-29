@@ -12,7 +12,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
@@ -43,8 +42,8 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
             var visibility by remember { mutableStateOf(false) }
             var identifiedPoint by remember { mutableStateOf(BarData(Point(0f, 0f))) }
             var xOffset by remember { mutableStateOf(0f) }
-            var dragOffset by remember { mutableStateOf(0f) }
-            var isDragging by remember { mutableStateOf(false) }
+            var tapOffset by remember { mutableStateOf(Offset(0f,0f)) }
+            var isTapped by remember { mutableStateOf(false) }
             var columnWidth by remember { mutableStateOf(0f) }
             var horizontalGap by remember { mutableStateOf(0f) }
             var rowHeight by remember { mutableStateOf(0f) }
@@ -67,6 +66,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                 .yStepValue(yStepSize.toFloat())
                 .xAxisSteps(chartData.size - 1)
                 .xAxisStepSize(barWidth + paddingBetweenBars)
+                .xAxisLabelAngle(xLabelAngle)
                 .axisLabelFontSize(axisLabelFontSize)
                 .yLabelData(yLabelData)
                 .xLabelData(xLabelData)
@@ -75,6 +75,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                 .yTopPadding(yTopPadding)
                 .shouldXAxisStartWithPadding(true)
                 .yBottomPadding(LocalDensity.current.run { rowHeight.toDp() })
+                .xBottomPadding(xBottomPadding)
                 .axisConfig(axisConfig)
                 .build()
 
@@ -82,6 +83,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
 
             ScrollableCanvasContainer(modifier = modifier,
                 containerBackgroundColor = backgroundColor,
+                isTapGestureEnabled = true,
                 calculateMaxDistance = { xZoom ->
                     horizontalGap = horizontalExtraSpace.toPx()
                     val xLeft = columnWidth + horizontalGap
@@ -98,6 +100,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                     )
                 },
                 onDraw = { scrollOffset, xZoom ->
+                    
                     val yBottom = size.height - rowHeight
                     val yOffset = ((yBottom - axisData.yTopPadding.toPx()) / maxElementInYAxis)
                     xOffset =
@@ -117,10 +120,13 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                         // drawing each individual bars
                         drawBarChart(barChartData, barData, drawOffset, height)
 
-                        // store the drag points for selection
-                        if (isDragging && drawOffset.isDragLocked(
-                                dragOffset,
-                                xOffset
+                        val middleOffset = Offset(drawOffset.x + barWidth.toPx() / 2, drawOffset.y)
+                        // store the tap points for selection
+                        if (isTapped && middleOffset.isTapped(
+                                tapOffset,
+                                barWidth.toPx(),
+                                yBottom,
+                                tapPadding.toPx()
                             )
                         ) {
                             dragLocks[0] = barData to drawOffset
@@ -136,7 +142,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                             visibility,
                             identifiedPoint,
                             barChartData,
-                            isDragging,
+                            isTapped,
                             columnWidth,
                             yBottom,
                             paddingRight,
@@ -150,9 +156,6 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                             axisData = axisData,
                             modifier = Modifier
                                 .align(Alignment.BottomStart)
-                                .padding(
-                                    bottom = axisData.xBottomPadding,
-                                )
                                 .fillMaxWidth()
                                 .wrapContentHeight()
                                 .clip(
@@ -185,16 +188,15 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                         )
                     }
                 },
-                onDragStart = { offset ->
-                    dragOffset = offset.x
-                    isDragging = true
+                onPointSelected = { offset: Offset, _: Float ->
+                    isTapped = true
                     visibility = true
+                    tapOffset = offset
                 },
-                onDragEnd = {
-                    isDragging = false
+                onScrolling = {
+                    isTapped = false
                     visibility = false
-                },
-                onDragging = { change, _ -> dragOffset = change.position.x }
+                }
             )
         }
     }

@@ -34,7 +34,8 @@ import androidx.compose.ui.unit.sp
  * @param axisLabelColor Color of the Y & X axis labels
  * @param backgroundColor Background color of the Y & X components
  * @param typeface The type of font style
- * @param xBottomPadding: X Label offset bottom padding
+ * @param xBottomPadding: X Label offset bottom padding,
+ * @param xAxisLabelAngle: Angle for the X axis labels
  * @param xTopPadding: X Label offset top padding
  * @param shouldXAxisStartWithPadding: Used to append a line in front of the x Axis
  */
@@ -56,6 +57,7 @@ data class AxisData(
     val xAxisPos: Gravity,
     val xTopPadding: Dp,
     val xBottomPadding: Dp,
+    val xAxisLabelAngle:Float,
     // All common params
     val axisLineColor: Color,
     val axisLabelColor: Color,
@@ -92,6 +94,7 @@ data class AxisData(
         private var xTopPadding: Dp = 0.dp
         private var xBottomPadding: Dp = 0.dp
         private var shouldStartXAxisWithPadding: Boolean = false
+        private var xAxisLabelAngle: Float = 0f
 
         fun yMaxValue(maxValue: Float) = apply { this.yMaxValue = maxValue }
 
@@ -141,6 +144,8 @@ data class AxisData(
         fun xTopPadding(padding: Dp) = apply { this.xTopPadding = padding }
         
         fun shouldXAxisStartWithPadding(flag: Boolean) = apply { this.shouldStartXAxisWithPadding = flag }
+        
+        fun xAxisLabelAngle(angle: Float) = apply { this.xAxisLabelAngle = angle }
 
         fun build() = AxisData(
             yMaxValue,
@@ -158,6 +163,7 @@ data class AxisData(
             xAxisPos,
             xTopPadding,
             xBottomPadding,
+            xAxisLabelAngle,
             axisLineColor,
             axisLabelColor,
             axisLabelFontSize,
