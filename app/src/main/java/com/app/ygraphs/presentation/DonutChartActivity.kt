@@ -32,7 +32,7 @@ class DonutChartActivity : ComponentActivity(){
                     backgroundColor = YGraphsTheme.colors.background,
                     topBar = {
                         AppBarWithBackButton(
-                            stringResource(id = R.string.title_pie_chart),
+                            stringResource(id = R.string.title_donut_chart),
                             onBackPressed = {
                                 onBackPressed()
                             })
