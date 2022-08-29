@@ -28,9 +28,9 @@ import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
 
 /**
  *
- * BarChart compose method for drawing bar graph.
+ * BarChart compose method for drawing group bar graph.
  * @param modifier: All modifier related properties
- * @param groupBarChartData : All data needed to Bar Chart
+ * @param groupBarChartData : All data needed to group bar chart
  * @see com.ygraph.components.barchart.models.GroupBarChartData Data class to save all params related to Bar chart
  */
 @Composable
@@ -57,8 +57,7 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
             if (!showXAxis) {
                 rowHeight = LocalDensity.current.run { DEFAULT_YAXIS_BOTTOM_PADDING.dp.toPx() }
             }
-
-
+            
             val axisData = AxisData.Builder()
                 .yMaxValue(yMax)
                 .yStepValue(yStepSize.toFloat())
@@ -76,9 +75,7 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                 .xBottomPadding(xBottomPadding)
                 .axisConfig(axisConfig)
                 .build()
-
-
-
+            
             ScrollableCanvasContainer(modifier = modifier,
                 containerBackgroundColor = backgroundColor,
                 calculateMaxDistance = { xZoom ->
@@ -126,7 +123,6 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                                 height,
                                 subIndex
                             )
-
                             insideOffset += barWidth.toPx()
 
                             val middleOffset =
@@ -165,8 +161,7 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                     for (index in groupedBarList.indices) {
                         points.add(Point(index.toFloat(), 0f))
                     }
-
-
+                    
                     if (showXAxis) {
                         XAxis(
                             axisData = axisData,
