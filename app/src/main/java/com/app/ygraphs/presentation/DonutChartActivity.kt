@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.app.ygraphs.R
 import com.app.ygraphs.ui.compositions.AppBarWithBackButton
 import com.app.ygraphs.ui.theme.YGraphsTheme
@@ -78,7 +79,8 @@ private fun DonutChart1(context: Context) {
             percentageTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
             isAnimationEnable = true,
             chartPadding = 25,
-            legendBadgeWidth = 20.dp
+            legendBadgeWidth = 20.dp,
+            percentageFontSize = 42.sp
         )
 
     DonutPieChart(

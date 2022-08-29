@@ -4,8 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -32,13 +34,20 @@ class BarChartActivity : ComponentActivity() {
                             })
                     })
                 {
-                    Column(
+                    Box(
                         modifier = Modifier
-                            .padding(it)
                             .fillMaxSize()
+                            .padding(it),
+                        contentAlignment = Alignment.TopCenter
                     ) {
-                        Spacer(modifier = Modifier.height(20.dp))
-                        BarChart1()
+                        LazyColumn(content = {
+                            items(3) { item ->
+                                when (item) {
+                                    0 -> BarChart1()
+                                    1 -> BarChart2()
+                                }
+                            }
+                        })
                     }
                 }
             }
@@ -60,8 +69,28 @@ private fun BarChart1() {
         showYAxis = true,
         showXAxis = true,
         horizontalExtraSpace = 10.dp,
-        xLabelAngle = 20f
     )
-    BarChart(modifier = Modifier.height(600.dp), barChartData = barChartData)
+    BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
+}
+
+@Composable
+private fun BarChart2() {
+    val barData = DataUtils.getGradientBarChartData(50, 100)
+    val yStepSize = 10
+    val barChartData = BarChartData(
+        chartData = barData, yStepSize = yStepSize,
+        paddingBetweenBars = 30.dp,
+        yLabelAndAxisLinePadding = 20.dp,
+        yAxisOffset = 20.dp,
+        xBottomPadding = 10.dp,
+        yLabelData = { index -> (index * yStepSize).toString() },
+        xLabelData = { index -> barData[index].label },
+        showYAxis = true,
+        showXAxis = true,
+        horizontalExtraSpace = 20.dp,
+        xLabelAngle = 20f,
+        isGradientEnabled = true
+    )
+    BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
 }
 
