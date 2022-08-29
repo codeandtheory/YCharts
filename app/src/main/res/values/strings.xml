@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">YGraphs</string>
+    <string name="title_activity_bar_chart">BarChartActivity</string>
+    <string name="title_activity_line_chart">LineChartActivity</string>
+    <string name="title_activity_pie_chart">PieChartActivity</string>
+    <string name="title_activity_donut_chart">DonutChartActivity</string>
+    <string name="title_bar_chart">Bar Chart</string>
+    <string name="title_line_chart">Line Chart</string>
+    <string name="title_pie_chart">Pie Chart</string>
+    <string name="title_donut_chart">Donut Chart</string>
+
 </resources>
