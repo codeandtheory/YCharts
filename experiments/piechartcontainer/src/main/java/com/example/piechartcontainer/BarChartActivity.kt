@@ -27,7 +27,8 @@ class BarChartActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    val barData = getGradientBarChartData(50, 50)
+
+                    val groupBarData = getGroupBarChartData(50, 50, 3)
                     val yStepSize = 10
                     val axisData = AxisData.Builder()
                         .ySteps(yStepSize)
@@ -49,7 +50,11 @@ class BarChartActivity : ComponentActivity() {
                         showXAxis = true,
                         isGradientEnabled = true
                     )
-                    BarChart(modifier = Modifier.height(600.dp), barChartData = barChartData)
+
+                    GroupBarChart(
+                        modifier = Modifier.height(600.dp),
+                        groupBarChartData = groupBarChartData
+                    )
                 }
             }
         }
