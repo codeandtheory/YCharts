@@ -1,5 +1,7 @@
 package com.ygraph.components.graph.linegraph.model
 
+import android.graphics.Typeface
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -29,6 +31,12 @@ import com.ygraph.components.common.model.Point
  * @param bottomPadding: Padding from the bottom of the canvas to bottom of the graph container.
  * @param containerPaddingEnd: Container inside padding end after the last point of the graph.
  * @param xAxisLabelAngle: Angle for the X axis labels
+ * @param axisLineColor Color of the Y & X axis
+ * @param axisLabelColor Color of the Y & X axis labels
+ * @param axisLineThickness: Thickness of yAxis line
+ * @param indicatorLineWidth: Indicator width on Y axis line for showing points
+ * @param backgroundColor Background color of the Y & X components
+ * @param typeface The type of font style
  */
 data class LineGraphData(
     val line: Line,
@@ -47,7 +55,13 @@ data class LineGraphData(
     val yLabelAndAxisLinePadding: Dp = 20.dp,
     val yAxisOffset: Dp = 20.dp,
     val containerPaddingEnd: Dp = 15.dp,
-    val xAxisLabelAngle: Float = 0f
+    val xAxisLabelAngle: Float = 0f,
+    val axisLineColor: Color = Color.Black,
+    val axisLabelColor: Color = Color.Black,
+    val axisLineThickness: Dp = 2.dp,
+    val indicatorLineWidth: Dp = 5.dp,
+    val backgroundColor: Color = Color.Transparent,
+    val typeface: Typeface = Typeface.DEFAULT,
 )
 
 /**

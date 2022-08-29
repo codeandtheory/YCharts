@@ -1,5 +1,6 @@
 package com.app.ygraphs.presentation
 
+import android.graphics.Typeface
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -103,10 +104,14 @@ private fun LineGraph2(pointsData: List<Point>) {
         xAxisSteps = pointsData.size,
         xAxisPos = Gravity.BOTTOM,
         yAxisPos = Gravity.LEFT,
-        yAxisLabelData = { i -> (i * 20).toString() },
-        xAxisLabelData = { i -> (1900 + i).toString() },
-        xAxisLabelAngle = 90f,
-        bottomPadding = 30.dp
+        yAxisLabelData = { i -> "${(i * 20)}k" },
+        xAxisLabelData = { i -> if (i == 0) "" else (1900 + i).toString() },
+        xAxisLabelAngle = 20f,
+        bottomPadding = 30.dp,
+        yLabelAndAxisLinePadding = 20.dp,
+        axisLabelColor = Color.Blue,
+        axisLineColor = Color.DarkGray,
+        typeface = Typeface.DEFAULT_BOLD
     )
     LineGraph(
         modifier = Modifier

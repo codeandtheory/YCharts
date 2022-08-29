@@ -178,7 +178,7 @@ private fun DrawScope.drawAxisLabel(
             drawText(
                 if (axisConfig.shouldEllipsizeAxisLabel) ellipsizedText.toString() else yAxisLabel,
                 if (isRightAligned) calculatedYAxisWidth.toPx() - yLabelAndAxisLinePadding.toPx() else {
-                    yLabelAndAxisLinePadding.toPx()
+                    yStartPadding.toPx()
                 },
                 yAxisHeight + height / 2 - ((segmentHeight * (index * yStepValue))),
                 yAxisTextPaint
