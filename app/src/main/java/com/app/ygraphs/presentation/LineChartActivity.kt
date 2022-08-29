@@ -10,7 +10,9 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.app.ygraphs.R
@@ -130,8 +132,23 @@ private fun LineGraph3(pointsData: List<Point>) {
                 lineType = LineType.SmoothCurve(isDotted = true),
                 color = Color.Green
             ),
-            shadowUnderLine = ShadowUnderLine(color = Color.Green),
-            selectionHighlightPopUp = SelectionHighlightPopUp()
+            shadowUnderLine = ShadowUnderLine(
+                brush = Brush.verticalGradient(
+                    listOf(
+                        Color.Green,
+                        Color.Transparent
+                    )
+                ), alpha = 0.3f
+            ),
+            selectionHighlightPoint = SelectionHighlightPoint(
+                color = Color.Green
+            ),
+            selectionHighlightPopUp = SelectionHighlightPopUp(
+                backgroundColor = Color.Black,
+                backgroundStyle = Stroke(2f),
+                labelColor = Color.Red,
+                labelTypeface = Typeface.DEFAULT_BOLD
+            )
         ),
         yStepValue = 10f,
         xStepSize = 40.dp,
@@ -140,6 +157,7 @@ private fun LineGraph3(pointsData: List<Point>) {
         yAxisPos = Gravity.LEFT,
         yAxisLabelData = { i -> (i * 10).toString() },
         xAxisLabelData = { i -> i.toString() },
+        axisLineColor = Color.Red
     )
     LineGraph(
         modifier = Modifier
