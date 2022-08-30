@@ -16,6 +16,10 @@ import com.ygraph.components.barchart.BarChart
 import com.ygraph.components.barchart.models.BarChartData
 import com.ygraph.components.common.utils.DataUtils.getBarChartData
 import com.ygraph.components.common.utils.DataUtils.getGradientBarChartData
+import com.ygraph.components.barchart.GroupBarChart
+import com.ygraph.components.barchart.models.GroupBarChartData
+import com.ygraph.components.common.utils.DataUtils.getColorList
+import com.ygraph.components.common.utils.DataUtils.getGroupBarChartData
 
 class BarChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,23 +36,25 @@ class BarChartActivity : ComponentActivity() {
                     val yStepSize = 10
                     val axisData = AxisData.Builder()
                         .ySteps(yStepSize)
-                        .xAxisSteps(barData.size - 1)
-                        .xBottomPadding(40.dp)
-                        .xAxisLabelAngle(20f)
-                        .yLabelData{ index -> (index * yStepSize).toString() }
-                        .xLabelData{ index -> barData[index].label }
+                        .xAxisSteps(groupBarData.size - 1)
+                        .yLabelData { index -> (index * yStepSize).toString() }
+                        .xLabelData { index -> groupBarData[index].label }
                         .yLabelAndAxisLinePadding(20.dp)
                         .yAxisOffset(20.dp)
+                        .yTopPadding(40.dp)
                         .shouldXAxisStartWithPadding(true)
+                        .xBottomPadding(10.dp)
                         .build()
 
-                    val barChartData = BarChartData(
-                        chartData = barData,
+                    val groupBarChartData = GroupBarChartData(
+                        groupedBarList = groupBarData,
                         axisData = axisData,
-                        paddingBetweenBars = 30.dp,
-                        showYAxis = true,
-                        showXAxis = true,
-                        isGradientEnabled = true
+                        yStepSize = yStepSize,
+                        yLabelAndAxisLinePadding = 20.dp,
+                        yAxisOffset = 20.dp,
+                        colorTemplate = getColorList(3),
+                        yLabelData = { index -> (index * yStepSize).toString() },
+                        xLabelData = { index -> groupBarData[index].label },
                     )
 
                     GroupBarChart(

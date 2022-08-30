@@ -57,24 +57,9 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
             if (!showXAxis) {
                 rowHeight = LocalDensity.current.run { DEFAULT_YAXIS_BOTTOM_PADDING.dp.toPx() }
             }
-            
-            val axisData = AxisData.Builder()
-                .yMaxValue(yMax)
-                .yStepValue(yStepSize.toFloat())
-                .xAxisSteps(groupedBarList.size - 1)
-                .xAxisStepSize((barWidth * groupingSize) + paddingBetweenBars)
-                .xAxisLabelAngle(xLabelAngle)
-                .axisLabelFontSize(axisLabelFontSize)
-                .yLabelData(yLabelData)
-                .xLabelData(xLabelData)
-                .yLabelAndAxisLinePadding(yLabelAndAxisLinePadding)
-                .yAxisOffset(yAxisOffset)
-                .yTopPadding(yTopPadding)
-                .shouldXAxisStartWithPadding(true)
-                .yBottomPadding(LocalDensity.current.run { rowHeight.toDp() })
-                .xBottomPadding(xBottomPadding)
-                .axisConfig(axisConfig)
-                .build()
+            val axisData =
+                axisData.copy(xAxisStepSize = ((barWidth * groupingSize) + paddingBetweenBars),
+                    yBottomPadding = LocalDensity.current.run { rowHeight.toDp() })
             
             ScrollableCanvasContainer(modifier = modifier,
                 containerBackgroundColor = backgroundColor,
