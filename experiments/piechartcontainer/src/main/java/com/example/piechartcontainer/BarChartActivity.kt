@@ -8,8 +8,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.example.piechartcontainer.ui.theme.YGraphsTheme
+import com.ygraph.components.axis.AxisConfig
+import com.ygraph.components.axis.AxisData
 import com.ygraph.components.barchart.GroupBarChart
 import com.ygraph.components.barchart.models.GroupBarChartData
 import com.ygraph.components.common.utils.DataUtils.getColorList
@@ -28,8 +31,23 @@ class BarChartActivity : ComponentActivity() {
 
                     val groupBarData = getGroupBarChartData(50, 50, 3)
                     val yStepSize = 10
+                    val axisData = AxisData.Builder()
+                        .yMaxValue(50.toFloat())
+                        .yStepValue(yStepSize.toFloat())
+                        .xAxisSteps(groupBarData.size - 1)
+                        .yLabelData { index -> (index * yStepSize).toString() }
+                        .xLabelData { index -> groupBarData[index].label }
+                        .yLabelAndAxisLinePadding(20.dp)
+                        .yAxisOffset(20.dp)
+                        .yTopPadding(40.dp)
+                        .shouldXAxisStartWithPadding(true)
+                        .xBottomPadding(10.dp)
+                        .axisConfig(AxisConfig())
+                        .build()
+                    
                     val groupBarChartData = GroupBarChartData(
                         groupedBarList = groupBarData,
+                        axisData = axisData,
                         yStepSize = yStepSize,
                         yLabelAndAxisLinePadding = 20.dp,
                         yAxisOffset = 20.dp,
@@ -37,7 +55,7 @@ class BarChartActivity : ComponentActivity() {
                         yLabelData = { index -> (index * yStepSize).toString() },
                         xLabelData = { index -> groupBarData[index].label },
                     )
-
+                    
                     GroupBarChart(
                         modifier = Modifier.height(600.dp),
                         groupBarChartData = groupBarChartData
