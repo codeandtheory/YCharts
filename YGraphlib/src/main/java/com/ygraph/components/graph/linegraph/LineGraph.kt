@@ -20,8 +20,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import com.ygraph.components.axis.AxisData
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
 import com.ygraph.components.axis.getXAxisScale
@@ -51,28 +49,12 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
             var selectionTextVisibility by remember { mutableStateOf(false) }
             var identifiedPoint by remember { mutableStateOf(Point(0f, 0f)) }
 
-            val axisData = AxisData.Builder()
-                .yMaxValue(line.dataPoints.maxOf { it.y })
-                .yStepValue(yStepValue)
-                .xAxisStepSize(xStepSize)
-                .xAxisPos(xAxisPos)
-                .yAxisPos(yAxisPos)
-                .yBottomPadding(LocalDensity.current.run { rowHeight.toDp() })
-                .axisLabelFontSize(axisLabelFontSize)
-                .yLabelData(yAxisLabelData)
-                .xLabelData(xAxisLabelData)
-                .yLabelAndAxisLinePadding(yLabelAndAxisLinePadding)
-                .yAxisOffset(yAxisOffset)
-                .xAxisSteps(xAxisSteps - 1)
-                .yTopPadding(paddingTop)
-                .xAxisLabelAngle(xAxisLabelAngle)
-                .xBottomPadding(bottomPadding)
-                .axisLineColor(axisLineColor)
-                .axisLabelColor(axisLabelColor)
-                .axisLineThickness(axisLineThickness)
-                .indicatorLineWidth(indicatorLineWidth)
-                .typeFace(typeface)
-                .build()
+            // Update must required values
+            val axisData = axisData.copy(
+                yBottomPadding = LocalDensity.current.run { rowHeight.toDp() },
+                yTopPadding = paddingTop,
+                xBottomPadding = bottomPadding
+            )
 
             val (xMin, xMax, _) = getXAxisScale(line.dataPoints, axisData.xAxisSteps)
             val yAxisSteps = (axisData.yMaxValue / axisData.yStepValue).toInt()
@@ -98,6 +80,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                         containerPaddingEnd.toPx()
                     )
                 },
+                containerBackgroundColor = backgroundColor,
                 isPinchZoomEnabled = isZoomAllowed,
                 drawXAndYAxis = { scrollOffset, xZoom ->
                     YAxis(

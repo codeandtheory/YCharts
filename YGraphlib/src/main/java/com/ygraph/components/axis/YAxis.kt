@@ -33,7 +33,7 @@ import com.ygraph.components.common.extensions.getTextWidth
 fun YAxis(modifier: Modifier, axisData: AxisData) {
     with(axisData) {
         var yAxisWidth by remember { mutableStateOf(0.dp) }
-        val isRightAligned = yAxisPos == Gravity.RIGHT
+        val isRightAligned = axisGravity == AxisGravity.Right
         Column(modifier = modifier.clipToBounds()) {
             Canvas(
                 modifier = modifier
@@ -195,7 +195,7 @@ fun YAxisPreview() {
         .yMaxValue(800f)
         .yStepValue(100f)
         .yBottomPadding(10.dp)
-        .yAxisPos(Gravity.LEFT)
+        .axisPos(AxisGravity.Left)
         .axisLabelFontSize(14.sp)
         .yLabelData { index -> index.toString() }
         .build()

@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.app.ygraphs.R
 import com.app.ygraphs.ui.compositions.AppBarWithBackButton
 import com.app.ygraphs.ui.theme.YGraphsTheme
-import com.ygraph.components.axis.Gravity
+import com.ygraph.components.axis.AxisData
 import com.ygraph.components.common.model.Point
 import com.ygraph.components.common.utils.DataUtils
 import com.ygraph.components.graph.linegraph.LineGraph
@@ -63,6 +63,14 @@ class LineChartActivity : ComponentActivity() {
 
 @Composable
 private fun LineGraph1(pointsData: List<Point>) {
+    val axisData = AxisData.Builder()
+        .yMaxValue(pointsData.maxOf { it.y })
+        .yStepValue(20f)
+        .xAxisStepSize(30.dp)
+        .xAxisSteps(pointsData.size - 1)
+        .yLabelData { i -> (i * 20).toString() }
+        .xLabelData { i -> i.toString() }
+        .build()
     val data = LineGraphData(
         line = Line(
             dataPoints = pointsData,
@@ -72,13 +80,7 @@ private fun LineGraph1(pointsData: List<Point>) {
             ShadowUnderLine(),
             SelectionHighlightPopUp()
         ),
-        yStepValue = 20f,
-        xStepSize = 30.dp,
-        xAxisSteps = pointsData.size,
-        xAxisPos = Gravity.BOTTOM,
-        yAxisPos = Gravity.LEFT,
-        yAxisLabelData = { i -> (i * 20).toString() },
-        xAxisLabelData = { i -> i.toString() }
+        axisData = axisData
     )
     LineGraph(
         modifier = Modifier
@@ -90,6 +92,19 @@ private fun LineGraph1(pointsData: List<Point>) {
 
 @Composable
 private fun LineGraph2(pointsData: List<Point>) {
+    val axisData = AxisData.Builder()
+        .yMaxValue(pointsData.maxOf { it.y })
+        .yStepValue(20f)
+        .xAxisStepSize(40.dp)
+        .xAxisSteps(pointsData.size - 1)
+        .yLabelData { i -> "${(i * 20)}k" }
+        .xLabelData { i -> if (i == 0) "" else (1900 + i).toString() }
+        .xAxisLabelAngle(20f)
+        .yLabelAndAxisLinePadding(20.dp)
+        .axisLabelColor(Color.Blue)
+        .axisLineColor(Color.DarkGray)
+        .typeFace(Typeface.DEFAULT_BOLD)
+        .build()
     val data = LineGraphData(
         line = Line(
             dataPoints = pointsData,
@@ -101,19 +116,8 @@ private fun LineGraph2(pointsData: List<Point>) {
                 "$xLabel $yLabel"
             })
         ),
-        yStepValue = 20f,
-        xStepSize = 40.dp,
-        xAxisSteps = pointsData.size,
-        xAxisPos = Gravity.BOTTOM,
-        yAxisPos = Gravity.LEFT,
-        yAxisLabelData = { i -> "${(i * 20)}k" },
-        xAxisLabelData = { i -> if (i == 0) "" else (1900 + i).toString() },
-        xAxisLabelAngle = 20f,
         bottomPadding = 30.dp,
-        yLabelAndAxisLinePadding = 20.dp,
-        axisLabelColor = Color.Blue,
-        axisLineColor = Color.DarkGray,
-        typeface = Typeface.DEFAULT_BOLD
+        axisData = axisData
     )
     LineGraph(
         modifier = Modifier
@@ -125,6 +129,15 @@ private fun LineGraph2(pointsData: List<Point>) {
 
 @Composable
 private fun LineGraph3(pointsData: List<Point>) {
+    val axisData = AxisData.Builder()
+        .yMaxValue(pointsData.maxOf { it.y })
+        .yStepValue(10f)
+        .xAxisStepSize(40.dp)
+        .xAxisSteps(pointsData.size - 1)
+        .yLabelData { i -> (i * 10).toString() }
+        .xLabelData { i -> i.toString() }
+        .axisLineColor(Color.Red)
+        .build()
     val data = LineGraphData(
         line = Line(
             dataPoints = pointsData,
@@ -150,14 +163,7 @@ private fun LineGraph3(pointsData: List<Point>) {
                 labelTypeface = Typeface.DEFAULT_BOLD
             )
         ),
-        yStepValue = 10f,
-        xStepSize = 40.dp,
-        xAxisSteps = pointsData.size,
-        xAxisPos = Gravity.BOTTOM,
-        yAxisPos = Gravity.LEFT,
-        yAxisLabelData = { i -> (i * 10).toString() },
-        xAxisLabelData = { i -> i.toString() },
-        axisLineColor = Color.Red
+        axisData = axisData
     )
     LineGraph(
         modifier = Modifier

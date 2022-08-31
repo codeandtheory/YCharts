@@ -1,67 +1,32 @@
 package com.ygraph.components.graph.linegraph.model
 
-import android.graphics.Typeface
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.ygraph.components.axis.Gravity
+import com.ygraph.components.axis.AxisData
 import com.ygraph.components.common.model.Point
 
 /**
  *
  * LineGraphData data class that contains all params user need to define to draw a line graph.
  * @param line: The path to be drawn on the graph represented by a line.
- * @param yAxisLabelData(Int)-> String: lambda method for providing labels, @param Int will be the index
- * given for each level in YAxis.
- * @param xAxisLabelData(Int)-> String: lambda method for providing labels, @param Int will be the index
- * given for each level in XAxis.
- * @param yStepValue: Step value for label segmentation.
- * @param xStepSize: Size of each step in X-Axis in Dp.
- * @param xAxisSteps: Number of steps in X-Axis.
- * @param yAxisPos :Gravity of yAxis either right or left defined by [Gravity].
- * @param xAxisPos: Gravity of xAxis either bottom or top defined by [Gravity].
+ * @param axisData: All the configurations related to axis to be defined here in [AxisData]
  * @param isZoomAllowed: True if zoom in X-Axis is allowed else false.
- * @param axisLabelFontSize: Font size of axis label data.
- * @param yLabelAndAxisLinePadding: Text label padding from y Axis and the labels.
- * @param yAxisOffset: Drawing offset for yAxis.
  * @param paddingTop: Padding from the top of the canvas to start of the graph container.
  * @param paddingRight: Padding from the end of the canvas to end of the graph container.
  * @param bottomPadding: Padding from the bottom of the canvas to bottom of the graph container.
  * @param containerPaddingEnd: Container inside padding end after the last point of the graph.
- * @param xAxisLabelAngle: Angle for the X axis labels
- * @param axisLineColor Color of the Y & X axis
- * @param axisLabelColor Color of the Y & X axis labels
- * @param axisLineThickness: Thickness of yAxis line
- * @param indicatorLineWidth: Indicator width on Y axis line for showing points
  * @param backgroundColor Background color of the Y & X components
- * @param typeface The type of font style
  */
 data class LineGraphData(
     val line: Line,
-    val yAxisLabelData: (Int) -> String,
-    val xAxisLabelData: (Int) -> String,
-    val yStepValue: Float,
-    val xStepSize: Dp,
-    val xAxisSteps: Int,
-    val xAxisPos: Gravity = Gravity.BOTTOM,
-    val yAxisPos: Gravity = Gravity.LEFT,
+    val axisData: AxisData = AxisData.Builder().build(),
     val isZoomAllowed: Boolean = true,
     val paddingTop: Dp = 30.dp,
     val bottomPadding: Dp = 10.dp,
     val paddingRight: Dp = 10.dp,
-    val axisLabelFontSize: TextUnit = 14.sp,
-    val yLabelAndAxisLinePadding: Dp = 20.dp,
-    val yAxisOffset: Dp = 20.dp,
     val containerPaddingEnd: Dp = 15.dp,
-    val xAxisLabelAngle: Float = 0f,
-    val axisLineColor: Color = Color.Black,
-    val axisLabelColor: Color = Color.Black,
-    val axisLineThickness: Dp = 2.dp,
-    val indicatorLineWidth: Dp = 5.dp,
-    val backgroundColor: Color = Color.Transparent,
-    val typeface: Typeface = Typeface.DEFAULT,
+    val backgroundColor: Color = Color.White,
 )
 
 /**

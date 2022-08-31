@@ -176,7 +176,6 @@ fun getXAxisScale(
 private fun XAxisPreview() {
     val axisData = AxisData.Builder()
         .xLabelAndAxisLinePadding(10.dp)
-        .xAxisPos(Gravity.BOTTOM)
         .axisLabelFontSize(14.sp)
         .xLabelData { index -> index.toString() }
         .build()
