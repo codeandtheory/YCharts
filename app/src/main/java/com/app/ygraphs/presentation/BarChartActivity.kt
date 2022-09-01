@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.app.ygraphs.R
 import com.app.ygraphs.ui.compositions.AppBarWithBackButton
 import com.app.ygraphs.ui.theme.YGraphsTheme
+import com.ygraph.components.axis.AxisData
 import com.ygraph.components.barchart.BarChart
 import com.ygraph.components.barchart.models.BarChartData
 import com.ygraph.components.barchart.models.SelectionHighlightData
@@ -62,14 +63,25 @@ private fun BarChart1() {
     val maxRange = 50
     val barData = DataUtils.getBarChartData(50, maxRange)
     val yStepSize = 10
+
+    val axisData = AxisData.Builder()
+        .ySteps(yStepSize)
+        .xAxisSteps(barData.size - 1)
+        .xBottomPadding(40.dp)
+        .xAxisLabelAngle(20f)
+        .yLabelData { index -> (index * (maxRange / yStepSize)).toString() }
+        .xLabelData { index -> barData[index].label }
+        .yLabelAndAxisLinePadding(20.dp)
+        .yAxisOffset(20.dp)
+        .shouldXAxisStartWithPadding(true)
+        .build()
+
+
     val barChartData = BarChartData(
-        chartData = barData, ySteps = yStepSize,
+        chartData = barData,
+        axisData = axisData,
         paddingBetweenBars = 20.dp,
         barWidth = 25.dp,
-        yLabelAndAxisLinePadding = 20.dp,
-        yAxisOffset = 20.dp,
-        yLabelData = { index -> (index * (maxRange / yStepSize)).toString() },
-        xLabelData = { index -> barData[index].label },
         showYAxis = true,
         showXAxis = true,
         horizontalExtraSpace = 10.dp,
@@ -82,24 +94,31 @@ private fun BarChart2() {
     val maxRange = 100
     val barData = DataUtils.getGradientBarChartData(50, 100)
     val yStepSize = 10
+
+    val axisData = AxisData.Builder()
+        .ySteps(yStepSize)
+        .xAxisSteps(barData.size - 1)
+        .xBottomPadding(40.dp)
+        .xAxisLabelAngle(20f)
+        .yLabelData { index -> (index * (maxRange / yStepSize)).toString() }
+        .xLabelData { index -> barData[index].label }
+        .yLabelAndAxisLinePadding(20.dp)
+        .yAxisOffset(20.dp)
+        .shouldXAxisStartWithPadding(true)
+        .build()
     val barChartData = BarChartData(
-        chartData = barData, ySteps = yStepSize,
+        chartData = barData,
+        axisData = axisData,
         paddingBetweenBars = 20.dp,
         barWidth = 35.dp,
-        yLabelAndAxisLinePadding = 20.dp,
-        yAxisOffset = 20.dp,
-        xBottomPadding = 10.dp,
-        yLabelData = { index -> (index * (maxRange / yStepSize)).toString() },
-        xLabelData = { index -> barData[index].label },
         showYAxis = true,
         showXAxis = true,
         horizontalExtraSpace = 20.dp,
-        xLabelAngle = 20f,
         isGradientEnabled = true,
         selectionHighlightData = SelectionHighlightData(
             highlightBarColor = Color.Red,
             highlightTextBackgroundColor = Color.Green,
-            popUpLabel = { _, y ->" Value : $y "  }
+            popUpLabel = { _, y -> " Value : $y " }
         )
     )
     BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)

@@ -17,7 +17,6 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.ygraph.components.axis.AxisData
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
 import com.ygraph.components.barchart.models.BarChartData
@@ -55,31 +54,17 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
             val (xMin, xMax) = getXMaxAndMinPoints(points)
             val (_, yMax) = getYMaxAndMinPoints(points)
 
-            val maxElementInYAxis = getMaxElementInYAxis(yMax, ySteps)
+            val maxElementInYAxis = getMaxElementInYAxis(yMax, axisData.ySteps)
 
             if (!showXAxis) {
                 rowHeight = LocalDensity.current.run { DEFAULT_YAXIS_BOTTOM_PADDING.dp.toPx() }
             }
 
-
-            val axisData = AxisData.Builder()
-                .ySteps(ySteps)
-                .xAxisSteps(chartData.size - 1)
-                .xAxisStepSize(barWidth + paddingBetweenBars)
-                .xAxisLabelAngle(xLabelAngle)
-                .axisLabelFontSize(axisLabelFontSize)
-                .yLabelData(yLabelData)
-                .xLabelData(xLabelData)
-                .yLabelAndAxisLinePadding(yLabelAndAxisLinePadding)
-                .yAxisOffset(yAxisOffset)
-                .yTopPadding(yTopPadding)
-                .shouldXAxisStartWithPadding(true)
-                .yBottomPadding(LocalDensity.current.run { rowHeight.toDp() })
-                .xBottomPadding(xBottomPadding)
-                .axisConfig(axisConfig)
-                .build()
-
-
+            val axisData = axisData.copy(
+                xAxisStepSize = barWidth + paddingBetweenBars,
+                xAxisSteps = chartData.size,
+                yBottomPadding = LocalDensity.current.run { rowHeight.toDp() }
+            )
 
             ScrollableCanvasContainer(modifier = modifier,
                 containerBackgroundColor = backgroundColor,

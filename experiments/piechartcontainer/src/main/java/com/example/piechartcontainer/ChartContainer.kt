@@ -29,7 +29,7 @@ fun ChartContainer() {
                 percentVisible = true,
                 strokeWidth = 120f,
                 percentColor = Color.Black,
-                isLegendVisible = pieChartData.legendVisible
+                isLegendVisible = true
             )
 
 
