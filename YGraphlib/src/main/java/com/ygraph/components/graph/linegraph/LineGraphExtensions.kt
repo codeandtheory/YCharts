@@ -32,7 +32,7 @@ fun getYAxisScale(
 }
 
 /**
- * Returns true if the given drag offset is selected point or not else false
+ * Returns true if the given tap offset is selected point or not else false
  */
-fun Offset.isDragLocked(dragOffset: Float, xOffset: Float) =
-    ((dragOffset) > x - xOffset / 2) && ((dragOffset) < x + xOffset / 2)
+fun Offset.isTapped(tapOffset: Float, xOffset: Float) =
+    ((tapOffset) > x - xOffset / 2) && ((tapOffset) < x + xOffset / 2)

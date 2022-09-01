@@ -10,7 +10,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -83,7 +84,6 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
 
             ScrollableCanvasContainer(modifier = modifier,
                 containerBackgroundColor = backgroundColor,
-                isTapGestureEnabled = true,
                 calculateMaxDistance = { xZoom ->
                     horizontalGap = horizontalExtraSpace.toPx()
                     val xLeft = columnWidth + horizontalGap
@@ -188,12 +188,12 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                         )
                     }
                 },
-                onPointSelected = { offset: Offset, _: Float ->
+                onPointClicked = { offset: Offset, _: Float ->
                     isTapped = true
                     visibility = true
                     tapOffset = offset
                 },
-                onScrolling = {
+                onScroll = {
                     isTapped = false
                     visibility = false
                 }
