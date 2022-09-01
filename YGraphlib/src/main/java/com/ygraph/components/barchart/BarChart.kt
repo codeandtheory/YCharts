@@ -62,7 +62,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
 
             val axisData = axisData.copy(
                 xAxisStepSize = barWidth + paddingBetweenBars,
-                xAxisSteps = chartData.size,
+                xAxisSteps = chartData.size - 1,
                 yBottomPadding = LocalDensity.current.run { rowHeight.toDp() }
             )
 
