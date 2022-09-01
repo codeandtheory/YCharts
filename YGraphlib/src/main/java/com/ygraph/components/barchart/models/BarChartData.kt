@@ -15,11 +15,10 @@ import com.ygraph.components.axis.AxisConfig
 /**
  * BarChart data class params used in drawing bar graph.
  * @param chartData : List of BarData
- * @param yStepSize: Number of steps needed in Y axis
+ * @param yStepSize: Step value for label segmentation
  * @param yLabelData(Int)-> String: lambda method for providing labels, @param Int will be the index
  * @param yLabelAndAxisLinePadding: Text label padding from y Axis
  * @param yAxisOffset: Drawing offset for yAxis.
- * @param xStepSize: Number of steps needed in X axis
  * @param xStepSize: Number of steps needed in X axis
  * @param xLabelData(Int)-> String: lambda method for providing labels, @param Int will be the index
  * @param xLabelAngle: Angle of the x axis labels

@@ -226,7 +226,7 @@ private fun DrawScope.drawHighlightText(
  * Used to draw the individual bars
  * @param barChartData : all meta data related to the bar graph
  * @param barData : data related to a single bar
- * @param drawOffset: topleft ffset for the drawing the bar
+ * @param drawOffset: top left offset for the drawing the bar
  * @param height : height of the bar chart
  */
 private fun DrawScope.drawBarChart(
@@ -286,7 +286,7 @@ fun getMaxScrollDistance(
     canvasWidth: Float
 ): Float {
     val xLastPoint =
-        (xMax - xMin) * xOffset + xLeft + columnWidth + paddingRight //+ horizontalGap.value
+        (xMax - xMin) * xOffset + xLeft + columnWidth + paddingRight//+ horizontalGap.value
     return if (xLastPoint > canvasWidth) {
         xLastPoint - canvasWidth
     } else 0f

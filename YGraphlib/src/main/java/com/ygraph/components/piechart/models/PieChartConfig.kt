@@ -20,12 +20,14 @@ import com.ygraph.components.piechart.PieChartConstants.DEFAULT_STROKE_WIDTH
  * @param showSliceLabels: Control the labels visibility
  * @param sliceLabelTextSize: Text size of the labels
  * @param sliceLabelTextColor: Text color of the labels
+ * @param sliceLabelTypeface: Typeface of the labels
  * @param isLegendVisible: visibility of legends
  * @param legendLabelTextColor: Text color of the legend labels
  * @param isAnimationEnable: Boolean Flag for enabling animation
  * @param animationDuration: Duration of animation
  * @param strokeWidth: Stroke width of Donut Chart
  * @param percentageFontSize: Percentage text font size
+ * @param percentageTypeface: Percentage text typeface
  * @param percentVisible: Percentage text visibility
  * @param percentColor: Percentage text color
  * @param legendGridSize: Number of legends on each row
