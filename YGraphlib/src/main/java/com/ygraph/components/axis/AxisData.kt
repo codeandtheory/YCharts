@@ -11,8 +11,7 @@ import androidx.compose.ui.unit.sp
 /**
  *
  * YAxis data class params used in drawing yAxis in any graph.
- * @param yMaxValue: yAxis max value
- * @param yStepValue: Step value for label segmentation
+ * @param ySteps: Step value for label segmentation
  * @param yBottomPadding: Y Label offset bottom padding
  * @param yLabelData(Int)-> String: lambda method for providing labels, @param Int will be the index
  * given for each level in YAxis
@@ -42,8 +41,7 @@ import androidx.compose.ui.unit.sp
  */
 data class AxisData(
     // All Y-Axis params
-    val yMaxValue: Float,
-    val yStepValue: Float,
+    val ySteps: Int,
     val yLabelData: (Int) -> String,
     val yAxisPos: Gravity,
     val yLabelAndAxisLinePadding: Dp,
@@ -72,8 +70,7 @@ data class AxisData(
     val shouldXAxisStartWithPadding: Boolean
 ) {
     class Builder {
-        private var yMaxValue: Float = 0f
-        private var yStepValue: Float = 0f
+        private var ySteps: Int = 5
         private var yLabelData: (Int) -> String = { _ -> "" }
         private var yAxisPos: Gravity = Gravity.LEFT
         private var yLabelAndAxisLinePadding: Dp = 4.dp
@@ -99,9 +96,7 @@ data class AxisData(
         private var shouldStartXAxisWithPadding: Boolean = false
         private var xAxisLabelAngle: Float = 0f
 
-        fun yMaxValue(maxValue: Float) = apply { this.yMaxValue = maxValue }
-
-        fun yStepValue(stepValue: Float) = apply { this.yStepValue = stepValue }
+        fun ySteps(steps: Int) = apply { this.ySteps = steps }
 
         fun yBottomPadding(padding: Dp) = apply { this.yBottomPadding = padding }
 
@@ -153,8 +148,7 @@ data class AxisData(
         fun xAxisLabelAngle(angle: Float) = apply { this.xAxisLabelAngle = angle }
 
         fun build() = AxisData(
-            yMaxValue,
-            yStepValue,
+            ySteps,
             yLabelData,
             yAxisPos,
             yLabelAndAxisLinePadding,

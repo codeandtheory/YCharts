@@ -17,7 +17,7 @@ import com.ygraph.components.common.model.Point
  * given for each level in YAxis.
  * @param xAxisLabelData(Int)-> String: lambda method for providing labels, @param Int will be the index
  * given for each level in XAxis.
- * @param yStepValue: Step value for label segmentation.
+ * @param ySteps: Step value for label segmentation.
  * @param xStepSize: Size of each step in X-Axis in Dp.
  * @param xAxisSteps: Number of steps in X-Axis.
  * @param yAxisPos :Gravity of yAxis either right or left defined by [Gravity].
@@ -42,7 +42,7 @@ data class LineGraphData(
     val line: Line,
     val yAxisLabelData: (Int) -> String,
     val xAxisLabelData: (Int) -> String,
-    val yStepValue: Float,
+    val ySteps: Int,
     val xStepSize: Dp,
     val xAxisSteps: Int,
     val xAxisPos: Gravity = Gravity.BOTTOM,

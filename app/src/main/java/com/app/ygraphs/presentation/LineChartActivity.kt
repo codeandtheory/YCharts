@@ -19,6 +19,7 @@ import com.app.ygraphs.R
 import com.app.ygraphs.ui.compositions.AppBarWithBackButton
 import com.app.ygraphs.ui.theme.YGraphsTheme
 import com.ygraph.components.axis.Gravity
+import com.ygraph.components.common.extensions.formatToString
 import com.ygraph.components.common.model.Point
 import com.ygraph.components.common.utils.DataUtils
 import com.ygraph.components.graph.linegraph.LineGraph
@@ -48,9 +49,21 @@ class LineChartActivity : ComponentActivity() {
                         LazyColumn(content = {
                             items(3) { item ->
                                 when (item) {
-                                    0 -> LineGraph1(DataUtils.getLineChartData(100, 100))
-                                    1 -> LineGraph2(DataUtils.getLineChartData(50, 200))
-                                    2 -> LineGraph3(DataUtils.getLineChartData(200, 100))
+                                    0 -> LineGraph1(
+                                        DataUtils.getLineChartData(
+                                            100,
+                                            start = 50,
+                                            maxRange = 100
+                                        )
+                                    )
+                                    1 -> LineGraph2(DataUtils.getLineChartData(50, maxRange = 200))
+                                    2 -> LineGraph3(
+                                        DataUtils.getLineChartData(
+                                            200,
+                                            start = -50,
+                                            maxRange = 50
+                                        )
+                                    )
                                 }
                             }
                         })
@@ -63,6 +76,7 @@ class LineChartActivity : ComponentActivity() {
 
 @Composable
 private fun LineGraph1(pointsData: List<Point>) {
+    val steps = 5
     val data = LineGraphData(
         line = Line(
             dataPoints = pointsData,
@@ -72,12 +86,17 @@ private fun LineGraph1(pointsData: List<Point>) {
             ShadowUnderLine(),
             SelectionHighlightPopUp()
         ),
-        yStepValue = 20f,
+        ySteps = steps,
         xStepSize = 30.dp,
         xAxisSteps = pointsData.size,
         xAxisPos = Gravity.BOTTOM,
         yAxisPos = Gravity.LEFT,
-        yAxisLabelData = { i -> (i * 20).toString() },
+        yAxisLabelData = { i ->
+            // Add yMin to get the negative axis values to the scale
+            val yMin = pointsData.minOf { it.y }
+            val yScale = 50 / steps
+            ((i * yScale) + yMin).formatToString()
+        },
         xAxisLabelData = { i -> i.toString() }
     )
     LineGraph(
@@ -101,7 +120,7 @@ private fun LineGraph2(pointsData: List<Point>) {
                 "$xLabel $yLabel"
             })
         ),
-        yStepValue = 20f,
+        ySteps = 10,
         xStepSize = 40.dp,
         xAxisSteps = pointsData.size,
         xAxisPos = Gravity.BOTTOM,
@@ -125,6 +144,7 @@ private fun LineGraph2(pointsData: List<Point>) {
 
 @Composable
 private fun LineGraph3(pointsData: List<Point>) {
+    val steps = 10
     val data = LineGraphData(
         line = Line(
             dataPoints = pointsData,
@@ -150,12 +170,16 @@ private fun LineGraph3(pointsData: List<Point>) {
                 labelTypeface = Typeface.DEFAULT_BOLD
             )
         ),
-        yStepValue = 10f,
+        ySteps = steps,
         xStepSize = 40.dp,
         xAxisSteps = pointsData.size,
         xAxisPos = Gravity.BOTTOM,
         yAxisPos = Gravity.LEFT,
-        yAxisLabelData = { i -> (i * 10).toString() },
+        yAxisLabelData = { i ->
+            val yMin = pointsData.minOf { it.y }
+            val yScale = 100 / steps
+            ((i * yScale) + yMin).formatToString()
+        },
         xAxisLabelData = { i -> i.toString() },
         axisLineColor = Color.Red
     )
@@ -166,4 +190,3 @@ private fun LineGraph3(pointsData: List<Point>) {
         lineGraphData = data
     )
 }
-

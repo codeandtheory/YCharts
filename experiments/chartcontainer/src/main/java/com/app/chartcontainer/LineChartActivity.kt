@@ -33,7 +33,7 @@ class LineChartActivity : ComponentActivity() {
                             .background(Color.Yellow),
                         verticalArrangement = Arrangement.Center
                     ) {
-                        val pointsData = DataUtils.getLineChartData(100, 100)
+                        val pointsData = DataUtils.getLineChartData(100, maxRange = 100)
                         val data = LineGraphData(
                             line = Line(
                                 dataPoints = pointsData,
@@ -43,7 +43,7 @@ class LineChartActivity : ComponentActivity() {
                                 ShadowUnderLine(),
                                 SelectionHighlightPopUp()
                             ),
-                            yStepValue = 20f,
+                            ySteps = 5,
                             xStepSize = 30.dp,
                             xAxisSteps = pointsData.size,
                             xAxisPos = Gravity.BOTTOM,

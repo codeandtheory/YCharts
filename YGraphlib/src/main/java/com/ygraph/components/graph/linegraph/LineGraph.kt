@@ -51,8 +51,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
             var identifiedPoint by remember { mutableStateOf(Point(0f, 0f)) }
 
             val axisData = AxisData.Builder()
-                .yMaxValue(line.dataPoints.maxOf { it.y })
-                .yStepValue(yStepValue)
+                .ySteps(ySteps)
                 .xAxisStepSize(xStepSize)
                 .xAxisPos(xAxisPos)
                 .yAxisPos(yAxisPos)
@@ -74,13 +73,9 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                 .build()
 
             val (xMin, xMax, _) = getXAxisScale(line.dataPoints, axisData.xAxisSteps)
-            val yAxisSteps = (axisData.yMaxValue / axisData.yStepValue).toInt()
-            val (yMin, _, yAxisScale) = getYAxisScale(
-                line.dataPoints,
-                (axisData.yMaxValue / axisData.yStepValue).toInt()
-            )
+            val (yMin, _, yAxisScale) = getYAxisScale(line.dataPoints, axisData.ySteps)
             val maxElementInYAxis =
-                getMaxElementInYAxis(yAxisScale, yAxisSteps)
+                getMaxElementInYAxis(yAxisScale, axisData.ySteps)
 
             ScrollableCanvasContainer(
                 modifier = modifier,

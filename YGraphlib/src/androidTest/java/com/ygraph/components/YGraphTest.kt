@@ -26,8 +26,7 @@ class YGraphTest {
         with(composeTestRule) {
             // Given
             val axisData = AxisData.Builder()
-                .yMaxValue(800f)
-                .yStepValue(100f)
+                .ySteps(10)
                 .xAxisPos(Gravity.LEFT)
                 .axisLabelFontSize(14.sp)
                 .yLabelData { index -> index.toString() }
@@ -35,7 +34,10 @@ class YGraphTest {
 
             // When
             setContent {
-                YAxis(modifier = Modifier.height(250.dp), axisData = axisData)
+                YAxis(
+                    modifier = Modifier.height(250.dp),
+                    axisData = axisData
+                )
             }
 
             // Then
@@ -47,8 +49,6 @@ class YGraphTest {
         with(composeTestRule) {
             // Given
             val axisData = AxisData.Builder()
-                .yMaxValue(800f)
-                .yStepValue(100f)
                 .xAxisPos(Gravity.LEFT)
                 .axisLabelFontSize(14.sp)
                 .axisConfig(AxisConfig(isAxisLineRequired = false))
@@ -57,7 +57,10 @@ class YGraphTest {
 
             // When
             setContent {
-                YAxis(modifier = Modifier.height(250.dp), axisData = axisData)
+                YAxis(
+                    modifier = Modifier.height(250.dp),
+                    axisData = axisData
+                )
             }
 
             // Then

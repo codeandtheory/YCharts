@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import com.ygraph.components.common.model.Point
+import java.text.DecimalFormat
 
 
 /**
@@ -141,3 +142,7 @@ fun Offset.isTapped(tapOffset: Offset, xOffset: Float, bottom: Float, tapPadding
             ((tapOffset.plus(Offset(0f, tapPadding))).y > y) && ((tapOffset.y) < bottom)
 
 
+/***
+ * Returns converted string from a float value
+ */
+fun Float.formatToString(): String = DecimalFormat("#.#").format(this)
