@@ -28,7 +28,7 @@ class BarChartActivity : ComponentActivity() {
                     val barData = getGradientBarChartData(50, 50)
                     val yStepSize = 10
                     val barChartData = BarChartData(
-                        chartData = barData, yStepSize = yStepSize,
+                        chartData = barData, ySteps = yStepSize,
                         paddingBetweenBars = 30.dp,
                         yLabelAndAxisLinePadding = 20.dp,
                         yAxisOffset = 20.dp,
