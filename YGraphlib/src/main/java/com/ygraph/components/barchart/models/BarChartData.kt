@@ -41,7 +41,7 @@ import com.ygraph.components.axis.AxisConfig
  */
 data class BarChartData(
     val chartData: List<BarData>,
-    val yStepSize: Int = 5,
+    val ySteps: Int = 5,
     val yLabelData: (Int) -> String = { _ -> "" },
     val yLabelAndAxisLinePadding: Dp = 4.dp,
     val yAxisOffset: Dp = 10.dp,

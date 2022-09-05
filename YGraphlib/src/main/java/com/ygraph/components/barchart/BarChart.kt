@@ -55,7 +55,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
             val (xMin, xMax) = getXMaxAndMinPoints(points)
             val (_, yMax) = getYMaxAndMinPoints(points)
 
-            val maxElementInYAxis = getMaxElementInYAxis(yMax, yStepSize)
+            val maxElementInYAxis = getMaxElementInYAxis(yMax, ySteps)
 
             if (!showXAxis) {
                 rowHeight = LocalDensity.current.run { DEFAULT_YAXIS_BOTTOM_PADDING.dp.toPx() }
@@ -63,8 +63,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
 
 
             val axisData = AxisData.Builder()
-                .yMaxValue(yMax)
-                .yStepValue(yStepSize.toFloat())
+                .ySteps(ySteps)
                 .xAxisSteps(chartData.size - 1)
                 .xAxisStepSize(barWidth + paddingBetweenBars)
                 .xAxisLabelAngle(xLabelAngle)
@@ -184,7 +183,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                                 .onGloballyPositioned {
                                     columnWidth = it.size.width.toFloat()
                                 },
-                            axisData = axisData,
+                            axisData = axisData
                         )
                     }
                 },

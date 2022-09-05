@@ -59,15 +59,16 @@ class BarChartActivity : ComponentActivity() {
 
 @Composable
 private fun BarChart1() {
-    val barData = DataUtils.getBarChartData(50, 50)
+    val maxRange = 50
+    val barData = DataUtils.getBarChartData(50, maxRange)
     val yStepSize = 10
     val barChartData = BarChartData(
-        chartData = barData, yStepSize = yStepSize,
+        chartData = barData, ySteps = yStepSize,
         paddingBetweenBars = 20.dp,
         barWidth = 25.dp,
         yLabelAndAxisLinePadding = 20.dp,
         yAxisOffset = 20.dp,
-        yLabelData = { index -> (index * yStepSize).toString() },
+        yLabelData = { index -> (index * (maxRange / yStepSize)).toString() },
         xLabelData = { index -> barData[index].label },
         showYAxis = true,
         showXAxis = true,
@@ -78,16 +79,17 @@ private fun BarChart1() {
 
 @Composable
 private fun BarChart2() {
+    val maxRange = 100
     val barData = DataUtils.getGradientBarChartData(50, 100)
     val yStepSize = 10
     val barChartData = BarChartData(
-        chartData = barData, yStepSize = yStepSize,
+        chartData = barData, ySteps = yStepSize,
         paddingBetweenBars = 20.dp,
         barWidth = 35.dp,
         yLabelAndAxisLinePadding = 20.dp,
         yAxisOffset = 20.dp,
         xBottomPadding = 10.dp,
-        yLabelData = { index -> (index * yStepSize).toString() },
+        yLabelData = { index -> (index * (maxRange / yStepSize)).toString() },
         xLabelData = { index -> barData[index].label },
         showYAxis = true,
         showXAxis = true,
