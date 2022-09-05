@@ -37,6 +37,7 @@ import com.ygraph.components.common.model.Point
  * @param indicatorLineWidth: Indicator width on Y axis line for showing points
  * @param backgroundColor Background color of the Y & X components
  * @param typeface The type of font style
+ * @param gridLines This enables graph to draw horizontal and vertical grid lines
  */
 data class LineGraphData(
     val line: Line,
@@ -62,6 +63,7 @@ data class LineGraphData(
     val indicatorLineWidth: Dp = 5.dp,
     val backgroundColor: Color = Color.Transparent,
     val typeface: Typeface = Typeface.DEFAULT,
+    val gridLines: GridLines? = null
 )
 
 /**

@@ -72,8 +72,8 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                 .typeFace(typeface)
                 .build()
 
-            val (xMin, xMax, _) = getXAxisScale(line.dataPoints, axisData.xAxisSteps)
-            val (yMin, _, yAxisScale) = getYAxisScale(line.dataPoints, axisData.ySteps)
+            val (xMin, xMax, xAxisScale) = getXAxisScale(line.dataPoints, axisData.xAxisSteps)
+            val (yMin, yMax, yAxisScale) = getYAxisScale(line.dataPoints, axisData.ySteps)
             val maxElementInYAxis =
                 getMaxElementInYAxis(yAxisScale, axisData.ySteps)
 
@@ -141,6 +141,23 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                     val (cubicPoints1, cubicPoints2) = getCubicPoints(pointsData)
                     val tapPointLocks = mutableMapOf<Int, Pair<Point, Offset>>()
 
+                    // Draw guide lines
+                    gridLines?.let {
+                        val top = yBottom - ((yMax - yMin) * yOffset)
+                        drawGridLines(
+                            yBottom,
+                            top,
+                            axisData,
+                            xLeft,
+                            paddingRight,
+                            scrollOffset,
+                            pointsData.size,
+                            xZoom,
+                            xAxisScale,
+                            it
+                        )
+                    }
+
                     // Draw cubic line using the points and form a line graph
                     val cubicPath =
                         drawStraightOrCubicLine(
@@ -199,6 +216,51 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                     selectionTextVisibility = false
                 }
             )
+        }
+    }
+}
+
+/**
+ *
+ * DrawScope.drawGridLines is the extension method used to draw the grid lines on any graph
+ * @param yBottom : Bottom value for Y-Axis
+ * @param top: Top value for Y axis
+ * @param axisData : Data related to axis.
+ * @param xLeft: Total left padding in X-Axis.
+ * @param paddingRight : Total right padding.
+ * @param scrollOffset : Total scroll offset.
+ * @param verticalPointsSize : Total points in the X-Axis.
+ * @param xZoom : Total zoom offset.
+ * @param xAxisScale: Scale of each point in X-Axis.
+ * @param gridLines: Data class to handle styling related to grid lines.
+ */
+private fun DrawScope.drawGridLines(
+    yBottom: Float,
+    top: Float,
+    axisData: AxisData,
+    xLeft: Float,
+    paddingRight: Dp,
+    scrollOffset: Float,
+    verticalPointsSize: Int,
+    xZoom: Float,
+    xAxisScale: Float,
+    gridLines: GridLines
+) {
+    val availableHeight = yBottom - top
+    val steps = axisData.ySteps + 1 // Considering 0 as step
+    val gridOffset = availableHeight / if (steps > 1) steps - 1 else 1
+    // Should start from 1 as we don't consider the XAxis
+    if (gridLines.enableHorizontalLines) {
+        (1 until steps).forEach {
+            val y = yBottom - (it * gridOffset)
+            gridLines.drawHorizontalLines(this, xLeft, y, size.width - paddingRight.toPx())
+        }
+    }
+    if (gridLines.enableVerticalLines) {
+        var xPos = xLeft - scrollOffset
+        (0 until verticalPointsSize).forEach { _ ->
+            gridLines.drawVerticalLines(this, xPos, yBottom, top)
+            xPos += ((axisData.xAxisStepSize.toPx() * (xZoom * xAxisScale)))
         }
     }
 }
