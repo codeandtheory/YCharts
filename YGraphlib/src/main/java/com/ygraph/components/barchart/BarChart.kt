@@ -40,7 +40,7 @@ import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
 fun BarChart(modifier: Modifier, barChartData: BarChartData) {
     Column(modifier) {
         with(barChartData) {
-            var visibility by remember { mutableStateOf(false) }
+            var barHighlightVisibility by remember { mutableStateOf(false) }
             var identifiedPoint by remember { mutableStateOf(BarData(Point(0f, 0f))) }
             var xOffset by remember { mutableStateOf(0f) }
             var tapOffset by remember { mutableStateOf(Offset(0f,0f)) }
@@ -139,7 +139,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                         // highlighting the selected bar and showing the data points
                         identifiedPoint = highlightBar(
                             dragLocks,
-                            visibility,
+                            barHighlightVisibility,
                             identifiedPoint,
                             barChartData,
                             isTapped,
@@ -190,12 +190,12 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                 },
                 onPointClicked = { offset: Offset, _: Float ->
                     isTapped = true
-                    visibility = true
+                    barHighlightVisibility = true
                     tapOffset = offset
                 },
                 onScroll = {
                     isTapped = false
-                    visibility = false
+                    barHighlightVisibility = false
                 }
             )
         }
@@ -298,7 +298,7 @@ fun getMaxScrollDistance(
  *
  * returns identified point and displaying the data points and highlighted bar .
  * @param dragLocks : Mutable map of BarData and drawOffset.
- * @param visibility : Flag to control the visibility of highlighted text.
+ * @param barHighlightVisibility : Flag to control the visibility of highlighted text.
  * @param identifiedPoint: selected bar data.
  * @param barChartData: Data related to the bar chart.
  * @param isDragging : Boolean flag for the dragging status.
@@ -309,7 +309,7 @@ fun getMaxScrollDistance(
  */
 private fun DrawScope.highlightBar(
     dragLocks: MutableMap<Int, Pair<BarData, Offset>>,
-    visibility: Boolean,
+    barHighlightVisibility: Boolean,
     identifiedPoint: BarData,
     barChartData: BarChartData,
     isDragging: Boolean,
@@ -345,7 +345,9 @@ private fun DrawScope.highlightBar(
     }
 
     val selectedOffset = dragLocks.values.firstOrNull()?.second
-    if (visibility && selectedOffset != null && barChartData.selectionHighlightData != null) {
+    if (barHighlightVisibility && selectedOffset != null &&
+        barChartData.selectionHighlightData != null
+    ) {
         drawHighlightText(
             mutableIdentifiedPoint,
             selectedOffset,
