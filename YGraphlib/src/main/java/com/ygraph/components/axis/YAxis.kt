@@ -35,23 +35,23 @@ fun YAxis(modifier: Modifier, axisData: AxisData) {
         var yAxisWidth by remember { mutableStateOf(0.dp) }
         val isRightAligned = yAxisPos == Gravity.RIGHT
         Column(modifier = modifier.clipToBounds()) {
+            val steps = ySteps + 1
             Canvas(
                 modifier = modifier
                     .clipToBounds()
                     .width(yAxisWidth)
                     .background(backgroundColor)
             ) {
-                val (yAxisHeight, reqYLabelsQuo, segmentHeight) = getAxisInitValues(
+                val (yAxisHeight, segmentHeight) = getAxisInitValues(
                     axisData,
                     size.height,
                     yBottomPadding.toPx(),
                     yTopPadding.toPx()
                 )
-                for (index in 0 until reqYLabelsQuo.toInt()) {
+                for (index in 0 until steps) {
                     // Drawing the axis labels
                     yAxisWidth = drawAxisLabel(
                         index,
-                        reqYLabelsQuo,
                         axisData,
                         yAxisWidth,
                         isRightAligned,
@@ -61,7 +61,7 @@ fun YAxis(modifier: Modifier, axisData: AxisData) {
                     drawAxisLineWithPointers(
                         axisData,
                         index,
-                        reqYLabelsQuo,
+                        steps,
                         isRightAligned,
                         yAxisWidth,
                         yAxisHeight,
@@ -78,26 +78,18 @@ fun getAxisInitValues(
     canvasHeight: Float,
     bottomPadding: Float,
     topPadding: Float
-): Triple<Float, Float, Float> = with(axisData) {
+): Pair<Float, Float> = with(axisData) {
     val yAxisHeight = canvasHeight - bottomPadding
-    var yMax = yMaxValue
-    var reqYLabelsQuo =
-        (yMaxValue / yStepValue) + 1 // Added one since it starts from 0
-    val reqYLabelsRem = yMaxValue.rem(yStepValue)
-    if (reqYLabelsRem > 0f) {
-        reqYLabelsQuo += 1
-        yMax = (yMaxValue - reqYLabelsRem) + yStepValue
-    }
     // Minus the top padding to avoid cropping at the top
-    val segmentHeight = (yAxisHeight - topPadding) / yMax
-    Triple(yAxisHeight, reqYLabelsQuo, segmentHeight)
+    val segmentHeight = (yAxisHeight - topPadding) / axisData.ySteps
+    Pair(yAxisHeight, segmentHeight)
 }
 
 
 private fun DrawScope.drawAxisLineWithPointers(
     axisData: AxisData,
-    i: Int,
-    reqYLabelsQuo: Float,
+    index: Int,
+    totalSteps: Int,
     isRightAligned: Boolean,
     yAxisWidth: Dp,
     yAxisHeight: Float,
@@ -106,16 +98,16 @@ private fun DrawScope.drawAxisLineWithPointers(
     with(axisData) {
         if (axisConfig.isAxisLineRequired) {
             // Draw line only until reqYLabelsQuo -1 else will be a extra line at top with no label
-            if (i != (reqYLabelsQuo.toInt() - 1)) {
+            if (index != (totalSteps - 1)) {
                 //Draw Yaxis line
                 drawLine(
                     start = Offset(
                         x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
-                        y = yAxisHeight - (segmentHeight * (i * yStepValue))
+                        y = yAxisHeight - (segmentHeight * index)
                     ),
                     end = Offset(
                         x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
-                        y = yAxisHeight - (segmentHeight * ((i + 1) * yStepValue))
+                        y = yAxisHeight - (segmentHeight * (index + 1))
                     ),
                     color = axisLineColor, strokeWidth = axisLineThickness.toPx()
                 )
@@ -127,11 +119,11 @@ private fun DrawScope.drawAxisLineWithPointers(
                     x = if (isRightAligned) 0.dp.toPx() else {
                         yAxisWidth.toPx() - indicatorLineWidth.toPx()
                     },
-                    y = yAxisHeight - (segmentHeight * (i * yStepValue))
+                    y = yAxisHeight - (segmentHeight * index)
                 ),
                 end = Offset(
                     x = if (isRightAligned) indicatorLineWidth.toPx() else yAxisWidth.toPx(),
-                    y = yAxisHeight - (segmentHeight * (i * yStepValue))
+                    y = yAxisHeight - (segmentHeight * index)
                 ),
                 color = axisLineColor, strokeWidth = axisLineThickness.toPx()
             )
@@ -142,7 +134,6 @@ private fun DrawScope.drawAxisLineWithPointers(
 
 private fun DrawScope.drawAxisLabel(
     index: Int,
-    reqYLabelsQuo: Float,
     axisData: AxisData,
     yAxisWidth: Dp,
     isRightAligned: Boolean,
@@ -156,34 +147,32 @@ private fun DrawScope.drawAxisLabel(
         textAlign = if (isRightAligned) Paint.Align.RIGHT else Paint.Align.LEFT
         typeface = axisData.typeface
     }
-    if (index != reqYLabelsQuo.toInt()) {
-        val yAxisLabel = yLabelData(index)
-        val measuredWidth = yAxisLabel.getTextWidth(yAxisTextPaint)
-        val height: Int = yAxisLabel.getTextHeight(yAxisTextPaint)
-        if (measuredWidth > calculatedYAxisWidth.toPx()) {
-            val width =
-                if (axisConfig.shouldEllipsizeAxisLabel) {
-                    axisConfig.minTextWidthToEllipsize
-                } else measuredWidth.toDp()
-            calculatedYAxisWidth =
-                width + yLabelAndAxisLinePadding + yAxisOffset
-        }
-        val ellipsizedText = TextUtils.ellipsize(
-            yAxisLabel,
-            yAxisTextPaint,
-            axisConfig.minTextWidthToEllipsize.toPx(),
-            axisConfig.ellipsizeAt
+    val yAxisLabel = yLabelData(index)
+    val measuredWidth = yAxisLabel.getTextWidth(yAxisTextPaint)
+    val height: Int = yAxisLabel.getTextHeight(yAxisTextPaint)
+    if (measuredWidth > calculatedYAxisWidth.toPx()) {
+        val width =
+            if (axisConfig.shouldEllipsizeAxisLabel) {
+                axisConfig.minTextWidthToEllipsize
+            } else measuredWidth.toDp()
+        calculatedYAxisWidth =
+            width + yLabelAndAxisLinePadding + yAxisOffset
+    }
+    val ellipsizedText = TextUtils.ellipsize(
+        yAxisLabel,
+        yAxisTextPaint,
+        axisConfig.minTextWidthToEllipsize.toPx(),
+        axisConfig.ellipsizeAt
+    )
+    drawContext.canvas.nativeCanvas.apply {
+        drawText(
+            if (axisConfig.shouldEllipsizeAxisLabel) ellipsizedText.toString() else yAxisLabel,
+            if (isRightAligned) calculatedYAxisWidth.toPx() - yLabelAndAxisLinePadding.toPx() else {
+                yStartPadding.toPx()
+            },
+            yAxisHeight + height / 2 - ((segmentHeight * index)),
+            yAxisTextPaint
         )
-        drawContext.canvas.nativeCanvas.apply {
-            drawText(
-                if (axisConfig.shouldEllipsizeAxisLabel) ellipsizedText.toString() else yAxisLabel,
-                if (isRightAligned) calculatedYAxisWidth.toPx() - yLabelAndAxisLinePadding.toPx() else {
-                    yStartPadding.toPx()
-                },
-                yAxisHeight + height / 2 - ((segmentHeight * (index * yStepValue))),
-                yAxisTextPaint
-            )
-        }
     }
     return calculatedYAxisWidth
 }
@@ -192,8 +181,7 @@ private fun DrawScope.drawAxisLabel(
 @Composable
 fun YAxisPreview() {
     val axisData = AxisData.Builder()
-        .yMaxValue(800f)
-        .yStepValue(100f)
+        .ySteps(5)
         .yBottomPadding(10.dp)
         .yAxisPos(Gravity.LEFT)
         .axisLabelFontSize(14.sp)

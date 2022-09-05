@@ -10,7 +10,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -39,7 +40,7 @@ import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
 fun BarChart(modifier: Modifier, barChartData: BarChartData) {
     Column(modifier) {
         with(barChartData) {
-            var visibility by remember { mutableStateOf(false) }
+            var barHighlightVisibility by remember { mutableStateOf(false) }
             var identifiedPoint by remember { mutableStateOf(BarData(Point(0f, 0f))) }
             var xOffset by remember { mutableStateOf(0f) }
             var tapOffset by remember { mutableStateOf(Offset(0f,0f)) }
@@ -54,7 +55,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
             val (xMin, xMax) = getXMaxAndMinPoints(points)
             val (_, yMax) = getYMaxAndMinPoints(points)
 
-            val maxElementInYAxis = getMaxElementInYAxis(yMax, yStepSize)
+            val maxElementInYAxis = getMaxElementInYAxis(yMax, ySteps)
 
             if (!showXAxis) {
                 rowHeight = LocalDensity.current.run { DEFAULT_YAXIS_BOTTOM_PADDING.dp.toPx() }
@@ -62,8 +63,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
 
 
             val axisData = AxisData.Builder()
-                .yMaxValue(yMax)
-                .yStepValue(yStepSize.toFloat())
+                .ySteps(ySteps)
                 .xAxisSteps(chartData.size - 1)
                 .xAxisStepSize(barWidth + paddingBetweenBars)
                 .xAxisLabelAngle(xLabelAngle)
@@ -83,7 +83,6 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
 
             ScrollableCanvasContainer(modifier = modifier,
                 containerBackgroundColor = backgroundColor,
-                isTapGestureEnabled = true,
                 calculateMaxDistance = { xZoom ->
                     horizontalGap = horizontalExtraSpace.toPx()
                     val xLeft = columnWidth + horizontalGap
@@ -139,7 +138,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                         // highlighting the selected bar and showing the data points
                         identifiedPoint = highlightBar(
                             dragLocks,
-                            visibility,
+                            barHighlightVisibility,
                             identifiedPoint,
                             barChartData,
                             isTapped,
@@ -184,18 +183,18 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                                 .onGloballyPositioned {
                                     columnWidth = it.size.width.toFloat()
                                 },
-                            axisData = axisData,
+                            axisData = axisData
                         )
                     }
                 },
-                onPointSelected = { offset: Offset, _: Float ->
+                onPointClicked = { offset: Offset, _: Float ->
                     isTapped = true
-                    visibility = true
+                    barHighlightVisibility = true
                     tapOffset = offset
                 },
-                onScrolling = {
+                onScroll = {
                     isTapped = false
-                    visibility = false
+                    barHighlightVisibility = false
                 }
             )
         }
@@ -298,7 +297,7 @@ fun getMaxScrollDistance(
  *
  * returns identified point and displaying the data points and highlighted bar .
  * @param dragLocks : Mutable map of BarData and drawOffset.
- * @param visibility : Flag to control the visibility of highlighted text.
+ * @param barHighlightVisibility : Flag to control the visibility of highlighted text.
  * @param identifiedPoint: selected bar data.
  * @param barChartData: Data related to the bar chart.
  * @param isDragging : Boolean flag for the dragging status.
@@ -309,7 +308,7 @@ fun getMaxScrollDistance(
  */
 private fun DrawScope.highlightBar(
     dragLocks: MutableMap<Int, Pair<BarData, Offset>>,
-    visibility: Boolean,
+    barHighlightVisibility: Boolean,
     identifiedPoint: BarData,
     barChartData: BarChartData,
     isDragging: Boolean,
@@ -345,7 +344,9 @@ private fun DrawScope.highlightBar(
     }
 
     val selectedOffset = dragLocks.values.firstOrNull()?.second
-    if (visibility && selectedOffset != null && barChartData.selectionHighlightData != null) {
+    if (barHighlightVisibility && selectedOffset != null &&
+        barChartData.selectionHighlightData != null
+    ) {
         drawHighlightText(
             mutableIdentifiedPoint,
             selectedOffset,

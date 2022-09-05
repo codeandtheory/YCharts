@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.ygraph.components.axis.AxisData
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
@@ -46,14 +45,13 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
             var rowHeight by remember { mutableStateOf(0f) }
             var xOffset by remember { mutableStateOf(0f) }
             val bgColor = MaterialTheme.colors.surface
-            var isDragging by remember { mutableStateOf(false) }
-            var dragOffset by remember { mutableStateOf(0f) }
+            var isTapped by remember { mutableStateOf(false) }
+            var tapOffset by remember { mutableStateOf(Offset(0f, 0f)) }
             var selectionTextVisibility by remember { mutableStateOf(false) }
             var identifiedPoint by remember { mutableStateOf(Point(0f, 0f)) }
 
             val axisData = AxisData.Builder()
-                .yMaxValue(line.dataPoints.maxOf { it.y })
-                .yStepValue(yStepValue)
+                .ySteps(ySteps)
                 .xAxisStepSize(xStepSize)
                 .xAxisPos(xAxisPos)
                 .yAxisPos(yAxisPos)
@@ -75,13 +73,9 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                 .build()
 
             val (xMin, xMax, _) = getXAxisScale(line.dataPoints, axisData.xAxisSteps)
-            val yAxisSteps = (axisData.yMaxValue / axisData.yStepValue).toInt()
-            val (yMin, _, yAxisScale) = getYAxisScale(
-                line.dataPoints,
-                (axisData.yMaxValue / axisData.yStepValue).toInt()
-            )
+            val (yMin, _, yAxisScale) = getYAxisScale(line.dataPoints, axisData.ySteps)
             val maxElementInYAxis =
-                getMaxElementInYAxis(yAxisScale, yAxisSteps)
+                getMaxElementInYAxis(yAxisScale, axisData.ySteps)
 
             ScrollableCanvasContainer(
                 modifier = modifier,
@@ -145,7 +139,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                         yOffset
                     )
                     val (cubicPoints1, cubicPoints2) = getCubicPoints(pointsData)
-                    val dragLocks = mutableMapOf<Int, Pair<Point, Offset>>()
+                    val tapPointLocks = mutableMapOf<Int, Pair<Point, Offset>>()
 
                     // Draw cubic line using the points and form a line graph
                     val cubicPath =
@@ -164,13 +158,13 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                     drawUnderScrollMask(columnWidth, paddingRight, bgColor)
 
                     pointsData.forEachIndexed { index, point ->
-                        if (isDragging && point.isDragLocked(dragOffset, xOffset)) {
-                            // Dealing with only one line graph hence  dragLocks[0]
-                            dragLocks[0] = lineGraphData.line.dataPoints[index] to point
+                        if (isTapped && point.isTapped(tapOffset.x, xOffset)) {
+                            // Dealing with only one line graph hence tapPointLocks[0]
+                            tapPointLocks[0] = lineGraphData.line.dataPoints[index] to point
                         }
                     }
 
-                    val selectedOffset = dragLocks.values.firstOrNull()?.second
+                    val selectedOffset = tapPointLocks.values.firstOrNull()?.second
                     if (selectionTextVisibility && selectedOffset.isNotNull()) {
                         drawHighlightText(
                             identifiedPoint,
@@ -178,11 +172,12 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                             line.selectionHighlightPopUp
                         )
                     }
-                    if (isDragging) {
-                        val x = dragLocks.values.firstOrNull()?.second?.x
-                        if (x != null) identifiedPoint = dragLocks.values.map { it.first }.first()
+                    if (isTapped) {
+                        val x = tapPointLocks.values.firstOrNull()?.second?.x
+                        if (x != null) identifiedPoint =
+                            tapPointLocks.values.map { it.first }.first()
                         drawHighLightOnSelectedPoint(
-                            dragLocks,
+                            tapPointLocks,
                             columnWidth,
                             paddingRight,
                             yBottom,
@@ -190,16 +185,20 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                         )
                     }
                 },
-                onDragStart = { offset ->
-                    dragOffset = offset.x
-                    isDragging = true
+                onPointClicked = { offset: Offset, _: Float ->
+                    isTapped = true
                     selectionTextVisibility = true
+                    tapOffset = offset
                 },
-                onDragEnd = {
-                    isDragging = false
+                onScroll = {
+                    isTapped = false
                     selectionTextVisibility = false
                 },
-                onDragging = { change, _ -> dragOffset = change.position.x })
+                onZoomInAndOut = {
+                    isTapped = false
+                    selectionTextVisibility = false
+                }
+            )
         }
     }
 }

@@ -67,8 +67,7 @@ private fun ScrollableContainer() {
             horizontalArrangement = Arrangement.Start
         ) {
             val axisData = AxisData.Builder()
-                .yMaxValue(100f)
-                .yStepValue(20f)
+                .ySteps(5)
                 .yBottomPadding(32.5.dp)
                 .axisLabelFontSize(14.sp)
                 .yLabelData { index -> index.toString() }
