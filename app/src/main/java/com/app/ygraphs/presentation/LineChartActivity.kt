@@ -19,7 +19,7 @@ import com.app.ygraphs.R
 import com.app.ygraphs.ui.compositions.AppBarWithBackButton
 import com.app.ygraphs.ui.theme.YGraphsTheme
 import com.ygraph.components.axis.Gravity
-import com.ygraph.components.common.extensions.formatToString
+import com.ygraph.components.common.extensions.format
 import com.ygraph.components.common.model.Point
 import com.ygraph.components.common.utils.DataUtils
 import com.ygraph.components.graph.linegraph.LineGraph
@@ -95,7 +95,7 @@ private fun LineGraph1(pointsData: List<Point>) {
             // Add yMin to get the negative axis values to the scale
             val yMin = pointsData.minOf { it.y }
             val yScale = 50 / steps
-            ((i * yScale) + yMin).formatToString()
+            ((i * yScale) + yMin).format()
         },
         xAxisLabelData = { i -> i.toString() }
     )
@@ -178,7 +178,7 @@ private fun LineGraph3(pointsData: List<Point>) {
         yAxisLabelData = { i ->
             val yMin = pointsData.minOf { it.y }
             val yScale = 100 / steps
-            ((i * yScale) + yMin).formatToString()
+            ((i * yScale) + yMin).format()
         },
         xAxisLabelData = { i -> i.toString() },
         axisLineColor = Color.Red
