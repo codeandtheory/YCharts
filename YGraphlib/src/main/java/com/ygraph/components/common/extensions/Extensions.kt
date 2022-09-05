@@ -143,6 +143,6 @@ fun Offset.isTapped(tapOffset: Offset, xOffset: Float, bottom: Float, tapPadding
 
 
 /***
- * Returns converted string from a given pattern and input type
+ * Returns converted single precision string from float value
  */
-fun Any.format(pattern: String = "#.#"): String = DecimalFormat(pattern).format(this)
+fun Float.formatToSinglePrecision(): String = DecimalFormat("#.#").format(this)

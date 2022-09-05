@@ -70,7 +70,7 @@ data class AxisData(
     val shouldXAxisStartWithPadding: Boolean
 ) {
     class Builder {
-        private var ySteps: Int = 5
+        private var ySteps: Int = 1
         private var yLabelData: (Int) -> String = { _ -> "" }
         private var yAxisPos: Gravity = Gravity.LEFT
         private var yLabelAndAxisLinePadding: Dp = 4.dp

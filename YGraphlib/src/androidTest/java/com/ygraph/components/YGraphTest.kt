@@ -26,16 +26,16 @@ class YGraphTest {
         with(composeTestRule) {
             // Given
             val axisData = AxisData.Builder()
-                .ySteps(10)
+                .ySteps(DEFAULT_AXIS_STEP_SIZE)
                 .xAxisPos(Gravity.LEFT)
-                .axisLabelFontSize(14.sp)
+                .axisLabelFontSize(AXIS_LABEL_FONT_SIZE.sp)
                 .yLabelData { index -> index.toString() }
                 .build()
 
             // When
             setContent {
                 YAxis(
-                    modifier = Modifier.height(250.dp),
+                    modifier = Modifier.height(AXIS_HEIGHT.dp),
                     axisData = axisData
                 )
             }
@@ -50,7 +50,7 @@ class YGraphTest {
             // Given
             val axisData = AxisData.Builder()
                 .xAxisPos(Gravity.LEFT)
-                .axisLabelFontSize(14.sp)
+                .axisLabelFontSize(AXIS_LABEL_FONT_SIZE.sp)
                 .axisConfig(AxisConfig(isAxisLineRequired = false))
                 .yLabelData { index -> index.toString() }
                 .build()
@@ -58,7 +58,7 @@ class YGraphTest {
             // When
             setContent {
                 YAxis(
-                    modifier = Modifier.height(250.dp),
+                    modifier = Modifier.height(AXIS_HEIGHT.dp),
                     axisData = axisData
                 )
             }
@@ -66,4 +66,10 @@ class YGraphTest {
             // Then
             composeTestRule.onNodeWithText("8").assertIsNotDisplayed()
         }
+
+    companion object {
+        private const val AXIS_HEIGHT = 250
+        private const val AXIS_LABEL_FONT_SIZE = 14
+        private const val DEFAULT_AXIS_STEP_SIZE = 10
+    }
 }
