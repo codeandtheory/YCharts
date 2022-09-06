@@ -17,6 +17,7 @@ import com.ygraph.components.barchart.GroupBarChart
 import com.ygraph.components.barchart.models.GroupBarChartData
 import com.ygraph.components.common.utils.DataUtils.getColorList
 import com.ygraph.components.common.utils.DataUtils.getGroupBarChartData
+import com.ygraph.components.common.utils.DataUtils.getStackLabelData
 
 class BarChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,8 +29,8 @@ class BarChartActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-
-                    val groupBarData = getGroupBarChartData(50, 50, 3)
+                    val barSize = 3
+                    val groupBarData = getGroupBarChartData(50, 50, barSize)
                     val yStepSize = 10
                     val axisData = AxisData.Builder()
                         .yMaxValue(50.toFloat())
@@ -44,18 +45,20 @@ class BarChartActivity : ComponentActivity() {
                         .xBottomPadding(10.dp)
                         .axisConfig(AxisConfig())
                         .build()
-                    
+
                     val groupBarChartData = GroupBarChartData(
                         groupedBarList = groupBarData,
                         axisData = axisData,
                         yStepSize = yStepSize,
+                        paddingBetweenBars = 20.dp,
                         yLabelAndAxisLinePadding = 20.dp,
                         yAxisOffset = 20.dp,
-                        colorTemplate = getColorList(3),
+                        //colorTemplate = getColorList(barSize),
                         yLabelData = { index -> (index * yStepSize).toString() },
                         xLabelData = { index -> groupBarData[index].label },
+                        stackLabelList = getStackLabelData(barSize)
                     )
-                    
+
                     GroupBarChart(
                         modifier = Modifier.height(600.dp),
                         groupBarChartData = groupBarChartData

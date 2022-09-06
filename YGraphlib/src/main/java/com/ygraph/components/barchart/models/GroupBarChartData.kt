@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.sp
 import com.ygraph.components.axis.AxisConfig
 import com.ygraph.components.axis.AxisData
 import com.ygraph.components.common.utils.DataUtils.getColorList
+
 /**
  * BarChart data class params used in drawing bar graph.
  * @param groupedBarList : List of grouped gar data.
@@ -43,7 +44,7 @@ data class GroupBarChartData(
     val groupedBarList: List<GroupBar>,
     val axisData: AxisData,
     val groupingSize: Int = groupedBarList.firstOrNull()?.barList?.size ?: 1,
-    val colorTemplate : List<Color> = getColorList(groupingSize),
+    //val colorTemplate: List<Color> = getColorList(groupingSize),
     val yStepSize: Int = 5,
     val yLabelData: (Int) -> String = { _ -> "" },
     val yLabelAndAxisLinePadding: Dp = 4.dp,
@@ -66,8 +67,12 @@ data class GroupBarChartData(
     val barDrawStyle: DrawStyle = Fill,
     val showYAxis: Boolean = true,
     val showXAxis: Boolean = true,
-    val axisConfig: AxisConfig = AxisConfig()
-) 
+    val axisConfig: AxisConfig = AxisConfig(),
+    val stackLabelList: List<StackLabel>
+)
 
 
-
+data class StackLabel(
+    val color: Color,
+    val name: String,
+)

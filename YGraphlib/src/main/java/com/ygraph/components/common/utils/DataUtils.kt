@@ -1,10 +1,7 @@
 package com.ygraph.components.common.utils
 
 import androidx.compose.ui.graphics.Color
-import com.ygraph.components.barchart.models.Bar
-import com.ygraph.components.barchart.models.BarData
-import com.ygraph.components.barchart.models.GroupBar
-import com.ygraph.components.barchart.models.GroupBarChartData
+import com.ygraph.components.barchart.models.*
 import com.ygraph.components.common.model.Point
 import kotlin.random.Random
 
@@ -115,10 +112,32 @@ object DataUtils {
     fun getColorList(listSize: Int): List<Color> {
         val list = mutableListOf<Color>()
         for (index in 0 until listSize) {
-            list.add(Color(
-                (0 until 256).random(), (0 until 256).random(), (0 until 256).random()
-            ))
+            list.add(
+                Color(
+                    (0 until 256).random(), (0 until 256).random(), (0 until 256).random()
+                )
+            )
         }
         return list
+    }
+
+
+    /**
+     * @param barSize size of bars in one group
+    return the sample stackLabelList data
+     */
+    fun getStackLabelData(barSize: Int): List<StackLabel> {
+        val stackLabelList = mutableListOf<StackLabel>()
+        for (index in 0 until barSize) {
+            stackLabelList.add(
+                StackLabel(
+                    Color(
+                        (0 until 256).random(), (0 until 256).random(), (0 until 256).random()
+                    ),
+                    "${index}B$index"
+                )
+            )
+        }
+        return stackLabelList
     }
 }
