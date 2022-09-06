@@ -28,7 +28,6 @@ import com.ygraph.components.common.model.Point
 import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
 
 
-
 /**
  *
  * BarChart compose method for drawing bar graph.
@@ -365,31 +364,6 @@ private fun DrawScope.drawUnderScrollMask(columnWidth: Float, paddingRight: Dp, 
     )
 }
 
-fun getXAxisScale(
-    points: List<Point>,
-    steps: Int,
-): Triple<Float, Float, Float> {
-    val xMin = points.minOf { it.x }
-    val xMax = points.maxOf { it.x }
-    val totalSteps = (xMax - xMin)
-    val temp = totalSteps / steps
-    val scale = ceil(temp)
-    return Triple(xMin, xMax, scale)
-}
-
-
-fun getYAxisScale(
-    points: List<Point>,
-    steps: Int
-): Triple<Float, Float, Float> {
-    val yMin = points.minOf { it.y }
-    val yMax = points.maxOf { it.y }
-    val totalSteps = (yMax - yMin)
-    val temp =
-        totalSteps / if (steps > 1) (steps - 1) else 1 // First step starts from 0 by default
-    val scale = ceil(temp)
-    return Triple(yMin, yMax, scale)
-}
 
 /**
  * returns the draw offset for bar graph.
@@ -410,45 +384,4 @@ fun getDrawOffset(
     val x1 = ((x - xMin) * xOffset) + xLeft - scrollOffset
     val y1 = yBottom - ((y - yMin) * yOffset)
     return Offset(x1, y1)
-}
-
-/**
- *
- * Used to draw the individual bars
- * @param barChartData : all meta data related to the bar graph
- * @param barData : data related to a single bar
- * @param drawOffset: topleft ffset for the drawing the bar
- * @param height : height of the bar chart
- */
-private fun DrawScope.drawBarChart(
-    barChartData: BarChartData, barData: BarData, drawOffset: Offset,
-    height: Float
-) {
-    // Draw bar lines
-    if (barChartData.isGradientEnabled) {
-        val brush = Brush.verticalGradient(
-            colors = barData.gradientColorList
-        )
-        drawRoundRect(
-            brush = brush,
-            topLeft = drawOffset,
-            size = Size(barChartData.barWidth.toPx(), height),
-            cornerRadius = CornerRadius(
-                barChartData.cornerRadius.toPx(),
-                barChartData.cornerRadius.toPx()
-            ),
-            style = Fill
-        )
-    } else {
-        drawRoundRect(
-            color = barData.color,
-            topLeft = drawOffset,
-            size = Size(barChartData.barWidth.toPx(), height),
-            cornerRadius = CornerRadius(
-                barChartData.cornerRadius.toPx(),
-                barChartData.cornerRadius.toPx()
-            ),
-            style = Fill
-        )
-    }
 }

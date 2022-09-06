@@ -183,17 +183,7 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                             axisData = axisData,
                         )
                     }
-                },
-                onDragStart = { offset ->
-                    dragOffset = offset.x
-                    isDragging = true
-                    visibility = true
-                },
-                onDragEnd = {
-                    isDragging = false
-                    visibility = false
-                },
-                onDragging = { change, _ -> dragOffset = change.position.x }
+                }
             )
         }
     }
