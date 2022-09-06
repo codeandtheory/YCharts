@@ -40,8 +40,8 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
             var visibility by remember { mutableStateOf(false) }
             var identifiedPoint by remember { mutableStateOf(Bar(0f, Color.White, "")) }
             var xOffset by remember { mutableStateOf(0f) }
-            var dragOffset by remember { mutableStateOf(0f) }
-            var isDragging by remember { mutableStateOf(false) }
+            var tapOffset by remember { mutableStateOf(Offset(0f, 0f)) }
+            var isTapped by remember { mutableStateOf(false) }
             var columnWidth by remember { mutableStateOf(0f) }
             var horizontalGap by remember { mutableStateOf(0f) }
             var rowHeight by remember { mutableStateOf(0f) }
@@ -52,7 +52,7 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
             val xMax = groupedBarList.size
             val yMax = valueList.maxOrNull() ?: 0f
 
-            val maxElementInYAxis = getMaxElementInYAxis(yMax, yStepSize)
+            val maxElementInYAxis = getMaxElementInYAxis(yMax, groupBarChartData.axisData.ySteps)
 
             if (!showXAxis) {
                 rowHeight = LocalDensity.current.run { DEFAULT_YAXIS_BOTTOM_PADDING.dp.toPx() }
@@ -110,66 +110,68 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                             )
                             insideOffset += barWidth.toPx()
 
-                            val middleOffset =
-                                Offset(individualOffset.x + barWidth.toPx() / 2, drawOffset.y)
-                            // store the drag points for selection
-                            if (isDragging && middleOffset.isDragLocked(
-                                    dragOffset,
-                                    barWidth.toPx()
-                                )
-                            ) {
-                                dragLocks[0] = individualBar to individualOffset
+                                val middleOffset =
+                                    Offset(individualOffset.x + barWidth.toPx() / 2, drawOffset.y)
+                                // store the tap points for selection
+                                if (isTapped && middleOffset.isTapped(
+                                        tapOffset,
+                                        barWidth.toPx(),
+                                        yBottom,
+                                        tapPadding.toPx()
+                                    )
+                                ) {
+                                    dragLocks[0] = individualBar to individualOffset
+                                }
                             }
-                        }
 
                     }
 
                     drawUnderScrollMask(columnWidth, paddingRight, bgColor)
 
-                    if (selectionHighlightData != null) {
-                        // highlighting the selected bar and showing the data points
-                        identifiedPoint = highlightGroupBar(
-                            dragLocks,
-                            visibility,
-                            identifiedPoint,
-                            groupBarChartData,
-                            isDragging,
-                            columnWidth,
-                            yBottom,
-                            paddingRight,
-                            yOffset
-                        )
-                    }
-                },
-                drawXAndYAxis = { scrollOffset, xZoom ->
-                    val points = mutableListOf<Point>()
-                    for (index in groupedBarList.indices) {
-                        points.add(Point(index.toFloat(), 0f))
-                    }
-                    
-                    if (showXAxis) {
-                        XAxis(
-                            axisData = axisData,
-                            modifier = Modifier
-                                .align(Alignment.BottomStart)
-                                .fillMaxWidth()
-                                .wrapContentHeight()
-                                .clip(
-                                    RowClip(
-                                        columnWidth,
-                                        paddingRight
+                        if (selectionHighlightData != null) {
+                            // highlighting the selected bar and showing the data points
+                            identifiedPoint = highlightGroupBar(
+                                dragLocks,
+                                visibility,
+                                identifiedPoint,
+                                groupBarChartData,
+                                isTapped,
+                                columnWidth,
+                                yBottom,
+                                paddingRight,
+                                yOffset
+                            )
+                        }
+                    },
+                    drawXAndYAxis = { scrollOffset, xZoom ->
+                        val points = mutableListOf<Point>()
+                        for (index in groupedBarList.indices) {
+                            points.add(Point(index.toFloat(), 0f))
+                        }
+
+                        if (showXAxis) {
+                            XAxis(
+                                axisData = axisData,
+                                modifier = Modifier
+                                    .align(Alignment.BottomStart)
+                                    .fillMaxWidth()
+                                    .wrapContentHeight()
+                                    .clip(
+                                        RowClip(
+                                            columnWidth,
+                                            paddingRight
+                                        )
                                     )
-                                )
-                                .onGloballyPositioned {
-                                    rowHeight = it.size.height.toFloat()
-                                },
-                            xStart = columnWidth + horizontalGap + LocalDensity.current.run { (barWidth.toPx() * groupingSize) / 2 },
-                            scrollOffset = scrollOffset,
-                            zoomScale = xZoom,
-                            chartData = points,
-                            xLineStart = columnWidth
-                        )
-                    }
+                                    .onGloballyPositioned {
+                                        rowHeight = it.size.height.toFloat()
+                                    },
+                                xStart = columnWidth + horizontalGap + LocalDensity.current.run { (barWidth.toPx() * groupingSize) / 2 },
+                                scrollOffset = scrollOffset,
+                                zoomScale = xZoom,
+                                chartData = points,
+                                xLineStart = columnWidth
+                            )
+                        }
 
                     if (showYAxis) {
                         YAxis(
@@ -183,6 +185,15 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                             axisData = axisData,
                         )
                     }
+                },
+                onPointClicked = { offset: Offset, _: Float ->
+                    isTapped = true
+                    visibility = true
+                    tapOffset = offset
+                },
+                onScroll = {
+                    isTapped = false
+                    visibility = false
                 }
             )
         }

@@ -12,19 +12,14 @@ import androidx.compose.ui.unit.sp
 import com.ygraph.components.axis.AxisConfig
 import com.ygraph.components.axis.AxisData
 import com.ygraph.components.common.utils.DataUtils.getColorList
+
 /**
  * BarChart data class params used in drawing bar graph.
  * @param groupedBarList : List of grouped gar data.
  * @param axisData : All config related to the Axis.
  * @param groupingSize : The number of bars in one set.
  * @param colorTemplate : Colors for the grouped bars .
- * @param yStepSize: Size of one step in Y axis
- * @param yLabelData(Int)-> String: lambda method for providing labels, @param Int will be the index
- * @param yLabelAndAxisLinePadding: Text label padding from y Axis
- * @param yAxisOffset: Drawing offset for yAxis.
- * @param xLabelData(Int)-> String: lambda method for providing labels, @param Int will be the index
  * @param xLabelAngle: Angle of the x axis labels
- * @param xBottomPadding: Bottom padding for the X axis
  * @param axisLabelFontSize: Font size of axis label data
  * @param barWidth: Width of a bar
  * @param cornerRadius: Corner radius for the bars
@@ -43,15 +38,8 @@ data class GroupBarChartData(
     val groupedBarList: List<GroupBar>,
     val axisData: AxisData,
     val groupingSize: Int = groupedBarList.firstOrNull()?.barList?.size ?: 1,
-    val colorTemplate : List<Color> = getColorList(groupingSize),
-    val yStepSize: Int = 5,
-    val yLabelData: (Int) -> String = { _ -> "" },
-    val yLabelAndAxisLinePadding: Dp = 4.dp,
-    val yAxisOffset: Dp = 10.dp,
-    val yTopPadding: Dp = 40.dp,
-    val xLabelData: (Int) -> String = { _ -> "" },
+    val colorTemplate: List<Color> = getColorList(groupingSize),
     val xLabelAngle: Float = 0f,
-    val xBottomPadding: Dp = 10.dp,
     val axisLabelFontSize: TextUnit = 14.sp,
     val barWidth: Dp = 30.dp,
     val cornerRadius: Dp = 4.dp,
@@ -66,8 +54,9 @@ data class GroupBarChartData(
     val barDrawStyle: DrawStyle = Fill,
     val showYAxis: Boolean = true,
     val showXAxis: Boolean = true,
-    val axisConfig: AxisConfig = AxisConfig()
-) 
+    val axisConfig: AxisConfig = AxisConfig(),
+    val tapPadding: Dp = 10.dp,
+)
 
 
 

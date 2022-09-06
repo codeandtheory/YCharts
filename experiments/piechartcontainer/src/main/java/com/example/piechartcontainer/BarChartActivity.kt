@@ -37,7 +37,7 @@ class BarChartActivity : ComponentActivity() {
                     val axisData = AxisData.Builder()
                         .ySteps(yStepSize)
                         .xAxisSteps(groupBarData.size - 1)
-                        .yLabelData { index -> (index * yStepSize).toString() }
+                        .yLabelData { index -> (index * (50 / yStepSize)).toString() }
                         .xLabelData { index -> groupBarData[index].label }
                         .yLabelAndAxisLinePadding(20.dp)
                         .yAxisOffset(20.dp)
@@ -49,12 +49,7 @@ class BarChartActivity : ComponentActivity() {
                     val groupBarChartData = GroupBarChartData(
                         groupedBarList = groupBarData,
                         axisData = axisData,
-                        yStepSize = yStepSize,
-                        yLabelAndAxisLinePadding = 20.dp,
-                        yAxisOffset = 20.dp,
                         colorTemplate = getColorList(3),
-                        yLabelData = { index -> (index * yStepSize).toString() },
-                        xLabelData = { index -> groupBarData[index].label },
                     )
 
                     GroupBarChart(
