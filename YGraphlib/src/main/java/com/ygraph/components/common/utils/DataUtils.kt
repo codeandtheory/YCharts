@@ -3,6 +3,7 @@ package com.ygraph.components.common.utils
 import androidx.compose.ui.graphics.Color
 import com.ygraph.components.barchart.models.BarData
 import com.ygraph.components.common.model.Point
+import com.ygraph.components.piechart.models.PieChartData
 import kotlin.random.Random
 
 object DataUtils {
@@ -78,6 +79,47 @@ object DataUtils {
             )
         }
         return list
+    }
+    
+    
+    
+    fun getPieChartData(): PieChartData {
+        return PieChartData(
+            slices = listOf(
+                PieChartData.Slice("SciFi", 15f, Color(0xFF333333)),
+                PieChartData.Slice("Comedy", 15f, Color(0xFF666a86)),
+                PieChartData.Slice("Drama", 10f, Color(0xFF95B8D1)),
+                PieChartData.Slice("Romance", 10f, Color(0xFFE8DDB5)),
+                PieChartData.Slice("Action", 20f, Color(0xFFEDAFB8)),
+                PieChartData.Slice("Thriller", 100f, Color(0xFFF94892)),
+                PieChartData.Slice("Western", 10f, Color(0xFFA675A1)),
+                PieChartData.Slice("Fantasy", 10f, Color(0xFF8F3985)),
+            )
+        )
+    }
+    
+    fun getPieChartData2(): PieChartData {
+        return PieChartData(
+            slices = listOf(
+                PieChartData.Slice("Android", 30f, Color(0xFF002B5B)),
+                PieChartData.Slice("iOS", 30f, Color(0xFF2B4865)),
+                PieChartData.Slice("Windows", 15f, Color(0xFF256D85)),
+                PieChartData.Slice("Other", 25f, Color(0xFF806D85)),
+            )
+        )
+    }
+    
+    fun getDonutChartData(): PieChartData {
+       return PieChartData(
+            slices = listOf(
+                PieChartData.Slice("HP", 15f, Color(0xFF5F0A87)),
+                PieChartData.Slice("Dell", 30f, Color(0xFF20BF55)),
+                PieChartData.Slice("Lenovo", 10f, Color(0xFFA40606)),
+                PieChartData.Slice("Asus", 15f, Color(0xFFF53844)),
+                PieChartData.Slice("Acer", 10f, Color(0xFFEC9F05)),
+                PieChartData.Slice("Apple", 30f, Color(0xFF009FFD)),
+            )
+        )
     }
     
 

@@ -8,11 +8,5 @@ data class PieChartData(val slices: List<Slice>) {
         get() {
             return slices.sum()
         }
-
-    val legendVisible: Boolean
-        get() {
-            return slices.map { it.label }.isNotEmpty()
-        }
-
     data class Slice(val label: String, val value: Float, val color: Color)
 }
