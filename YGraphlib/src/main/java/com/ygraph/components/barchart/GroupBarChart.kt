@@ -127,9 +127,11 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                                 }
                             }
 
-                            val yOffset2 = (yBottom - axisData.yTopPadding.toPx())
 
                             // drawing each Group Separator bars
+                            val yOffset2 = (yBottom - axisData.yTopPadding.toPx())
+                            val height = yBottom - axisData.yTopPadding.toPx()
+                            val width = 4f
                             val drawOffset2 = getGroupBarDrawOffset(
                                 index,
                                 rowHeight,
@@ -140,24 +142,16 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                                 yOffset2,
                                 0f
                             )
-
-                            val height = yBottom - axisData.yTopPadding.toPx()
-                            val width = 4f
                             val xOffset2 = (drawOffset2.x
                                     + insideOffset + (paddingBetweenBars.toPx() / 2) - width / 2)
                             val individualOffset =
-                                Offset(
-                                    xOffset2,
-                                    axisData.yTopPadding.toPx()
-                                )
+                                Offset(xOffset2, axisData.yTopPadding.toPx())
 
-                            // drawing each Group Separator bars
                             drawGroupSeparator(
                                 individualOffset,
                                 height,
                                 width
                             )
-
                         }
 
                         drawUnderScrollMask(columnWidth, paddingRight, bgColor)
@@ -239,7 +233,7 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Box(
                                 modifier = Modifier
-                                    .background(it.color ?: Color.Black)
+                                    .background(it.color)
                                     .size(30.dp)
                             )
                             Spacer(modifier = Modifier.padding(4.dp))
@@ -406,9 +400,10 @@ fun getGroupBarDrawOffset(
 
 /**
  *
- * Used to draw the Group Separator bars
- * @param drawOffset: topleft ffset for the drawing the bar
- * @param height : height of the bar chart
+ * Used to draw the group separator
+ * @param drawOffset: topLeft offset for the drawing the separator
+ * @param height : height of the separator
+ * @param width : width of the separator
  */
 private fun DrawScope.drawGroupSeparator(
     drawOffset: Offset,
@@ -420,16 +415,4 @@ private fun DrawScope.drawGroupSeparator(
         topLeft = drawOffset,
         size = Size(width, height),
     )
-
-    /* drawLine(
-         start = Offset(
-             x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
-             y = yAxisHeight - (segmentHeight * (i * yStepValue))
-         ),
-         end = Offset(
-             x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
-             y = yAxisHeight - (segmentHeight * ((i + 1) * yStepValue))
-         ),
-         color = axisLineColor, strokeWidth = axisLineThickness.toPx()
-     )*/
 }
