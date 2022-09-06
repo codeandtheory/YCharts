@@ -31,7 +31,6 @@ class BarChartActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-
                     val groupBarData = getGroupBarChartData(50, 50, 3)
                     val yStepSize = 10
                     val axisData = AxisData.Builder()
