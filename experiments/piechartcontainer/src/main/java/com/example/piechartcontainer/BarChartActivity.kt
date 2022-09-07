@@ -18,6 +18,7 @@ import com.ygraph.components.common.utils.DataUtils.getBarChartData
 import com.ygraph.components.common.utils.DataUtils.getGradientBarChartData
 import com.ygraph.components.barchart.GroupBarChart
 import com.ygraph.components.barchart.models.GroupBarChartData
+import com.ygraph.components.common.utils.DataUtils
 import com.ygraph.components.common.utils.DataUtils.getColorList
 import com.ygraph.components.common.utils.DataUtils.getGroupBarChartData
 
@@ -31,7 +32,9 @@ class BarChartActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    val groupBarData = getGroupBarChartData(50, 50, 3)
+
+                    val barSize = 3
+                    val groupBarData = getGroupBarChartData(50, 50, barSize)
                     val yStepSize = 10
                     val axisData = AxisData.Builder()
                         .ySteps(yStepSize)
@@ -48,7 +51,7 @@ class BarChartActivity : ComponentActivity() {
                     val groupBarChartData = GroupBarChartData(
                         groupedBarList = groupBarData,
                         axisData = axisData,
-                        colorTemplate = getColorList(3),
+                        stackLabelList = DataUtils.getStackLabelData(barSize)
                     )
 
                     GroupBarChart(

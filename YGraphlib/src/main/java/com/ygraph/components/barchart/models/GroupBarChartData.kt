@@ -18,9 +18,7 @@ import com.ygraph.components.common.utils.DataUtils.getColorList
  * @param groupedBarList : List of grouped gar data.
  * @param axisData : All config related to the Axis.
  * @param groupingSize : The number of bars in one set.
- * @param colorTemplate : Colors for the grouped bars .
  * @param xLabelAngle: Angle of the x axis labels
- * @param axisLabelFontSize: Font size of axis label data
  * @param barWidth: Width of a bar
  * @param cornerRadius: Corner radius for the bars
  * @param paddingBetweenBars: Space between adjacent bars
@@ -33,14 +31,13 @@ import com.ygraph.components.common.utils.DataUtils.getColorList
  * @param showXAxis: Boolean Flag to enable/disable X axis
  * @param showYAxis: Boolean Flag to enable/disable Y axis
  * @param axisConfig: All config related param to toggle the elements while drawing graph
+ * @param stackLabelList: stackLabelList is used to show labels with colors
  */
 data class GroupBarChartData(
     val groupedBarList: List<GroupBar>,
     val axisData: AxisData,
     val groupingSize: Int = groupedBarList.firstOrNull()?.barList?.size ?: 1,
-    val colorTemplate: List<Color> = getColorList(groupingSize),
     val xLabelAngle: Float = 0f,
-    val axisLabelFontSize: TextUnit = 14.sp,
     val barWidth: Dp = 30.dp,
     val cornerRadius: Dp = 4.dp,
     val backgroundColor: Color = Color.White,
@@ -55,8 +52,12 @@ data class GroupBarChartData(
     val showYAxis: Boolean = true,
     val showXAxis: Boolean = true,
     val axisConfig: AxisConfig = AxisConfig(),
+    val stackLabelList: List<StackLabel>,
     val tapPadding: Dp = 10.dp,
 )
 
 
-
+data class StackLabel(
+    val color: Color,
+    val name: String,
+)
