@@ -143,10 +143,9 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
 
                     // Draw guide lines
                     gridLines?.let {
-                        val top = yBottom - ((yMax - yMin) * yOffset)
                         drawGridLines(
                             yBottom,
-                            top,
+                            axisData.yTopPadding.toPx(),
                             axisData,
                             xLeft,
                             paddingRight,
