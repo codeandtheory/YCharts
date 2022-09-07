@@ -36,7 +36,7 @@ class LineChartActivity : ComponentActivity() {
                         val pointsData = DataUtils.getLineChartData(100, maxRange = 100)
                         val xAxisData = AxisData.Builder()
                             .axisStepSize(30.dp)
-                            .steps(pointsData.size)
+                            .steps(pointsData.size -1)
                             .labelData { i -> i.toString() }
                             .build()
                         val yAxisData = AxisData.Builder()

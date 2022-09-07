@@ -79,7 +79,7 @@ private fun LineGraph1(pointsData: List<Point>) {
     val steps = 5
     val xAxisData = AxisData.Builder()
         .axisStepSize(30.dp)
-        .steps(pointsData.size)
+        .steps(pointsData.size - 1)
         .labelData { i -> i.toString() }
         .labelAndAxisLinePadding(15.dp)
         .build()
@@ -117,7 +117,7 @@ private fun LineGraph1(pointsData: List<Point>) {
 private fun LineGraph2(pointsData: List<Point>) {
     val xAxisData = AxisData.Builder()
         .axisStepSize(40.dp)
-        .steps(pointsData.size)
+        .steps(pointsData.size - 1)
         .labelData { i -> if (i == 0) "" else (1900 + i).toString() }
         .axisLabelAngle(20f)
         .labelAndAxisLinePadding(15.dp)
@@ -160,7 +160,7 @@ private fun LineGraph3(pointsData: List<Point>) {
     val steps = 10
     val xAxisData = AxisData.Builder()
         .axisStepSize(40.dp)
-        .steps(pointsData.size)
+        .steps(pointsData.size - 1)
         .labelData { i -> i.toString() }
         .labelAndAxisLinePadding(15.dp)
         .axisLineColor(Color.Red)
