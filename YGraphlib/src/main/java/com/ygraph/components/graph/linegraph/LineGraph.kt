@@ -25,6 +25,7 @@ import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
 import com.ygraph.components.axis.getXAxisScale
 import com.ygraph.components.common.extensions.RowClip
+import com.ygraph.components.common.extensions.drawGridLines
 import com.ygraph.components.common.extensions.isNotNull
 import com.ygraph.components.common.model.Point
 import com.ygraph.components.graph.linegraph.model.*
@@ -215,51 +216,6 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                     selectionTextVisibility = false
                 }
             )
-        }
-    }
-}
-
-/**
- *
- * DrawScope.drawGridLines is the extension method used to draw the grid lines on any graph
- * @param yBottom : Bottom value for Y-Axis
- * @param top: Top value for Y axis
- * @param axisData : Data related to axis.
- * @param xLeft: Total left padding in X-Axis.
- * @param paddingRight : Total right padding.
- * @param scrollOffset : Total scroll offset.
- * @param verticalPointsSize : Total points in the X-Axis.
- * @param xZoom : Total zoom offset.
- * @param xAxisScale: Scale of each point in X-Axis.
- * @param gridLines: Data class to handle styling related to grid lines.
- */
-private fun DrawScope.drawGridLines(
-    yBottom: Float,
-    top: Float,
-    axisData: AxisData,
-    xLeft: Float,
-    paddingRight: Dp,
-    scrollOffset: Float,
-    verticalPointsSize: Int,
-    xZoom: Float,
-    xAxisScale: Float,
-    gridLines: GridLines
-) {
-    val availableHeight = yBottom - top
-    val steps = axisData.ySteps + 1 // Considering 0 as step
-    val gridOffset = availableHeight / if (steps > 1) steps - 1 else 1
-    // Should start from 1 as we don't consider the XAxis
-    if (gridLines.enableHorizontalLines) {
-        (1 until steps).forEach {
-            val y = yBottom - (it * gridOffset)
-            gridLines.drawHorizontalLines(this, xLeft, y, size.width - paddingRight.toPx())
-        }
-    }
-    if (gridLines.enableVerticalLines) {
-        var xPos = xLeft - scrollOffset
-        (0 until verticalPointsSize).forEach { _ ->
-            gridLines.drawVerticalLines(this, xPos, yBottom, top)
-            xPos += ((axisData.xAxisStepSize.toPx() * (xZoom * xAxisScale)))
         }
     }
 }
