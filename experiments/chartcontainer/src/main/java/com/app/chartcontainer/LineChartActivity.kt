@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.app.chartcontainer.ui.theme.YGraphsTheme
-import com.ygraph.components.axis.Gravity
+import com.ygraph.components.axis.AxisData
 import com.ygraph.components.common.utils.DataUtils
 import com.ygraph.components.graph.linegraph.LineGraph
 import com.ygraph.components.graph.linegraph.model.*
@@ -34,6 +34,15 @@ class LineChartActivity : ComponentActivity() {
                         verticalArrangement = Arrangement.Center
                     ) {
                         val pointsData = DataUtils.getLineChartData(100, maxRange = 100)
+                        val xAxisData = AxisData.Builder()
+                            .axisStepSize(30.dp)
+                            .steps(pointsData.size)
+                            .labelData { i -> i.toString() }
+                            .build()
+                        val yAxisData = AxisData.Builder()
+                            .steps(5)
+                            .labelData { i -> (i * 20).toString() }
+                            .build()
                         val data = LineGraphData(
                             line = Line(
                                 dataPoints = pointsData,
@@ -43,13 +52,8 @@ class LineChartActivity : ComponentActivity() {
                                 ShadowUnderLine(),
                                 SelectionHighlightPopUp()
                             ),
-                            ySteps = 5,
-                            xStepSize = 30.dp,
-                            xAxisSteps = pointsData.size,
-                            xAxisPos = Gravity.BOTTOM,
-                            yAxisPos = Gravity.LEFT,
-                            yAxisLabelData = { i -> (i * 20).toString() },
-                            xAxisLabelData = { i -> i.toString() }
+                            xAxisData = xAxisData,
+                            yAxisData = yAxisData
                         )
                         LineGraph(
                             modifier = Modifier

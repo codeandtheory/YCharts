@@ -11,54 +11,40 @@ import androidx.compose.ui.unit.sp
 /**
  *
  * YAxis data class params used in drawing yAxis in any graph.
- * @param ySteps: Step value for label segmentation
- * @param yBottomPadding: Y Label offset bottom padding
- * @param yLabelData(Int)-> String: lambda method for providing labels, @param Int will be the index
- * given for each level in YAxis
- * @param xLabelData(Int)-> String: lambda method for providing labels, @param Int will be the index
- * given for each level in XAxis
- * @param axisLabelFontSize: Font size of axis lablel data
- * @param yAxisPos :Gravity of yAxis either right or left
- * @param yLabelAndAxisLinePadding: Text label padding from y Axis
- * @param yAxisOffset: Drawing offset for yAxis.
+ * @param steps: No of step for label segmentation
+ * @param axisBottomPadding: Axis Label offset bottom padding
+ * @param labelData(Int)-> String: lambda method for providing labels, @param Int will be the index
+ * given for each level in Axis
+ * @param axisLabelFontSize: Font size of axis label data
+ * @param axisPos :Gravity of axis
+ * @param labelAndAxisLinePadding: Text label padding from Axis
+ * @param axisOffset: Drawing offset for axis.
  * @param axisLineThickness: Thickness of yAxis line
- * @param yTopPadding: Y Label offset top padding
- * @param yStartPadding: Y Axis start padding.
+ * @param axisTopPadding:  Label offset top padding
+ * @param axisStartPadding: Axis start padding.
  * @param indicatorLineWidth: Indicator width on Y axis line for showing points
  * @param axisConfig: All config related param to toggle the elements while drawing graph
- * @param xAxisSteps: No of steps in the xAxis
- * @param xAxisStepSize: Size of each xAxis step in Dp
- * @param xLabelAndAxisLinePadding: Padding between xAxis line and the labels
- * @param xAxisPos: Gravity of xAxis either bottom or top
- * @param axisLineColor Color of the Y & X axis
- * @param axisLabelColor Color of the Y & X axis labels
- * @param backgroundColor Background color of the Y & X components
+ * @param axisStepSize: Size of each Axis step in Dp
+ * @param axisLineColor Color of the Y or X axis
+ * @param axisLabelColor Color of the Y or X axis labels
+ * @param backgroundColor Background color of the Y or X components
  * @param typeface The type of font style
- * @param xBottomPadding: X Label offset bottom padding,
- * @param xAxisLabelAngle: Angle for the X axis labels
- * @param xTopPadding: X Label offset top padding
- * @param shouldXAxisStartWithPadding: Used to append a line in front of the x Axis
+ * @param axisBottomPadding: Label offset bottom padding,
+ * @param axisLabelAngle: Angle for the axis labels
+ * @param axisTopPadding: X Label offset top padding
+ * @param shouldAxisStartWithPadding: Used to append a line in front of the Axis
  */
 data class AxisData(
-    // All Y-Axis params
-    val ySteps: Int,
-    val yLabelData: (Int) -> String,
-    val yAxisPos: Gravity,
-    val yLabelAndAxisLinePadding: Dp,
-    val yAxisOffset: Dp,
-    val yTopPadding: Dp,
-    val yBottomPadding: Dp,
-    val yStartPadding: Dp,
-    // All X-Axis params
-    val xLabelData: (Int) -> String,
-    val xAxisSteps: Int,
-    val xAxisStepSize: Dp,
-    val xLabelAndAxisLinePadding: Dp,
-    val xAxisPos: Gravity,
-    val xTopPadding: Dp,
-    val xBottomPadding: Dp,
-    val xAxisLabelAngle: Float,
-    // All common params
+    val steps: Int,
+    val labelData: (Int) -> String,
+    val axisPos: Gravity,
+    val labelAndAxisLinePadding: Dp,
+    val axisOffset: Dp,
+    val axisTopPadding: Dp,
+    val axisBottomPadding: Dp,
+    val axisStartPadding: Dp,
+    val axisStepSize: Dp,
+    val axisLabelAngle: Float,
     val axisLineColor: Color,
     val axisLabelColor: Color,
     val axisLabelFontSize: TextUnit,
@@ -67,22 +53,18 @@ data class AxisData(
     val backgroundColor: Color,
     val typeface: Typeface,
     val axisConfig: AxisConfig,
-    val shouldXAxisStartWithPadding: Boolean
+    val shouldAxisStartWithPadding: Boolean
 ) {
     class Builder {
-        private var ySteps: Int = 1
-        private var yLabelData: (Int) -> String = { _ -> "" }
-        private var yAxisPos: Gravity = Gravity.LEFT
-        private var yLabelAndAxisLinePadding: Dp = 4.dp
-        private var yStartPadding: Dp = 10.dp
-        private var yAxisOffset: Dp = 10.dp
-        private var yTopPadding: Dp = 20.dp
-        private var yBottomPadding: Dp = 10.dp
-        private var xAxisSteps: Int = 20
-        private var xAxisStepSize: Dp = 30.dp
-        private var xLabelAndAxisLinePadding: Dp = 15.dp
-        private var xAxisPos: Gravity = Gravity.BOTTOM
-        private var xLabelData: (Int) -> String = { _ -> "" }
+        private var steps: Int = 1
+        private var labelData: (Int) -> String = { _ -> "" }
+        private var axisPos: Gravity = Gravity.LEFT
+        private var labelAndAxisLinePadding: Dp = 20.dp
+        private var axisStartPadding: Dp = 10.dp
+        private var axisOffset: Dp = 10.dp
+        private var axisTopPadding: Dp = 20.dp
+        private var axisBottomPadding: Dp = 10.dp
+        private var axisStepSize: Dp = 30.dp
         private var axisConfig = AxisConfig()
         private var indicatorLineWidth: Dp = 5.dp
         private var backgroundColor: Color = Color.Transparent
@@ -91,36 +73,32 @@ data class AxisData(
         private var axisLabelFontSize: TextUnit = 14.sp
         private var axisLineThickness: Dp = 2.dp
         private var axisLabelColor: Color = Color.Black
-        private var xTopPadding: Dp = 0.dp
-        private var xBottomPadding: Dp = 0.dp
-        private var shouldStartXAxisWithPadding: Boolean = false
-        private var xAxisLabelAngle: Float = 0f
+        private var shouldStartAxisWithPadding: Boolean = false
+        private var axisLabelAngle: Float = 0f
 
-        fun ySteps(steps: Int) = apply { this.ySteps = steps }
+        fun steps(count: Int) = apply { this.steps = count }
 
-        fun yBottomPadding(padding: Dp) = apply { this.yBottomPadding = padding }
+        fun axisOffset(offset: Dp) = apply { this.axisOffset = offset }
 
-        fun yLabelData(labelData: (Int) -> String) = apply { this.yLabelData = labelData }
+        fun labelAndAxisLinePadding(padding: Dp) = apply { this.labelAndAxisLinePadding = padding }
 
-        fun xLabelData(labelData: (Int) -> String) = apply { this.xLabelData = labelData }
+        fun axisStepSize(size: Dp) = apply { this.axisStepSize = size }
+
+        fun labelData(labelData: (Int) -> String) = apply { this.labelData = labelData }
 
         fun axisLineColor(lineColor: Color) = apply { this.axisLineColor = lineColor }
 
         fun axisLabelFontSize(fontSize: TextUnit) = apply { this.axisLabelFontSize = fontSize }
 
-        fun yAxisPos(pos: Gravity) = apply { this.yAxisPos = pos }
-
-        fun xAxisPos(pos: Gravity) = apply { this.xAxisPos = pos }
-
-        fun yLabelAndAxisLinePadding(padding: Dp) = apply { this.yLabelAndAxisLinePadding = padding }
-
-        fun yAxisOffset(offset: Dp) = apply { this.yAxisOffset = offset }
+        fun axisPosition(pos: Gravity) = apply { this.axisPos = pos }
 
         fun axisLineThickness(thickness: Dp) = apply { this.axisLineThickness = thickness }
 
-        fun yTopPadding(padding: Dp) = apply { this.yTopPadding = padding }
+        fun topPadding(padding: Dp) = apply { this.axisTopPadding = padding }
 
-        fun yStartPadding(padding: Dp) = apply { this.yStartPadding = padding }
+        fun startPadding(padding: Dp) = apply { this.axisStartPadding = padding }
+
+        fun bottomPadding(padding: Dp) = apply { this.axisBottomPadding = padding }
 
         fun indicatorLineWidth(lineWidth: Dp) = apply { this.indicatorLineWidth = lineWidth }
 
@@ -130,40 +108,24 @@ data class AxisData(
 
         fun axisConfig(config: AxisConfig) = apply { this.axisConfig = config }
 
-        fun xLabelAndAxisLinePadding(padding: Dp) =
-            apply { this.xLabelAndAxisLinePadding = padding }
-
         fun axisLabelColor(color: Color) = apply { this.axisLabelColor = color }
 
-        fun xAxisSteps(steps: Int) = apply { this.xAxisSteps = steps }
+        fun shouldAxisStartWithPadding(flag: Boolean) =
+            apply { this.shouldStartAxisWithPadding = flag }
 
-        fun xAxisStepSize(size: Dp) = apply { this.xAxisStepSize = size }
-
-        fun xBottomPadding(padding: Dp) = apply { this.xBottomPadding = padding }
-
-        fun xTopPadding(padding: Dp) = apply { this.xTopPadding = padding }
-        
-        fun shouldXAxisStartWithPadding(flag: Boolean) = apply { this.shouldStartXAxisWithPadding = flag }
-        
-        fun xAxisLabelAngle(angle: Float) = apply { this.xAxisLabelAngle = angle }
+        fun axisLabelAngle(angle: Float) = apply { this.axisLabelAngle = angle }
 
         fun build() = AxisData(
-            ySteps,
-            yLabelData,
-            yAxisPos,
-            yLabelAndAxisLinePadding,
-            yAxisOffset,
-            yTopPadding,
-            yBottomPadding,
-            yStartPadding,
-            xLabelData,
-            xAxisSteps,
-            xAxisStepSize,
-            xLabelAndAxisLinePadding,
-            xAxisPos,
-            xTopPadding,
-            xBottomPadding,
-            xAxisLabelAngle,
+            steps,
+            labelData,
+            axisPos,
+            labelAndAxisLinePadding,
+            axisOffset,
+            axisTopPadding,
+            axisBottomPadding,
+            axisStartPadding,
+            axisStepSize,
+            axisLabelAngle,
             axisLineColor,
             axisLabelColor,
             axisLabelFontSize,
@@ -172,7 +134,7 @@ data class AxisData(
             backgroundColor,
             typeface,
             axisConfig,
-            shouldStartXAxisWithPadding
+            shouldStartAxisWithPadding
         )
     }
 }
