@@ -25,6 +25,7 @@ import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
 import com.ygraph.components.axis.getXAxisScale
 import com.ygraph.components.common.extensions.RowClip
+import com.ygraph.components.common.extensions.drawGridLines
 import com.ygraph.components.common.extensions.isNotNull
 import com.ygraph.components.common.model.Point
 import com.ygraph.components.graph.linegraph.model.*
@@ -72,8 +73,8 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                 .typeFace(typeface)
                 .build()
 
-            val (xMin, xMax, _) = getXAxisScale(line.dataPoints, axisData.xAxisSteps)
-            val (yMin, _, yAxisScale) = getYAxisScale(line.dataPoints, axisData.ySteps)
+            val (xMin, xMax, xAxisScale) = getXAxisScale(line.dataPoints, axisData.xAxisSteps)
+            val (yMin, yMax, yAxisScale) = getYAxisScale(line.dataPoints, axisData.ySteps)
             val maxElementInYAxis =
                 getMaxElementInYAxis(yAxisScale, axisData.ySteps)
 
@@ -140,6 +141,22 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                     )
                     val (cubicPoints1, cubicPoints2) = getCubicPoints(pointsData)
                     val tapPointLocks = mutableMapOf<Int, Pair<Point, Offset>>()
+
+                    // Draw guide lines
+                    gridLines?.let {
+                        drawGridLines(
+                            yBottom,
+                            axisData.yTopPadding.toPx(),
+                            axisData,
+                            xLeft,
+                            paddingRight,
+                            scrollOffset,
+                            pointsData.size,
+                            xZoom,
+                            xAxisScale,
+                            it
+                        )
+                    }
 
                     // Draw cubic line using the points and form a line graph
                     val cubicPath =
