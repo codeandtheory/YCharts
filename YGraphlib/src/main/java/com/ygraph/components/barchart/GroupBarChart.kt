@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -130,34 +131,34 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                                 }
                             }
 
+                            if (showGroupSeparator) {
+                                // drawing each Group Separator bars
+                                val yOffset2 = (yBottom - axisData.yTopPadding.toPx())
+                                val height = yBottom - axisData.yTopPadding.toPx()
+                                val drawOffset2 = getGroupBarDrawOffset(
+                                    index,
+                                    rowHeight,
+                                    xOffset,
+                                    xLeft,
+                                    scrollOffset,
+                                    yBottom,
+                                    yOffset2,
+                                    0f
+                                )
+                                val xOffset2 = (drawOffset2.x
+                                        + insideOffset + (paddingBetweenBars.toPx() / 2) - groupSeparatorWidth.toPx() / 2)
+                                val individualOffset =
+                                    Offset(xOffset2, axisData.yTopPadding.toPx())
 
-                            // drawing each Group Separator bars
-                            val yOffset2 = (yBottom - axisData.yTopPadding.toPx())
-                            val height = yBottom - axisData.yTopPadding.toPx()
-                            val width = 4f
-                            val drawOffset2 = getGroupBarDrawOffset(
-                                index,
-                                rowHeight,
-                                xOffset,
-                                xLeft,
-                                scrollOffset,
-                                yBottom,
-                                yOffset2,
-                                0f
-                            )
-                            val xOffset2 = (drawOffset2.x
-                                    + insideOffset + (paddingBetweenBars.toPx() / 2) - width / 2)
-                            val individualOffset =
-                                Offset(xOffset2, axisData.yTopPadding.toPx())
-
-                            drawGroupSeparator(
-                                individualOffset,
-                                height,
-                                width
-                            )
-
+                                drawGroupSeparator(
+                                    individualOffset,
+                                    height,
+                                    groupSeparatorWidth.toPx(),
+                                    groupSeparatorColor,
+                                    groupBarChartData
+                                )
+                            }
                         }
-
                         drawUnderScrollMask(columnWidth, paddingRight, bgColor)
 
                         if (selectionHighlightData != null) {
@@ -228,19 +229,28 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                         visibility = false
                     }
                 )
-                LazyVerticalGrid(
-                    modifier = Modifier.padding(8.dp),
-                    columns = GridCells.Fixed(3)
-                ) {
-                    items(groupBarChartData.stackLabelList) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Box(
-                                modifier = Modifier
-                                    .background(it.color)
-                                    .size(25.dp)
-                            )
-                            Spacer(modifier = Modifier.padding(4.dp))
-                            Text(text = it.name, overflow = TextOverflow.Ellipsis)
+                if (showStackLabel) {
+                    LazyVerticalGrid(
+                        modifier = Modifier.padding(
+                            horizontal = labelGridPaddingHorizontal,
+                            vertical = labelGridPaddingVertical
+                        ),
+                        columns = GridCells.Fixed(labelGridColumnCount)
+                    ) {
+                        items(groupBarChartData.stackLabelList) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Box(
+                                    modifier = Modifier
+                                        .background(it.color)
+                                        .size(labelColorBoxSize)
+                                )
+                                Spacer(modifier = Modifier.padding(spaceBWLabelAndColorBox))
+                                Text(
+                                    text = it.name,
+                                    style = labelTextStyle,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
                         }
                     }
                 }
@@ -399,22 +409,26 @@ fun getGroupBarDrawOffset(
     return Offset(x1, y1)
 }
 
-
 /**
  *
  * Used to draw the group separator
+ * @param barChartData: GroupBarChartData
  * @param drawOffset: topLeft offset for the drawing the separator
  * @param height : height of the separator
  * @param width : width of the separator
+ * @param color : color of the separator
  */
 private fun DrawScope.drawGroupSeparator(
     drawOffset: Offset,
     height: Float,
     width: Float,
+    color: Color,
+    barChartData: GroupBarChartData,
 ) {
     drawRoundRect(
-        color = Color.Gray,
+        color = color,
         topLeft = drawOffset,
         size = Size(width, height),
+        blendMode = barChartData.groupSeparatorBlendMode
     )
 }

@@ -81,7 +81,7 @@ private fun ScrollableContainer() {
                     .fillMaxWidth()
                     .height(250.dp),
                 containerBackgroundColor = Color.Yellow,
-                calculateMaxDistance = { _ -> size.width * 3 }, // T0D0 need to calculate
+                calculateMaxDistance = { xZoom -> size.width * 3 }, // T0D0 need to calculate
                 drawXAndYAxis = { scrollOffset, xZoom ->
                     YAxis(
                         modifier = Modifier

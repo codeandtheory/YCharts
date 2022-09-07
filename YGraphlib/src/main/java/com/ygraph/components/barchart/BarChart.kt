@@ -42,7 +42,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
             var barHighlightVisibility by remember { mutableStateOf(false) }
             var identifiedPoint by remember { mutableStateOf(BarData(Point(0f, 0f))) }
             var xOffset by remember { mutableStateOf(0f) }
-            var tapOffset by remember { mutableStateOf(Offset(0f,0f)) }
+            var tapOffset by remember { mutableStateOf(Offset(0f, 0f)) }
             var isTapped by remember { mutableStateOf(false) }
             var columnWidth by remember { mutableStateOf(0f) }
             var horizontalGap by remember { mutableStateOf(0f) }
@@ -84,7 +84,6 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                     )
                 },
                 onDraw = { scrollOffset, xZoom ->
-
                     val yBottom = size.height - rowHeight
                     val yOffset = ((yBottom - axisData.yTopPadding.toPx()) / maxElementInYAxis)
                     xOffset =
@@ -205,7 +204,6 @@ private fun DrawScope.drawHighlightText(
     highlightData.drawPopUp(this, selectedOffset, identifiedPoint, centerPointOfBar)
 }
 
-
 /**
  *
  * Used to draw the individual bars
@@ -249,7 +247,6 @@ private fun DrawScope.drawBarChart(
     }
 }
 
-
 /**
  *
  * returns the max scrollable distance based on the points to be drawn along with padding etc.
@@ -276,7 +273,6 @@ fun getMaxScrollDistance(
         xLastPoint - canvasWidth
     } else 0f
 }
-
 
 /**
  *
@@ -364,7 +360,6 @@ private fun DrawScope.drawUnderScrollMask(columnWidth: Float, paddingRight: Dp, 
     )
 }
 
-
 /**
  * returns the draw offset for bar graph.
  * @param point : chartData point
@@ -385,3 +380,4 @@ fun getDrawOffset(
     val y1 = yBottom - ((y - yMin) * yOffset)
     return Offset(x1, y1)
 }
+
