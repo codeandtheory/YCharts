@@ -19,11 +19,9 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.ygraph.components.axis.AxisData
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
 import com.ygraph.components.barchart.models.*
@@ -131,7 +129,7 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                                 }
                             }
 
-                            if (showGroupSeparator) {
+                            if (groupSeparatorConfig.showSeparator) {
                                 // drawing each Group Separator bars
                                 val yOffset2 = (yBottom - axisData.yTopPadding.toPx())
                                 val height = yBottom - axisData.yTopPadding.toPx()
@@ -146,15 +144,15 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                                     0f
                                 )
                                 val xOffset2 = (drawOffset2.x
-                                        + insideOffset + (paddingBetweenBars.toPx() / 2) - groupSeparatorWidth.toPx() / 2)
+                                        + insideOffset + (paddingBetweenBars.toPx() / 2) - groupSeparatorConfig.separatorWidth.toPx() / 2)
                                 val individualOffset =
                                     Offset(xOffset2, axisData.yTopPadding.toPx())
 
                                 drawGroupSeparator(
                                     individualOffset,
                                     height,
-                                    groupSeparatorWidth.toPx(),
-                                    groupSeparatorColor,
+                                    groupSeparatorConfig.separatorWidth.toPx(),
+                                    groupSeparatorConfig.separatorColor,
                                     groupBarChartData
                                 )
                             }
@@ -229,25 +227,25 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                         visibility = false
                     }
                 )
-                if (showStackLabel) {
+                if (stackLabelConfig.showLabel) {
                     LazyVerticalGrid(
                         modifier = Modifier.padding(
-                            horizontal = labelGridPaddingHorizontal,
-                            vertical = labelGridPaddingVertical
+                            horizontal = stackLabelConfig.gridPaddingHorizontal,
+                            vertical = stackLabelConfig.gridPaddingVertical
                         ),
-                        columns = GridCells.Fixed(labelGridColumnCount)
+                        columns = GridCells.Fixed(stackLabelConfig.gridColumnCount)
                     ) {
-                        items(groupBarChartData.stackLabelList) {
+                        items(groupBarChartData.stackLabelConfig.stackLabelList) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Box(
                                     modifier = Modifier
                                         .background(it.color)
-                                        .size(labelColorBoxSize)
+                                        .size(stackLabelConfig.colorBoxSize)
                                 )
-                                Spacer(modifier = Modifier.padding(spaceBWLabelAndColorBox))
+                                Spacer(modifier = Modifier.padding(stackLabelConfig.spaceBWLabelAndColorBox))
                                 Text(
                                     text = it.name,
-                                    style = labelTextStyle,
+                                    style = stackLabelConfig.textStyle,
                                     overflow = TextOverflow.Ellipsis
                                 )
                             }
@@ -292,7 +290,7 @@ private fun DrawScope.drawGroupBarChart(
     height: Float,
     subIndex: Int
 ) {
-    val color = barChartData.stackLabelList[subIndex].color
+    val color = barChartData.stackLabelConfig.stackLabelList[subIndex].color
     drawRoundRect(
         color = color,
         topLeft = drawOffset,
@@ -429,6 +427,6 @@ private fun DrawScope.drawGroupSeparator(
         color = color,
         topLeft = drawOffset,
         size = Size(width, height),
-        blendMode = barChartData.groupSeparatorBlendMode
+        blendMode = barChartData.groupSeparatorConfig.separatorBlendMode
     )
 }

@@ -8,18 +8,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.example.piechartcontainer.ui.theme.YGraphsTheme
 import com.ygraph.components.axis.AxisData
-import com.ygraph.components.barchart.BarChart
-import com.ygraph.components.barchart.models.BarChartData
-import com.ygraph.components.common.utils.DataUtils.getBarChartData
-import com.ygraph.components.common.utils.DataUtils.getGradientBarChartData
 import com.ygraph.components.barchart.GroupBarChart
 import com.ygraph.components.barchart.models.GroupBarChartData
+import com.ygraph.components.barchart.models.StackLabelConfig
 import com.ygraph.components.common.utils.DataUtils
-import com.ygraph.components.common.utils.DataUtils.getColorList
 import com.ygraph.components.common.utils.DataUtils.getGroupBarChartData
 
 class BarChartActivity : ComponentActivity() {
@@ -32,7 +27,6 @@ class BarChartActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-
                     val barSize = 3
                     val groupBarData = getGroupBarChartData(50, 50, barSize)
                     val yStepSize = 10
@@ -51,9 +45,10 @@ class BarChartActivity : ComponentActivity() {
                     val groupBarChartData = GroupBarChartData(
                         groupedBarList = groupBarData,
                         axisData = axisData,
-                        stackLabelList = DataUtils.getStackLabelData(barSize)
+                        stackLabelConfig = StackLabelConfig(
+                            stackLabelList = DataUtils.getStackLabelData(barSize)
+                        )
                     )
-
                     GroupBarChart(
                         modifier = Modifier.height(600.dp),
                         groupBarChartData = groupBarChartData
