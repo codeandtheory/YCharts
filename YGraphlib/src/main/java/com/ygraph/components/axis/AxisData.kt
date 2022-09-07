@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
  * @param xAxisLabelAngle: Angle for the X axis labels
  * @param xTopPadding: X Label offset top padding
  * @param shouldXAxisStartWithPadding: Used to append a line in front of the x Axis
+ * @param shouldDrawXAxisLineTillEnd : Boolean to draw x-axis line till end.
  */
 data class AxisData(
     // All Y-Axis params
@@ -67,7 +68,8 @@ data class AxisData(
     val backgroundColor: Color,
     val typeface: Typeface,
     val axisConfig: AxisConfig,
-    val shouldXAxisStartWithPadding: Boolean
+    val shouldXAxisStartWithPadding: Boolean,
+    val shouldDrawXAxisLineTillEnd: Boolean
 ) {
     class Builder {
         private var ySteps: Int = 1
@@ -94,6 +96,7 @@ data class AxisData(
         private var xTopPadding: Dp = 0.dp
         private var xBottomPadding: Dp = 0.dp
         private var shouldStartXAxisWithPadding: Boolean = false
+        private var shouldDrawXAxisLineTillEnd: Boolean = false
         private var xAxisLabelAngle: Float = 0f
 
         fun ySteps(steps: Int) = apply { this.ySteps = steps }
@@ -112,7 +115,8 @@ data class AxisData(
 
         fun xAxisPos(pos: Gravity) = apply { this.xAxisPos = pos }
 
-        fun yLabelAndAxisLinePadding(padding: Dp) = apply { this.yLabelAndAxisLinePadding = padding }
+        fun yLabelAndAxisLinePadding(padding: Dp) =
+            apply { this.yLabelAndAxisLinePadding = padding }
 
         fun yAxisOffset(offset: Dp) = apply { this.yAxisOffset = offset }
 
@@ -142,9 +146,13 @@ data class AxisData(
         fun xBottomPadding(padding: Dp) = apply { this.xBottomPadding = padding }
 
         fun xTopPadding(padding: Dp) = apply { this.xTopPadding = padding }
-        
-        fun shouldXAxisStartWithPadding(flag: Boolean) = apply { this.shouldStartXAxisWithPadding = flag }
-        
+
+        fun shouldXAxisStartWithPadding(flag: Boolean) =
+            apply { this.shouldStartXAxisWithPadding = flag }
+
+        fun shouldDrawXAxisLineTillEnd(flag: Boolean) =
+            apply { this.shouldDrawXAxisLineTillEnd = flag }
+
         fun xAxisLabelAngle(angle: Float) = apply { this.xAxisLabelAngle = angle }
 
         fun build() = AxisData(
@@ -172,7 +180,8 @@ data class AxisData(
             backgroundColor,
             typeface,
             axisConfig,
-            shouldStartXAxisWithPadding
+            shouldStartXAxisWithPadding,
+            shouldDrawXAxisLineTillEnd
         )
     }
 }

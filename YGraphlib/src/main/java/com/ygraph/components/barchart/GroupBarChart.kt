@@ -63,8 +63,11 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                 rowHeight = LocalDensity.current.run { DEFAULT_YAXIS_BOTTOM_PADDING.dp.toPx() }
             }
             val axisData =
-                axisData.copy(xAxisStepSize = ((barWidth * groupingSize) + paddingBetweenBars),
-                    yBottomPadding = LocalDensity.current.run { rowHeight.toDp() })
+                axisData.copy(
+                    xAxisStepSize = ((barWidth * groupingSize) + paddingBetweenBars),
+                    yBottomPadding = LocalDensity.current.run { rowHeight.toDp() },
+                    shouldDrawXAxisLineTillEnd = true
+                )
             Column() {
                 ScrollableCanvasContainer(modifier = modifier,
                     containerBackgroundColor = backgroundColor,
@@ -129,7 +132,7 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                                 }
                             }
 
-                            if (groupSeparatorConfig.showSeparator) {
+                            if (groupSeparatorConfig.showSeparator && index != groupedBarList.size - 1) {
                                 // drawing each Group Separator bars
                                 val yOffset2 = (yBottom - axisData.yTopPadding.toPx())
                                 val height = yBottom - axisData.yTopPadding.toPx()

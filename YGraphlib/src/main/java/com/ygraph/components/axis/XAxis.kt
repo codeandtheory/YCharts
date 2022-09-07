@@ -68,7 +68,7 @@ fun XAxis(
                         strokeWidth = axisLineThickness.toPx()
                     )
                 }
-                
+
                 for (index in 0..xAxisSteps) {
                     xAxisHeight = drawXAxisLabel(
                         axisData,
@@ -100,10 +100,15 @@ private fun DrawScope.drawAxisLineWithPointers(
     with(axisData) {
         if (axisConfig.isAxisLineRequired) {
             if (canDrawEndLine) {
+                val axisStepWidth = (xAxisStepSize.toPx() * (zoomScale * xAxisScale))
                 drawLine(
                     axisLineColor,
                     Offset(xPos, 0f),
-                    Offset(xPos + ((xAxisStepSize.toPx() * (zoomScale * xAxisScale))), 0f),
+                    if (shouldDrawXAxisLineTillEnd) {
+                        Offset((xPos + (axisStepWidth / 2) + axisStepWidth), 0f)
+                    } else {
+                        Offset(xPos + axisStepWidth, 0f)
+                    },
                     strokeWidth = axisLineThickness.toPx()
                 )
             }
@@ -136,7 +141,7 @@ private fun DrawScope.drawXAxisLabel(
     calculatedXAxisHeight =
         if (axisConfig.isAxisLineRequired) {
             labelHeight.toDp() + axisLineThickness +
-                    indicatorLineWidth + xLabelAndAxisLinePadding + xBottomPadding 
+                    indicatorLineWidth + xLabelAndAxisLinePadding + xBottomPadding
         } else labelHeight.toDp() + xLabelAndAxisLinePadding
     val ellipsizedText = TextUtils.ellipsize(
         xLabel,
