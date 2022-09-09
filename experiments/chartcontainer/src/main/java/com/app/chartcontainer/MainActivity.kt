@@ -98,7 +98,7 @@ private fun ScrollableContainer() {
                         xStart = columnWidth.value,
                         scrollOffset = scrollOffset,
                         zoomScale = xZoom,
-                        chartData = getLineChartData(100, 100)
+                        graphData = getLineChartData(100, 100)
                     )
                 },
                 onDraw = { _, _ ->
