@@ -3,7 +3,6 @@ package com.app.ygraphs.presentation
 import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
-import android.text.TextUtils
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,9 +18,9 @@ import androidx.compose.ui.unit.sp
 import com.app.ygraphs.R
 import com.app.ygraphs.ui.compositions.AppBarWithBackButton
 import com.app.ygraphs.ui.theme.YGraphsTheme
+import com.ygraph.components.common.utils.DataUtils
 import com.ygraph.components.piechart.charts.DonutPieChart
 import com.ygraph.components.piechart.models.PieChartConfig
-import com.ygraph.components.piechart.models.PieChartData
 
 class DonutChartActivity : ComponentActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,27 +54,17 @@ class DonutChartActivity : ComponentActivity(){
 
 @Composable
 private fun DonutChart1(context: Context) {
-    val pieChartData = PieChartData(
-        slices = listOf(
-            PieChartData.Slice("HP", 15f, Color(0xFF5F0A87)),
-            PieChartData.Slice("Dell", 30f, Color(0xFF20BF55)),
-            PieChartData.Slice("Lenovo", 10f, Color(0xFFA40606)),
-            PieChartData.Slice("Asus", 15f, Color(0xFFF53844)),
-            PieChartData.Slice("Acer", 10f, Color(0xFFEC9F05)),
-            PieChartData.Slice("Apple", 30f, Color(0xFF009FFD)),
-        )
-    )
+    val data = DataUtils.getDonutChartData()
 
     val pieChartConfig =
         PieChartConfig(
             percentVisible = true,
             strokeWidth = 120f,
             percentColor = Color.Black,
-            isLegendVisible = pieChartData.legendVisible,
+            isLegendVisible = true,
             legendGridSize = 3,
             activeSliceAlpha = .9f,
             isEllipsizeEnabled = true,
-            sliceLabelEllipsizeAt = TextUtils.TruncateAt.MIDDLE,
             percentageTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
             isAnimationEnable = true,
             chartPadding = 25,
@@ -87,7 +76,7 @@ private fun DonutChart1(context: Context) {
         modifier = Modifier
             .fillMaxWidth()
             .height(500.dp),
-        pieChartData,
+        data,
         pieChartConfig
     ) { slice ->
         Toast.makeText(context, slice.label, Toast.LENGTH_SHORT).show()

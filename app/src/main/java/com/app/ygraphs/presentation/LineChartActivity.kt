@@ -97,7 +97,8 @@ private fun LineGraph1(pointsData: List<Point>) {
             val yScale = 50 / steps
             ((i * yScale) + yMin).formatToSinglePrecision()
         },
-        xAxisLabelData = { i -> i.toString() }
+        xAxisLabelData = { i -> i.toString() },
+        gridLines = GridLines()
     )
     LineGraph(
         modifier = Modifier

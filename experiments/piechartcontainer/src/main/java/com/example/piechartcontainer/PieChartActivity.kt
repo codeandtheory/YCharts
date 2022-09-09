@@ -48,7 +48,7 @@ class PieChartActivity : ComponentActivity() {
                             percentVisible = true,
                             strokeWidth = 120f,
                             percentColor = Color.Black,
-                            isLegendVisible = pieChartData.legendVisible,
+                            isLegendVisible = true,
                             legendGridSize = 3,
                             activeSliceAlpha = .9f,
                             isEllipsizeEnabled = true,
