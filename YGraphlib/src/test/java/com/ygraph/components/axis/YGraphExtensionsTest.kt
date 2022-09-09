@@ -14,7 +14,7 @@ class YGraphExtensionsTest {
     @Test
     fun `When getAxisInitValues extension is invoked should not return values lesser than zero`() {
         // Given
-        every { axisData.ySteps }.returns(5)
+        every { axisData.steps }.returns(5)
 
         // When
         val values = getAxisInitValues(
@@ -32,7 +32,7 @@ class YGraphExtensionsTest {
     @Test
     fun `Given yAxisData segmentHeight should be less than yaxisHeight `() {
         // Given
-        every { axisData.ySteps }.returns(5)
+        every { axisData.steps }.returns(5)
 
         // When
         val values = getAxisInitValues(
