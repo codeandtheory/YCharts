@@ -98,11 +98,15 @@ private fun DrawScope.drawAxisLineWithPointers(
     with(axisData) {
         if (axisConfig.isAxisLineRequired) {
             if (canDrawEndLine) {
+                val axisStepWidth = (axisStepSize.toPx() * (zoomScale * xAxisScale))
                 drawLine(
                     axisLineColor,
                     Offset(xPos, 0f),
-                    Offset(xPos + ((axisStepSize.toPx() * (zoomScale * xAxisScale))), 0f),
-                    strokeWidth = axisLineThickness.toPx()
+                    if (shouldDrawAxisLineTillEnd) {
+                        Offset((xPos + (axisStepWidth / 2) + axisStepWidth), 0f)
+                    } else {
+                        Offset(xPos + axisStepWidth, 0f)
+                    },                    strokeWidth = axisLineThickness.toPx()
                 )
             }
             drawLine(
