@@ -56,7 +56,8 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
 
             val xAxisData = xAxisData.copy(
                 axisStepSize = barWidth + paddingBetweenBars,
-                steps = chartData.size - 1
+                steps = chartData.size - 1,
+                initialDrawPadding = LocalDensity.current.run { columnWidth.toDp() }
             )
             val yAxisData =
                 yAxisData.copy(axisBottomPadding = LocalDensity.current.run { rowHeight.toDp() })
@@ -155,8 +156,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                             xStart = columnWidth + horizontalGap + LocalDensity.current.run { (barWidth.toPx()) },
                             scrollOffset = scrollOffset,
                             zoomScale = xZoom,
-                            chartData = points,
-                            xLineStart = columnWidth
+                            chartData = points
                         )
                     }
 
