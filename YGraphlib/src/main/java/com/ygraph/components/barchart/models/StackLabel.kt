@@ -36,4 +36,3 @@ data class StackLabelConfig(
     val textStyle: TextStyle = TextStyle(),
     val spaceBWLabelAndColorBox: Dp = 4.dp,
 )
-

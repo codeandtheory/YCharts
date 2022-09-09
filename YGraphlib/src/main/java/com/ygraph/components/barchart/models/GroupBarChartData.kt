@@ -13,9 +13,9 @@ import com.ygraph.components.axis.AxisData
 /**
  * GroupBarChart data class params used in drawing bar graph.
  * @param groupedBarList : List of grouped gar data.
- * @param axisData : All config related to the Axis.
+ * @param xAxisData: All the configurations related to X-Axis to be defined here in [AxisData]
+ * @param yAxisData: All the configurations related to Y-Axis to be defined here in [AxisData]
  * @param groupingSize : The number of bars in one set.
- * @param xLabelAngle: Angle of the x axis labels
  * @param barWidth: Width of a bar
  * @param cornerRadius: Corner radius for the bars
  * @param paddingBetweenBars: Space between adjacent bars
@@ -27,16 +27,15 @@ import com.ygraph.components.axis.AxisData
  * @param barDrawStyle: Draw style for the bars
  * @param showXAxis: Boolean Flag to enable/disable X axis
  * @param showYAxis: Boolean Flag to enable/disable Y axis
- * @param axisConfig: All config related param to toggle the elements while drawing graph
  * @param stackLabelConfig : All config related to the StackLabel.
  * @param groupSeparatorConfig : All config related to the GroupSeparator.
  */
 
 data class GroupBarChartData(
     val groupedBarList: List<GroupBar>,
-    val axisData: AxisData,
+    val xAxisData: AxisData = AxisData.Builder().build(),
+    val yAxisData: AxisData = AxisData.Builder().build(),
     val groupingSize: Int = groupedBarList.firstOrNull()?.barList?.size ?: 1,
-    val xLabelAngle: Float = 0f,
     val barWidth: Dp = 30.dp,
     val cornerRadius: Dp = 4.dp,
     val backgroundColor: Color = Color.White,
@@ -50,11 +49,7 @@ data class GroupBarChartData(
     val barDrawStyle: DrawStyle = Fill,
     val showYAxis: Boolean = true,
     val showXAxis: Boolean = true,
-    val axisConfig: AxisConfig = AxisConfig(),
     val tapPadding: Dp = 10.dp,
     val stackLabelConfig: StackLabelConfig,
     val groupSeparatorConfig: GroupSeparatorConfig = GroupSeparatorConfig(),
 )
-
-
-

@@ -102,7 +102,7 @@ private fun DrawScope.drawAxisLineWithPointers(
                 drawLine(
                     axisLineColor,
                     Offset(xPos, 0f),
-                    if (shouldDrawXAxisLineTillEnd) {
+                    if (shouldDrawAxisLineTillEnd) {
                         Offset((xPos + (axisStepWidth / 2) + axisStepWidth), 0f)
                     } else {
                         Offset(xPos + axisStepWidth, 0f)

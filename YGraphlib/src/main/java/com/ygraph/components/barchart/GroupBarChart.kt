@@ -56,19 +56,24 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
 
             val xMax = groupedBarList.size
             val yMax = valueList.maxOrNull() ?: 0f
+            val xAxisData =
+                xAxisData.copy(
+                    axisStepSize = ((barWidth * groupingSize) + paddingBetweenBars),
+                    shouldDrawAxisLineTillEnd = true,
+                    steps = groupedBarList.size - 1,
+                    startDrawPadding = LocalDensity.current.run { columnWidth.toDp() }
+                )
+            val yAxisData = yAxisData.copy(
+                axisBottomPadding = LocalDensity.current.run { rowHeight.toDp() }
+            )
 
-            val maxElementInYAxis = getMaxElementInYAxis(yMax, groupBarChartData.axisData.ySteps)
+            val maxElementInYAxis = getMaxElementInYAxis(yMax, yAxisData.steps)
 
             if (!showXAxis) {
                 rowHeight = LocalDensity.current.run { DEFAULT_YAXIS_BOTTOM_PADDING.dp.toPx() }
             }
-            val axisData =
-                axisData.copy(
-                    xAxisStepSize = ((barWidth * groupingSize) + paddingBetweenBars),
-                    yBottomPadding = LocalDensity.current.run { rowHeight.toDp() },
-                    shouldDrawXAxisLineTillEnd = true
-                )
-            Column() {
+
+            Column {
                 ScrollableCanvasContainer(modifier = modifier,
                     containerBackgroundColor = backgroundColor,
                     calculateMaxDistance = { xZoom ->
@@ -88,7 +93,8 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                     },
                     onDraw = { scrollOffset, xZoom ->
                         val yBottom = size.height - rowHeight
-                        val yOffset = ((yBottom - axisData.yTopPadding.toPx()) / maxElementInYAxis)
+                        val yOffset =
+                            ((yBottom - yAxisData.axisTopPadding.toPx()) / maxElementInYAxis)
                         xOffset =
                             ((barWidth.toPx() * groupingSize) + paddingBetweenBars.toPx()) * xZoom
                         val xLeft =
@@ -134,8 +140,8 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
 
                             if (groupSeparatorConfig.showSeparator && index != groupedBarList.size - 1) {
                                 // drawing each Group Separator bars
-                                val yOffset2 = (yBottom - axisData.yTopPadding.toPx())
-                                val height = yBottom - axisData.yTopPadding.toPx()
+                                val yOffset2 = (yBottom - yAxisData.axisTopPadding.toPx())
+                                val height = yBottom - yAxisData.axisTopPadding.toPx()
                                 val drawOffset2 = getGroupBarDrawOffset(
                                     index,
                                     rowHeight,
@@ -149,7 +155,7 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                                 val xOffset2 = (drawOffset2.x
                                         + insideOffset + (paddingBetweenBars.toPx() / 2) - groupSeparatorConfig.separatorWidth.toPx() / 2)
                                 val individualOffset =
-                                    Offset(xOffset2, axisData.yTopPadding.toPx())
+                                    Offset(xOffset2, yAxisData.axisTopPadding.toPx())
 
                                 drawGroupSeparator(
                                     individualOffset,
@@ -185,7 +191,7 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
 
                         if (showXAxis) {
                             XAxis(
-                                axisData = axisData,
+                                xAxisData = xAxisData,
                                 modifier = Modifier
                                     .align(Alignment.BottomStart)
                                     .fillMaxWidth()
@@ -203,7 +209,6 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                                 scrollOffset = scrollOffset,
                                 zoomScale = xZoom,
                                 chartData = points,
-                                xLineStart = columnWidth
                             )
                         }
 
@@ -216,7 +221,7 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                                     .onGloballyPositioned {
                                         columnWidth = it.size.width.toFloat()
                                     },
-                                axisData = axisData,
+                                yAxisData = yAxisData,
                             )
                         }
                     },

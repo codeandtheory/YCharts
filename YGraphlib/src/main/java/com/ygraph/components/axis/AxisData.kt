@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.sp
  * @param axisBottomPadding: Axis bottom padding,
  * @param axisLabelAngle: Angle for the axis labels
  * @param startDrawPadding: Padding between Axis and first point on the Axis
- * @param shouldDrawXAxisLineTillEnd : Boolean to draw x-axis line till end.
+ * @param shouldDrawAxisLineTillEnd : Boolean to draw axis line till end.
  */
 data class AxisData(
     val steps: Int,
@@ -54,7 +54,7 @@ data class AxisData(
     val typeface: Typeface,
     val axisConfig: AxisConfig,
     val startDrawPadding: Dp,
-    val shouldDrawXAxisLineTillEnd: Boolean
+    val shouldDrawAxisLineTillEnd: Boolean
 ) {
     class Builder {
         private var steps: Int = 1
@@ -76,7 +76,7 @@ data class AxisData(
         private var axisLabelColor: Color = Color.Black
         private var startDrawPadding: Dp = 0.dp
         private var axisLabelAngle: Float = 0f
-        private var shouldDrawXAxisLineTillEnd: Boolean = false
+        private var shouldDrawAxisLineTillEnd: Boolean = false
 
         fun steps(count: Int) = apply { this.steps = count }
 
@@ -117,6 +117,9 @@ data class AxisData(
 
         fun axisLabelAngle(angle: Float) = apply { this.axisLabelAngle = angle }
 
+        fun shouldDrawAxisLineTillEnd(flag: Boolean) =
+            apply { this.shouldDrawAxisLineTillEnd = flag }
+
         fun build() = AxisData(
             steps,
             labelData,
@@ -137,7 +140,7 @@ data class AxisData(
             typeface,
             axisConfig,
             startDrawPadding,
-            shouldDrawXAxisLineTillEnd
+            shouldDrawAxisLineTillEnd
         )
     }
 }

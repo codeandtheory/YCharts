@@ -8,18 +8,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.example.piechartcontainer.ui.theme.YGraphsTheme
 import com.ygraph.components.axis.AxisData
-import com.ygraph.components.barchart.BarChart
 import com.ygraph.components.barchart.GroupBarChart
-import com.ygraph.components.barchart.models.BarChartData
 import com.ygraph.components.barchart.models.GroupBarChartData
 import com.ygraph.components.barchart.models.StackLabelConfig
 import com.ygraph.components.common.utils.DataUtils
-import com.ygraph.components.common.utils.DataUtils.getBarChartData
-import com.ygraph.components.common.utils.DataUtils.getGradientBarChartData
+import com.ygraph.components.common.utils.DataUtils.getGroupBarChartData
 
 class BarChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +34,6 @@ class BarChartActivity : ComponentActivity() {
                         .axisStepSize(30.dp)
                         .steps(groupBarData.size - 1)
                         .bottomPadding(40.dp)
-                        .axisLabelAngle(20f)
                         .labelData { index -> groupBarData[index].label }
                         .build()
                     val yAxisData = AxisData.Builder()
@@ -49,7 +44,8 @@ class BarChartActivity : ComponentActivity() {
                         .build()
                     val groupBarChartData = GroupBarChartData(
                         groupedBarList = groupBarData,
-                        axisData = axisData,
+                        xAxisData = xAxisData,
+                        yAxisData = yAxisData,
                         stackLabelConfig = StackLabelConfig(
                             stackLabelList = DataUtils.getStackLabelData(barSize)
                         )

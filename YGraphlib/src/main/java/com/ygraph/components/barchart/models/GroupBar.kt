@@ -8,4 +8,4 @@ data class GroupBar(val label: String, val barList: List<Bar>) {
 data class Bar(
     val value: Float,
     val name: String,
-) 
+)
