@@ -28,26 +28,24 @@ import kotlin.math.ceil
 /**
  *
  * XAxis compose method used for drawing xAxis in any given graph.
- * @param axisData : All data needed to draw Yaxis
+ * @param xAxisData : All data needed to draw Yaxis
  * @see com.ygraph.components.axis.AxisData Data class to save all params related to axis
  * @param modifier : All modifier related property.
  * @param xStart : Start position of xAxis Points.
- * @param xLineStart : Start position of xAxis Line.
  * @param scrollOffset : Offset of delta scrolled position.
  * @param zoomScale : Scale at which zoom transformation being applied.
  * @param chartData : List of data points used in the graph.
  */
 @Composable
 fun XAxis(
-    axisData: AxisData,
+    xAxisData: AxisData,
     modifier: Modifier,
     xStart: Float,
-    xLineStart: Float = 0f,
     scrollOffset: Float,
     zoomScale: Float,
     chartData: List<Point>
 ) {
-    with(axisData) {
+    with(xAxisData) {
         var xAxisHeight by remember { mutableStateOf(0.dp) }
         Row(modifier = modifier.clipToBounds()) {
             Canvas(
@@ -56,34 +54,34 @@ fun XAxis(
                     .height(xAxisHeight)
                     .background(backgroundColor)
             ) {
-                val (xMin, xMax, xAxisScale) = getXAxisScale(chartData, xAxisSteps)
+                val (_, _, xAxisScale) = getXAxisScale(chartData, steps)
                 var xPos = xStart - scrollOffset
 
                 // used in the case of barchart
-                if (xLineStart != xStart && shouldXAxisStartWithPadding) {
+                if (startDrawPadding != 0.dp) {
                     drawLine(
                         axisLineColor,
-                        Offset(xLineStart, 0f),
+                        Offset(startDrawPadding.toPx(), 0f),
                         Offset(xPos, 0f),
                         strokeWidth = axisLineThickness.toPx()
                     )
                 }
 
-                for (index in 0..xAxisSteps) {
+                for (index in 0..steps) {
                     xAxisHeight = drawXAxisLabel(
-                        axisData,
+                        xAxisData,
                         index,
                         xAxisScale,
                         xPos
                     )
                     drawAxisLineWithPointers(
                         xPos,
-                        axisData,
+                        xAxisData,
                         zoomScale,
                         xAxisScale,
-                        index != xAxisSteps
+                        index != steps
                     )
-                    xPos += ((xAxisStepSize.toPx() * (zoomScale * xAxisScale)))
+                    xPos += ((axisStepSize.toPx() * (zoomScale * xAxisScale)))
                 }
             }
         }
@@ -100,7 +98,7 @@ private fun DrawScope.drawAxisLineWithPointers(
     with(axisData) {
         if (axisConfig.isAxisLineRequired) {
             if (canDrawEndLine) {
-                val axisStepWidth = (xAxisStepSize.toPx() * (zoomScale * xAxisScale))
+                val axisStepWidth = (axisStepSize.toPx() * (zoomScale * xAxisScale))
                 drawLine(
                     axisLineColor,
                     Offset(xPos, 0f),
@@ -108,8 +106,7 @@ private fun DrawScope.drawAxisLineWithPointers(
                         Offset((xPos + (axisStepWidth / 2) + axisStepWidth), 0f)
                     } else {
                         Offset(xPos + axisStepWidth, 0f)
-                    },
-                    strokeWidth = axisLineThickness.toPx()
+                    },                    strokeWidth = axisLineThickness.toPx()
                 )
             }
             drawLine(
@@ -135,24 +132,24 @@ private fun DrawScope.drawXAxisLabel(
         textAlign = Paint.Align.LEFT
         typeface = axisData.typeface
     }
-    val xLabel = xLabelData((index * xAxisScale).toInt())
+    val xLabel = labelData((index * xAxisScale).toInt())
     val labelHeight = xLabel.getTextHeight(xAxisTextPaint)
     val labelWidth = xLabel.getTextWidth(xAxisTextPaint)
     calculatedXAxisHeight =
         if (axisConfig.isAxisLineRequired) {
             labelHeight.toDp() + axisLineThickness +
-                    indicatorLineWidth + xLabelAndAxisLinePadding + xBottomPadding
-        } else labelHeight.toDp() + xLabelAndAxisLinePadding
+                    indicatorLineWidth + labelAndAxisLinePadding + axisBottomPadding
+        } else labelHeight.toDp() + labelAndAxisLinePadding
     val ellipsizedText = TextUtils.ellipsize(
         xLabel,
         xAxisTextPaint,
-        xAxisStepSize.toPx(),
+        axisStepSize.toPx(),
         axisConfig.ellipsizeAt
     )
     drawContext.canvas.nativeCanvas.apply {
         val x = xPos - (labelWidth / 2)
-        val y = labelHeight / 2 + indicatorLineWidth.toPx() + xLabelAndAxisLinePadding.toPx()
-        withRotation(xAxisLabelAngle, x, y) {
+        val y = labelHeight / 2 + indicatorLineWidth.toPx() + labelAndAxisLinePadding.toPx()
+        withRotation(axisLabelAngle, x, y) {
             drawText(
                 if (axisConfig.shouldEllipsizeAxisLabel) ellipsizedText.toString() else xLabel,
                 x,
@@ -180,16 +177,15 @@ fun getXAxisScale(
 @Composable
 private fun XAxisPreview() {
     val axisData = AxisData.Builder()
-        .xLabelAndAxisLinePadding(10.dp)
-        .xAxisPos(Gravity.BOTTOM)
+        .labelAndAxisLinePadding(10.dp)
+        .axisPosition(Gravity.BOTTOM)
         .axisLabelFontSize(14.sp)
-        .xLabelData { index -> index.toString() }
+        .labelData { index -> index.toString() }
         .build()
     XAxis(
         modifier = Modifier.height(40.dp),
-        axisData = axisData,
+        xAxisData = axisData,
         xStart = 0f,
-        xLineStart = 0f,
         scrollOffset = 0f,
         zoomScale = 1f,
         chartData = listOf()

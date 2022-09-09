@@ -13,7 +13,7 @@ object DataUtils {
     // T0D0 pass data through the graph component
     fun getLineChartData(listSize: Int, start: Int = 0, maxRange: Int): List<Point> {
         val list = arrayListOf<Point>()
-        for (index in 0..listSize) {
+        for (index in 0 until listSize) {
             list.add(
                 Point(
                     index.toFloat(),
