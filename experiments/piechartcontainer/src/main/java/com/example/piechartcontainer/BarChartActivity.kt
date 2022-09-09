@@ -33,7 +33,6 @@ class BarChartActivity : ComponentActivity() {
                         .bottomPadding(40.dp)
                         .axisLabelAngle(20f)
                         .labelData { index -> barData[index].label }
-                        .shouldAxisStartWithPadding(true)
                         .build()
                     val yAxisData = AxisData.Builder()
                         .steps(yStepSize)
