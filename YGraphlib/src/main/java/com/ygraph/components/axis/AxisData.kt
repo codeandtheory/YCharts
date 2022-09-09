@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
  * @param labelAndAxisLinePadding: Text label padding from Axis
  * @param axisOffset: Drawing offset for axis.
  * @param axisLineThickness: Thickness of yAxis line
- * @param axisTopPadding:  Label offset top padding
+ * @param axisTopPadding: Axis top padding
  * @param axisStartPadding: Axis start padding.
  * @param indicatorLineWidth: Indicator width on Y axis line for showing points
  * @param axisConfig: All config related param to toggle the elements while drawing graph
@@ -29,9 +29,8 @@ import androidx.compose.ui.unit.sp
  * @param axisLabelColor Color of the Y or X axis labels
  * @param backgroundColor Background color of the Y or X components
  * @param typeface The type of font style
- * @param axisBottomPadding: Label offset bottom padding,
+ * @param axisBottomPadding: Axis bottom padding,
  * @param axisLabelAngle: Angle for the axis labels
- * @param axisTopPadding: X Label offset top padding
  * @param shouldAxisStartWithPadding: Used to append a line in front of the Axis
  */
 data class AxisData(
