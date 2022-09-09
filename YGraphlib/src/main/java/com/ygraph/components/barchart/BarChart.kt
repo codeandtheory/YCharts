@@ -54,19 +54,21 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
             val (xMin, xMax) = getXMaxAndMinPoints(points)
             val (_, yMax) = getYMaxAndMinPoints(points)
 
-            val maxElementInYAxis = getMaxElementInYAxis(yMax, axisData.ySteps)
+            val xAxisData = xAxisData.copy(
+                axisStepSize = barWidth + paddingBetweenBars,
+                steps = chartData.size - 1,
+                startDrawPadding = LocalDensity.current.run { columnWidth.toDp() }
+            )
+            val yAxisData =
+                yAxisData.copy(axisBottomPadding = LocalDensity.current.run { rowHeight.toDp() })
+            val maxElementInYAxis = getMaxElementInYAxis(yMax, yAxisData.steps)
 
             if (!showXAxis) {
                 rowHeight = LocalDensity.current.run { DEFAULT_YAXIS_BOTTOM_PADDING.dp.toPx() }
             }
 
-            val axisData = axisData.copy(
-                xAxisStepSize = barWidth + paddingBetweenBars,
-                xAxisSteps = chartData.size - 1,
-                yBottomPadding = LocalDensity.current.run { rowHeight.toDp() }
-            )
-
-            ScrollableCanvasContainer(modifier = modifier,
+            ScrollableCanvasContainer(
+                modifier = modifier,
                 containerBackgroundColor = backgroundColor,
                 calculateMaxDistance = { xZoom ->
                     horizontalGap = horizontalExtraSpace.toPx()
@@ -86,7 +88,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                 onDraw = { scrollOffset, xZoom ->
                     
                     val yBottom = size.height - rowHeight
-                    val yOffset = ((yBottom - axisData.yTopPadding.toPx()) / maxElementInYAxis)
+                    val yOffset = ((yBottom - yAxisData.axisTopPadding.toPx()) / maxElementInYAxis)
                     xOffset =
                         ((barWidth).toPx() + paddingBetweenBars.toPx()) * xZoom
                     val xLeft =
@@ -137,7 +139,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                 drawXAndYAxis = { scrollOffset, xZoom ->
                     if (showXAxis) {
                         XAxis(
-                            axisData = axisData,
+                            xAxisData = xAxisData,
                             modifier = Modifier
                                 .align(Alignment.BottomStart)
                                 .fillMaxWidth()
@@ -154,8 +156,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                             xStart = columnWidth + horizontalGap + LocalDensity.current.run { (barWidth.toPx()) },
                             scrollOffset = scrollOffset,
                             zoomScale = xZoom,
-                            chartData = points,
-                            xLineStart = columnWidth
+                            chartData = points
                         )
                     }
 
@@ -168,7 +169,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                                 .onGloballyPositioned {
                                     columnWidth = it.size.width.toFloat()
                                 },
-                            axisData = axisData
+                            yAxisData = yAxisData
                         )
                     }
                 },
@@ -271,7 +272,7 @@ fun getMaxScrollDistance(
     canvasWidth: Float
 ): Float {
     val xLastPoint =
-        (xMax - xMin) * xOffset + xLeft + columnWidth + paddingRight//+ horizontalGap.value
+        (xMax - xMin) * xOffset + xLeft + columnWidth + paddingRight
     return if (xLastPoint > canvasWidth) {
         xLastPoint - canvasWidth
     } else 0f

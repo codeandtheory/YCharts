@@ -8,13 +8,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.example.piechartcontainer.ui.theme.YGraphsTheme
 import com.ygraph.components.axis.AxisData
 import com.ygraph.components.barchart.BarChart
 import com.ygraph.components.barchart.models.BarChartData
-import com.ygraph.components.common.utils.DataUtils.getBarChartData
 import com.ygraph.components.common.utils.DataUtils.getGradientBarChartData
 
 class BarChartActivity : ComponentActivity() {
@@ -29,21 +27,23 @@ class BarChartActivity : ComponentActivity() {
                 ) {
                     val barData = getGradientBarChartData(50, 50)
                     val yStepSize = 10
-                    val axisData = AxisData.Builder()
-                        .ySteps(yStepSize)
-                        .xAxisSteps(barData.size - 1)
-                        .xBottomPadding(40.dp)
-                        .xAxisLabelAngle(20f)
-                        .yLabelData{ index -> (index * yStepSize).toString() }
-                        .xLabelData{ index -> barData[index].label }
-                        .yLabelAndAxisLinePadding(20.dp)
-                        .yAxisOffset(20.dp)
-                        .shouldXAxisStartWithPadding(true)
+                    val xAxisData = AxisData.Builder()
+                        .axisStepSize(30.dp)
+                        .steps(barData.size - 1)
+                        .bottomPadding(40.dp)
+                        .axisLabelAngle(20f)
+                        .labelData { index -> barData[index].label }
                         .build()
-
+                    val yAxisData = AxisData.Builder()
+                        .steps(yStepSize)
+                        .labelAndAxisLinePadding(20.dp)
+                        .axisOffset(20.dp)
+                        .labelData { index -> (index * yStepSize).toString() }
+                        .build()
                     val barChartData = BarChartData(
                         chartData = barData,
-                        axisData = axisData,
+                        xAxisData = xAxisData,
+                        yAxisData = yAxisData,
                         paddingBetweenBars = 30.dp,
                         showYAxis = true,
                         showXAxis = true,

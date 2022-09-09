@@ -14,6 +14,8 @@ import com.ygraph.components.axis.AxisData
 /**
  * BarChart data class params used in drawing bar graph.
  * @param chartData : List of BarData
+ * @param xAxisData: All the configurations related to X-Axis to be defined here in [AxisData]
+ * @param yAxisData: All the configurations related to Y-Axis to be defined here in [AxisData]
  * @param barWidth: Width of a bar
  * @param cornerRadius: Corner radius for the bars
  * @param paddingBetweenBars: Space between adjacent bars
@@ -30,7 +32,8 @@ import com.ygraph.components.axis.AxisData
  */
 data class BarChartData(
     val chartData: List<BarData>,
-    val axisData: AxisData,
+    val xAxisData: AxisData = AxisData.Builder().build(),
+    val yAxisData: AxisData = AxisData.Builder().build(),
     val barWidth: Dp = 30.dp,
     val cornerRadius: Dp = 4.dp,
     val backgroundColor: Color = Color.White,
