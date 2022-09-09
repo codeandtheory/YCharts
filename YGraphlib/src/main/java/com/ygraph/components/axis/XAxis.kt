@@ -58,10 +58,10 @@ fun XAxis(
                 var xPos = xStart - scrollOffset
 
                 // used in the case of barchart
-                if (initialDrawPadding != 0.dp) {
+                if (startDrawPadding != 0.dp) {
                     drawLine(
                         axisLineColor,
-                        Offset(initialDrawPadding.toPx(), 0f),
+                        Offset(startDrawPadding.toPx(), 0f),
                         Offset(xPos, 0f),
                         strokeWidth = axisLineThickness.toPx()
                     )

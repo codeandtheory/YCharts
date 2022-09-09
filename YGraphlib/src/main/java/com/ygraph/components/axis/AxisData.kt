@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.sp
  * @param typeface The type of font style
  * @param axisBottomPadding: Axis bottom padding,
  * @param axisLabelAngle: Angle for the axis labels
- * @param initialDrawPadding: Padding between Axis and first point on the Axis
+ * @param startDrawPadding: Padding between Axis and first point on the Axis
  */
 data class AxisData(
     val steps: Int,
@@ -52,7 +52,7 @@ data class AxisData(
     val backgroundColor: Color,
     val typeface: Typeface,
     val axisConfig: AxisConfig,
-    val initialDrawPadding: Dp
+    val startDrawPadding: Dp
 ) {
     class Builder {
         private var steps: Int = 1
@@ -72,7 +72,7 @@ data class AxisData(
         private var axisLabelFontSize: TextUnit = 14.sp
         private var axisLineThickness: Dp = 2.dp
         private var axisLabelColor: Color = Color.Black
-        private var initialDrawPadding: Dp = 0.dp
+        private var startDrawPadding: Dp = 0.dp
         private var axisLabelAngle: Float = 0f
 
         fun steps(count: Int) = apply { this.steps = count }
@@ -109,8 +109,8 @@ data class AxisData(
 
         fun axisLabelColor(color: Color) = apply { this.axisLabelColor = color }
 
-        fun initialDrawPadding(padding: Dp) =
-            apply { this.initialDrawPadding = padding }
+        fun startDrawPadding(padding: Dp) =
+            apply { this.startDrawPadding = padding }
 
         fun axisLabelAngle(angle: Float) = apply { this.axisLabelAngle = angle }
 
@@ -133,7 +133,7 @@ data class AxisData(
             backgroundColor,
             typeface,
             axisConfig,
-            initialDrawPadding
+            startDrawPadding
         )
     }
 }
