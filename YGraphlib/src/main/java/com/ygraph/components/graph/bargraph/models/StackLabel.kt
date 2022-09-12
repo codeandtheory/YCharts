@@ -1,4 +1,4 @@
-package com.ygraph.components.barchart.models
+package com.ygraph.components.graph.bargraph.models
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle

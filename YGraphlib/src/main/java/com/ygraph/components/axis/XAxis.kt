@@ -34,7 +34,7 @@ import kotlin.math.ceil
  * @param xStart : Start position of xAxis Points.
  * @param scrollOffset : Offset of delta scrolled position.
  * @param zoomScale : Scale at which zoom transformation being applied.
- * @param chartData : List of data points used in the graph.
+ * @param graphData : List of data points used in the graph.
  */
 @Composable
 fun XAxis(
@@ -43,7 +43,7 @@ fun XAxis(
     xStart: Float,
     scrollOffset: Float,
     zoomScale: Float,
-    chartData: List<Point>
+    graphData: List<Point>
 ) {
     with(xAxisData) {
         var xAxisHeight by remember { mutableStateOf(0.dp) }
@@ -54,7 +54,7 @@ fun XAxis(
                     .height(xAxisHeight)
                     .background(backgroundColor)
             ) {
-                val (_, _, xAxisScale) = getXAxisScale(chartData, steps)
+                val (_, _, xAxisScale) = getXAxisScale(graphData, steps)
                 var xPos = xStart - scrollOffset
 
                 // used in the case of barchart
@@ -188,6 +188,6 @@ private fun XAxisPreview() {
         xStart = 0f,
         scrollOffset = 0f,
         zoomScale = 1f,
-        chartData = listOf()
+        graphData = listOf()
     )
 }

@@ -106,7 +106,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                         xStart = columnWidth,
                         scrollOffset = scrollOffset,
                         zoomScale = xZoom,
-                        chartData = line.dataPoints
+                        graphData = line.dataPoints
                     )
                 },
                 onDraw = { scrollOffset, xZoom ->

@@ -1,7 +1,8 @@
-package com.ygraph.components.barchart
+package com.ygraph.components.graph.bargraph
 
 import com.ygraph.components.common.model.Point
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class BarChartTest{

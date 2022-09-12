@@ -1,4 +1,4 @@
-package com.ygraph.components.barchart
+package com.ygraph.components.graph.bargraph
 
 
 import androidx.compose.foundation.background
@@ -15,7 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -24,24 +24,29 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
-import com.ygraph.components.barchart.models.*
-import com.ygraph.components.barchart.utils.BarChartConstants.DEFAULT_YAXIS_BOTTOM_PADDING
-import com.ygraph.components.common.extensions.*
+import com.ygraph.components.common.extensions.RowClip
+import com.ygraph.components.common.extensions.getMaxElementInYAxis
+import com.ygraph.components.common.extensions.isTapped
 import com.ygraph.components.common.model.Point
+import com.ygraph.components.common.utils.GraphConstants.DEFAULT_YAXIS_BOTTOM_PADDING
+import com.ygraph.components.graph.bargraph.models.Bar
+import com.ygraph.components.graph.bargraph.models.GroupBarGraphData
+import com.ygraph.components.graph.bargraph.models.SelectionHighlightData
 import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
 
 
 /**
  *
- * BarChart compose method for drawing group bar graph.
+ * GroupBarGraph compose method for drawing group bar graph.
  * @param modifier: All modifier related properties
- * @param groupBarChartData : All data needed to group bar chart
- * @see com.ygraph.components.barchart.models.GroupBarChartData Data class to save all params related to Bar chart
+ * @param groupBarGraphData : All data needed to group bar graph
+ * @see com.ygraph.components.graph.bargraph.models.GroupBarGraphData Data class to save all
+ * params related to Bar Graph
  */
 @Composable
-fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
+fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
     Column(modifier) {
-        with(groupBarChartData) {
+        with(groupBarGraphData) {
             var visibility by remember { mutableStateOf(false) }
             var identifiedPoint by remember { mutableStateOf(Bar(0f, "")) }
             var xOffset by remember { mutableStateOf(0f) }
@@ -116,8 +121,8 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                                     Offset(drawOffset.x + insideOffset, drawOffset.y)
 
                                 // drawing each individual bars
-                                drawGroupBarChart(
-                                    groupBarChartData,
+                                drawGroupBarGraph(
+                                    groupBarGraphData,
                                     individualOffset,
                                     height,
                                     subIndex
@@ -162,7 +167,7 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                                     height,
                                     groupSeparatorConfig.separatorWidth.toPx(),
                                     groupSeparatorConfig.separatorColor,
-                                    groupBarChartData
+                                    groupBarGraphData
                                 )
                             }
                         }
@@ -174,7 +179,7 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                                 dragLocks,
                                 visibility,
                                 identifiedPoint,
-                                groupBarChartData,
+                                groupBarGraphData,
                                 isTapped,
                                 columnWidth,
                                 yBottom,
@@ -208,7 +213,7 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                                 xStart = columnWidth + horizontalGap + LocalDensity.current.run { (barWidth.toPx() * groupingSize) / 2 },
                                 scrollOffset = scrollOffset,
                                 zoomScale = xZoom,
-                                chartData = points,
+                                graphData = points,
                             )
                         }
 
@@ -243,7 +248,7 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                         ),
                         columns = GridCells.Fixed(stackLabelConfig.gridColumnCount)
                     ) {
-                        items(groupBarChartData.stackLabelConfig.stackLabelList) {
+                        items(groupBarGraphData.stackLabelConfig.stackLabelList) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Box(
                                     modifier = Modifier
@@ -288,27 +293,27 @@ private fun DrawScope.drawGroupHighlightText(
 /**
  *
  * Used to draw the individual bars
- * @param barChartData : all meta data related to the bar graph
+ * @param barGraphData : all meta data related to the bar graph
  * @param drawOffset: topLeft offset for the drawing the bar
- * @param height : height of the bar chart
+ * @param height : height of the bar graph
  * @param subIndex : Index of the bar
  */
-private fun DrawScope.drawGroupBarChart(
-    barChartData: GroupBarChartData, drawOffset: Offset,
+private fun DrawScope.drawGroupBarGraph(
+    barGraphData: GroupBarGraphData, drawOffset: Offset,
     height: Float,
     subIndex: Int
 ) {
-    val color = barChartData.stackLabelConfig.stackLabelList[subIndex].color
+    val color = barGraphData.stackLabelConfig.stackLabelList[subIndex].color
     drawRoundRect(
         color = color,
         topLeft = drawOffset,
-        size = Size(barChartData.barWidth.toPx(), height),
+        size = Size(barGraphData.barWidth.toPx(), height),
         cornerRadius = CornerRadius(
-            barChartData.cornerRadius.toPx(),
-            barChartData.cornerRadius.toPx()
+            barGraphData.cornerRadius.toPx(),
+            barGraphData.cornerRadius.toPx()
         ),
-        style = barChartData.barDrawStyle,
-        blendMode = barChartData.barBlendMode
+        style = barGraphData.barDrawStyle,
+        blendMode = barGraphData.barBlendMode
     )
 }
 
@@ -319,7 +324,7 @@ private fun DrawScope.drawGroupBarChart(
  * @param dragLocks : Mutable map of BarData and drawOffset.
  * @param visibility : Flag to control the visibility of highlighted text.
  * @param identifiedPoint: selected bar data.
- * @param barChartData: Data related to the bar chart.
+ * @param barGraphData: Data related to the bar graph.
  * @param isDragging : Boolean flag for the dragging status.
  * @param columnWidth : Width of the Y axis.
  * @param yBottom : Bottom padding.
@@ -330,7 +335,7 @@ private fun DrawScope.highlightGroupBar(
     dragLocks: MutableMap<Int, Pair<Bar, Offset>>,
     visibility: Boolean,
     identifiedPoint: Bar,
-    barChartData: GroupBarChartData,
+    barGraphData: GroupBarGraphData,
     isDragging: Boolean,
     columnWidth: Float,
     yBottom: Float,
@@ -346,16 +351,16 @@ private fun DrawScope.highlightGroupBar(
         }
 
         // Draw highlight bar on selection
-        if (barChartData.selectionHighlightData?.isHighlightBarRequired == true) {
+        if (barGraphData.selectionHighlightData?.isHighlightBarRequired == true) {
             dragLocks.values.firstOrNull()?.let { (barData, location) ->
                 val (xPoint, yPoint) = location
                 if (xPoint >= columnWidth && xPoint <= size.width - paddingRight.toPx()) {
                     val y1 = yBottom - ((barData.value - 0) * yOffset)
-                    barChartData.selectionHighlightData.drawHighlightBar(
+                    barGraphData.selectionHighlightData.drawHighlightBar(
                         this,
                         xPoint,
                         yPoint,
-                        barChartData.barWidth.toPx(),
+                        barGraphData.barWidth.toPx(),
                         yBottom - y1
                     )
                 }
@@ -364,12 +369,12 @@ private fun DrawScope.highlightGroupBar(
     }
 
     val selectedOffset = dragLocks.values.firstOrNull()?.second
-    if (visibility && selectedOffset != null && barChartData.selectionHighlightData != null) {
+    if (visibility && selectedOffset != null && barGraphData.selectionHighlightData != null) {
         drawGroupHighlightText(
             mutableIdentifiedPoint,
             selectedOffset,
-            barChartData.barWidth,
-            barChartData.selectionHighlightData
+            barGraphData.barWidth,
+            barGraphData.selectionHighlightData
         )
     }
     return mutableIdentifiedPoint
@@ -418,7 +423,7 @@ fun getGroupBarDrawOffset(
 /**
  *
  * Used to draw the group separator
- * @param barChartData: GroupBarChartData
+ * @param barGraphData: [GroupBarGraphData]
  * @param drawOffset: topLeft offset for the drawing the separator
  * @param height : height of the separator
  * @param width : width of the separator
@@ -429,12 +434,12 @@ private fun DrawScope.drawGroupSeparator(
     height: Float,
     width: Float,
     color: Color,
-    barChartData: GroupBarChartData,
+    barGraphData: GroupBarGraphData,
 ) {
     drawRoundRect(
         color = color,
         topLeft = drawOffset,
         size = Size(width, height),
-        blendMode = barChartData.groupSeparatorConfig.separatorBlendMode
+        blendMode = barGraphData.groupSeparatorConfig.separatorBlendMode
     )
 }
