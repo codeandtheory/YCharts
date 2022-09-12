@@ -1,4 +1,4 @@
-package com.ygraph.components.barchart.models
+package com.ygraph.components.graph.bargraph.models
 
 import android.graphics.Paint
 import android.graphics.Typeface
@@ -113,5 +113,49 @@ data class SelectionHighlightData(
             ),
             style = Stroke(width = highlightBarStrokeWidth.toPx())
         )
+    },
+
+    val groupBarPopUpLabel: (String, Float) -> (String) = { name, value ->
+        val xLabel = "Name : $name "
+        val yLabel = "Value : ${String.format("%.2f", value)}"
+        "$xLabel $yLabel"
+    },
+    
+
+    val drawGroupBarPopUp: DrawScope.(Offset, Bar, Float) -> Unit = { selectedOffset, identifiedPoint, centerPointOfBar ->
+        val highlightTextPaint = TextPaint().apply {
+            textSize = highlightTextSize.toPx()
+            color = highlightTextColor.toArgb()
+            textAlign = highlightLabelAlignment
+            typeface = highlightTextTypeface
+        }
+        val label = groupBarPopUpLabel(identifiedPoint.name, identifiedPoint.value)
+        drawContext.canvas.nativeCanvas.apply {
+            val background = getTextBackgroundRect(
+                centerPointOfBar,
+                selectedOffset.y,
+                label,
+                highlightTextPaint
+            )
+            drawRoundRect(
+                color = highlightTextBackgroundColor,
+                topLeft = Offset(
+                    background.left.toFloat(),
+                    background.top.toFloat() - highlightTextOffset.toPx()
+                ),
+                size = Size(background.width().toFloat(), background.height().toFloat()),
+                alpha = highlightTextBackgroundAlpha,
+                cornerRadius = highlightPopUpCornerRadius,
+                colorFilter = backgroundColorFilter,
+                blendMode = backgroundBlendMode,
+                style = backgroundStyle
+            )
+            drawText(
+                label,
+                centerPointOfBar,
+                selectedOffset.y - highlightTextOffset.toPx(),
+                highlightTextPaint
+            )
+        }
     }
 )

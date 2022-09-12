@@ -1,4 +1,4 @@
-package com.ygraph.components.barchart.models
+package com.ygraph.components.graph.bargraph.models
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
@@ -7,13 +7,14 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Fill
-import com.ygraph.components.axis.AxisConfig
 import com.ygraph.components.axis.AxisData
 
 
 /**
- * BarChart data class params used in drawing bar graph.
- * @param chartData : List of BarData
+ * BarGraph data class params used in drawing bar graph.
+ * @param graphData : List of BarData
+ * @param xAxisData: All the configurations related to X-Axis to be defined here in [AxisData]
+ * @param yAxisData: All the configurations related to Y-Axis to be defined here in [AxisData]
  * @param barWidth: Width of a bar
  * @param cornerRadius: Corner radius for the bars
  * @param paddingBetweenBars: Space between adjacent bars
@@ -26,11 +27,11 @@ import com.ygraph.components.axis.AxisData
  * @param tapPadding: Extra padding area for tapping
  * @param showXAxis: Boolean Flag to enable/disable X axis
  * @param showYAxis: Boolean Flag to enable/disable Y axis
- * @param axisConfig: All config related param to toggle the elements while drawing graph
  */
-data class BarChartData(
-    val chartData: List<BarData>,
-    val axisData: AxisData,
+data class BarGraphData(
+    val graphData: List<BarData>,
+    val xAxisData: AxisData = AxisData.Builder().build(),
+    val yAxisData: AxisData = AxisData.Builder().build(),
     val barWidth: Dp = 30.dp,
     val cornerRadius: Dp = 4.dp,
     val backgroundColor: Color = Color.White,
@@ -45,5 +46,4 @@ data class BarChartData(
     val tapPadding: Dp = 10.dp,
     val showYAxis: Boolean = true,
     val showXAxis: Boolean = true,
-    val axisConfig: AxisConfig = AxisConfig()
 )

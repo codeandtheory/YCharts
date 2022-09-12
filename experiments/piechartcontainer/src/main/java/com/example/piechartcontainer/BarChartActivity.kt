@@ -8,14 +8,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.example.piechartcontainer.ui.theme.YGraphsTheme
 import com.ygraph.components.axis.AxisData
-import com.ygraph.components.barchart.BarChart
-import com.ygraph.components.barchart.models.BarChartData
-import com.ygraph.components.common.utils.DataUtils.getBarChartData
-import com.ygraph.components.common.utils.DataUtils.getGradientBarChartData
+import com.ygraph.components.graph.bargraph.GroupBarGraph
+import com.ygraph.components.graph.bargraph.models.GroupBarGraphData
+import com.ygraph.components.graph.bargraph.models.StackLabelConfig
+import com.ygraph.components.common.utils.DataUtils
+import com.ygraph.components.common.utils.DataUtils.getGroupBarChartData
 
 class BarChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,29 +27,33 @@ class BarChartActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    val barData = getGradientBarChartData(50, 50)
+                    val barSize = 3
+                    val groupBarData = getGroupBarChartData(50, 50, barSize)
                     val yStepSize = 10
-                    val axisData = AxisData.Builder()
-                        .ySteps(yStepSize)
-                        .xAxisSteps(barData.size - 1)
-                        .xBottomPadding(40.dp)
-                        .xAxisLabelAngle(20f)
-                        .yLabelData{ index -> (index * yStepSize).toString() }
-                        .xLabelData{ index -> barData[index].label }
-                        .yLabelAndAxisLinePadding(20.dp)
-                        .yAxisOffset(20.dp)
-                        .shouldXAxisStartWithPadding(true)
+                    val xAxisData = AxisData.Builder()
+                        .axisStepSize(30.dp)
+                        .steps(groupBarData.size - 1)
+                        .bottomPadding(40.dp)
+                        .labelData { index -> groupBarData[index].label }
                         .build()
-
-                    val barChartData = BarChartData(
-                        chartData = barData,
-                        axisData = axisData,
-                        paddingBetweenBars = 30.dp,
-                        showYAxis = true,
-                        showXAxis = true,
-                        isGradientEnabled = true
+                    val yAxisData = AxisData.Builder()
+                        .steps(yStepSize)
+                        .labelAndAxisLinePadding(20.dp)
+                        .axisOffset(20.dp)
+                        .labelData { index -> (index * (50 / yStepSize)).toString() }
+                        .build()
+                    val groupBarGraphData = GroupBarGraphData(
+                        groupedBarList = groupBarData,
+                        xAxisData = xAxisData,
+                        yAxisData = yAxisData,
+                        stackLabelConfig = StackLabelConfig(
+                            stackLabelList = DataUtils.getStackLabelData(barSize)
+                        )
                     )
-                    BarChart(modifier = Modifier.height(600.dp), barChartData = barChartData)
+                    GroupBarGraph(
+                        modifier = Modifier.height(600.dp),
+                        groupBarGraphData = groupBarGraphData
+                    )
                 }
             }
         }

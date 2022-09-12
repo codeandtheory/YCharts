@@ -3,7 +3,10 @@ package com.app.ygraphs.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -16,9 +19,9 @@ import com.app.ygraphs.R
 import com.app.ygraphs.ui.compositions.AppBarWithBackButton
 import com.app.ygraphs.ui.theme.YGraphsTheme
 import com.ygraph.components.axis.AxisData
-import com.ygraph.components.barchart.BarChart
-import com.ygraph.components.barchart.models.BarChartData
-import com.ygraph.components.barchart.models.SelectionHighlightData
+import com.ygraph.components.graph.bargraph.BarGraph
+import com.ygraph.components.graph.bargraph.models.BarGraphData
+import com.ygraph.components.graph.bargraph.models.SelectionHighlightData
 import com.ygraph.components.common.utils.DataUtils
 
 class BarChartActivity : ComponentActivity() {
@@ -64,29 +67,30 @@ private fun BarChart1() {
     val barData = DataUtils.getBarChartData(50, maxRange)
     val yStepSize = 10
 
-    val axisData = AxisData.Builder()
-        .ySteps(yStepSize)
-        .xAxisSteps(barData.size - 1)
-        .xBottomPadding(40.dp)
-        .xAxisLabelAngle(20f)
-        .yLabelData { index -> (index * (maxRange / yStepSize)).toString() }
-        .xLabelData { index -> barData[index].label }
-        .yLabelAndAxisLinePadding(20.dp)
-        .yAxisOffset(20.dp)
-        .shouldXAxisStartWithPadding(true)
+    val xAxisData = AxisData.Builder()
+        .axisStepSize(30.dp)
+        .steps(barData.size - 1)
+        .bottomPadding(40.dp)
+        .axisLabelAngle(20f)
+        .labelData { index -> barData[index].label }
         .build()
-
-
-    val barChartData = BarChartData(
-        chartData = barData,
-        axisData = axisData,
+    val yAxisData = AxisData.Builder()
+        .steps(yStepSize)
+        .labelAndAxisLinePadding(20.dp)
+        .axisOffset(20.dp)
+        .labelData { index -> (index * (maxRange / yStepSize)).toString() }
+        .build()
+    val barGraphData = BarGraphData(
+        graphData = barData,
+        xAxisData = xAxisData,
+        yAxisData = yAxisData,
         paddingBetweenBars = 20.dp,
         barWidth = 25.dp,
         showYAxis = true,
         showXAxis = true,
         horizontalExtraSpace = 10.dp,
     )
-    BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
+    BarGraph(modifier = Modifier.height(350.dp), barGraphData = barGraphData)
 }
 
 @Composable
@@ -94,21 +98,23 @@ private fun BarChart2() {
     val maxRange = 100
     val barData = DataUtils.getGradientBarChartData(50, 100)
     val yStepSize = 10
-
-    val axisData = AxisData.Builder()
-        .ySteps(yStepSize)
-        .xAxisSteps(barData.size - 1)
-        .xBottomPadding(40.dp)
-        .xAxisLabelAngle(20f)
-        .yLabelData { index -> (index * (maxRange / yStepSize)).toString() }
-        .xLabelData { index -> barData[index].label }
-        .yLabelAndAxisLinePadding(20.dp)
-        .yAxisOffset(20.dp)
-        .shouldXAxisStartWithPadding(true)
+    val xAxisData = AxisData.Builder()
+        .axisStepSize(30.dp)
+        .steps(barData.size - 1)
+        .bottomPadding(40.dp)
+        .axisLabelAngle(20f)
+        .labelData { index -> barData[index].label }
         .build()
-    val barChartData = BarChartData(
-        chartData = barData,
-        axisData = axisData,
+    val yAxisData = AxisData.Builder()
+        .steps(yStepSize)
+        .labelAndAxisLinePadding(20.dp)
+        .axisOffset(20.dp)
+        .labelData { index -> (index * (maxRange / yStepSize)).toString() }
+        .build()
+    val barGraphData = BarGraphData(
+        graphData = barData,
+        xAxisData = xAxisData,
+        yAxisData = yAxisData,
         paddingBetweenBars = 20.dp,
         barWidth = 35.dp,
         showYAxis = true,
@@ -121,6 +127,6 @@ private fun BarChart2() {
             popUpLabel = { _, y -> " Value : $y " }
         )
     )
-    BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
+    BarGraph(modifier = Modifier.height(350.dp), barGraphData = barGraphData)
 }
 

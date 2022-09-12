@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.app.chartcontainer.ui.theme.YGraphsTheme
 import com.ygraph.components.axis.AxisData
 import com.ygraph.components.axis.XAxis
@@ -66,15 +65,14 @@ private fun ScrollableContainer() {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Start
         ) {
-            val axisData = AxisData.Builder()
-                .ySteps(5)
-                .yBottomPadding(32.5.dp)
-                .axisLabelFontSize(14.sp)
-                .yLabelData { index -> index.toString() }
-                .xLabelData { index -> index.toString() }
-                .yLabelAndAxisLinePadding(20.dp)
-                .yAxisOffset(20.dp)
-                .yLabelData { index -> "$index" }
+            val xAxisData = AxisData.Builder()
+                .axisStepSize(30.dp)
+                .steps(10)
+                .labelData { i -> i.toString() }
+                .build()
+            val yAxisData = AxisData.Builder()
+                .steps(5)
+                .labelData { i -> (i * 20).toString() }
                 .build()
             ScrollableCanvasContainer(
                 modifier = Modifier
@@ -89,10 +87,10 @@ private fun ScrollableContainer() {
                             .onGloballyPositioned {
                                 columnWidth.value = it.size.width.toFloat()
                             },
-                        axisData = axisData
+                        yAxisData = yAxisData
                     )
                     XAxis(
-                        axisData = axisData,
+                        xAxisData = xAxisData,
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
@@ -100,8 +98,7 @@ private fun ScrollableContainer() {
                         xStart = columnWidth.value,
                         scrollOffset = scrollOffset,
                         zoomScale = xZoom,
-                        chartData = getLineChartData(100, 100),
-                        xLineStart = 0f
+                        graphData = getLineChartData(100, 100)
                     )
                 },
                 onDraw = { _, _ ->

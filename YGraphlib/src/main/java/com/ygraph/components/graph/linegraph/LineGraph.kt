@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
-import com.ygraph.components.axis.AxisData
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
 import com.ygraph.components.axis.getXAxisScale
@@ -51,38 +50,23 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
             var selectionTextVisibility by remember { mutableStateOf(false) }
             var identifiedPoint by remember { mutableStateOf(Point(0f, 0f)) }
 
-            val axisData = AxisData.Builder()
-                .ySteps(ySteps)
-                .xAxisStepSize(xStepSize)
-                .xAxisPos(xAxisPos)
-                .yAxisPos(yAxisPos)
-                .yBottomPadding(LocalDensity.current.run { rowHeight.toDp() })
-                .axisLabelFontSize(axisLabelFontSize)
-                .yLabelData(yAxisLabelData)
-                .xLabelData(xAxisLabelData)
-                .yLabelAndAxisLinePadding(yLabelAndAxisLinePadding)
-                .yAxisOffset(yAxisOffset)
-                .xAxisSteps(xAxisSteps - 1)
-                .yTopPadding(paddingTop)
-                .xAxisLabelAngle(xAxisLabelAngle)
-                .xBottomPadding(bottomPadding)
-                .axisLineColor(axisLineColor)
-                .axisLabelColor(axisLabelColor)
-                .axisLineThickness(axisLineThickness)
-                .indicatorLineWidth(indicatorLineWidth)
-                .typeFace(typeface)
-                .build()
+            // Update must required values
+            val xAxisData = xAxisData.copy(axisBottomPadding = bottomPadding)
+            val yAxisData = yAxisData.copy(
+                axisBottomPadding = LocalDensity.current.run { rowHeight.toDp() },
+                axisTopPadding = paddingTop
+            )
 
-            val (xMin, xMax, xAxisScale) = getXAxisScale(line.dataPoints, axisData.xAxisSteps)
-            val (yMin, yMax, yAxisScale) = getYAxisScale(line.dataPoints, axisData.ySteps)
+            val (xMin, xMax, xAxisScale) = getXAxisScale(line.dataPoints, xAxisData.steps)
+            val (yMin, _, yAxisScale) = getYAxisScale(line.dataPoints, yAxisData.steps)
             val maxElementInYAxis =
-                getMaxElementInYAxis(yAxisScale, axisData.ySteps)
+                getMaxElementInYAxis(yAxisScale, yAxisData.steps)
 
             ScrollableCanvasContainer(
                 modifier = modifier,
                 calculateMaxDistance = { xZoom ->
                     // horizontalGap.value = lineGraphData.horizontalExtraSpace.toPx()
-                    xOffset = axisData.xAxisStepSize.toPx() * xZoom
+                    xOffset = xAxisData.axisStepSize.toPx() * xZoom
                     getMaxScrollDistance(
                         columnWidth,
                         xMax,
@@ -93,6 +77,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                         containerPaddingEnd.toPx()
                     )
                 },
+                containerBackgroundColor = backgroundColor,
                 isPinchZoomEnabled = isZoomAllowed,
                 drawXAndYAxis = { scrollOffset, xZoom ->
                     YAxis(
@@ -101,10 +86,10 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                             .onGloballyPositioned {
                                 columnWidth = it.size.width.toFloat()
                             },
-                        axisData = axisData
+                        yAxisData = yAxisData
                     )
                     XAxis(
-                        axisData = axisData,
+                        xAxisData = xAxisData,
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
@@ -121,13 +106,13 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                         xStart = columnWidth,
                         scrollOffset = scrollOffset,
                         zoomScale = xZoom,
-                        chartData = line.dataPoints
+                        graphData = line.dataPoints
                     )
                 },
                 onDraw = { scrollOffset, xZoom ->
                     val yBottom = size.height - rowHeight
                     val yOffset = ((yBottom - paddingTop.toPx()) / maxElementInYAxis)
-                    xOffset = axisData.xAxisStepSize.toPx() * xZoom
+                    xOffset = xAxisData.axisStepSize.toPx() * xZoom
                     val xLeft = columnWidth // To add extra space if needed
                     val pointsData = getMappingPointsToGraph(
                         lineGraphData.line.dataPoints,
@@ -146,14 +131,15 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                     gridLines?.let {
                         drawGridLines(
                             yBottom,
-                            axisData.yTopPadding.toPx(),
-                            axisData,
+                            yAxisData.axisTopPadding.toPx(),
                             xLeft,
                             paddingRight,
                             scrollOffset,
                             pointsData.size,
                             xZoom,
                             xAxisScale,
+                            yAxisData.steps,
+                            xAxisData.axisStepSize,
                             it
                         )
                     }
