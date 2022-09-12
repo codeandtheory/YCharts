@@ -1,4 +1,4 @@
-package com.ygraph.components.barchart.models
+package com.ygraph.components.graph.bargraph.models
 
 import androidx.compose.ui.graphics.Color
 import com.ygraph.components.common.model.Point

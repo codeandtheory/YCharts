@@ -11,9 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.piechartcontainer.ui.theme.YGraphsTheme
 import com.ygraph.components.axis.AxisData
-import com.ygraph.components.barchart.GroupBarChart
-import com.ygraph.components.barchart.models.GroupBarChartData
-import com.ygraph.components.barchart.models.StackLabelConfig
+import com.ygraph.components.graph.bargraph.GroupBarGraph
+import com.ygraph.components.graph.bargraph.models.GroupBarGraphData
+import com.ygraph.components.graph.bargraph.models.StackLabelConfig
 import com.ygraph.components.common.utils.DataUtils
 import com.ygraph.components.common.utils.DataUtils.getGroupBarChartData
 
@@ -42,7 +42,7 @@ class BarChartActivity : ComponentActivity() {
                         .axisOffset(20.dp)
                         .labelData { index -> (index * (50 / yStepSize)).toString() }
                         .build()
-                    val groupBarChartData = GroupBarChartData(
+                    val groupBarGraphData = GroupBarGraphData(
                         groupedBarList = groupBarData,
                         xAxisData = xAxisData,
                         yAxisData = yAxisData,
@@ -50,9 +50,9 @@ class BarChartActivity : ComponentActivity() {
                             stackLabelList = DataUtils.getStackLabelData(barSize)
                         )
                     )
-                    GroupBarChart(
+                    GroupBarGraph(
                         modifier = Modifier.height(600.dp),
-                        groupBarChartData = groupBarChartData
+                        groupBarGraphData = groupBarGraphData
                     )
                 }
             }

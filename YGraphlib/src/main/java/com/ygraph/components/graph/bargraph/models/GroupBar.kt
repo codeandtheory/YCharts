@@ -1,4 +1,4 @@
-package com.ygraph.components.barchart.models
+package com.ygraph.components.graph.bargraph.models
 
 data class GroupBar(val label: String, val barList: List<Bar>) {
     val yMax: Float

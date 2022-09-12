@@ -1,10 +1,9 @@
 package com.ygraph.components.common.utils
 
 import androidx.compose.ui.graphics.Color
-import com.ygraph.components.barchart.models.*
-import com.ygraph.components.barchart.models.BarData
-import com.ygraph.components.barchart.models.GroupBar
-import com.ygraph.components.barchart.models.GroupBarChartData
+import com.ygraph.components.graph.bargraph.models.*
+import com.ygraph.components.graph.bargraph.models.BarData
+import com.ygraph.components.graph.bargraph.models.GroupBar
 import com.ygraph.components.common.model.Point
 import com.ygraph.components.piechart.models.PieChartData
 import kotlin.random.Random

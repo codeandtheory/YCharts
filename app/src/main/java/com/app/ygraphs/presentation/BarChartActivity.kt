@@ -19,9 +19,9 @@ import com.app.ygraphs.R
 import com.app.ygraphs.ui.compositions.AppBarWithBackButton
 import com.app.ygraphs.ui.theme.YGraphsTheme
 import com.ygraph.components.axis.AxisData
-import com.ygraph.components.barchart.BarChart
-import com.ygraph.components.barchart.models.BarChartData
-import com.ygraph.components.barchart.models.SelectionHighlightData
+import com.ygraph.components.graph.bargraph.BarGraph
+import com.ygraph.components.graph.bargraph.models.BarGraphData
+import com.ygraph.components.graph.bargraph.models.SelectionHighlightData
 import com.ygraph.components.common.utils.DataUtils
 
 class BarChartActivity : ComponentActivity() {
@@ -80,8 +80,8 @@ private fun BarChart1() {
         .axisOffset(20.dp)
         .labelData { index -> (index * (maxRange / yStepSize)).toString() }
         .build()
-    val barChartData = BarChartData(
-        chartData = barData,
+    val barGraphData = BarGraphData(
+        graphData = barData,
         xAxisData = xAxisData,
         yAxisData = yAxisData,
         paddingBetweenBars = 20.dp,
@@ -90,7 +90,7 @@ private fun BarChart1() {
         showXAxis = true,
         horizontalExtraSpace = 10.dp,
     )
-    BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
+    BarGraph(modifier = Modifier.height(350.dp), barGraphData = barGraphData)
 }
 
 @Composable
@@ -111,8 +111,8 @@ private fun BarChart2() {
         .axisOffset(20.dp)
         .labelData { index -> (index * (maxRange / yStepSize)).toString() }
         .build()
-    val barChartData = BarChartData(
-        chartData = barData,
+    val barGraphData = BarGraphData(
+        graphData = barData,
         xAxisData = xAxisData,
         yAxisData = yAxisData,
         paddingBetweenBars = 20.dp,
@@ -127,6 +127,6 @@ private fun BarChart2() {
             popUpLabel = { _, y -> " Value : $y " }
         )
     )
-    BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
+    BarGraph(modifier = Modifier.height(350.dp), barGraphData = barGraphData)
 }
 
