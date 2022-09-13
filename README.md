@@ -78,5 +78,99 @@ Let's see how we can use the graph components and style them with available cust
     <p> Line graph looks like this!</p>
     </div>
     </figure>
-   
+
 2. **Bar Graph:**
+   * Create list of barGraphData using the random generator extension and  `BarData` data class
+
+     ```
+     val barGraphData = DataUtils.getBarChartData(barGraphListSize, maxRange)
+     ```
+
+   * Initialize X and Y Axis builders using the `AxisData` data class.
+   ```
+        val xAxisData = AxisData.Builder()
+        .axisStepSize(30.dp)
+        .steps(barGraphData.size - 1)
+        .bottomPadding(40.dp)
+        .axisLabelAngle(20f)
+        .labelData { index -> barData[index].label }
+        .build()
+      
+     val yAxisData = AxisData.Builder()
+        .steps(yStepSize)
+        .labelAndAxisLinePadding(20.dp)
+        .axisOffset(20.dp)
+        .labelData { index -> (index * (maxRange / yStepSize)).toString() }
+        .build()
+   ```
+   * Initialize the Bar graph data with axis and other line related styling using `BarGraphData`
+     data class.
+   ```
+    val barGraphData = BarGraphData(
+        graphData = barGraphData,
+        xAxisData = xAxisData,
+        yAxisData = yAxisData,
+        paddingBetweenBars = 20.dp,
+        barWidth = 25.dp
+    )
+   ```
+   * Last, use the Bar Graph Component to render the bar graph with the above input params.
+   ``` 
+   BarGraph(modifier = Modifier.height(350.dp), barGraphData = barGraphData)
+   ```
+   <figure>
+   <div align = "center">
+    <img width=347 src="https://user-images.githubusercontent.com/107846675/189836621-eeac8181-f7de-491e-8fd8-7e1276e2fb9f.png" />
+    <p> Bar graph looks like this!</p>
+    </div>
+    </figure>
+
+3. **Grouped Bar Graph:**
+   * Create list of grouped combinations of bar graph data using the random generator extension
+     and  `GroupBarGraphData` data class
+
+     ```
+     val groupBarData = DataUtils.getGroupBarChartData(barGraphListSize, maxRange, eachGroupBarSize)
+     ```
+
+   * Initialize X and Y Axis builders using the `AxisData` data class.
+   ```
+           val xAxisData = AxisData.Builder()
+               .axisStepSize(30.dp)
+               .steps(groupBarData.size - 1)
+               .bottomPadding(40.dp)
+               .labelData { index -> groupBarData[index].label }
+               .build()
+      
+    val yAxisData = AxisData.Builder()
+               .steps(yStepSize)
+               .labelAndAxisLinePadding(20.dp)
+               .axisOffset(20.dp)
+               .labelData { index -> (index * (maxRange / yStepSize)).toString() }
+               .build()
+   ```
+   * Initialize the group bar graph data with axis and other line related styling
+     using `GroupBarGraphData`
+     data class.
+   ```
+     val groupBarGraphData = GroupBarGraphData(
+                        groupedBarList = groupBarData,
+                        xAxisData = xAxisData,
+                        yAxisData = yAxisData,
+                        stackLabelConfig = StackLabelConfig(
+                            stackLabelList = DataUtils.getStackLabelData(barSize)
+                        )
+                    )
+   ```
+   * Use the Group Bar Graph Component to render the bar graph with the above input params.
+   ``` 
+   GroupBarGraph(modifier = Modifier.height(300.dp), groupBarGraphData = groupBarGraphData)
+   ```
+   <figure>
+   <div align = "center">
+    <img width=338 src="https://user-images.githubusercontent.com/107846675/189845009-6ef2ccc6-3c75-446e-9273-fe1b1e1e94d0.png" />
+    <p> Grouped Bar graph looks like this!</p>
+    </div>
+    </figure>
+
+4. **Pie Chart:**
