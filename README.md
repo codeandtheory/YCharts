@@ -259,9 +259,5 @@ Let's see how we can use the graph components and style them with available cust
     </div>
     </figure>
 
-## Further reading
-
-YGraphs offers rich options for customization and an extensible API. The [documentation](https://www.notion.so/ymedialabs/Android-Compose-Charts-12b41505a7d84bff91a009cc88e021ec) is available
-to help you learn more about it.
 
 
