@@ -63,7 +63,8 @@ Let's see how we can use the graph components and style them with available cust
         gridLines = GridLines()
     )
    ```
-   * Finally use the Line Graph Component to render the line graph with the above input params.
+   * Finally use the _**`LineGraph`**_ Component to render the line graph with the above input
+     params.
    ``` 
    LineGraph(
         modifier = Modifier
@@ -114,7 +115,7 @@ Let's see how we can use the graph components and style them with available cust
         barWidth = 25.dp
     )
    ```
-   * Last, use the Bar Graph Component to render the bar graph with the above input params.
+   * Last, use the _**`BarGraph`**_ Component to render the bar graph with the above input params.
    ``` 
    BarGraph(modifier = Modifier.height(350.dp), barGraphData = barGraphData)
    ```
@@ -162,7 +163,7 @@ Let's see how we can use the graph components and style them with available cust
                         )
                     )
    ```
-   * Use the Group Bar Graph Component to render the bar graph with the above input params.
+   * Use the _**`GroupBarGraph`**_ Component to render the bar graph with the above input params.
    ``` 
    GroupBarGraph(modifier = Modifier.height(300.dp), groupBarGraphData = groupBarGraphData)
    ```
@@ -174,3 +175,93 @@ Let's see how we can use the graph components and style them with available cust
     </figure>
 
 4. **Pie Chart:**
+   * Create list of slices using the `PieChartData` data class.
+
+    ```
+       val pieChartData = PieChartData(
+        slices = listOf(
+            PieChartData.Slice("SciFi", 65f, Color(0xFF333333)),
+            PieChartData.Slice("Comedy", 35f, Color(0xFF666a86)),
+            PieChartData.Slice("Drama", 10f, Color(0xFF95B8D1)),
+            PieChartData.Slice("Romance", 40f, Color(0xFFF53844))
+        )
+      )
+     ```
+
+   * Initialize the pie chart config with `PieChartConfig` data class inorder to achieve styling and
+     configurations related to pie chart
+    ```
+      val pieChartConfig = PieChartConfig(
+        percentVisible = true,
+        isLegendVisible = true,
+        legendGridSize = 4,
+        isAnimationEnable = true,
+        showSliceLabels = false,
+        animationDuration = 1500
+    )
+   ```
+   * Finally, use the _**`PieChart`**_ component to render the graph.
+   ```  
+   PieChart(modifier = Modifier
+            .width(400.dp)
+            .height(400.dp),
+        pieChartData,
+        pieChartConfig
+    ) 
+   ```
+     <figure>
+   <div align = "center">
+    <img width=238 src="https://user-images.githubusercontent.com/107846675/189865767-377f3b12-1568-46c9-a248-6454ed9bb96e.png" />
+    <p>  Pie chart looks like this!</p>
+    </div>
+    </figure>
+
+5. **Donut Chart:**
+   * Similar to pie chart here we need create list of slices using the `PieChartData` data class.
+
+    ```
+        val donutChartData = PieChartData(
+        slices = listOf(
+            PieChartData.Slice("HP", 15f, Color(0xFF5F0A87)),
+            PieChartData.Slice("Dell", 30f, Color(0xFF20BF55)),
+            PieChartData.Slice("Lenovo", 40f,  Color(0xFFEC9F05)),
+            PieChartData.Slice("Asus", 10f, Color(0xFFF53844))
+        )
+      )
+     ```
+   * Initialize the pie chart config with `PieChartConfig` data class inorder to achieve styling and
+     configurations related to pie chart
+    ```
+    val donutChartConfig = PieChartConfig(
+        percentVisible = true,
+        percentageFontSize = 42.sp,
+        strokeWidth = 120f,
+        percentColor = Color.Black,
+        isLegendVisible = true,
+        legendGridSize = 4,
+        activeSliceAlpha = .9f,
+        isAnimationEnable = true
+    )
+   ```
+   * Finally, use the _**`DonutPieChart`**_ component to render the graph.
+   ```  
+   DonutPieChart( modifier = Modifier
+            .fillMaxWidth()
+            .height(500.dp),
+        donutChartData,
+        donutChartConfig
+    ) 
+   ```
+     <figure>
+   <div align = "center">
+    <img width=233 src="https://user-images.githubusercontent.com/107846675/189868490-cbaecf87-2beb-4788-ba8e-f57b667cbf10.png" />
+    <p>  Donut chart looks like this!</p>
+    </div>
+    </figure>
+
+## Further reading
+
+YGraphs offers rich options for customization and an extensible API. The [documentation](https://www.notion.so/ymedialabs/Android-Compose-Charts-12b41505a7d84bff91a009cc88e021ec) is available
+to help you learn more about it.
+
+
