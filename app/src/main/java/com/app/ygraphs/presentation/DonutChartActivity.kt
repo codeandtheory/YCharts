@@ -2,10 +2,12 @@ package com.app.ygraphs.presentation
 
 import android.content.Context
 import android.graphics.Typeface
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -13,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.ygraphs.R
@@ -77,8 +81,9 @@ private fun DonutChart1(context: Context) {
             .fillMaxWidth()
             .height(500.dp),
         data,
-        pieChartConfig
-    ) { slice ->
-        Toast.makeText(context, slice.label, Toast.LENGTH_SHORT).show()
-    }
+        pieChartConfig,
+        onSliceClick = { slice ->
+            Toast.makeText(context, slice.label, Toast.LENGTH_SHORT).show()
+        }
+    )
 }
