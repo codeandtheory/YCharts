@@ -70,7 +70,6 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
 
             ScrollableCanvasContainer(
                 modifier = modifier,
-                containerBackgroundColor = backgroundColor,
                 calculateMaxDistance = { xZoom ->
                     horizontalGap = horizontalExtraSpace.toPx()
                     val xLeft = columnWidth + horizontalGap
@@ -173,6 +172,7 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
                         )
                     }
                 },
+                containerBackgroundColor = backgroundColor,
                 onPointClicked = { offset: Offset, _: Float ->
                     isTapped = true
                     barHighlightVisibility = true
@@ -181,7 +181,7 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
                 onScroll = {
                     isTapped = false
                     barHighlightVisibility = false
-                }
+                },
             )
         }
     }

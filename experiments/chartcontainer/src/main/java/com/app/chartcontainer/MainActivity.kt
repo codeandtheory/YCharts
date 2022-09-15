@@ -78,8 +78,10 @@ private fun ScrollableContainer() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(250.dp),
-                containerBackgroundColor = Color.Yellow,
-                calculateMaxDistance = { xZoom -> size.width * 3 }, // T0D0 need to calculate
+                calculateMaxDistance = { xZoom -> size.width * 3 },
+                onDraw = { _, _ ->
+                    // T0D0 draw any type of graph here
+                }, // T0D0 need to calculate
                 drawXAndYAxis = { scrollOffset, xZoom ->
                     YAxis(
                         modifier = Modifier
@@ -101,9 +103,8 @@ private fun ScrollableContainer() {
                         graphData = getLineChartData(100, 100)
                     )
                 },
-                onDraw = { _, _ ->
-                    // T0D0 draw any type of graph here
-                }
+                containerBackgroundColor = Color.Yellow,
+                currentScrollOffset = currentScrollOffset
             )
         }
     }
