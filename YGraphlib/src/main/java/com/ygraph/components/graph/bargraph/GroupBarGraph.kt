@@ -3,15 +3,15 @@ package com.ygraph.components.graph.bargraph
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,7 +22,11 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.*
+import androidx.compose.ui.state.ToggleableState
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -39,7 +43,6 @@ import com.ygraph.components.graph.bargraph.models.SelectionHighlightData
 import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
 import com.ygraph.components.graphcontainer.container.checkAndGetMaxScrollOffset
 import kotlinx.coroutines.launch
-import kotlin.math.absoluteValue
 
 
 /**
@@ -66,6 +69,7 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
             val valueList = groupedBarList.map { it.yMax }
             val bgColor = MaterialTheme.colors.surface
             val localDensity = LocalDensity.current
+            val context = LocalContext.current
             //-------------For scrolling-------------------
             val composableScope = rememberCoroutineScope()
             val scrollOffset = remember { mutableStateOf(0f) }
@@ -85,6 +89,7 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
             var xLeft by remember { mutableStateOf(0f) }
             var insideOffset by remember { mutableStateOf(0f) }
             var dragLocks = mutableMapOf<Int, Pair<Bar, Offset>>()
+
 
             val xMax = groupedBarList.size
             val yMax = valueList.maxOrNull() ?: 0f
@@ -300,24 +305,23 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
 
                 Row {
                     Button(onClick = {
-                        val xStep: Float
                         isTapped = true
                         visibility = true
                         selectedSubIndex += 1
-                        if (selectedSubIndex > groupedBarList[selectedIndex].barList.size - 1) {
-                            selectedSubIndex = 0
-                            selectedIndex += 1
-                            insideOffset = 0f
-                            xStep =
+                        val xStep: Float =
+                            if (selectedSubIndex > groupedBarList[selectedIndex].barList.size - 1) {
+                                selectedSubIndex = 0
+                                selectedIndex += 1
+                                insideOffset = 0f
                                 ((localDensity.run { barWidth.toPx() }) + localDensity.run { paddingBetweenBars.toPx() })
-                        } else {
-                            insideOffset += localDensity.run { barWidth.toPx() }
-                            xStep = if (selectedSubIndex == 1 && selectedIndex == 0) {
-                                localDensity.run { barWidth.toPx() } + localDensity.run { horizontalExtraSpace.toPx() }
                             } else {
-                                localDensity.run { barWidth.toPx() }
+                                insideOffset += localDensity.run { barWidth.toPx() }
+                                if (selectedSubIndex == 1 && selectedIndex == 0) {
+                                    localDensity.run { barWidth.toPx() } + localDensity.run { horizontalExtraSpace.toPx() }
+                                } else {
+                                    localDensity.run { barWidth.toPx() }
+                                }
                             }
-                        }
 
                         composableScope.launch {
                             scrollState.scrollBy(-xStep)
@@ -370,10 +374,10 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                                 selectedIndex = 0
                                 selectedSubIndex = 0
                             }
-                            insideOffset = 0f
+                            insideOffset =
+                                localDensity.run { barWidth.toPx() } * groupedBarList[selectedIndex].barList.size
                             xStep =
                                 ((localDensity.run { barWidth.toPx() }) + localDensity.run { paddingBetweenBars.toPx() })
-
                         } else {
                             insideOffset -= localDensity.run { barWidth.toPx() }
                             xStep = if (selectedSubIndex == 1 && selectedIndex == 0) {
@@ -422,6 +426,23 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                     }) {
                         Text(text = "Prev")
                     }
+                }
+
+
+              //----------Accessibility tests--------------
+                var checked by remember { mutableStateOf(true) }
+                Row(modifier = Modifier
+                    .toggleable(checked) { checked = !checked }
+                    .semantics {
+                        this.contentDescription =
+                            if (checked) "enabled state custom clickable" else "disable custom clickable"
+                    }
+                ) {
+                    Text(text = "Profile details")
+                    Switch(
+                        checked = checked,
+                        onCheckedChange = null
+                    )
                 }
             }
         }

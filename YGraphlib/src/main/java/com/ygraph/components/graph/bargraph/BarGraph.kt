@@ -179,8 +179,8 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
                     tapOffset = offset
                 },
                 onScroll = {
-                    isTapped = false
-                    barHighlightVisibility = false
+                  /*  isTapped = false
+                    barHighlightVisibility = false*/
                 },
             )
         }

@@ -104,7 +104,6 @@ private fun ScrollableContainer() {
                     )
                 },
                 containerBackgroundColor = Color.Yellow,
-                currentScrollOffset = currentScrollOffset
             )
         }
     }
