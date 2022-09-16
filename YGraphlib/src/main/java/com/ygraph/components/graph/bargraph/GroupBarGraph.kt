@@ -381,28 +381,6 @@ private fun DrawScope.highlightGroupBar(
 }
 
 /**
- *
- * DrawScope.drawUnderScrollMask extension method used  for drawing a rectangular mask to make graph scrollable under the YAxis.
- * @param columnWidth : Width of the rectangular mask here width of Y Axis is used.
- * @param paddingRight : Padding given at the end of the graph.
- * @param bgColor : Background of the rectangular mask.
- */
-private fun DrawScope.drawUnderScrollMask(columnWidth: Float, paddingRight: Dp, bgColor: Color) {
-    // Draw column to make graph look scrollable under Yaxis
-    drawRect(
-        bgColor,
-        Offset(0f, 0f),
-        Size(columnWidth, size.height)
-    )
-    // Draw right padding
-    drawRect(
-        bgColor,
-        Offset(size.width - paddingRight.toPx(), 0f),
-        Size(paddingRight.toPx(), size.height)
-    )
-}
-
-/**
  * returns the draw offset for bar graph.
  * @param yMin: Minimum value on the y axis
  * @param xOffset: Distance between bars

@@ -273,7 +273,7 @@ fun getMaxScrollDistance(
  * @param cubicPoints2 : List of average right side values for a given Point(x,y).
  * @param lineStyle : All styles related to the path are included in [LineStyle].
  */
-private fun DrawScope.drawStraightOrCubicLine(
+fun DrawScope.drawStraightOrCubicLine(
     pointsData: MutableList<Offset>,
     cubicPoints1: MutableList<Offset>,
     cubicPoints2: MutableList<Offset>,
@@ -363,7 +363,7 @@ private fun DrawScope.drawUnderScrollMask(columnWidth: Float, paddingRight: Dp, 
  * @param yBottom : Offset of X-Axis starting position i.e shade to be drawn until.
  * @param line : line on which shadow & intersectionPoints has to be drawn.
  */
-private fun DrawScope.drawShadowUnderLineAndIntersectionPoint(
+fun DrawScope.drawShadowUnderLineAndIntersectionPoint(
     cubicPath: Path,
     pointsData: MutableList<Offset>,
     yBottom: Float,

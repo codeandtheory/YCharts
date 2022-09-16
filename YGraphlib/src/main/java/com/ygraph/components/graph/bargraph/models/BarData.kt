@@ -13,6 +13,12 @@ import com.ygraph.components.common.model.Point
 
  */
 data class BarData(
-    val point: Point, val color: Color = Color.Red, val label: String = "",
+    override val point: Point,
+    val color: Color = Color.Red, val label: String = "",
     val gradientColorList: List<Color> = listOf(Color.Red, Color.Blue)
-)
+) : BasePoint
+
+
+interface BasePoint {
+    val point: Point
+}

@@ -12,6 +12,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -20,12 +21,15 @@ import com.app.ygraphs.ui.compositions.AppBarWithBackButton
 import com.app.ygraphs.ui.theme.YGraphsTheme
 import com.ygraph.components.axis.AxisData
 import com.ygraph.components.common.utils.DataUtils
-import com.ygraph.components.graph.bargraph.BarGraph
-import com.ygraph.components.graph.bargraph.models.BarGraphData
 import com.ygraph.components.graph.bargraph.models.BarStyle
-import com.ygraph.components.graph.bargraph.models.SelectionHighlightData
+import com.ygraph.components.graph.combinedgraph.CombinedLineAndBarGraph
+import com.ygraph.components.graph.combinedgraph.model.BarPlotData
+import com.ygraph.components.graph.combinedgraph.model.CombinedLineAndBarGraphData
+import com.ygraph.components.graph.linegraph.model.IntersectionPoint
+import com.ygraph.components.graph.linegraph.model.Line
+import com.ygraph.components.graph.linegraph.model.ShadowUnderLine
 
-class BarChartActivity : ComponentActivity() {
+class CombinedLineAndBarChartActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +39,7 @@ class BarChartActivity : ComponentActivity() {
                     backgroundColor = YGraphsTheme.colors.background,
                     topBar = {
                         AppBarWithBackButton(
-                            stringResource(id = R.string.title_bar_chart),
+                            stringResource(id = R.string.title_bar_with_line_chart),
                             onBackPressed = {
                                 onBackPressed()
                             })
@@ -48,10 +52,9 @@ class BarChartActivity : ComponentActivity() {
                         contentAlignment = Alignment.TopCenter
                     ) {
                         LazyColumn(content = {
-                            items(3) { item ->
+                            items(1) { item ->
                                 when (item) {
-                                    0 -> BarChart1()
-                                    1 -> BarChart2()
+                                    0 -> BarWithLineChart()
                                 }
                             }
                         })
@@ -63,50 +66,16 @@ class BarChartActivity : ComponentActivity() {
 }
 
 @Composable
-private fun BarChart1() {
-    val maxRange = 50
-    val barData = DataUtils.getBarChartData(50, maxRange)
-    val yStepSize = 10
-
-    val xAxisData = AxisData.Builder()
-        .axisStepSize(30.dp)
-        .steps(barData.size - 1)
-        .bottomPadding(40.dp)
-        .axisLabelAngle(20f)
-        .labelData { index -> barData[index].label }
-        .build()
-    val yAxisData = AxisData.Builder()
-        .steps(yStepSize)
-        .labelAndAxisLinePadding(20.dp)
-        .axisOffset(20.dp)
-        .labelData { index -> (index * (maxRange / yStepSize)).toString() }
-        .build()
-    val barGraphData = BarGraphData(
-        graphData = barData,
-        xAxisData = xAxisData,
-        yAxisData = yAxisData,
-        barStyle = BarStyle(
-            paddingBetweenBars = 20.dp,
-            barWidth = 25.dp
-        ),
-        showYAxis = true,
-        showXAxis = true,
-        horizontalExtraSpace = 10.dp,
-    )
-    BarGraph(modifier = Modifier.height(350.dp), barGraphData = barGraphData)
-}
-
-@Composable
-private fun BarChart2() {
+fun BarWithLineChart() {
     val maxRange = 100
-    val barData = DataUtils.getGradientBarChartData(50, 100)
+    val barGraphData = DataUtils.getBarChartData(50, 100)
+    val lineGraphData = DataUtils.getLineChartData(50, maxRange = 100)
     val yStepSize = 10
     val xAxisData = AxisData.Builder()
         .axisStepSize(30.dp)
-        .steps(barData.size - 1)
+        .steps(maxOf(barGraphData.size - 1, lineGraphData.size - 1))
         .bottomPadding(40.dp)
-        .axisLabelAngle(20f)
-        .labelData { index -> barData[index].label }
+        .labelData { index -> index.toString() }
         .build()
     val yAxisData = AxisData.Builder()
         .steps(yStepSize)
@@ -114,22 +83,23 @@ private fun BarChart2() {
         .axisOffset(20.dp)
         .labelData { index -> (index * (maxRange / yStepSize)).toString() }
         .build()
-    val barGraphData = BarGraphData(
-        graphData = barData,
+    val combinedLineAndBarGraphData = CombinedLineAndBarGraphData(
+        line = Line(
+            lineGraphData,
+            shadowUnderLine = ShadowUnderLine( brush = Brush.verticalGradient(
+                listOf(
+                    Color.Black,
+                    Color.Transparent
+                )
+            ), alpha = 0.3f),
+            intersectionPoint = IntersectionPoint()
+        ),
+        barPlotData = BarPlotData(barGraphData, barStyle = BarStyle(barWidth = 35.dp)),
         xAxisData = xAxisData,
-        yAxisData = yAxisData,
-        barStyle = BarStyle(paddingBetweenBars = 20.dp,
-            barWidth = 35.dp,
-            isGradientEnabled = true,
-            selectionHighlightData = SelectionHighlightData(
-                highlightBarColor = Color.Red,
-                highlightTextBackgroundColor = Color.Green,
-                popUpLabel = { _, y -> " Value : $y " }
-            )),
-        showYAxis = true,
-        showXAxis = true,
-        horizontalExtraSpace = 20.dp
+        yAxisData = yAxisData
     )
-    BarGraph(modifier = Modifier.height(350.dp), barGraphData = barGraphData)
+    CombinedLineAndBarGraph(
+        modifier = Modifier.height(350.dp),
+        combineGraphData = combinedLineAndBarGraphData
+    )
 }
-

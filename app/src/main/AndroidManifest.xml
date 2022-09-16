@@ -34,6 +34,11 @@
             android:label="@string/title_activity_donut_chart"
             android:theme="@style/Theme.YGraphs" />
         <activity
+            android:name=".presentation.CombinedLineAndBarChartActivity"
+            android:exported="false"
+            android:label="@string/title_activity_combined_line_bar_chart"
+            android:theme="@style/Theme.YGraphs" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"

@@ -19,12 +19,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
-import com.ygraph.components.graph.bargraph.models.BarGraphData
-import com.ygraph.components.graph.bargraph.models.BarData
-import com.ygraph.components.graph.bargraph.models.SelectionHighlightData
-import com.ygraph.components.common.utils.GraphConstants.DEFAULT_YAXIS_BOTTOM_PADDING
 import com.ygraph.components.common.extensions.*
 import com.ygraph.components.common.model.Point
+import com.ygraph.components.common.utils.GraphConstants.DEFAULT_YAXIS_BOTTOM_PADDING
+import com.ygraph.components.graph.bargraph.models.BarData
+import com.ygraph.components.graph.bargraph.models.BarGraphData
+import com.ygraph.components.graph.bargraph.models.BarStyle
+import com.ygraph.components.graph.bargraph.models.SelectionHighlightData
 import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
 
 
@@ -56,7 +57,7 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
             val (_, yMax) = getYMaxAndMinPoints(points)
 
             val xAxisData = xAxisData.copy(
-                axisStepSize = barWidth + paddingBetweenBars,
+                axisStepSize = barStyle.barWidth + barStyle.paddingBetweenBars,
                 steps = graphData.size - 1,
                 startDrawPadding = LocalDensity.current.run { columnWidth.toDp() }
             )
@@ -75,7 +76,7 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
                     horizontalGap = horizontalExtraSpace.toPx()
                     val xLeft = columnWidth + horizontalGap
                     xOffset =
-                        (barWidth.toPx() + paddingBetweenBars.toPx()) * xZoom
+                        (barStyle.barWidth.toPx() + barStyle.paddingBetweenBars.toPx()) * xZoom
                     getMaxScrollDistance(
                         columnWidth,
                         xMax,
@@ -90,9 +91,9 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
                     val yBottom = size.height - rowHeight
                     val yOffset = ((yBottom - yAxisData.axisTopPadding.toPx()) / maxElementInYAxis)
                     xOffset =
-                        ((barWidth).toPx() + paddingBetweenBars.toPx()) * xZoom
+                        ((barStyle.barWidth).toPx() + barStyle.paddingBetweenBars.toPx()) * xZoom
                     val xLeft =
-                        columnWidth + horizontalGap + barWidth.toPx() / 2
+                        columnWidth + horizontalGap + barStyle.barWidth.toPx() / 2
                     val dragLocks = mutableMapOf<Int, Pair<BarData, Offset>>()
 
                     // Draw bar lines
@@ -104,13 +105,14 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
                         val height = yBottom - drawOffset.y
 
                         // drawing each individual bars
-                        drawBarGraph(barGraphData, barData, drawOffset, height)
+                        drawBarGraph(barGraphData.barStyle, barData, drawOffset, height)
 
-                        val middleOffset = Offset(drawOffset.x + barWidth.toPx() / 2, drawOffset.y)
+                        val middleOffset =
+                            Offset(drawOffset.x + barStyle.barWidth.toPx() / 2, drawOffset.y)
                         // store the tap points for selection
                         if (isTapped && middleOffset.isTapped(
                                 tapOffset,
-                                barWidth.toPx(),
+                                barStyle.barWidth.toPx(),
                                 yBottom,
                                 tapPadding.toPx()
                             )
@@ -121,7 +123,7 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
 
                     drawUnderScrollMask(columnWidth, paddingRight, bgColor)
 
-                    if (selectionHighlightData != null) {
+                    if (barStyle.selectionHighlightData != null) {
                         // highlighting the selected bar and showing the data points
                         identifiedPoint = highlightBar(
                             dragLocks,
@@ -153,7 +155,9 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
                                 .onGloballyPositioned {
                                     rowHeight = it.size.height.toFloat()
                                 },
-                            xStart = columnWidth + horizontalGap + LocalDensity.current.run { (barWidth.toPx()) },
+                            xStart = columnWidth + horizontalGap + LocalDensity.current.run {
+                                (barStyle.barWidth.toPx())
+                            },
                             scrollOffset = scrollOffset,
                             zoomScale = xZoom,
                             graphData = points
@@ -209,42 +213,42 @@ private fun DrawScope.drawHighlightText(
 /**
  *
  * Used to draw the individual bars
- * @param barGraphData : all meta data related to the bar graph
+ * @param barStyle : all meta data related to the bar styling
  * @param barData : data related to a single bar
  * @param drawOffset: top left offset for the drawing the bar
  * @param height : height of the bar graph
  */
-private fun DrawScope.drawBarGraph(
-    barGraphData: BarGraphData, barData: BarData, drawOffset: Offset,
+fun DrawScope.drawBarGraph(
+    barStyle: BarStyle, barData: BarData, drawOffset: Offset,
     height: Float
-) {
+) = with(barStyle) {
     // Draw bar lines
-    if (barGraphData.isGradientEnabled) {
+    if (isGradientEnabled) {
         val brush = Brush.verticalGradient(
             colors = barData.gradientColorList
         )
         drawRoundRect(
             brush = brush,
             topLeft = drawOffset,
-            size = Size(barGraphData.barWidth.toPx(), height),
+            size = Size(barWidth.toPx(), height),
             cornerRadius = CornerRadius(
-                barGraphData.cornerRadius.toPx(),
-                barGraphData.cornerRadius.toPx()
+                cornerRadius.toPx(),
+                cornerRadius.toPx()
             ),
-            style = barGraphData.barDrawStyle,
-            blendMode = barGraphData.barBlendMode
+            style = barDrawStyle,
+            blendMode = barBlendMode
         )
     } else {
         drawRoundRect(
             color = barData.color,
             topLeft = drawOffset,
-            size = Size(barGraphData.barWidth.toPx(), height),
+            size = Size(barWidth.toPx(), height),
             cornerRadius = CornerRadius(
-                barGraphData.cornerRadius.toPx(),
-                barGraphData.cornerRadius.toPx()
+                cornerRadius.toPx(),
+                cornerRadius.toPx()
             ),
-            style = barGraphData.barDrawStyle,
-            blendMode = barGraphData.barBlendMode
+            style = barDrawStyle,
+            blendMode = barBlendMode
         )
     }
 }
@@ -309,16 +313,16 @@ private fun DrawScope.highlightBar(
         }
 
         // Draw highlight bar on selection
-        if (barGraphData.selectionHighlightData?.isHighlightBarRequired == true) {
+        if (barGraphData.barStyle.selectionHighlightData?.isHighlightBarRequired == true) {
             dragLocks.values.firstOrNull()?.let { (barData, location) ->
                 val (xPoint, yPoint) = location
                 if (xPoint >= columnWidth && xPoint <= size.width - paddingRight.toPx()) {
                     val y1 = yBottom - ((barData.point.y - 0) * yOffset)
-                    barGraphData.selectionHighlightData.drawHighlightBar(
+                    barGraphData.barStyle.selectionHighlightData.drawHighlightBar(
                         this,
                         xPoint,
                         yPoint,
-                        barGraphData.barWidth.toPx(),
+                        barGraphData.barStyle.barWidth.toPx(),
                         yBottom - y1
                     )
                 }
@@ -328,13 +332,13 @@ private fun DrawScope.highlightBar(
 
     val selectedOffset = dragLocks.values.firstOrNull()?.second
     if (barHighlightVisibility && selectedOffset != null &&
-        barGraphData.selectionHighlightData != null
+        barGraphData.barStyle.selectionHighlightData != null
     ) {
         drawHighlightText(
             mutableIdentifiedPoint,
             selectedOffset,
-            barGraphData.barWidth,
-            barGraphData.selectionHighlightData
+            barGraphData.barStyle.barWidth,
+            barGraphData.barStyle.selectionHighlightData
         )
     }
     return mutableIdentifiedPoint
@@ -347,7 +351,7 @@ private fun DrawScope.highlightBar(
  * @param paddingRight : Padding given at the end of the graph.
  * @param bgColor : Background of the rectangular mask.
  */
-private fun DrawScope.drawUnderScrollMask(columnWidth: Float, paddingRight: Dp, bgColor: Color) {
+fun DrawScope.drawUnderScrollMask(columnWidth: Float, paddingRight: Dp, bgColor: Color) {
     // Draw column to make graph look scrollable under Yaxis
     drawRect(
         bgColor,
