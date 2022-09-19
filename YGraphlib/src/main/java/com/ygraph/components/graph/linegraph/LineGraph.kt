@@ -435,7 +435,7 @@ fun DrawScope.drawHighlightText(
  * @param yBottom : Start position from below of the canvas.
  * @param selectionHighlightPoint : Data class to define all the styles to be drawn in [SelectionHighlightPoint]
  */
-private fun DrawScope.drawHighLightOnSelectedPoint(
+fun DrawScope.drawHighLightOnSelectedPoint(
     dragLocks: MutableMap<Int, Pair<Point, Offset>>,
     columnWidth: Float,
     paddingRight: Dp,

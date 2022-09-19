@@ -19,7 +19,8 @@ import com.ygraph.components.graph.linegraph.model.Line
  * @param paddingRight: Padding from the end of the canvas to end of the graph container.
  * @param bottomPadding: Padding from the bottom of the canvas to bottom of the graph container.
  * @param containerPaddingEnd: Container inside padding end after the last point of the graph.
- * @param backgroundColor Background color of the Y & X components
+ * @param backgroundColor: Background color of the Y & X components.
+ * @param selectionHighLightPopUp: Adds customization related to selection highlight of bar and point with popup.
  */
 data class CombinedLineAndBarGraphData(
     val line: Line,
@@ -32,7 +33,9 @@ data class CombinedLineAndBarGraphData(
     val paddingEnd: Dp = 10.dp,
     val horizontalExtraSpace: Dp = 0.dp,
     val containerPaddingEnd: Dp = 15.dp,
-    val backgroundColor: Color = Color.White
+    val backgroundColor: Color = Color.White,
+    val barTapPadding: Dp = 10.dp,
+    val selectionHighLightPopUp: SelectionHighLightPopUp? = SelectionHighLightPopUp()
 )
 
 /**

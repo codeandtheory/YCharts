@@ -129,7 +129,7 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
                             dragLocks,
                             barHighlightVisibility,
                             identifiedPoint,
-                            barGraphData,
+                            barGraphData.barStyle,
                             isTapped,
                             columnWidth,
                             yBottom,
@@ -286,23 +286,25 @@ fun getMaxScrollDistance(
  * @param dragLocks : Mutable map of BarData and drawOffset.
  * @param barHighlightVisibility : Flag to control the visibility of highlighted text.
  * @param identifiedPoint: selected bar data.
- * @param barGraphData: Data related to the bar graph.
+ * @param barStyle: Data related to the bar graph styling.
  * @param isDragging : Boolean flag for the dragging status.
  * @param columnWidth : Width of the Y axis.
  * @param yBottom : Bottom padding.
  * @param paddingRight : Right padding.
  * @param yOffset : Distance between two y points.
+ * @param shouldShowHighlightPopUp : Default true but if highlight popup not required make it false
  */
-private fun DrawScope.highlightBar(
+fun DrawScope.highlightBar(
     dragLocks: MutableMap<Int, Pair<BarData, Offset>>,
     barHighlightVisibility: Boolean,
     identifiedPoint: BarData,
-    barGraphData: BarGraphData,
+    barStyle: BarStyle,
     isDragging: Boolean,
     columnWidth: Float,
     yBottom: Float,
     paddingRight: Dp,
     yOffset: Float,
+    shouldShowHighlightPopUp: Boolean = true
 ): BarData {
     var mutableIdentifiedPoint: BarData = identifiedPoint
     // Handle the show the selected bar
@@ -313,33 +315,34 @@ private fun DrawScope.highlightBar(
         }
 
         // Draw highlight bar on selection
-        if (barGraphData.barStyle.selectionHighlightData?.isHighlightBarRequired == true) {
+        if (barStyle.selectionHighlightData?.isHighlightBarRequired == true) {
             dragLocks.values.firstOrNull()?.let { (barData, location) ->
                 val (xPoint, yPoint) = location
                 if (xPoint >= columnWidth && xPoint <= size.width - paddingRight.toPx()) {
                     val y1 = yBottom - ((barData.point.y - 0) * yOffset)
-                    barGraphData.barStyle.selectionHighlightData.drawHighlightBar(
+                    barStyle.selectionHighlightData.drawHighlightBar(
                         this,
                         xPoint,
                         yPoint,
-                        barGraphData.barStyle.barWidth.toPx(),
+                        barStyle.barWidth.toPx(),
                         yBottom - y1
                     )
                 }
             }
         }
     }
-
-    val selectedOffset = dragLocks.values.firstOrNull()?.second
-    if (barHighlightVisibility && selectedOffset != null &&
-        barGraphData.barStyle.selectionHighlightData != null
-    ) {
-        drawHighlightText(
-            mutableIdentifiedPoint,
-            selectedOffset,
-            barGraphData.barStyle.barWidth,
-            barGraphData.barStyle.selectionHighlightData
-        )
+    if (shouldShowHighlightPopUp) {
+        val selectedOffset = dragLocks.values.firstOrNull()?.second
+        if (barHighlightVisibility && selectedOffset != null &&
+            barStyle.selectionHighlightData != null
+        ) {
+            drawHighlightText(
+                mutableIdentifiedPoint,
+                selectedOffset,
+                barStyle.barWidth,
+                barStyle.selectionHighlightData
+            )
+        }
     }
     return mutableIdentifiedPoint
 }

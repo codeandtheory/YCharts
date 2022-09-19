@@ -27,6 +27,7 @@ import com.ygraph.components.graph.combinedgraph.model.BarPlotData
 import com.ygraph.components.graph.combinedgraph.model.CombinedLineAndBarGraphData
 import com.ygraph.components.graph.linegraph.model.IntersectionPoint
 import com.ygraph.components.graph.linegraph.model.Line
+import com.ygraph.components.graph.linegraph.model.SelectionHighlightPoint
 import com.ygraph.components.graph.linegraph.model.ShadowUnderLine
 
 class CombinedLineAndBarChartActivity : ComponentActivity() {
@@ -92,7 +93,8 @@ fun BarWithLineChart() {
                     Color.Transparent
                 )
             ), alpha = 0.3f),
-            intersectionPoint = IntersectionPoint()
+            intersectionPoint = IntersectionPoint(),
+            selectionHighlightPoint = SelectionHighlightPoint()
         ),
         barPlotData = BarPlotData(barGraphData, barStyle = BarStyle(barWidth = 35.dp)),
         xAxisData = xAxisData,
