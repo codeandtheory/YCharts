@@ -259,6 +259,65 @@ Let's see how we can use the graph components and style them with available cust
     </div>
     </figure>
 
+
+6. **Combined Line With Bar Graph:**
+   * Similar to line and bar graph need create list of barGraphData and lineGraphData using the random generator extension.
+
+        ```
+          val barGraphData = DataUtils.getBarChartData(listSize, maxValueRange)
+          val lineGraphData = DataUtils.getLineChartData(listSize maxValueRange)
+          
+     ```
+     
+ * Initialize X and Y Axis builders using the `AxisData` data class.
+      
+      ```
+             val xAxisData = AxisData.Builder()
+        .axisStepSize(30.dp)
+        .steps(maxOf(barGraphData.size - 1, lineGraphData.size - 1))
+        .bottomPadding(40.dp)
+        .labelData { index -> index.toString() }
+        .build()
+    val yAxisData = AxisData.Builder()
+        .steps(yStepSize)
+        .labelAndAxisLinePadding(20.dp)
+        .axisOffset(20.dp)
+        .labelData { index -> (index * (maxRange / yStepSize)).toString() }
+        .build()
+   ```
+   * Initialize the bar and the line graph config with `CombinedLineAndBarGraphData` data class inorder to achieve styling and
+     configurations related to graph
+    ```
+   val combinedLineAndBarGraphData = CombinedLineAndBarGraphData(
+        line = Line(
+            lineGraphData,
+            shadowUnderLine = ShadowUnderLine( brush = Brush.verticalGradient(
+                listOf(
+                    Color.Black,
+                    Color.Transparent
+                )
+            ), alpha = 0.3f),
+            intersectionPoint = IntersectionPoint(),
+        ),
+        barPlotData = BarPlotData(barGraphData, barStyle = BarStyle(barWidth = 35.dp)),
+        xAxisData = xAxisData,
+        yAxisData = yAxisData
+    )
+   ```
+   * Finally, use the _**`CombinedLineAndBarGraph`**_ component to render the graph.
+   ```  
+     CombinedLineAndBarGraph(
+        modifier = Modifier.height(350.dp),
+        combineGraphData = combinedLineAndBarGraphData
+    )
+   ```
+     <figure>
+   <div align = "center">
+    <img width=338 src="https://user-images.githubusercontent.com/107846675/191506073-e420644f-981a-44f2-a681-5c01646aa166.png" />
+    <p>  Combined bar with line graph looks like this!</p>
+    </div>
+    </figure>
+
 ## License
 
 ```
