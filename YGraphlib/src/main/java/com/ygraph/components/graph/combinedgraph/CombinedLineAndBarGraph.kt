@@ -12,11 +12,8 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
-import com.ygraph.components.common.extensions.RowClip
+import com.ygraph.components.common.extensions.*
 import com.ygraph.components.common.extensions.getMaxElementInYAxis
-import com.ygraph.components.common.extensions.getXMaxAndMinPoints
-import com.ygraph.components.common.extensions.getYMaxAndMinPoints
-import com.ygraph.components.common.extensions.isDragLocked
 import com.ygraph.components.common.model.Point
 import com.ygraph.components.graph.bargraph.drawBarGraph
 import com.ygraph.components.graph.bargraph.drawUnderScrollMask
@@ -64,6 +61,7 @@ fun CombinedLineAndBarGraph(modifier: Modifier, combineGraphData: CombinedLineAn
                 )
             val maxElementInYAxis = getMaxElementInYAxis(yMax, yAxisData.steps)
             var identifiedBarPoint by remember { mutableStateOf(BarData(Point(0f, 0f))) }
+            var identifiedPoint by remember { mutableStateOf(Point(0f, 0f)) }
             var tapOffset by remember { mutableStateOf(Offset(0f, 0f)) }
 
 
@@ -144,11 +142,20 @@ fun CombinedLineAndBarGraph(modifier: Modifier, combineGraphData: CombinedLineAn
                                 drawOffset.y
                             )
                         // store the tap points for selection
-                        if (isTapped && middleOffset.isDragLocked(
+                        val canSelectBar = if (canSupportTapOnIndividualPointOrBar) {
+                            middleOffset.isTapped(
+                                tapOffset,
+                                barPlotData.barStyle.barWidth.toPx(),
+                                yBottom,
+                                tapPadding.toPx()
+                            )
+                        } else {
+                            middleOffset.isDragLocked(
                                 tapOffset.x,
                                 xOffset
                             )
-                        ) {
+                        }
+                        if (isTapped && canSelectBar) {
                             barTapLocks[0] = barData to drawOffset
                         }
                     }
@@ -182,7 +189,12 @@ fun CombinedLineAndBarGraph(modifier: Modifier, combineGraphData: CombinedLineAn
 
 
                     pointsData.forEachIndexed { index, point ->
-                        if (isTapped && point.isTapped(tapOffset.x, xOffset)) {
+                        val isPointTapped = if (canSupportTapOnIndividualPointOrBar) {
+                            point.isPointTapped(tapOffset, xOffset, tapPadding.toPx())
+                        } else {
+                            point.isTapped(tapOffset.x, xOffset)
+                        }
+                        if (isTapped && isPointTapped) {
                             // Dealing with only one line graph hence tapPointLocks[0]
                             linePointLocks[0] = line.dataPoints[index] to point
                         }
@@ -210,15 +222,30 @@ fun CombinedLineAndBarGraph(modifier: Modifier, combineGraphData: CombinedLineAn
                             yBottom,
                             paddingRight,
                             yOffset,
-                            false
+                            canSupportTapOnIndividualPointOrBar
                         )
                     }
-                    drawSelectionHighlightPopUp(
-                        combineGraphData,
-                        barTapLocks,
-                        linePointLocks,
-                        isTapped
-                    )
+                    if (!canSupportTapOnIndividualPointOrBar) {
+                        drawSelectionHighlightPopUp(
+                            combineGraphData,
+                            barTapLocks,
+                            linePointLocks,
+                            isTapped
+                        )
+                    }
+                    if (canSupportTapOnIndividualPointOrBar) {
+                        val x = linePointLocks.values.firstOrNull()?.second?.x
+                        if (x != null) identifiedPoint =
+                            linePointLocks.values.map { it.first }.first()
+                        val selectedOffset = linePointLocks.values.firstOrNull()?.second
+                        if (isTapped && selectedOffset.isNotNull()) {
+                            drawHighlightText(
+                                identifiedPoint,
+                                selectedOffset ?: Offset(0f, 0f),
+                                line.selectionHighlightPopUp
+                            )
+                        }
+                    }
                 },
                 onPointClicked = { offset: Offset, _: Float ->
                     isTapped = true

@@ -21,6 +21,8 @@ import com.ygraph.components.graph.linegraph.model.Line
  * @param containerPaddingEnd: Container inside padding end after the last point of the graph.
  * @param backgroundColor: Background color of the Y & X components.
  * @param selectionHighLightPopUp: Adds customization related to selection highlight of bar and point with popup.
+ * @param canSupportTapOnIndividualPointOrBar: True if user wants tap on individual graph component say
+ * point on a line or bar else false where tap will be considered for all the point and bar in the tap range
  */
 data class CombinedLineAndBarGraphData(
     val line: Line,
@@ -34,8 +36,9 @@ data class CombinedLineAndBarGraphData(
     val horizontalExtraSpace: Dp = 0.dp,
     val containerPaddingEnd: Dp = 15.dp,
     val backgroundColor: Color = Color.White,
-    val barTapPadding: Dp = 10.dp,
-    val selectionHighLightPopUp: SelectionHighLightPopUp? = SelectionHighLightPopUp()
+    val tapPadding: Dp = 20.dp,
+    val selectionHighLightPopUp: SelectionHighLightPopUp? = SelectionHighLightPopUp(),
+    val canSupportTapOnIndividualPointOrBar: Boolean = true
 )
 
 /**
