@@ -195,13 +195,18 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                                     )
 
                                     insideOffset += barWidth.toPx()
+                                    // Do only when accessibitly is enabled
+                                    if(subIndex == 0 && dragLocks.isEmpty()){
+                                        dragLocks[0] = individualBar to individualOffset
+                                        isTapped = true
+                                        visibility = true
+                                    }
 
                                     val middleOffset =
                                         Offset(
                                             individualOffset.x + barWidth.toPx() / 2,
                                             drawOffset.y
                                         )
-
                                     // store the tap points for selection
                                     if (isTapped && middleOffset.isTapped(
                                             tapOffset,
