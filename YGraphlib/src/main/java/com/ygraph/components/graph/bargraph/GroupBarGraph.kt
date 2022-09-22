@@ -2,6 +2,7 @@ package com.ygraph.components.graph.bargraph
 
 
 import android.annotation.SuppressLint
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -53,6 +54,7 @@ import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
 import com.ygraph.components.graphcontainer.container.checkAndGetMaxScrollOffset
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.*
 import androidx.compose.runtime.LaunchedEffect as LaunchedEffect1
 
 
@@ -74,12 +76,13 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
             var xOffset by remember { mutableStateOf(0f) }
             var tapOffset by remember { mutableStateOf(Offset(0f, 0f)) }
             var isTapped by remember { mutableStateOf(false) }
+            var isDefaultTapped by remember { mutableStateOf(false) }
             var columnWidth by remember { mutableStateOf(0f) }
             var horizontalGap by remember { mutableStateOf(0f) }
             var rowHeight by remember { mutableStateOf(0f) }
             val paddingRight = paddingEnd
             val valueList = groupedBarList.map { it.yMax }
-            var bgColor = MaterialTheme.colors.surface
+            val bgColor = MaterialTheme.colors.surface
             val localDensity = LocalDensity.current
             val context = LocalContext.current
             //-------------For scrolling-------------------
@@ -102,6 +105,11 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
             var insideOffset by remember { mutableStateOf(0f) }
             var dragLocks = mutableMapOf<Int, Pair<Bar, Offset>>()
 
+            val focusRequesterContainer = remember { FocusRequester() }
+            val coroutineScope = rememberCoroutineScope()
+            var isContainerFocused by remember { mutableStateOf(false) }
+            val focusRequesterNextBtn = remember { FocusRequester() }
+            val focusRequesterPrevBtn = remember { FocusRequester() }
 
             val xMax = groupedBarList.size
             val yMax = valueList.maxOrNull() ?: 0f
@@ -126,7 +134,13 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
 
             Scaffold(scaffoldState = scaffoldState) {
                 Column {
-                    ScrollableCanvasContainer(modifier = modifier,
+                    ScrollableCanvasContainer(modifier = modifier
+                        /*.focusRequester(focusRequesterContainer)
+                        .focusable()
+                        .semantics {
+                            contentDescription =
+                                if (isContainerFocused) "Hello, This is Current Bar Data" else "Default content"
+                        }*/,
                         scrollOffset = scrollOffset.value,
                         maxScrollOffset = { maxScroll ->
                             maxScrollOffset.value = maxScroll
@@ -179,6 +193,7 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                                         height,
                                         subIndex
                                     )
+
                                     insideOffset += barWidth.toPx()
 
                                     val middleOffset =
@@ -186,6 +201,7 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                                             individualOffset.x + barWidth.toPx() / 2,
                                             drawOffset.y
                                         )
+
                                     // store the tap points for selection
                                     if (isTapped && middleOffset.isTapped(
                                             tapOffset,
@@ -226,6 +242,7 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                                     )
                                 }
                             }
+
                             drawUnderScrollMask(columnWidth, paddingRight, bgColor)
 
                             if (selectionHighlightData != null) {
@@ -295,238 +312,247 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                              visibility = false*/
                         }
                     )
-                    /*   if (stackLabelConfig.showLabel) {
-                           LazyVerticalGrid(
-                               modifier = Modifier.padding(
-                                   horizontal = stackLabelConfig.gridPaddingHorizontal,
-                                   vertical = stackLabelConfig.gridPaddingVertical
-                               ),
-                               columns = GridCells.Fixed(stackLabelConfig.gridColumnCount)
-                           ) {
-                               items(groupBarGraphData.stackLabelConfig.stackLabelList) {
-                                   Row(verticalAlignment = Alignment.CenterVertically) {
-                                       Box(
-                                           modifier = Modifier
-                                               .background(it.color)
-                                               .size(stackLabelConfig.colorBoxSize)
-                                       )
-                                       Spacer(modifier = Modifier.padding(stackLabelConfig.spaceBWLabelAndColorBox))
-                                       Text(
-                                           text = it.name,
-                                           style = stackLabelConfig.textStyle,
-                                           overflow = TextOverflow.Ellipsis
-                                       )
-                                   }
-                               }
-                           }
-                       }
-
-                       Row {
-                           Button(onClick = {
-                               isTapped = true
-                               visibility = true
-                               selectedSubIndex += 1
-                               val xStep: Float =
-                                   if (selectedSubIndex > groupedBarList[selectedIndex].barList.size - 1) {
-                                       selectedSubIndex = 0
-                                       selectedIndex += 1
-                                       insideOffset = 0f
-                                       ((localDensity.run { barWidth.toPx() }) + localDensity.run { paddingBetweenBars.toPx() })
-                                   } else {
-                                       insideOffset += localDensity.run { barWidth.toPx() }
-                                       if (selectedSubIndex == 1 && selectedIndex == 0) {
-                                           localDensity.run { barWidth.toPx() } + localDensity.run { horizontalExtraSpace.toPx() }
-                                       } else {
-                                           localDensity.run { barWidth.toPx() }
-                                       }
-                                   }
-
-                               composableScope.launch {
-                                   scrollState.scrollBy(-xStep)
-                               }
-
-                               val drawOffset = getGroupBarDrawOffset(
-                                   selectedIndex,
-                                   groupedBarList[selectedIndex].barList[selectedSubIndex].value,
-                                   xOffset,
-                                   xLeft,
-                                   scrollOffset.value + xStep,
-                                   yBottom,
-                                   yOffset,
-                                   0f
-                               )
-                               val individualOffset =
-                                   Offset(drawOffset.x + insideOffset, drawOffset.y)
-
-                               tapOffset = individualOffset
-                               val middleOffset =
-                                   Offset(individualOffset.x + localDensity.run { barWidth.toPx() } / 2,
-                                       drawOffset.y)
-                               // store the tap points for selection
-                               if (isTapped && middleOffset.isTapped(
-                                       tapOffset,
-                                       localDensity.run { barWidth.toPx() },
-                                       yBottom,
-                                       localDensity.run { tapPadding.toPx() }
-                                   )
-                               ) {
-                                   dragLocks[0] =
-                                       groupedBarList[selectedIndex].barList[selectedSubIndex] to individualOffset
-                               }
-
-                           }) {
-                               Text(text = "Next")
-                           }
-
-                           Button(onClick = {
-                               val xStep: Float
-                               isTapped = true
-                               visibility = true
-                               selectedSubIndex -= 1
-                               // Change the logic here
-                               if (selectedSubIndex < 0) {
-                                   selectedIndex -= 1
-                                   if (selectedIndex >= 0) {
-                                       selectedSubIndex =
-                                           groupedBarList[selectedIndex].barList.size - 1
-                                   } else {
-                                       selectedIndex = 0
-                                       selectedSubIndex = 0
-                                   }
-                                   insideOffset =
-                                       localDensity.run { barWidth.toPx() } * groupedBarList[selectedIndex].barList.size
-                                   xStep =
-                                       ((localDensity.run { barWidth.toPx() }) + localDensity.run { paddingBetweenBars.toPx() })
-                               } else {
-                                   insideOffset -= localDensity.run { barWidth.toPx() }
-                                   xStep = if (selectedSubIndex == 1 && selectedIndex == 0) {
-                                       localDensity.run { barWidth.toPx() } + localDensity.run { horizontalExtraSpace.toPx() }
-                                   } else {
-                                       localDensity.run { barWidth.toPx() }
-                                   }
-                               }
-                               Log.d(
-                                   "selectedIndex-selectedSubIndex",
-                                   "selectedIndex-$selectedIndex selectedSubIndex-$selectedSubIndex"
-                               )
-                               composableScope.launch {
-                                   scrollState.scrollBy(+xStep)
-                               }
-
-                               val drawOffset = getGroupBarDrawOffset(
-                                   selectedIndex,
-                                   groupedBarList[selectedIndex].barList[selectedSubIndex].value,
-                                   xOffset,
-                                   xLeft,
-                                   scrollOffset.value - xStep,
-                                   yBottom,
-                                   yOffset,
-                                   0f
-                               )
-                               val individualOffset =
-                                   Offset(drawOffset.x + insideOffset, drawOffset.y)
-
-                               tapOffset = individualOffset
-                               val middleOffset =
-                                   Offset(individualOffset.x + localDensity.run { barWidth.toPx() } / 2,
-                                       drawOffset.y)
-                               // store the tap points for selection
-                               if (isTapped && middleOffset.isTapped(
-                                       tapOffset,
-                                       localDensity.run { barWidth.toPx() },
-                                       yBottom,
-                                       localDensity.run { tapPadding.toPx() }
-                                   )
-                               ) {
-                                   dragLocks[0] =
-                                       groupedBarList[selectedIndex].barList[selectedSubIndex] to individualOffset
-                               }
-
-                           }) {
-                               Text(text = "Prev")
-                           }
-                           Button(onClick = {
-                               composableScope.launch {
-                                   scaffoldState.snackbarHostState.showSnackbar(
-                                       message = "This is your message",
-                                       actionLabel = "Do something"
-                                   )
-                               }
-                           }) {
-                               Text(text = "Do something")
-                           }
-                       }*/
-                    val focusRequesterTxt = remember { FocusRequester() }
-                    val focusRequesterBtn = remember { FocusRequester() }
-                    val scope = rememberCoroutineScope()
-                    var focused by remember { mutableStateOf(false) }
-                    val txtAlpha = if (focused) 1f else 0f
-
-                    Column {
-                        Text(
-                            modifier = Modifier
-                                .focusRequester(focusRequesterTxt)
-                                .focusable()
-                                .semantics {
-                                    contentDescription = "Text content Enable and request focus"
+                    if (stackLabelConfig.showLabel) {
+                        LazyVerticalGrid(
+                            modifier = Modifier.padding(
+                                horizontal = stackLabelConfig.gridPaddingHorizontal,
+                                vertical = stackLabelConfig.gridPaddingVertical
+                            ),
+                            columns = GridCells.Fixed(stackLabelConfig.gridColumnCount)
+                        ) {
+                            items(groupBarGraphData.stackLabelConfig.stackLabelList) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Box(
+                                        modifier = Modifier
+                                            .background(it.color)
+                                            .size(stackLabelConfig.colorBoxSize)
+                                    )
+                                    Spacer(modifier = Modifier.padding(stackLabelConfig.spaceBWLabelAndColorBox))
+                                    Text(
+                                        text = it.name,
+                                        style = stackLabelConfig.textStyle,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
                                 }
-                                .alpha(txtAlpha),
-                            text = "Text content",
-                        )
-                        Button(
-                            modifier = Modifier
-                                .focusRequester(focusRequesterBtn)
-                                .focusable(),
-                            onClick = {
-                                scope.launch {
-                                    focused = true
-                                    focusRequesterTxt.requestFocus()
-                                    delay(5500)
-                                    focused = false
-                                    focusRequesterBtn.requestFocus()
-                                }
-                            }) {
-                            Text("Enable and request focus")
-                        }
-                    }
-
-                    //----------Accessibility tests--------------
-                    var checked by remember { mutableStateOf(true) }
-                    //val focusRequester = remember { FocusRequester() }
-                    val focusRequesterRow = remember { FocusRequester() }
-                    val commentsAlpha = if (checked) 1f else 0f
-
-                    Row(modifier = Modifier
-                        .focusRequester(focusRequesterRow)
-                        .toggleable(checked) {
-                            checked = !checked
-                        }
-                        .semantics {
-                            this.contentDescription =
-                                if (checked) "enabled state custom clickable" else "disable custom clickable"
-                        }
-                        .clickable {
-                            composableScope.launch {
-                                //  focusRequester.requestFocus()
-                                /* delay(5000)
-                                 focusRequesterRow.requestFocus()*/
                             }
                         }
-                    ) {
-                        Text(text = "Profile details")
-                        Switch(
-                            checked = checked,
-                            onCheckedChange = null
-                        )
                     }
 
-                    /*  Text(
-                          modifier = Modifier
-                              .focusRequester(focusRequester)
-                              .onFocusChanged { bgColor = if (it.isFocused) Green else Black }
-                              .alpha(commentsAlpha),
-                          text = if (checked) "enabled state custom clickable" else "disable custom clickable"
-                      )*/
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Button(modifier = Modifier
+                            /*.focusRequester(focusRequesterNextBtn)
+                            .focusable()*/, onClick = {
+                            isTapped = true
+                            visibility = true
+                            selectedSubIndex += 1
+                            val xStep: Float =
+                                if (selectedSubIndex > groupedBarList[selectedIndex].barList.size - 1) {
+                                    selectedSubIndex = 0
+                                    selectedIndex += 1
+                                    insideOffset = 0f
+                                    ((localDensity.run { barWidth.toPx() }) + localDensity.run { paddingBetweenBars.toPx() })
+                                } else {
+                                    insideOffset += localDensity.run { barWidth.toPx() }
+                                    if (selectedSubIndex == 1 && selectedIndex == 0) {
+                                        localDensity.run { barWidth.toPx() } + localDensity.run { horizontalExtraSpace.toPx() }
+                                    } else {
+                                        localDensity.run { barWidth.toPx() }
+                                    }
+                                }
+
+                            composableScope.launch {
+                                scrollState.scrollBy(-xStep)
+                            }
+
+                            val drawOffset = getGroupBarDrawOffset(
+                                selectedIndex,
+                                groupedBarList[selectedIndex].barList[selectedSubIndex].value,
+                                xOffset,
+                                xLeft,
+                                scrollOffset.value + xStep,
+                                yBottom,
+                                yOffset,
+                                0f
+                            )
+                            val individualOffset =
+                                Offset(drawOffset.x + insideOffset, drawOffset.y)
+
+                            tapOffset = individualOffset
+                            val middleOffset =
+                                Offset(individualOffset.x + localDensity.run { barWidth.toPx() } / 2,
+                                    drawOffset.y)
+                            // store the tap points for selection
+                            if (isTapped && middleOffset.isTapped(
+                                    tapOffset,
+                                    localDensity.run { barWidth.toPx() },
+                                    yBottom,
+                                    localDensity.run { tapPadding.toPx() }
+                                )
+                            ) {
+                                dragLocks[0] =
+                                    groupedBarList[selectedIndex].barList[selectedSubIndex] to individualOffset
+                            }
+                           /* coroutineScope.launch {
+                                isContainerFocused = true
+                                focusRequesterContainer.requestFocus()
+                                delay(5500)
+                                isContainerFocused = false
+                                focusRequesterNextBtn.requestFocus()
+                            }*/
+                            var textToSpeech: TextToSpeech? = null
+                            textToSpeech = TextToSpeech(
+                                context
+                            ) {
+                                if (it == TextToSpeech.SUCCESS) {
+                                    textToSpeech?.let { txtToSpeech ->
+                                        txtToSpeech.language = Locale.US
+                                        txtToSpeech.setSpeechRate(1.0f)
+                                        txtToSpeech.speak(
+                                            "Hello, This is Current Bar Data from Next button",
+                                            TextToSpeech.QUEUE_ADD,
+                                            null,
+                                            null
+                                        )
+                                    }
+                                }
+                            }
+                        }) {
+                            Text(text = "Next")
+                        }
+
+                        Button(modifier = Modifier
+                            /*.focusRequester(focusRequesterPrevBtn)
+                            .focusable()*/, onClick = {
+                            val xStep: Float
+                            isTapped = true
+                            visibility = true
+                            selectedSubIndex -= 1
+                            // Change the logic here
+                            if (selectedSubIndex < 0) {
+                                selectedIndex -= 1
+                                if (selectedIndex >= 0) {
+                                    selectedSubIndex =
+                                        groupedBarList[selectedIndex].barList.size - 1
+                                } else {
+                                    selectedIndex = 0
+                                    selectedSubIndex = 0
+                                }
+                                insideOffset =
+                                    localDensity.run { barWidth.toPx() } * groupedBarList[selectedIndex].barList.size
+                                xStep =
+                                    ((localDensity.run { barWidth.toPx() }) + localDensity.run { paddingBetweenBars.toPx() })
+                            } else {
+                                insideOffset -= localDensity.run { barWidth.toPx() }
+                                xStep = if (selectedSubIndex == 1 && selectedIndex == 0) {
+                                    localDensity.run { barWidth.toPx() } + localDensity.run { horizontalExtraSpace.toPx() }
+                                } else {
+                                    localDensity.run { barWidth.toPx() }
+                                }
+                            }
+                            Log.d(
+                                "selectedIndex-selectedSubIndex",
+                                "selectedIndex-$selectedIndex selectedSubIndex-$selectedSubIndex"
+                            )
+                            composableScope.launch {
+                                scrollState.scrollBy(+xStep)
+                            }
+
+                            val drawOffset = getGroupBarDrawOffset(
+                                selectedIndex,
+                                groupedBarList[selectedIndex].barList[selectedSubIndex].value,
+                                xOffset,
+                                xLeft,
+                                scrollOffset.value - xStep,
+                                yBottom,
+                                yOffset,
+                                0f
+                            )
+                            val individualOffset =
+                                Offset(drawOffset.x + insideOffset, drawOffset.y)
+
+                            tapOffset = individualOffset
+                            val middleOffset =
+                                Offset(individualOffset.x + localDensity.run { barWidth.toPx() } / 2,
+                                    drawOffset.y)
+                            // store the tap points for selection
+                            if (isTapped && middleOffset.isTapped(
+                                    tapOffset,
+                                    localDensity.run { barWidth.toPx() },
+                                    yBottom,
+                                    localDensity.run { tapPadding.toPx() }
+                                )
+                            ) {
+                                dragLocks[0] =
+                                    groupedBarList[selectedIndex].barList[selectedSubIndex] to individualOffset
+                            }
+
+                            /* coroutineScope.launch {
+                                 isContainerFocused = true
+                                 focusRequesterContainer.requestFocus()
+                                 delay(5500)
+                                 isContainerFocused = false
+                                 focusRequesterPrevBtn.requestFocus()
+                             }*/
+                            var textToSpeech: TextToSpeech? = null
+                            textToSpeech = TextToSpeech(
+                                context
+                            ) {
+                                if (it == TextToSpeech.SUCCESS) {
+                                    textToSpeech?.let { txtToSpeech ->
+                                        txtToSpeech.language = Locale.US
+                                        txtToSpeech.setSpeechRate(1.0f)
+                                        txtToSpeech.speak(
+                                            "Hello, This is Current Bar Data from previous button",
+                                            TextToSpeech.QUEUE_ADD,
+                                            null,
+                                            null
+                                        )
+                                    }
+                                }
+                            }
+
+                        }) {
+                            Text(text = "Prev")
+                        }
+                    }
+
+
+                    /* val focusRequesterTxt = remember { FocusRequester() }
+                     val focusRequesterBtn = remember { FocusRequester() }
+                     val scope = rememberCoroutineScope()
+                     var focused by remember { mutableStateOf(false) }
+                     val txtAlpha = if (focused) 1f else 0f
+
+                     Column {
+                         Text(
+                             modifier = Modifier
+                                 .focusRequester(focusRequesterTxt)
+                                 .focusable()
+                                 .semantics {
+                                     contentDescription = "Text content Enable and request focus"
+                                 }
+                                 .alpha(txtAlpha),
+                             text = "Text content",
+                         )
+                         Button(
+                             modifier = Modifier
+                                 .focusRequester(focusRequesterBtn)
+                                 .focusable(),
+                             onClick = {
+                                 scope.launch {
+                                     focused = true
+                                     focusRequesterTxt.requestFocus()
+                                     delay(5500)
+                                     focused = false
+                                     focusRequesterBtn.requestFocus()
+                                 }
+                             }) {
+                             Text("Enable and request focus")
+                         }
+                     }*/
                 }
             }
         }
