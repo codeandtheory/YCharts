@@ -2,10 +2,8 @@ package com.ygraph.components.graph.bargraph
 
 
 import android.annotation.SuppressLint
-import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollBy
@@ -13,33 +11,24 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.*
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Black
-import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.*
-import androidx.compose.ui.state.ToggleableState
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
 import com.ygraph.components.common.extensions.RowClip
@@ -54,8 +43,6 @@ import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
 import com.ygraph.components.graphcontainer.container.checkAndGetMaxScrollOffset
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.*
-import androidx.compose.runtime.LaunchedEffect as LaunchedEffect1
 
 
 /**
@@ -76,7 +63,6 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
             var xOffset by remember { mutableStateOf(0f) }
             var tapOffset by remember { mutableStateOf(Offset(0f, 0f)) }
             var isTapped by remember { mutableStateOf(false) }
-            var isDefaultTapped by remember { mutableStateOf(false) }
             var columnWidth by remember { mutableStateOf(0f) }
             var horizontalGap by remember { mutableStateOf(0f) }
             var rowHeight by remember { mutableStateOf(0f) }
@@ -85,6 +71,7 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
             val bgColor = MaterialTheme.colors.surface
             val localDensity = LocalDensity.current
             val context = LocalContext.current
+
             //-------------For scrolling-------------------
             val composableScope = rememberCoroutineScope()
             val scrollOffset = remember { mutableStateOf(0f) }
@@ -97,6 +84,8 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                 )
                 delta
             }
+
+            var isDefaultTapped by remember { mutableStateOf(false) }
             var selectedIndex by remember { mutableStateOf(0) }
             var selectedSubIndex by remember { mutableStateOf(0) }
             var yBottom by remember { mutableStateOf(0f) }
@@ -105,9 +94,11 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
             var insideOffset by remember { mutableStateOf(0f) }
             var dragLocks = mutableMapOf<Int, Pair<Bar, Offset>>()
 
+            //-------------For accessibility-------------------
             val focusRequesterContainer = remember { FocusRequester() }
             val coroutineScope = rememberCoroutineScope()
             var isContainerFocused by remember { mutableStateOf(false) }
+            var containerFocusedText by remember { mutableStateOf("") }
             val focusRequesterNextBtn = remember { FocusRequester() }
             val focusRequesterPrevBtn = remember { FocusRequester() }
 
@@ -135,12 +126,12 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
             Scaffold(scaffoldState = scaffoldState) {
                 Column {
                     ScrollableCanvasContainer(modifier = modifier
-                        /*.focusRequester(focusRequesterContainer)
+                        .focusRequester(focusRequesterContainer)
                         .focusable()
                         .semantics {
                             contentDescription =
-                                if (isContainerFocused) "Hello, This is Current Bar Data" else "Default content"
-                        }*/,
+                                if (isContainerFocused) containerFocusedText else "Default content"
+                        },
                         scrollOffset = scrollOffset.value,
                         maxScrollOffset = { maxScroll ->
                             maxScrollOffset.value = maxScroll
@@ -200,6 +191,21 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                                         dragLocks[0] = individualBar to individualOffset
                                         isTapped = true
                                         visibility = true
+                                        if (!isDefaultTapped) {
+                                            coroutineScope.launch {
+                                                delay(1500)
+                                                val dragLockValue =
+                                                    dragLocks.values.firstOrNull()?.second
+                                                val valueY = dragLockValue?.y
+                                                val xLabel = "Name : ${dragLockValue?.x} "
+                                                val yLabel =
+                                                    "Value : ${String.format("%.2f", valueY)}"
+                                                isContainerFocused = true
+                                                containerFocusedText = "$xLabel $yLabel"
+                                                focusRequesterContainer.requestFocus()
+                                                isDefaultTapped = true
+                                            }
+                                        }
                                     }
 
                                     val middleOffset =
@@ -348,176 +354,189 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Button(modifier = Modifier
-                            /*.focusRequester(focusRequesterNextBtn)
-                            .focusable()*/, onClick = {
-                                isTapped = true
-                                visibility = true
-                                selectedSubIndex += 1
-                                val xStep: Float =
-                                    if (selectedSubIndex > groupedBarList[selectedIndex].barList.size - 1) {
-                                        selectedSubIndex = 0
-                                        selectedIndex += 1
-                                        insideOffset = 0f
-                                        ((localDensity.run { barWidth.toPx() }) + localDensity.run { paddingBetweenBars.toPx() })
+                            .focusRequester(focusRequesterNextBtn)
+                            .focusable(), onClick = {
+                            isTapped = true
+                            visibility = true
+                            selectedSubIndex += 1
+                            val xStep: Float =
+                                if (selectedSubIndex > groupedBarList[selectedIndex].barList.size - 1) {
+                                    selectedSubIndex = 0
+                                    selectedIndex += 1
+                                    insideOffset = 0f
+                                    ((localDensity.run { barWidth.toPx() }) + localDensity.run { paddingBetweenBars.toPx() })
+                                } else {
+                                    insideOffset += localDensity.run { barWidth.toPx() }
+                                    if (selectedSubIndex == 1 && selectedIndex == 0) {
+                                        localDensity.run { barWidth.toPx() } + localDensity.run { horizontalExtraSpace.toPx() }
                                     } else {
-                                        insideOffset += localDensity.run { barWidth.toPx() }
-                                        if (selectedSubIndex == 1 && selectedIndex == 0) {
-                                            localDensity.run { barWidth.toPx() } + localDensity.run { horizontalExtraSpace.toPx() }
-                                        } else {
-                                            localDensity.run { barWidth.toPx() }
-                                        }
+                                        localDensity.run { barWidth.toPx() }
                                     }
-
-                                composableScope.launch {
-                                    scrollState.scrollBy(-xStep)
                                 }
+                            Log.d(
+                                "selectedIndex-selectedSubIndex",
+                                "insideOffset-$insideOffset selectedIndex-$selectedIndex selectedSubIndex-$selectedSubIndex"
+                            )
+                            composableScope.launch {
+                                scrollState.scrollBy(-xStep)
+                            }
 
-                                val drawOffset = getGroupBarDrawOffset(
-                                    selectedIndex,
-                                    groupedBarList[selectedIndex].barList[selectedSubIndex].value,
-                                    xOffset,
-                                    xLeft,
-                                    scrollOffset.value + xStep,
+                            val drawOffset = getGroupBarDrawOffset(
+                                selectedIndex,
+                                groupedBarList[selectedIndex].barList[selectedSubIndex].value,
+                                xOffset,
+                                xLeft,
+                                scrollOffset.value + xStep,
+                                yBottom,
+                                yOffset,
+                                0f
+                            )
+                            val individualOffset =
+                                Offset(drawOffset.x + insideOffset, drawOffset.y)
+
+                            tapOffset = individualOffset
+                            val middleOffset =
+                                Offset(individualOffset.x + localDensity.run { barWidth.toPx() } / 2,
+                                    drawOffset.y)
+                            // store the tap points for selection
+                            if (isTapped && middleOffset.isTapped(
+                                    tapOffset,
+                                    localDensity.run { barWidth.toPx() },
                                     yBottom,
-                                    yOffset,
-                                    0f
+                                    localDensity.run { tapPadding.toPx() }
                                 )
-                                val individualOffset =
-                                    Offset(drawOffset.x + insideOffset, drawOffset.y)
+                            ) {
+                                dragLocks[0] =
+                                    groupedBarList[selectedIndex].barList[selectedSubIndex] to individualOffset
+                            }
+                            val dragLockValue = dragLocks.values.firstOrNull()?.second
+                            val valueY = dragLockValue?.y
+                            val xLabel = "Name : ${dragLockValue?.x} "
+                            val yLabel = "Value : ${String.format("%.2f", valueY)}"
+                            coroutineScope.launch {
+                                isContainerFocused = true
+                                containerFocusedText = "$xLabel $yLabel"
+                                focusRequesterContainer.requestFocus()
+                                delay(5500)
+                                isContainerFocused = false
+                                focusRequesterNextBtn.requestFocus()
+                            }
 
-                                tapOffset = individualOffset
-                                val middleOffset =
-                                    Offset(individualOffset.x + localDensity.run { barWidth.toPx() } / 2,
-                                        drawOffset.y)
-                                // store the tap points for selection
-                                if (isTapped && middleOffset.isTapped(
-                                        tapOffset,
-                                        localDensity.run { barWidth.toPx() },
-                                        yBottom,
-                                        localDensity.run { tapPadding.toPx() }
-                                    )
-                                ) {
-                                    dragLocks[0] =
-                                        groupedBarList[selectedIndex].barList[selectedSubIndex] to individualOffset
-                                }
-                                /* coroutineScope.launch {
-                                     isContainerFocused = true
-                                     focusRequesterContainer.requestFocus()
-                                     delay(5500)
-                                     isContainerFocused = false
-                                     focusRequesterNextBtn.requestFocus()
-                                 }*/
-                                var textToSpeech: TextToSpeech? = null
-                                textToSpeech = TextToSpeech(
-                                    context
-                                ) {
-                                    if (it == TextToSpeech.SUCCESS) {
-                                        textToSpeech?.let { txtToSpeech ->
-                                            txtToSpeech.language = Locale.US
-                                            txtToSpeech.setSpeechRate(1.0f)
-                                            txtToSpeech.speak(
-                                                "Hello, This is Current Bar Data from Next button",
-                                                TextToSpeech.QUEUE_ADD,
-                                                null,
-                                                null
-                                            )
-                                        }
-                                    }
-                                }
-                            }) {
+                            /* var textToSpeech: TextToSpeech? = null
+                             textToSpeech = TextToSpeech(
+                                 context
+                             ) {
+                                 if (it == TextToSpeech.SUCCESS) {
+                                     textToSpeech?.let { txtToSpeech ->
+                                         txtToSpeech.language = Locale.US
+                                         txtToSpeech.setSpeechRate(1.0f)
+                                         txtToSpeech.speak(
+                                             "$xLabel $yLabel",
+                                             TextToSpeech.QUEUE_ADD,
+                                             null,
+                                             null
+                                         )
+                                     }
+                                 }
+                             }*/
+                        }) {
                             Text(text = "Next")
                         }
 
                         Button(modifier = Modifier
-                            /*.focusRequester(focusRequesterPrevBtn)
-                            .focusable()*/, onClick = {
-                                val xStep: Float
-                                isTapped = true
-                                visibility = true
-                                selectedSubIndex -= 1
-                                // Change the logic here
-                                if (selectedSubIndex < 0) {
-                                    selectedIndex -= 1
-                                    if (selectedIndex >= 0) {
-                                        selectedSubIndex =
-                                            groupedBarList[selectedIndex].barList.size - 1
-                                        insideOffset =
-                                            localDensity.run { barWidth.toPx() } * groupedBarList[selectedIndex].barList.size
-                                    } else {
-                                        selectedIndex = 0
-                                        selectedSubIndex = 0
-                                        insideOffset = 0f
-                                    }
-                                    xStep =
-                                        ((localDensity.run { barWidth.toPx() }) + localDensity.run { paddingBetweenBars.toPx() })
-
+                            .focusRequester(focusRequesterPrevBtn)
+                            .focusable(), onClick = {
+                            val xStep: Float
+                            isTapped = true
+                            visibility = true
+                            selectedSubIndex -= 1
+                            if (selectedSubIndex < 0) {
+                                selectedIndex -= 1
+                                if (selectedIndex >= 0) {
+                                    selectedSubIndex =
+                                        groupedBarList[selectedIndex].barList.size - 1
+                                    insideOffset =
+                                        ((localDensity.run { barWidth.toPx() }) * (groupedBarList[selectedIndex].barList.size - 1))
                                 } else {
-                                    insideOffset -= localDensity.run { barWidth.toPx() }
-                                    xStep = localDensity.run { barWidth.toPx() }
+                                    selectedIndex = 0
+                                    selectedSubIndex = 0
+                                    insideOffset = 0f
                                 }
-                                Log.d(
-                                    "selectedIndex-selectedSubIndex",
-                                    "selectedIndex-$selectedIndex selectedSubIndex-$selectedSubIndex"
-                                )
-                                composableScope.launch {
-                                    scrollState.scrollBy(+xStep)
-                                }
+                                xStep =
+                                    ((localDensity.run { barWidth.toPx() }) + localDensity.run { paddingBetweenBars.toPx() })
 
-                                val drawOffset = getGroupBarDrawOffset(
-                                    selectedIndex,
-                                    groupedBarList[selectedIndex].barList[selectedSubIndex].value,
-                                    xOffset,
-                                    xLeft,
-                                    scrollOffset.value - xStep,
+                            } else {
+                                insideOffset -= localDensity.run { barWidth.toPx() }
+                                xStep = localDensity.run { barWidth.toPx() }
+                            }
+                            Log.d(
+                                "selectedIndex-selectedSubIndex",
+                                "insideOffset-$insideOffset selectedIndex-$selectedIndex selectedSubIndex-$selectedSubIndex"
+                            )
+                            composableScope.launch {
+                                scrollState.scrollBy(+xStep)
+                            }
+
+                            val drawOffset = getGroupBarDrawOffset(
+                                selectedIndex,
+                                groupedBarList[selectedIndex].barList[selectedSubIndex].value,
+                                xOffset,
+                                xLeft,
+                                scrollOffset.value - xStep,
+                                yBottom,
+                                yOffset,
+                                0f
+                            )
+                            val individualOffset =
+                                Offset(drawOffset.x + insideOffset, drawOffset.y)
+
+                            tapOffset = individualOffset
+                            val middleOffset =
+                                Offset(individualOffset.x + localDensity.run { barWidth.toPx() } / 2,
+                                    drawOffset.y)
+                            // store the tap points for selection
+                            if (isTapped && middleOffset.isTapped(
+                                    tapOffset,
+                                    localDensity.run { barWidth.toPx() },
                                     yBottom,
-                                    yOffset,
-                                    0f
+                                    localDensity.run { tapPadding.toPx() }
                                 )
-                                val individualOffset =
-                                    Offset(drawOffset.x + insideOffset, drawOffset.y)
+                            ) {
+                                dragLocks[0] =
+                                    groupedBarList[selectedIndex].barList[selectedSubIndex] to individualOffset
+                            }
+                            val dragLockValue = dragLocks.values.firstOrNull()?.second
+                            val valueY = dragLockValue?.y
+                            val xLabel = "Name : ${dragLockValue?.x} "
+                            val yLabel = "Value : ${String.format("%.2f", valueY)}"
+                            coroutineScope.launch {
+                                isContainerFocused = true
+                                containerFocusedText = "$xLabel $yLabel"
+                                focusRequesterContainer.requestFocus()
+                                delay(5500)
+                                isContainerFocused = false
+                                focusRequesterPrevBtn.requestFocus()
+                            }
 
-                                tapOffset = individualOffset
-                                val middleOffset =
-                                    Offset(individualOffset.x + localDensity.run { barWidth.toPx() } / 2,
-                                        drawOffset.y)
-                                // store the tap points for selection
-                                if (isTapped && middleOffset.isTapped(
-                                        tapOffset,
-                                        localDensity.run { barWidth.toPx() },
-                                        yBottom,
-                                        localDensity.run { tapPadding.toPx() }
-                                    )
-                                ) {
-                                    dragLocks[0] =
-                                        groupedBarList[selectedIndex].barList[selectedSubIndex] to individualOffset
-                                }
+                            /*  var textToSpeech: TextToSpeech? = null
+                              textToSpeech = TextToSpeech(
+                                  context
+                              ) {
+                                  if (it == TextToSpeech.SUCCESS) {
+                                      textToSpeech?.let { txtToSpeech ->
+                                          txtToSpeech.language = Locale.US
+                                          txtToSpeech.setSpeechRate(1.0f)
+                                          txtToSpeech.speak(
+                                              "$xLabel $yLabel",
+                                              TextToSpeech.QUEUE_ADD,
+                                              null,
+                                              null
+                                          )
+                                      }
+                                  }
+                              }*/
 
-                                /* coroutineScope.launch {
-                                     isContainerFocused = true
-                                     focusRequesterContainer.requestFocus()
-                                     delay(5500)
-                                     isContainerFocused = false
-                                     focusRequesterPrevBtn.requestFocus()
-                                 }*/
-                                var textToSpeech: TextToSpeech? = null
-                                textToSpeech = TextToSpeech(
-                                    context
-                                ) {
-                                    if (it == TextToSpeech.SUCCESS) {
-                                        textToSpeech?.let { txtToSpeech ->
-                                            txtToSpeech.language = Locale.US
-                                            txtToSpeech.setSpeechRate(1.0f)
-                                            txtToSpeech.speak(
-                                                "Hello, This is Current Bar Data from previous button",
-                                                TextToSpeech.QUEUE_ADD,
-                                                null,
-                                                null
-                                            )
-                                        }
-                                    }
-                                }
-
-                            }) {
+                        }) {
                             Text(text = "Prev")
                         }
                     }
@@ -569,14 +588,21 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
  * @param selectedOffset: Offset selected
  * @param barWidth: Width of single bar
  * @param highlightData: Data for the highlight section
+ * @param columnWidth:Column Width of graph
+ * @param horizontalExtraSpace: Extra space added in the horizontal axis
+ * @param axisYLineThickness:Thickness of yAxis line
  */
 private fun DrawScope.drawGroupHighlightText(
     identifiedPoint: Bar,
     selectedOffset: Offset,
     barWidth: Dp,
-    highlightData: SelectionHighlightData
+    highlightData: SelectionHighlightData,
+    columnWidth: Float,
+    horizontalExtraSpace: Dp,
+    axisYLineThickness: Dp
 ) {
-    val centerPointOfBar = selectedOffset.x + barWidth.toPx() / 2
+    val centerPointOfBar =
+        selectedOffset.x + (barWidth.toPx() / 2) + (horizontalExtraSpace.toPx() / 2) + axisYLineThickness.toPx() + columnWidth
     // Drawing the highlighted background and text
     highlightData.drawGroupBarPopUp(this, selectedOffset, identifiedPoint, centerPointOfBar)
 }
@@ -666,7 +692,10 @@ private fun DrawScope.highlightGroupBar(
             mutableIdentifiedPoint,
             selectedOffset,
             barGraphData.barWidth,
-            barGraphData.selectionHighlightData
+            barGraphData.selectionHighlightData,
+            columnWidth,
+            barGraphData.horizontalExtraSpace,
+            barGraphData.yAxisData.axisLineThickness,
         )
     }
     return mutableIdentifiedPoint
