@@ -77,6 +77,38 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                         containerPaddingEnd.toPx()
                     )
                 },
+                containerBackgroundColor = backgroundColor,
+                isPinchZoomEnabled = isZoomAllowed,
+                drawXAndYAxis = { scrollOffset, xZoom ->
+                    YAxis(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .onGloballyPositioned {
+                                columnWidth = it.size.width.toFloat()
+                            },
+                        yAxisData = yAxisData
+                    )
+                    XAxis(
+                        xAxisData = xAxisData,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .align(Alignment.BottomStart)
+                            .onGloballyPositioned {
+                                rowHeight = it.size.height.toFloat()
+                            }
+                            .clip(
+                                RowClip(
+                                    columnWidth,
+                                    paddingRight
+                                )
+                            ),
+                        xStart = columnWidth,
+                        scrollOffset = scrollOffset,
+                        zoomScale = xZoom,
+                        graphData = line.dataPoints
+                    )
+                },
                 onDraw = { scrollOffset, xZoom ->
                     val yBottom = size.height - rowHeight
                     val yOffset = ((yBottom - paddingTop.toPx()) / maxElementInYAxis)
@@ -156,43 +188,11 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                         )
                     }
                 },
-                drawXAndYAxis = { scrollOffset, xZoom ->
-                    YAxis(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .onGloballyPositioned {
-                                columnWidth = it.size.width.toFloat()
-                            },
-                        yAxisData = yAxisData
-                    )
-                    XAxis(
-                        xAxisData = xAxisData,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .align(Alignment.BottomStart)
-                            .onGloballyPositioned {
-                                rowHeight = it.size.height.toFloat()
-                            }
-                            .clip(
-                                RowClip(
-                                    columnWidth,
-                                    paddingRight
-                                )
-                            ),
-                        xStart = columnWidth,
-                        scrollOffset = scrollOffset,
-                        zoomScale = xZoom,
-                        graphData = line.dataPoints
-                    )
-                },
-                containerBackgroundColor = backgroundColor,
                 onPointClicked = { offset: Offset, _: Float ->
                     isTapped = true
                     selectionTextVisibility = true
                     tapOffset = offset
                 },
-                isPinchZoomEnabled = isZoomAllowed,
                 onScroll = {
                     isTapped = false
                     selectionTextVisibility = false
@@ -200,7 +200,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                 onZoomInAndOut = {
                     isTapped = false
                     selectionTextVisibility = false
-                },
+                }
             )
         }
     }
