@@ -147,11 +147,10 @@ fun Offset.isTapped(tapOffset: Offset, xOffset: Float, bottom: Float, tapPadding
 /**
  * Returns true if the tapped point is withing the given boundries else false
  * @param tapOffset Tapped offset
- * @param xOffset in the X axis
  * @param tapPadding plus or minus padding from the point or clickable padding
  */
-fun Offset.isPointTapped(tapOffset: Offset, xOffset: Float, tapPadding: Float) =
-    ((tapOffset.x) > x - xOffset / 2) && ((tapOffset.x) < x + xOffset / 2) &&
+fun Offset.isPointTapped(tapOffset: Offset, tapPadding: Float) =
+    ((tapOffset.x) > x - tapPadding) && ((tapOffset.x) < x + tapPadding) &&
             ((tapOffset.plus(Offset(0f, tapPadding))).y > y) &&
             ((tapOffset.minus(Offset(0f, tapPadding))).y < y)
 

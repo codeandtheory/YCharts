@@ -22,9 +22,10 @@ import com.app.ygraphs.ui.theme.YGraphsTheme
 import com.ygraph.components.axis.AxisData
 import com.ygraph.components.common.utils.DataUtils
 import com.ygraph.components.graph.bargraph.models.BarStyle
-import com.ygraph.components.graph.combinedgraph.CombinedLineAndBarGraph
+import com.ygraph.components.graph.bargraph.models.StackLabelConfig
+import com.ygraph.components.graph.combinedgraph.CombinedGraph
 import com.ygraph.components.graph.combinedgraph.model.BarPlotData
-import com.ygraph.components.graph.combinedgraph.model.CombinedLineAndBarGraphData
+import com.ygraph.components.graph.combinedgraph.model.CombinedGraphData
 import com.ygraph.components.graph.linegraph.model.*
 
 class CombinedLineAndBarChartActivity : ComponentActivity() {
@@ -66,12 +67,10 @@ class CombinedLineAndBarChartActivity : ComponentActivity() {
 @Composable
 fun BarWithLineChart() {
     val maxRange = 100
-    val barGraphData = DataUtils.getBarChartData(50, 100)
-    val lineGraphData = DataUtils.getLineChartData(50, maxRange = 100)
+    val groupBarData = DataUtils.getGroupBarChartData(50, 100, 3)
     val yStepSize = 10
     val xAxisData = AxisData.Builder()
         .axisStepSize(30.dp)
-        .steps(maxOf(barGraphData.size - 1, lineGraphData.size - 1))
         .bottomPadding(40.dp)
         .labelData { index -> index.toString() }
         .build()
@@ -81,25 +80,37 @@ fun BarWithLineChart() {
         .axisOffset(20.dp)
         .labelData { index -> (index * (maxRange / yStepSize)).toString() }
         .build()
-    val combinedLineAndBarGraphData = CombinedLineAndBarGraphData(
-        line = Line(
-            lineGraphData,
-            shadowUnderLine = ShadowUnderLine( brush = Brush.verticalGradient(
-                listOf(
-                    Color.Black,
-                    Color.Transparent
-                )
-            ), alpha = 0.3f),
+    val linePlotData = listOf(
+        Line(
+            DataUtils.getLineChartData(50, maxRange = 100),
+            lineStyle = LineStyle(color = Color.Blue),
             intersectionPoint = IntersectionPoint(),
             selectionHighlightPoint = SelectionHighlightPoint(),
             selectionHighlightPopUp = SelectionHighlightPopUp()
         ),
-        barPlotData = BarPlotData(barGraphData, barStyle = BarStyle(barWidth = 35.dp)),
+        Line(
+            DataUtils.getLineChartData(50, maxRange = 100),
+            lineStyle = LineStyle(color = Color.Black),
+            intersectionPoint = IntersectionPoint(),
+            selectionHighlightPoint = SelectionHighlightPoint(),
+            selectionHighlightPopUp = SelectionHighlightPopUp()
+        )
+    )
+    val combinedGraphData = CombinedGraphData(
+        linePlotData = linePlotData,
+        barPlotData = BarPlotData(
+            groupBarData,
+            barStyle = BarStyle(barWidth = 35.dp),
+            stackLabelConfig = StackLabelConfig(
+                stackLabelList = DataUtils.getStackLabelData(3),
+                gridColumnCount = 3
+            )
+        ),
         xAxisData = xAxisData,
         yAxisData = yAxisData
     )
-    CombinedLineAndBarGraph(
-        modifier = Modifier.height(350.dp),
-        combineGraphData = combinedLineAndBarGraphData
+    CombinedGraph(
+        modifier = Modifier.height(400.dp),
+        combinedGraphData = combinedGraphData
     )
 }

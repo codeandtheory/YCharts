@@ -11,11 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.piechartcontainer.ui.theme.YGraphsTheme
 import com.ygraph.components.axis.AxisData
+import com.ygraph.components.common.utils.DataUtils
+import com.ygraph.components.common.utils.DataUtils.getGroupBarChartData
 import com.ygraph.components.graph.bargraph.GroupBarGraph
 import com.ygraph.components.graph.bargraph.models.GroupBarGraphData
 import com.ygraph.components.graph.bargraph.models.StackLabelConfig
-import com.ygraph.components.common.utils.DataUtils
-import com.ygraph.components.common.utils.DataUtils.getGroupBarChartData
 
 class BarChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +47,8 @@ class BarChartActivity : ComponentActivity() {
                         xAxisData = xAxisData,
                         yAxisData = yAxisData,
                         stackLabelConfig = StackLabelConfig(
-                            stackLabelList = DataUtils.getStackLabelData(barSize)
+                            stackLabelList = DataUtils.getStackLabelData(barSize),
+                            gridColumnCount = 3
                         )
                     )
                     GroupBarGraph(

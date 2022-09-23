@@ -4,14 +4,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.axis.AxisData
-import com.ygraph.components.graph.bargraph.models.BarData
 import com.ygraph.components.graph.bargraph.models.BarStyle
+import com.ygraph.components.graph.bargraph.models.GroupBar
+import com.ygraph.components.graph.bargraph.models.StackLabelConfig
 import com.ygraph.components.graph.linegraph.model.Line
 
 /**
  *
  * CombinedLineAndBarGraphData data class that contains all params user need to define to draw a bar and line graph.
- * @param line: The path to be drawn on the graph represented by a line.
+ * @param linePlotData: The path to be drawn on the graph represented by a line.
  * @param xAxisData: All the configurations related to X-Axis to be defined here in [AxisData]
  * @param yAxisData: All the configurations related to Y-Axis to be defined here in [AxisData]
  * @param barPlotData: Data related to the drawing of bar graph.
@@ -24,26 +25,29 @@ import com.ygraph.components.graph.linegraph.model.Line
  * @param canSupportTapOnIndividualPointOrBar: True if user wants tap on individual graph component say
  * point on a line or bar else false where tap will be considered for all the point and bar in the tap range
  */
-data class CombinedLineAndBarGraphData(
-    val line: Line,
+data class CombinedGraphData(
+    val linePlotData: List<Line>,
     val barPlotData: BarPlotData,
     val xAxisData: AxisData = AxisData.Builder().build(),
     val yAxisData: AxisData = AxisData.Builder().build(),
     val paddingTop: Dp = 30.dp,
     val bottomPadding: Dp = 10.dp,
-    val paddingRight: Dp = 10.dp,
     val paddingEnd: Dp = 10.dp,
-    val horizontalExtraSpace: Dp = 0.dp,
+    val horizontalExtraSpace: Dp = 10.dp,
     val containerPaddingEnd: Dp = 15.dp,
     val backgroundColor: Color = Color.White,
-    val tapPadding: Dp = 20.dp,
-    val selectionHighLightPopUp: SelectionHighLightPopUp? = SelectionHighLightPopUp(),
+    val tapPadding: Dp = 10.dp,
     val canSupportTapOnIndividualPointOrBar: Boolean = true
 )
 
 /**
  * BarPlotData is a data class that holds bar graph related data and styling components
- * @param barData : Data related to the bar point.
+ * @param groupBarList : Data related to the bar point.
  * @param barStyle : Styling related to the bars.
  */
-data class BarPlotData(val barData: List<BarData>, val barStyle: BarStyle = BarStyle())
+data class BarPlotData(
+    val groupBarList: List<GroupBar>,
+    val groupingSize: Int = groupBarList.firstOrNull()?.barList?.size ?: 1,
+    val barStyle: BarStyle = BarStyle(),
+    val stackLabelConfig: StackLabelConfig
+)

@@ -9,6 +9,6 @@
     <string name="title_line_chart">Line Graph</string>
     <string name="title_pie_chart">Pie Graph</string>
     <string name="title_donut_chart">Donut Graph</string>
-    <string name="title_bar_with_line_chart">Bar With Line Graph</string>
+    <string name="title_bar_with_line_chart">Combined Graph</string>
 
 </resources>

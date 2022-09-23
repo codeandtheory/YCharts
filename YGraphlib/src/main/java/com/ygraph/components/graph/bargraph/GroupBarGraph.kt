@@ -179,12 +179,13 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                                 dragLocks,
                                 visibility,
                                 identifiedPoint,
-                                groupBarGraphData,
+                                groupBarGraphData.selectionHighlightData,
                                 isTapped,
                                 columnWidth,
                                 yBottom,
                                 paddingRight,
-                                yOffset
+                                yOffset,
+                                groupBarGraphData.barWidth
                             )
                         }
                     },
@@ -324,23 +325,25 @@ private fun DrawScope.drawGroupBarGraph(
  * @param dragLocks : Mutable map of BarData and drawOffset.
  * @param visibility : Flag to control the visibility of highlighted text.
  * @param identifiedPoint: selected bar data.
- * @param barGraphData: Data related to the bar graph.
+ * @param selectionHighlightData: Data related to the bar graph highlight.
  * @param isDragging : Boolean flag for the dragging status.
  * @param columnWidth : Width of the Y axis.
  * @param yBottom : Bottom padding.
  * @param paddingRight : Right padding.
  * @param yOffset : Distance between two y points.
+ * @param barWidth : Width of each bar.
  */
-private fun DrawScope.highlightGroupBar(
+fun DrawScope.highlightGroupBar(
     dragLocks: MutableMap<Int, Pair<Bar, Offset>>,
     visibility: Boolean,
     identifiedPoint: Bar,
-    barGraphData: GroupBarGraphData,
+    selectionHighlightData: SelectionHighlightData?,
     isDragging: Boolean,
     columnWidth: Float,
     yBottom: Float,
     paddingRight: Dp,
     yOffset: Float,
+    barWidth: Dp,
 ): Bar {
     var mutableIdentifiedPoint: Bar = identifiedPoint
     // Handle the show the selected bar
@@ -351,16 +354,16 @@ private fun DrawScope.highlightGroupBar(
         }
 
         // Draw highlight bar on selection
-        if (barGraphData.selectionHighlightData?.isHighlightBarRequired == true) {
+        if (selectionHighlightData?.isHighlightBarRequired == true) {
             dragLocks.values.firstOrNull()?.let { (barData, location) ->
                 val (xPoint, yPoint) = location
                 if (xPoint >= columnWidth && xPoint <= size.width - paddingRight.toPx()) {
                     val y1 = yBottom - ((barData.value - 0) * yOffset)
-                    barGraphData.selectionHighlightData.drawHighlightBar(
+                    selectionHighlightData.drawHighlightBar(
                         this,
                         xPoint,
                         yPoint,
-                        barGraphData.barWidth.toPx(),
+                        barWidth.toPx(),
                         yBottom - y1
                     )
                 }
@@ -369,12 +372,12 @@ private fun DrawScope.highlightGroupBar(
     }
 
     val selectedOffset = dragLocks.values.firstOrNull()?.second
-    if (visibility && selectedOffset != null && barGraphData.selectionHighlightData != null) {
+    if (visibility && selectedOffset != null && selectionHighlightData != null) {
         drawGroupHighlightText(
             mutableIdentifiedPoint,
             selectedOffset,
-            barGraphData.barWidth,
-            barGraphData.selectionHighlightData
+            barWidth,
+            selectionHighlightData
         )
     }
     return mutableIdentifiedPoint

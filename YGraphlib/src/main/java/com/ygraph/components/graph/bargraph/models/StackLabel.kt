@@ -29,7 +29,7 @@ data class StackLabel(
 data class StackLabelConfig(
     val stackLabelList: List<StackLabel>,
     val showLabel: Boolean = true,
-    val gridColumnCount: Int = 3,
+    val gridColumnCount: Int = 1,
     val gridPaddingHorizontal: Dp = 8.dp,
     val gridPaddingVertical: Dp = 8.dp,
     val colorBoxSize: Dp = 25.dp,
