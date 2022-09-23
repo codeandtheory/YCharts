@@ -28,6 +28,7 @@ import com.ygraph.components.axis.AxisData
  * @param showYAxis: Boolean Flag to enable/disable Y axis
  * @param stackLabelConfig : All config related to the StackLabel.
  * @param groupSeparatorConfig : All config related to the GroupSeparator.
+ * @param accessibilityConfig : [AccessibilityConfig] data class params used for All config related to the accessibility.
  */
 
 data class GroupBarGraphData(
@@ -51,4 +52,5 @@ data class GroupBarGraphData(
     val tapPadding: Dp = 10.dp,
     val stackLabelConfig: StackLabelConfig,
     val groupSeparatorConfig: GroupSeparatorConfig = GroupSeparatorConfig(),
+    val accessibilityConfig: AccessibilityConfig = AccessibilityConfig(),
 )
