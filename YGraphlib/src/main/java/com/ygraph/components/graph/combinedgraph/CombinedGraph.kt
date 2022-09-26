@@ -84,18 +84,17 @@ fun CombinedGraph(modifier: Modifier, combinedGraphData: CombinedGraphData) {
             var identifiedPoint by remember { mutableStateOf(Point(0f, 0f)) }
             var tapOffset by remember { mutableStateOf(Offset(0f, 0f)) }
 
-            Column {
-                ScrollableCanvasContainer(
-                    modifier = modifier,
-                    containerBackgroundColor = backgroundColor,
-                    isPinchZoomEnabled = isZoomAllowed,
-                    calculateMaxDistance = { xZoom ->
-                        xOffset =
-                            ((barPlotData.barStyle.barWidth.toPx() * barPlotData.groupingSize) +
-                                    barPlotData.barStyle.paddingBetweenBars.toPx()) * xZoom
-                        getMaxScrollDistance(
-                            columnWidth,
-                            xMax,
+            ScrollableCanvasContainer(
+                modifier = modifier,
+                containerBackgroundColor = backgroundColor,
+                isPinchZoomEnabled = isZoomAllowed,
+                calculateMaxDistance = { xZoom ->
+                    xOffset =
+                        ((barPlotData.barStyle.barWidth.toPx() * barPlotData.groupingSize) +
+                                barPlotData.barStyle.paddingBetweenBars.toPx()) * xZoom
+                    getMaxScrollDistance(
+                        columnWidth,
+                        xMax,
                             xMin,
                             xOffset,
                             0f,
@@ -268,25 +267,25 @@ fun CombinedGraph(modifier: Modifier, combinedGraphData: CombinedGraphData) {
                                             }
                                         }
                                     }
-                                    if (isTapped && linePointLocks.isEmpty() &&
-                                        plotData.barStyle.selectionHighlightData != null
-                                    ) {
-                                        // highlighting the selected bar and showing the data points
-                                        identifiedBarPoint = highlightGroupBar(
-                                            barTapLocks,
-                                            true,
-                                            identifiedBarPoint,
-                                            plotData.barStyle.selectionHighlightData,
-                                            isTapped,
-                                            columnWidth,
-                                            yBottom,
-                                            paddingRight,
-                                            yOffset,
-                                            plotData.barStyle.barWidth
-                                        )
-                                    }
                                 }
                             }
+                        }
+                        if (isTapped && linePointLocks.isEmpty() &&
+                            barPlotData.barStyle.selectionHighlightData != null
+                        ) {
+                            // highlighting the selected bar and showing the data points
+                            identifiedBarPoint = highlightGroupBar(
+                                barTapLocks,
+                                true,
+                                identifiedBarPoint,
+                                barPlotData.barStyle.selectionHighlightData,
+                                isTapped,
+                                columnWidth,
+                                yBottom,
+                                paddingRight,
+                                yOffset,
+                                barPlotData.barStyle.barWidth
+                            )
                         }
                         drawUnderScrollMask(columnWidth, paddingRight, bgColor)
                     },
@@ -298,7 +297,6 @@ fun CombinedGraph(modifier: Modifier, combinedGraphData: CombinedGraphData) {
                         isTapped = false
                     }
                 )
-            }
         }
     }
 }

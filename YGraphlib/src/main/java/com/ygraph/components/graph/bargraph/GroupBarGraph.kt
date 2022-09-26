@@ -1,13 +1,8 @@
 package com.ygraph.components.graph.bargraph
 
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,7 +14,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.axis.XAxis
@@ -78,18 +72,18 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                 rowHeight = LocalDensity.current.run { DEFAULT_YAXIS_BOTTOM_PADDING.dp.toPx() }
             }
 
-            Column {
-                ScrollableCanvasContainer(modifier = modifier,
-                    containerBackgroundColor = backgroundColor,
-                    calculateMaxDistance = { xZoom ->
-                        horizontalGap = horizontalExtraSpace.toPx()
-                        val xLeft = columnWidth + horizontalGap
-                        xOffset =
-                            ((barWidth.toPx() * groupingSize) + paddingBetweenBars.toPx()) * xZoom
-                        getMaxScrollDistance(
-                            columnWidth,
-                            xMax.toFloat(),
-                            0f,
+            ScrollableCanvasContainer(
+                modifier = modifier,
+                containerBackgroundColor = backgroundColor,
+                calculateMaxDistance = { xZoom ->
+                    horizontalGap = horizontalExtraSpace.toPx()
+                    val xLeft = columnWidth + horizontalGap
+                    xOffset =
+                        ((barWidth.toPx() * groupingSize) + paddingBetweenBars.toPx()) * xZoom
+                    getMaxScrollDistance(
+                        columnWidth,
+                        xMax.toFloat(),
+                        0f,
                             xOffset,
                             xLeft,
                             paddingRight.toPx(),
@@ -241,32 +235,6 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                         visibility = false
                     }
                 )
-                if (legendsConfig.showLabel) {
-                    LazyVerticalGrid(
-                        modifier = Modifier.padding(
-                            horizontal = legendsConfig.gridPaddingHorizontal,
-                            vertical = legendsConfig.gridPaddingVertical
-                        ),
-                        columns = GridCells.Fixed(legendsConfig.gridColumnCount)
-                    ) {
-                        items(groupBarGraphData.legendsConfig.legendLabelList) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Box(
-                                    modifier = Modifier
-                                        .background(it.color)
-                                        .size(legendsConfig.colorBoxSize)
-                                )
-                                Spacer(modifier = Modifier.padding(legendsConfig.spaceBWLabelAndColorBox))
-                                Text(
-                                    text = it.name,
-                                    style = legendsConfig.textStyle,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 }
