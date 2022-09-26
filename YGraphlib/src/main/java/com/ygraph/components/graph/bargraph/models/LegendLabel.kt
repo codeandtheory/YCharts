@@ -18,7 +18,6 @@ data class LegendLabel(
 /**
  * LegendsConfig data class params used in config label in graph.
  * @param legendLabelList: stackLabelList is used to show labels with colors
- * @param showLabel : Boolean Flag to show/hide stack label
  * @param gridColumnCount : Column Count for stackLabel grid
  * @param gridPaddingHorizontal : Horizontal padding for stackLabel grid
  * @param gridPaddingVertical :  Vertical padding for stackLabel grid
@@ -28,7 +27,6 @@ data class LegendLabel(
  *  */
 data class LegendsConfig(
     val legendLabelList: List<LegendLabel>,
-    val showLabel: Boolean = true,
     val gridColumnCount: Int = 1,
     val gridPaddingHorizontal: Dp = 8.dp,
     val gridPaddingVertical: Dp = 8.dp,
