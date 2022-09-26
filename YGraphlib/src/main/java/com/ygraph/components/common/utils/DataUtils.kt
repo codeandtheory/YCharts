@@ -164,11 +164,11 @@ object DataUtils {
      * @param barSize size of bars in one group
     return the sample stackLabelList data
      */
-    fun getStackLabelData(barSize: Int): List<StackLabel> {
-        val stackLabelList = mutableListOf<StackLabel>()
+    fun getStackLabelData(barSize: Int): List<LegendLabel> {
+        val legendLabelList = mutableListOf<LegendLabel>()
         for (index in 0 until barSize) {
-            stackLabelList.add(
-                StackLabel(
+            legendLabelList.add(
+                LegendLabel(
                     Color(
                         (0 until 256).random(), (0 until 256).random(), (0 until 256).random()
                     ),
@@ -176,6 +176,6 @@ object DataUtils {
                 )
             )
         }
-        return stackLabelList
+        return legendLabelList
     }
 }

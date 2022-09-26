@@ -15,7 +15,7 @@ import com.ygraph.components.common.utils.DataUtils
 import com.ygraph.components.common.utils.DataUtils.getGroupBarChartData
 import com.ygraph.components.graph.bargraph.GroupBarGraph
 import com.ygraph.components.graph.bargraph.models.GroupBarGraphData
-import com.ygraph.components.graph.bargraph.models.StackLabelConfig
+import com.ygraph.components.graph.bargraph.models.LegendsConfig
 
 class BarChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,8 +46,8 @@ class BarChartActivity : ComponentActivity() {
                         groupedBarList = groupBarData,
                         xAxisData = xAxisData,
                         yAxisData = yAxisData,
-                        stackLabelConfig = StackLabelConfig(
-                            stackLabelList = DataUtils.getStackLabelData(barSize),
+                        legendsConfig = LegendsConfig(
+                            legendLabelList = DataUtils.getStackLabelData(barSize),
                             gridColumnCount = 3
                         )
                     )
@@ -60,5 +60,4 @@ class BarChartActivity : ComponentActivity() {
         }
     }
 }
-
 

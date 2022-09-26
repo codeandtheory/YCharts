@@ -241,25 +241,25 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                         visibility = false
                     }
                 )
-                if (stackLabelConfig.showLabel) {
+                if (legendsConfig.showLabel) {
                     LazyVerticalGrid(
                         modifier = Modifier.padding(
-                            horizontal = stackLabelConfig.gridPaddingHorizontal,
-                            vertical = stackLabelConfig.gridPaddingVertical
+                            horizontal = legendsConfig.gridPaddingHorizontal,
+                            vertical = legendsConfig.gridPaddingVertical
                         ),
-                        columns = GridCells.Fixed(stackLabelConfig.gridColumnCount)
+                        columns = GridCells.Fixed(legendsConfig.gridColumnCount)
                     ) {
-                        items(groupBarGraphData.stackLabelConfig.stackLabelList) {
+                        items(groupBarGraphData.legendsConfig.legendLabelList) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Box(
                                     modifier = Modifier
                                         .background(it.color)
-                                        .size(stackLabelConfig.colorBoxSize)
+                                        .size(legendsConfig.colorBoxSize)
                                 )
-                                Spacer(modifier = Modifier.padding(stackLabelConfig.spaceBWLabelAndColorBox))
+                                Spacer(modifier = Modifier.padding(legendsConfig.spaceBWLabelAndColorBox))
                                 Text(
                                     text = it.name,
-                                    style = stackLabelConfig.textStyle,
+                                    style = legendsConfig.textStyle,
                                     overflow = TextOverflow.Ellipsis
                                 )
                             }
@@ -304,7 +304,7 @@ private fun DrawScope.drawGroupBarGraph(
     height: Float,
     subIndex: Int
 ) {
-    val color = barGraphData.stackLabelConfig.stackLabelList[subIndex].color
+    val color = barGraphData.legendsConfig.legendLabelList[subIndex].color
     drawRoundRect(
         color = color,
         topLeft = drawOffset,

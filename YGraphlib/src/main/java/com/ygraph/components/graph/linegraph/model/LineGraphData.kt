@@ -12,7 +12,7 @@ import com.ygraph.components.common.model.Point
  * @param line: The path to be drawn on the graph represented by a line.
  * @param xAxisData: All the configurations related to X-Axis to be defined here in [AxisData]
  * @param yAxisData: All the configurations related to Y-Axis to be defined here in [AxisData]
- * @param isZoomAllowed: True if zoom in X-Axis is allowed else false.
+ * @param isZoomAllowed: True if zoom in for all vertical graph components is allowed else false.
  * @param paddingTop: Padding from the top of the canvas to start of the graph container.
  * @param paddingRight: Padding from the end of the canvas to end of the graph container.
  * @param bottomPadding: Padding from the bottom of the canvas to bottom of the graph container.

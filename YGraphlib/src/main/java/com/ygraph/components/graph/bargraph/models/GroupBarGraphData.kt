@@ -26,7 +26,7 @@ import com.ygraph.components.axis.AxisData
  * @param barDrawStyle: Draw style for the bars
  * @param showXAxis: Boolean Flag to enable/disable X axis
  * @param showYAxis: Boolean Flag to enable/disable Y axis
- * @param stackLabelConfig : All config related to the StackLabel.
+ * @param legendsConfig : All config related to the StackLabel.
  * @param groupSeparatorConfig : All config related to the GroupSeparator.
  */
 
@@ -49,6 +49,6 @@ data class GroupBarGraphData(
     val showYAxis: Boolean = true,
     val showXAxis: Boolean = true,
     val tapPadding: Dp = 10.dp,
-    val stackLabelConfig: StackLabelConfig,
+    val legendsConfig: LegendsConfig,
     val groupSeparatorConfig: GroupSeparatorConfig = GroupSeparatorConfig(),
 )

@@ -6,18 +6,18 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 /**
- * StackLabel data class params used in drawing label in graph.
+ * LegendLabel data class params used in drawing label in graph.
  * @param color : color of label.
  * @param name : name of label.
  *  */
-data class StackLabel(
+data class LegendLabel(
     val color: Color,
     val name: String,
 )
 
 /**
- * StackLabelConfig data class params used in config label in graph.
- * @param stackLabelList: stackLabelList is used to show labels with colors
+ * LegendsConfig data class params used in config label in graph.
+ * @param legendLabelList: stackLabelList is used to show labels with colors
  * @param showLabel : Boolean Flag to show/hide stack label
  * @param gridColumnCount : Column Count for stackLabel grid
  * @param gridPaddingHorizontal : Horizontal padding for stackLabel grid
@@ -26,8 +26,8 @@ data class StackLabel(
  * @param colorBoxSize: Blend mode for the groupSeparator
  * @param textStyle: TextStyle for label
  *  */
-data class StackLabelConfig(
-    val stackLabelList: List<StackLabel>,
+data class LegendsConfig(
+    val legendLabelList: List<LegendLabel>,
     val showLabel: Boolean = true,
     val gridColumnCount: Int = 1,
     val gridPaddingHorizontal: Dp = 8.dp,
