@@ -120,16 +120,17 @@ data class SelectionHighlightData(
         val yLabel = "Value : ${String.format("%.2f", value)}"
         "$xLabel $yLabel"
     },
-    
 
-    val drawGroupBarPopUp: DrawScope.(Offset, Bar, Float) -> Unit = { selectedOffset, identifiedPoint, centerPointOfBar ->
+
+    val drawGroupBarPopUp: DrawScope.(Offset, BarData, Float) -> Unit = { selectedOffset, identifiedPoint, centerPointOfBar ->
         val highlightTextPaint = TextPaint().apply {
             textSize = highlightTextSize.toPx()
             color = highlightTextColor.toArgb()
             textAlign = highlightLabelAlignment
             typeface = highlightTextTypeface
         }
-        val label = groupBarPopUpLabel(identifiedPoint.name, identifiedPoint.value)
+        val xLabel = "B${identifiedPoint.point.x.toInt()}"
+        val label = groupBarPopUpLabel(xLabel, identifiedPoint.point.y)
         drawContext.canvas.nativeCanvas.apply {
             val background = getTextBackgroundRect(
                 centerPointOfBar,

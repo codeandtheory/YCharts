@@ -49,7 +49,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
             var tapOffset by remember { mutableStateOf(Offset(0f, 0f)) }
             var selectionTextVisibility by remember { mutableStateOf(false) }
             var identifiedPoint by remember { mutableStateOf(Point(0f, 0f)) }
-
+            val line = linePlotData.lines.first()
             // Update must required values
             val xAxisData = xAxisData.copy(axisBottomPadding = bottomPadding)
             val yAxisData = yAxisData.copy(
@@ -65,7 +65,6 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
             ScrollableCanvasContainer(
                 modifier = modifier,
                 calculateMaxDistance = { xZoom ->
-                    // horizontalGap.value = lineGraphData.horizontalExtraSpace.toPx()
                     xOffset = xAxisData.axisStepSize.toPx() * xZoom
                     getMaxScrollDistance(
                         columnWidth,
@@ -115,7 +114,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                     xOffset = xAxisData.axisStepSize.toPx() * xZoom
                     val xLeft = columnWidth // To add extra space if needed
                     val pointsData = getMappingPointsToGraph(
-                        lineGraphData.line.dataPoints,
+                        line.dataPoints,
                         xMin,
                         xOffset,
                         xLeft,
@@ -163,7 +162,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                     pointsData.forEachIndexed { index, point ->
                         if (isTapped && point.isTapped(tapOffset.x, xOffset)) {
                             // Dealing with only one line graph hence tapPointLocks[0]
-                            tapPointLocks[0] = lineGraphData.line.dataPoints[index] to point
+                            tapPointLocks[0] = line.dataPoints[index] to point
                         }
                     }
 

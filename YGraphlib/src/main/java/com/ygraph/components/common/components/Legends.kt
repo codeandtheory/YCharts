@@ -11,8 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.ygraph.components.graph.bargraph.models.LegendLabel
-import com.ygraph.components.graph.bargraph.models.LegendsConfig
+import com.ygraph.components.common.model.LegendLabel
+import com.ygraph.components.common.model.LegendsConfig
 
 @Composable
 fun Legends(modifier: Modifier = Modifier, legendsConfig: LegendsConfig) {

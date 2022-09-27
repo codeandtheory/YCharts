@@ -8,7 +8,7 @@ import com.ygraph.components.common.model.PlotData
 import com.ygraph.components.common.model.PlotType
 import com.ygraph.components.graph.bargraph.models.BarStyle
 import com.ygraph.components.graph.bargraph.models.GroupBar
-import com.ygraph.components.graph.bargraph.models.LegendsConfig
+import com.ygraph.components.common.model.LegendsConfig
 import com.ygraph.components.graph.linegraph.model.Line
 
 /**
@@ -37,32 +37,3 @@ data class CombinedGraphData(
     val tapPadding: Dp = 10.dp,
     val isZoomAllowed: Boolean = true
 )
-
-/**
- * BarPlotData is a data class that holds bar graph related data and styling components
- * @param plotType : Defines the type of plot/graph
- * @param groupBarList : Data related to the bar point.
- * @param barStyle : Styling related to the bars.
- */
-data class BarPlotData(
-    override val plotType: PlotType = PlotType.Bar,
-    val groupBarList: List<GroupBar>,
-    val groupingSize: Int = groupBarList.firstOrNull()?.barList?.size ?: 1,
-    val barStyle: BarStyle = BarStyle(),
-    val legendsConfig: LegendsConfig
-) : PlotData {
-    companion object {
-        fun default() =
-            BarPlotData(groupBarList = listOf(), legendsConfig = LegendsConfig(listOf()))
-    }
-}
-
-/**
- * LinePlotData is a data class that holds line graph related data and styling components
- * @param plotType : Defines the type of plot/graph
- * @param lines : Data related to the list of lines to be drawn.
- */
-data class LinePlotData(
-    override val plotType: PlotType = PlotType.Line,
-    val lines: List<Line>
-) : PlotData

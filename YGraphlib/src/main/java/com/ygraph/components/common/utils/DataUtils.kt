@@ -1,10 +1,10 @@
 package com.ygraph.components.common.utils
 
 import androidx.compose.ui.graphics.Color
-import com.ygraph.components.graph.bargraph.models.*
+import com.ygraph.components.common.model.LegendLabel
+import com.ygraph.components.common.model.Point
 import com.ygraph.components.graph.bargraph.models.BarData
 import com.ygraph.components.graph.bargraph.models.GroupBar
-import com.ygraph.components.common.model.Point
 import com.ygraph.components.piechart.models.PieChartData
 import kotlin.random.Random
 
@@ -130,12 +130,14 @@ object DataUtils {
     fun getGroupBarChartData(listSize: Int, maxRange: Int, barSize: Int): List<GroupBar> {
         val list = mutableListOf<GroupBar>()
         for (index in 0 until listSize) {
-            val barList = mutableListOf<Bar>()
+            val barList = mutableListOf<BarData>()
             for (i in 0 until barSize) {
                 barList.add(
-                    Bar(
-                        "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat(),
-                        "${index}B$i"
+                    BarData(
+                        Point(
+                            i.toFloat(),
+                            "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat()
+                        ),
                     )
                 )
             }
@@ -164,18 +166,29 @@ object DataUtils {
      * @param barSize size of bars in one group
     return the sample stackLabelList data
      */
-    fun getStackLabelData(barSize: Int): List<LegendLabel> {
+    fun getLegendsLabelData(colorPaletteList: List<Color>): List<LegendLabel> {
         val legendLabelList = mutableListOf<LegendLabel>()
-        for (index in 0 until barSize) {
+        for (index in colorPaletteList.indices) {
             legendLabelList.add(
                 LegendLabel(
-                    Color(
-                        (0 until 256).random(), (0 until 256).random(), (0 until 256).random()
-                    ),
-                    "${index}B$index"
+                    colorPaletteList[index],
+                    "B$index"
                 )
             )
         }
         return legendLabelList
+    }
+
+    fun getColorPaletteList(listSize: Int): List<Color> {
+        val colorList = mutableListOf<Color>()
+
+        for (index in 0 until listSize) {
+            colorList.add(
+                Color(
+                    (0 until 256).random(), (0 until 256).random(), (0 until 256).random()
+                )
+            )
+        }
+        return colorList
     }
 }

@@ -17,13 +17,12 @@ import com.app.ygraphs.ui.compositions.AppBarWithBackButton
 import com.app.ygraphs.ui.theme.YGraphsTheme
 import com.ygraph.components.axis.AxisData
 import com.ygraph.components.common.components.Legends
+import com.ygraph.components.common.model.LegendsConfig
 import com.ygraph.components.common.utils.DataUtils
+import com.ygraph.components.graph.bargraph.models.BarPlotData
 import com.ygraph.components.graph.bargraph.models.BarStyle
-import com.ygraph.components.graph.bargraph.models.LegendsConfig
 import com.ygraph.components.graph.combinedgraph.CombinedGraph
-import com.ygraph.components.graph.combinedgraph.model.BarPlotData
 import com.ygraph.components.graph.combinedgraph.model.CombinedGraphData
-import com.ygraph.components.graph.combinedgraph.model.LinePlotData
 import com.ygraph.components.graph.linegraph.model.*
 
 class CombinedLineAndBarChartActivity : ComponentActivity() {
@@ -96,14 +95,15 @@ fun BarWithLineChart() {
             )
         )
     )
+    val colorPaletteList = DataUtils.getColorPaletteList(3)
     val legendsConfig = LegendsConfig(
-        legendLabelList = DataUtils.getStackLabelData(3),
+        legendLabelList = DataUtils.getLegendsLabelData(colorPaletteList),
         gridColumnCount = 3
     )
     val barPlotData = BarPlotData(
         groupBarList = groupBarData,
         barStyle = BarStyle(barWidth = 35.dp),
-        legendsConfig = legendsConfig
+        barColorPaletteList = colorPaletteList
     )
     val combinedGraphData = CombinedGraphData(
         combinedPlotDataList = listOf(barPlotData, linePlotData),

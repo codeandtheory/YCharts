@@ -21,7 +21,7 @@ import com.ygraph.components.common.model.Point
  * @param gridLines This enables graph to draw horizontal and vertical grid lines
  */
 data class LineGraphData(
-    val line: Line,
+    val linePlotData: LinePlotData,
     val xAxisData: AxisData = AxisData.Builder().build(),
     val yAxisData: AxisData = AxisData.Builder().build(),
     val isZoomAllowed: Boolean = true,

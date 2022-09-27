@@ -1,19 +1,9 @@
-package com.ygraph.components.graph.bargraph.models
+package com.ygraph.components.common.model
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-
-/**
- * LegendLabel data class params used in drawing label in graph.
- * @param color : color of label.
- * @param name : name of label.
- *  */
-data class LegendLabel(
-    val color: Color,
-    val name: String,
-)
 
 /**
  * LegendsConfig data class params used in config label in graph.
@@ -33,4 +23,14 @@ data class LegendsConfig(
     val colorBoxSize: Dp = 25.dp,
     val textStyle: TextStyle = TextStyle(),
     val spaceBWLabelAndColorBox: Dp = 4.dp,
+)
+
+/**
+ * LegendLabel data class params used in drawing label in graph.
+ * @param color : color of label.
+ * @param name : name of label.
+ *  */
+data class LegendLabel(
+    val color: Color,
+    val name: String,
 )

@@ -22,11 +22,11 @@ import com.ygraph.components.common.model.PlotType
 import com.ygraph.components.common.model.Point
 import com.ygraph.components.graph.bargraph.*
 import com.ygraph.components.graph.bargraph.getMaxScrollDistance
-import com.ygraph.components.graph.bargraph.models.Bar
-import com.ygraph.components.graph.combinedgraph.model.BarPlotData
+import com.ygraph.components.graph.bargraph.models.BarData
+import com.ygraph.components.graph.bargraph.models.BarPlotData
 import com.ygraph.components.graph.combinedgraph.model.CombinedGraphData
-import com.ygraph.components.graph.combinedgraph.model.LinePlotData
 import com.ygraph.components.graph.linegraph.*
+import com.ygraph.components.graph.linegraph.model.LinePlotData
 import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
 
 /**
@@ -48,7 +48,7 @@ fun CombinedGraph(modifier: Modifier, combinedGraphData: CombinedGraphData) {
             val paddingRight = paddingEnd
             val linePlotData: LinePlotData =
                 getDataFromType(combinedPlotDataList, PlotType.Line) as? LinePlotData
-                    ?: LinePlotData(lines = listOf())
+                    ?: LinePlotData.default()
             val barPlotData: BarPlotData =
                 getDataFromType(combinedPlotDataList, PlotType.Bar) as? BarPlotData
                     ?: BarPlotData.default()
@@ -60,8 +60,8 @@ fun CombinedGraph(modifier: Modifier, combinedGraphData: CombinedGraphData) {
                 minOf(linePoints.minOf { it.x }, (barPlotData.groupBarList.size).toFloat())
             val xMax =
                 maxOf(linePoints.maxOf { it.x }, (barPlotData.groupBarList.size).toFloat())
-            val yMin = minOf(linePoints.minOf { it.y }, barPoints.minOf { it.value })
-            val yMax = maxOf(linePoints.maxOf { it.y }, barPoints.maxOf { it.value })
+            val yMin = minOf(linePoints.minOf { it.y }, barPoints.minOf { it.point.y })
+            val yMax = maxOf(linePoints.maxOf { it.y }, barPoints.maxOf { it.point.y })
             val requiredSteps =
                 maxOf(
                     linePlotData.lines.map { it.dataPoints.size - 1 }.maxOf { it },
@@ -80,7 +80,7 @@ fun CombinedGraph(modifier: Modifier, combinedGraphData: CombinedGraphData) {
                     axisTopPadding = paddingTop
                 )
             val maxElementInYAxis = getMaxElementInYAxis(yMax, yAxisData.steps)
-            var identifiedBarPoint by remember { mutableStateOf(Bar(0f, "")) }
+            var identifiedBarPoint by remember { mutableStateOf(BarData(Point(0f, 0f))) }
             var identifiedPoint by remember { mutableStateOf(Point(0f, 0f)) }
             var tapOffset by remember { mutableStateOf(Offset(0f, 0f)) }
 
@@ -149,7 +149,7 @@ fun CombinedGraph(modifier: Modifier, combinedGraphData: CombinedGraphData) {
                                     barPlotData.barStyle.paddingBetweenBars.toPx()) * xZoom
                         val xLeft =
                             columnWidth + horizontalExtraSpace.toPx()
-                        val barTapLocks = mutableMapOf<Int, Pair<Bar, Offset>>()
+                        val barTapLocks = mutableMapOf<Int, Pair<BarData, Offset>>()
                         val linePointLocks = mutableMapOf<Int, Pair<Point, Offset>>()
 
                         for (plotData in combinedPlotDataList) {
@@ -233,7 +233,7 @@ fun CombinedGraph(modifier: Modifier, combinedGraphData: CombinedGraphData) {
                                         var insideOffset = 0f
                                         groupBarData.barList.forEachIndexed { subIndex, individualBar ->
                                             val drawOffset = getGroupBarDrawOffset(
-                                                index, individualBar.value, xOffset, xLeft,
+                                                index, individualBar.point.y, xOffset, xLeft,
                                                 scrollOffset, yBottom, yOffset, 0f
                                             )
                                             val height = yBottom - drawOffset.y
@@ -326,9 +326,9 @@ private fun DrawScope.drawGroupBarGraph(
     height: Float,
     subIndex: Int
 ) {
-    val stackLabelList = barPlotData.legendsConfig.legendLabelList
-    val color =
-        if (subIndex < stackLabelList.size) stackLabelList[subIndex].color else Color.Transparent
+    val color = if (subIndex < barPlotData.barColorPaletteList.size) {
+        barPlotData.barColorPaletteList[subIndex]
+    } else Color.Transparent
     with(barPlotData.barStyle) {
         drawRoundRect(
             color = color,

@@ -13,11 +13,13 @@ import androidx.compose.ui.unit.dp
 import com.example.piechartcontainer.ui.theme.YGraphsTheme
 import com.ygraph.components.axis.AxisData
 import com.ygraph.components.common.components.Legends
+import com.ygraph.components.common.model.LegendsConfig
 import com.ygraph.components.common.utils.DataUtils
+import com.ygraph.components.common.utils.DataUtils.getColorPaletteList
 import com.ygraph.components.common.utils.DataUtils.getGroupBarChartData
 import com.ygraph.components.graph.bargraph.GroupBarGraph
+import com.ygraph.components.graph.bargraph.models.BarPlotData
 import com.ygraph.components.graph.bargraph.models.GroupBarGraphData
-import com.ygraph.components.graph.bargraph.models.LegendsConfig
 
 class BarChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +33,10 @@ class BarChartActivity : ComponentActivity() {
                 ) {
                     val barSize = 3
                     val groupBarData = getGroupBarChartData(50, 50, barSize)
+                    val groupBarPlotData = BarPlotData(
+                        groupBarList = groupBarData,
+                        barColorPaletteList = getColorPaletteList(barSize)
+                    )
                     val yStepSize = 10
                     val xAxisData = AxisData.Builder()
                         .axisStepSize(30.dp)
@@ -44,15 +50,15 @@ class BarChartActivity : ComponentActivity() {
                         .axisOffset(20.dp)
                         .labelData { index -> (index * (50 / yStepSize)).toString() }
                         .build()
+                    val colorPaletteList = DataUtils.getColorPaletteList(barSize)
                     val legendsConfig = LegendsConfig(
-                        legendLabelList = DataUtils.getStackLabelData(barSize),
+                        legendLabelList = DataUtils.getLegendsLabelData(colorPaletteList),
                         gridColumnCount = 3
                     )
                     val groupBarGraphData = GroupBarGraphData(
-                        groupedBarList = groupBarData,
+                        barPlotData = groupBarPlotData,
                         xAxisData = xAxisData,
-                        yAxisData = yAxisData,
-                        legendsConfig = legendsConfig
+                        yAxisData = yAxisData
                     )
                     Column {
                         GroupBarGraph(
