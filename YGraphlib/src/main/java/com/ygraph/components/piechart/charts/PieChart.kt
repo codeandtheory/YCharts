@@ -20,6 +20,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.withRotation
 import com.ygraph.components.common.extensions.getTextHeight
+import com.ygraph.components.common.model.PlotType
 import com.ygraph.components.piechart.PieChartConstants.MINIMUM_PERCENTAGE_FOR_SLICE_LABELS
 import com.ygraph.components.piechart.models.PieChartConfig
 import com.ygraph.components.piechart.models.PieChartData
@@ -138,7 +139,7 @@ fun PieChart(
                             arcProgress * pathPortion.value else arcProgress,
                         size = size,
                         padding = padding,
-                        isDonut = false,
+                        isDonut = (pieChartData.plotType == PlotType.Pie).not(),
                         isActive = activePie == index,
                         pieChartConfig = pieChartConfig
                     )

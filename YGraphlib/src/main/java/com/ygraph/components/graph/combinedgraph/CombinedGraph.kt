@@ -310,6 +310,7 @@ private fun getDataFromType(combinedPlotDataList: List<PlotData>, type: PlotType
     return when (type) {
         is PlotType.Line -> combinedPlotDataList.filterIsInstance<LinePlotData>().firstOrNull()
         is PlotType.Bar -> combinedPlotDataList.filterIsInstance<BarPlotData>().firstOrNull()
+        else -> null // Handle if required in future.
     }
 }
 

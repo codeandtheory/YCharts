@@ -14,4 +14,6 @@ interface PlotData {
 sealed interface PlotType {
     object Line : PlotType
     object Bar : PlotType
+    object Pie : PlotType
+    object Donut : PlotType
 }
