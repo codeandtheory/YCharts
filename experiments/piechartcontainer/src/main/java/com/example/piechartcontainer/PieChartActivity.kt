@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.piechartcontainer.ui.theme.YGraphsTheme
+import com.ygraph.components.common.model.PlotType
 import com.ygraph.components.piechart.charts.PieChart
 import com.ygraph.components.piechart.models.PieChartConfig
 import com.ygraph.components.piechart.models.PieChartData
@@ -40,7 +41,8 @@ class PieChartActivity : ComponentActivity() {
                             PieChartData.Slice("Pixel", 10f, Color(0xFF092D10)),
                             PieChartData.Slice("Samsung", 20f, Color(0xFF092D70)),
                             PieChartData.Slice("Oneplus", 0f, Color(0xFF092D80)),
-                        )
+                        ),
+                        plotType = PlotType.Pie
                     )
 
                     val pieChartConfig =
