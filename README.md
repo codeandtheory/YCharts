@@ -50,13 +50,17 @@ Let's see how we can use the graph components and style them with available cust
    * Initialize the Line graph data with axis and other line related styling using `LineGraphData` data class.
    ```
    val lineGraphData = LineGraphData(
-        line = Line(
-            dataPoints = pointsData,
-            LineStyle(),
-            IntersectionPoint(),
-            SelectionHighlightPoint(),
-            ShadowUnderLine(),
-            SelectionHighlightPopUp()
+        linePlotData = LinePlotData(
+            lines = listOf(
+                Line(
+                    dataPoints = pointsData,
+                    LineStyle(),
+                    IntersectionPoint(),
+                    SelectionHighlightPoint(),
+                    ShadowUnderLine(),
+                    SelectionHighlightPopUp()
+                )
+            ),
         ),
         xAxisData = xAxisData,
         yAxisData = yAxisData,
@@ -128,10 +132,17 @@ Let's see how we can use the graph components and style them with available cust
 
 3. **Grouped Bar Graph:**
    * Create list of grouped combinations of bar graph data using the random generator extension
-     and  `GroupBarGraphData` data class
+     and  `BarPlotData` data class
 
      ```
-     val groupBarData = DataUtils.getGroupBarChartData(barGraphListSize, maxRange, eachGroupBarSize)
+        val groupBarPlotData = BarPlotData(
+                        groupBarList = DataUtils.getGroupBarChartData(
+                            barGraphListSize,
+                            maxRange,
+                            eachGroupBarSize
+                        ),
+                        barColorPaletteList = getColorPaletteList(barSize)
+                    )
      ```
 
    * Initialize X and Y Axis builders using the `AxisData` data class.
@@ -154,13 +165,10 @@ Let's see how we can use the graph components and style them with available cust
      using `GroupBarGraphData`
      data class.
    ```
-     val groupBarGraphData = GroupBarGraphData(
-                        groupedBarList = groupBarData,
+      val groupBarGraphData = GroupBarGraphData(
+                        barPlotData = groupBarPlotData,
                         xAxisData = xAxisData,
-                        yAxisData = yAxisData,
-                        stackLabelConfig = StackLabelConfig(
-                            stackLabelList = DataUtils.getStackLabelData(barSize)
-                        )
+                        yAxisData = yAxisData
                     )
    ```
    * Use the _**`GroupBarGraph`**_ Component to render the bar graph with the above input params.
