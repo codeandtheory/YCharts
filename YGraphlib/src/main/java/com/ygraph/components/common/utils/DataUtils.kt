@@ -2,6 +2,7 @@ package com.ygraph.components.common.utils
 
 import androidx.compose.ui.graphics.Color
 import com.ygraph.components.common.model.LegendLabel
+import com.ygraph.components.common.model.PlotType
 import com.ygraph.components.common.model.Point
 import com.ygraph.components.graph.bargraph.models.BarData
 import com.ygraph.components.graph.bargraph.models.GroupBar
@@ -93,7 +94,8 @@ object DataUtils {
                 PieChartData.Slice("Thriller", 100f, Color(0xFFF94892)),
                 PieChartData.Slice("Western", 10f, Color(0xFFA675A1)),
                 PieChartData.Slice("Fantasy", 10f, Color(0xFF8F3985)),
-            )
+            ),
+            plotType = PlotType.Pie
         )
     }
 
@@ -104,7 +106,8 @@ object DataUtils {
                 PieChartData.Slice("iOS", 30f, Color(0xFF2B4865)),
                 PieChartData.Slice("Windows", 15f, Color(0xFF256D85)),
                 PieChartData.Slice("Other", 25f, Color(0xFF806D85)),
-            )
+            ),
+            plotType = PlotType.Pie
         )
     }
 
@@ -117,7 +120,8 @@ object DataUtils {
                 PieChartData.Slice("Asus", 15f, Color(0xFFF53844)),
                 PieChartData.Slice("Acer", 10f, Color(0xFFEC9F05)),
                 PieChartData.Slice("Apple", 30f, Color(0xFF009FFD)),
-            )
+            ),
+            plotType = PlotType.Donut
         )
     }
 

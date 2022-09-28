@@ -15,12 +15,13 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
-import com.ygraph.components.piechart.utils.convertTouchEventPointToAngle
-import kotlin.math.roundToInt
+import com.ygraph.components.common.model.PlotType
 import com.ygraph.components.piechart.models.PieChartConfig
 import com.ygraph.components.piechart.models.PieChartData
+import com.ygraph.components.piechart.utils.convertTouchEventPointToAngle
 import com.ygraph.components.piechart.utils.proportion
 import com.ygraph.components.piechart.utils.sweepAngles
+import kotlin.math.roundToInt
 
 
 /**
@@ -121,7 +122,7 @@ fun DonutPieChart(
                             arcProgress * pathPortion.value else arcProgress,
                         size = size,
                         padding = padding,
-                        isDonut = true,
+                        isDonut = pieChartData.plotType == PlotType.Donut,
                         strokeWidth = pieChartConfig.strokeWidth,
                         isActive = activePie == index,
                         pieChartConfig = pieChartConfig
