@@ -1,13 +1,8 @@
 package com.ygraph.components.graph.bargraph
 
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,7 +14,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.axis.XAxis
@@ -29,7 +23,7 @@ import com.ygraph.components.common.extensions.getMaxElementInYAxis
 import com.ygraph.components.common.extensions.isTapped
 import com.ygraph.components.common.model.Point
 import com.ygraph.components.common.utils.GraphConstants.DEFAULT_YAXIS_BOTTOM_PADDING
-import com.ygraph.components.graph.bargraph.models.Bar
+import com.ygraph.components.graph.bargraph.models.BarData
 import com.ygraph.components.graph.bargraph.models.GroupBarGraphData
 import com.ygraph.components.graph.bargraph.models.SelectionHighlightData
 import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
@@ -46,73 +40,73 @@ import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
 @Composable
 fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
     Column(modifier) {
-        with(groupBarGraphData) {
+        with(groupBarGraphData.barPlotData) {
             var visibility by remember { mutableStateOf(false) }
-            var identifiedPoint by remember { mutableStateOf(Bar(0f, "")) }
+            var identifiedPoint by remember { mutableStateOf(BarData(Point(0f, 0f))) }
             var xOffset by remember { mutableStateOf(0f) }
             var tapOffset by remember { mutableStateOf(Offset(0f, 0f)) }
             var isTapped by remember { mutableStateOf(false) }
             var columnWidth by remember { mutableStateOf(0f) }
             var horizontalGap by remember { mutableStateOf(0f) }
             var rowHeight by remember { mutableStateOf(0f) }
-            val paddingRight = paddingEnd
-            val valueList = groupedBarList.map { it.yMax }
+            val paddingRight = groupBarGraphData.paddingEnd
+            val valueList = groupBarList.map { it.yMax }
             val bgColor = MaterialTheme.colors.surface
 
-            val xMax = groupedBarList.size
+            val xMax = groupBarList.size
             val yMax = valueList.maxOrNull() ?: 0f
             val xAxisData =
-                xAxisData.copy(
-                    axisStepSize = ((barWidth * groupingSize) + paddingBetweenBars),
+                groupBarGraphData.xAxisData.copy(
+                    axisStepSize = ((barStyle.barWidth * groupingSize) + barStyle.paddingBetweenBars),
                     shouldDrawAxisLineTillEnd = true,
-                    steps = groupedBarList.size - 1,
+                    steps = groupBarList.size - 1,
                     startDrawPadding = LocalDensity.current.run { columnWidth.toDp() }
                 )
-            val yAxisData = yAxisData.copy(
+            val yAxisData = groupBarGraphData.yAxisData.copy(
                 axisBottomPadding = LocalDensity.current.run { rowHeight.toDp() }
             )
 
             val maxElementInYAxis = getMaxElementInYAxis(yMax, yAxisData.steps)
 
-            if (!showXAxis) {
+            if (!groupBarGraphData.showXAxis) {
                 rowHeight = LocalDensity.current.run { DEFAULT_YAXIS_BOTTOM_PADDING.dp.toPx() }
             }
 
-            Column {
-                ScrollableCanvasContainer(modifier = modifier,
-                    containerBackgroundColor = backgroundColor,
-                    calculateMaxDistance = { xZoom ->
-                        horizontalGap = horizontalExtraSpace.toPx()
-                        val xLeft = columnWidth + horizontalGap
-                        xOffset =
-                            ((barWidth.toPx() * groupingSize) + paddingBetweenBars.toPx()) * xZoom
-                        getMaxScrollDistance(
-                            columnWidth,
-                            xMax.toFloat(),
-                            0f,
-                            xOffset,
-                            xLeft,
-                            paddingRight.toPx(),
-                            size.width
-                        )
+            ScrollableCanvasContainer(
+                modifier = modifier,
+                containerBackgroundColor = groupBarGraphData.backgroundColor,
+                calculateMaxDistance = { xZoom ->
+                    horizontalGap = groupBarGraphData.horizontalExtraSpace.toPx()
+                    val xLeft = columnWidth + horizontalGap
+                    xOffset =
+                        ((barStyle.barWidth.toPx() * groupingSize) + barStyle.paddingBetweenBars.toPx()) * xZoom
+                    getMaxScrollDistance(
+                        columnWidth,
+                        xMax.toFloat(),
+                        0f,
+                        xOffset,
+                        xLeft,
+                        paddingRight.toPx(),
+                        size.width
+                    )
                     },
                     onDraw = { scrollOffset, xZoom ->
                         val yBottom = size.height - rowHeight
                         val yOffset =
                             ((yBottom - yAxisData.axisTopPadding.toPx()) / maxElementInYAxis)
                         xOffset =
-                            ((barWidth.toPx() * groupingSize) + paddingBetweenBars.toPx()) * xZoom
+                            ((barStyle.barWidth.toPx() * groupingSize) + barStyle.paddingBetweenBars.toPx()) * xZoom
                         val xLeft =
                             columnWidth + horizontalGap
-                        val dragLocks = mutableMapOf<Int, Pair<Bar, Offset>>()
+                        val dragLocks = mutableMapOf<Int, Pair<BarData, Offset>>()
 
                         // Draw bar lines
-                        groupedBarList.forEachIndexed { index, groupBarData ->
+                        groupBarList.forEachIndexed { index, groupBarData ->
                             var insideOffset = 0f
 
                             groupBarData.barList.forEachIndexed { subIndex, individualBar ->
                                 val drawOffset = getGroupBarDrawOffset(
-                                    index, individualBar.value, xOffset, xLeft,
+                                    index, individualBar.point.y, xOffset, xLeft,
                                     scrollOffset, yBottom, yOffset, 0f
                                 )
                                 val height = yBottom - drawOffset.y
@@ -127,23 +121,26 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                                     height,
                                     subIndex
                                 )
-                                insideOffset += barWidth.toPx()
+                                insideOffset += barStyle.barWidth.toPx()
 
                                 val middleOffset =
-                                    Offset(individualOffset.x + barWidth.toPx() / 2, drawOffset.y)
+                                    Offset(
+                                        individualOffset.x + barStyle.barWidth.toPx() / 2,
+                                        drawOffset.y
+                                    )
                                 // store the tap points for selection
                                 if (isTapped && middleOffset.isTapped(
                                         tapOffset,
-                                        barWidth.toPx(),
+                                        barStyle.barWidth.toPx(),
                                         yBottom,
-                                        tapPadding.toPx()
+                                        groupBarGraphData.tapPadding.toPx()
                                     )
                                 ) {
                                     dragLocks[0] = individualBar to individualOffset
                                 }
                             }
 
-                            if (groupSeparatorConfig.showSeparator && index != groupedBarList.size - 1) {
+                            if (groupBarGraphData.groupSeparatorConfig.showSeparator && index != groupBarList.size - 1) {
                                 // drawing each Group Separator bars
                                 val yOffset2 = (yBottom - yAxisData.axisTopPadding.toPx())
                                 val height = yBottom - yAxisData.axisTopPadding.toPx()
@@ -158,43 +155,45 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                                     0f
                                 )
                                 val xOffset2 = (drawOffset2.x
-                                        + insideOffset + (paddingBetweenBars.toPx() / 2) - groupSeparatorConfig.separatorWidth.toPx() / 2)
+                                        + insideOffset + (barStyle.paddingBetweenBars.toPx() / 2) -
+                                        groupBarGraphData.groupSeparatorConfig.separatorWidth.toPx() / 2)
                                 val individualOffset =
                                     Offset(xOffset2, yAxisData.axisTopPadding.toPx())
 
                                 drawGroupSeparator(
                                     individualOffset,
                                     height,
-                                    groupSeparatorConfig.separatorWidth.toPx(),
-                                    groupSeparatorConfig.separatorColor,
+                                    groupBarGraphData.groupSeparatorConfig.separatorWidth.toPx(),
+                                    groupBarGraphData.groupSeparatorConfig.separatorColor,
                                     groupBarGraphData
                                 )
                             }
                         }
                         drawUnderScrollMask(columnWidth, paddingRight, bgColor)
 
-                        if (selectionHighlightData != null) {
+                        if (barStyle.selectionHighlightData != null) {
                             // highlighting the selected bar and showing the data points
                             identifiedPoint = highlightGroupBar(
                                 dragLocks,
                                 visibility,
                                 identifiedPoint,
-                                groupBarGraphData,
+                                barStyle.selectionHighlightData,
                                 isTapped,
                                 columnWidth,
                                 yBottom,
                                 paddingRight,
-                                yOffset
+                                yOffset,
+                                barStyle.barWidth
                             )
                         }
                     },
                     drawXAndYAxis = { scrollOffset, xZoom ->
                         val points = mutableListOf<Point>()
-                        for (index in groupedBarList.indices) {
+                        for (index in groupBarList.indices) {
                             points.add(Point(index.toFloat(), 0f))
                         }
 
-                        if (showXAxis) {
+                        if (groupBarGraphData.showXAxis) {
                             XAxis(
                                 xAxisData = xAxisData,
                                 modifier = Modifier
@@ -210,14 +209,16 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                                     .onGloballyPositioned {
                                         rowHeight = it.size.height.toFloat()
                                     },
-                                xStart = columnWidth + horizontalGap + LocalDensity.current.run { (barWidth.toPx() * groupingSize) / 2 },
+                                xStart = columnWidth + horizontalGap + LocalDensity.current.run {
+                                    (barStyle.barWidth.toPx() * groupingSize) / 2
+                                },
                                 scrollOffset = scrollOffset,
                                 zoomScale = xZoom,
                                 graphData = points,
                             )
                         }
 
-                        if (showYAxis) {
+                        if (groupBarGraphData.showYAxis) {
                             YAxis(
                                 modifier = Modifier
                                     .align(Alignment.TopStart)
@@ -240,32 +241,6 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                         visibility = false
                     }
                 )
-                if (stackLabelConfig.showLabel) {
-                    LazyVerticalGrid(
-                        modifier = Modifier.padding(
-                            horizontal = stackLabelConfig.gridPaddingHorizontal,
-                            vertical = stackLabelConfig.gridPaddingVertical
-                        ),
-                        columns = GridCells.Fixed(stackLabelConfig.gridColumnCount)
-                    ) {
-                        items(groupBarGraphData.stackLabelConfig.stackLabelList) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Box(
-                                    modifier = Modifier
-                                        .background(it.color)
-                                        .size(stackLabelConfig.colorBoxSize)
-                                )
-                                Spacer(modifier = Modifier.padding(stackLabelConfig.spaceBWLabelAndColorBox))
-                                Text(
-                                    text = it.name,
-                                    style = stackLabelConfig.textStyle,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 }
@@ -279,7 +254,7 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
  * @param highlightData: Data for the highlight section
  */
 private fun DrawScope.drawGroupHighlightText(
-    identifiedPoint: Bar,
+    identifiedPoint: BarData,
     selectedOffset: Offset,
     barWidth: Dp,
     highlightData: SelectionHighlightData
@@ -303,18 +278,20 @@ private fun DrawScope.drawGroupBarGraph(
     height: Float,
     subIndex: Int
 ) {
-    val color = barGraphData.stackLabelConfig.stackLabelList[subIndex].color
-    drawRoundRect(
-        color = color,
-        topLeft = drawOffset,
-        size = Size(barGraphData.barWidth.toPx(), height),
-        cornerRadius = CornerRadius(
-            barGraphData.cornerRadius.toPx(),
-            barGraphData.cornerRadius.toPx()
-        ),
-        style = barGraphData.barDrawStyle,
-        blendMode = barGraphData.barBlendMode
-    )
+    with(barGraphData.barPlotData) {
+        val color = barColorPaletteList[subIndex]
+        drawRoundRect(
+            color = color,
+            topLeft = drawOffset,
+            size = Size(barGraphData.barPlotData.barStyle.barWidth.toPx(), height),
+            cornerRadius = CornerRadius(
+                barStyle.cornerRadius.toPx(),
+                barStyle.cornerRadius.toPx()
+            ),
+            style = barStyle.barDrawStyle,
+            blendMode = barStyle.barBlendMode
+        )
+    }
 }
 
 
@@ -324,25 +301,27 @@ private fun DrawScope.drawGroupBarGraph(
  * @param dragLocks : Mutable map of BarData and drawOffset.
  * @param visibility : Flag to control the visibility of highlighted text.
  * @param identifiedPoint: selected bar data.
- * @param barGraphData: Data related to the bar graph.
+ * @param selectionHighlightData: Data related to the bar graph highlight.
  * @param isDragging : Boolean flag for the dragging status.
  * @param columnWidth : Width of the Y axis.
  * @param yBottom : Bottom padding.
  * @param paddingRight : Right padding.
  * @param yOffset : Distance between two y points.
+ * @param barWidth : Width of each bar.
  */
-private fun DrawScope.highlightGroupBar(
-    dragLocks: MutableMap<Int, Pair<Bar, Offset>>,
+fun DrawScope.highlightGroupBar(
+    dragLocks: MutableMap<Int, Pair<BarData, Offset>>,
     visibility: Boolean,
-    identifiedPoint: Bar,
-    barGraphData: GroupBarGraphData,
+    identifiedPoint: BarData,
+    selectionHighlightData: SelectionHighlightData?,
     isDragging: Boolean,
     columnWidth: Float,
     yBottom: Float,
     paddingRight: Dp,
     yOffset: Float,
-): Bar {
-    var mutableIdentifiedPoint: Bar = identifiedPoint
+    barWidth: Dp,
+): BarData {
+    var mutableIdentifiedPoint: BarData = identifiedPoint
     // Handle the show the selected bar
     if (isDragging) {
         val x = dragLocks.values.firstOrNull()?.second?.x
@@ -351,16 +330,16 @@ private fun DrawScope.highlightGroupBar(
         }
 
         // Draw highlight bar on selection
-        if (barGraphData.selectionHighlightData?.isHighlightBarRequired == true) {
+        if (selectionHighlightData?.isHighlightBarRequired == true) {
             dragLocks.values.firstOrNull()?.let { (barData, location) ->
                 val (xPoint, yPoint) = location
                 if (xPoint >= columnWidth && xPoint <= size.width - paddingRight.toPx()) {
-                    val y1 = yBottom - ((barData.value - 0) * yOffset)
-                    barGraphData.selectionHighlightData.drawHighlightBar(
+                    val y1 = yBottom - ((barData.point.y - 0) * yOffset)
+                    selectionHighlightData.drawHighlightBar(
                         this,
                         xPoint,
                         yPoint,
-                        barGraphData.barWidth.toPx(),
+                        barWidth.toPx(),
                         yBottom - y1
                     )
                 }
@@ -369,37 +348,15 @@ private fun DrawScope.highlightGroupBar(
     }
 
     val selectedOffset = dragLocks.values.firstOrNull()?.second
-    if (visibility && selectedOffset != null && barGraphData.selectionHighlightData != null) {
+    if (visibility && selectedOffset != null && selectionHighlightData != null) {
         drawGroupHighlightText(
             mutableIdentifiedPoint,
             selectedOffset,
-            barGraphData.barWidth,
-            barGraphData.selectionHighlightData
+            barWidth,
+            selectionHighlightData
         )
     }
     return mutableIdentifiedPoint
-}
-
-/**
- *
- * DrawScope.drawUnderScrollMask extension method used  for drawing a rectangular mask to make graph scrollable under the YAxis.
- * @param columnWidth : Width of the rectangular mask here width of Y Axis is used.
- * @param paddingRight : Padding given at the end of the graph.
- * @param bgColor : Background of the rectangular mask.
- */
-private fun DrawScope.drawUnderScrollMask(columnWidth: Float, paddingRight: Dp, bgColor: Color) {
-    // Draw column to make graph look scrollable under Yaxis
-    drawRect(
-        bgColor,
-        Offset(0f, 0f),
-        Size(columnWidth, size.height)
-    )
-    // Draw right padding
-    drawRect(
-        bgColor,
-        Offset(size.width - paddingRight.toPx(), 0f),
-        Size(paddingRight.toPx(), size.height)
-    )
 }
 
 /**

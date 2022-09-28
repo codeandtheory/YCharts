@@ -19,10 +19,11 @@ import com.app.ygraphs.R
 import com.app.ygraphs.ui.compositions.AppBarWithBackButton
 import com.app.ygraphs.ui.theme.YGraphsTheme
 import com.ygraph.components.axis.AxisData
+import com.ygraph.components.common.utils.DataUtils
 import com.ygraph.components.graph.bargraph.BarGraph
 import com.ygraph.components.graph.bargraph.models.BarGraphData
+import com.ygraph.components.graph.bargraph.models.BarStyle
 import com.ygraph.components.graph.bargraph.models.SelectionHighlightData
-import com.ygraph.components.common.utils.DataUtils
 
 class BarChartActivity : ComponentActivity() {
 
@@ -84,8 +85,10 @@ private fun BarChart1() {
         graphData = barData,
         xAxisData = xAxisData,
         yAxisData = yAxisData,
-        paddingBetweenBars = 20.dp,
-        barWidth = 25.dp,
+        barStyle = BarStyle(
+            paddingBetweenBars = 20.dp,
+            barWidth = 25.dp
+        ),
         showYAxis = true,
         showXAxis = true,
         horizontalExtraSpace = 10.dp,
@@ -115,17 +118,17 @@ private fun BarChart2() {
         graphData = barData,
         xAxisData = xAxisData,
         yAxisData = yAxisData,
-        paddingBetweenBars = 20.dp,
-        barWidth = 35.dp,
+        barStyle = BarStyle(paddingBetweenBars = 20.dp,
+            barWidth = 35.dp,
+            isGradientEnabled = true,
+            selectionHighlightData = SelectionHighlightData(
+                highlightBarColor = Color.Red,
+                highlightTextBackgroundColor = Color.Green,
+                popUpLabel = { _, y -> " Value : $y " }
+            )),
         showYAxis = true,
         showXAxis = true,
-        horizontalExtraSpace = 20.dp,
-        isGradientEnabled = true,
-        selectionHighlightData = SelectionHighlightData(
-            highlightBarColor = Color.Red,
-            highlightTextBackgroundColor = Color.Green,
-            popUpLabel = { _, y -> " Value : $y " }
-        )
+        horizontalExtraSpace = 20.dp
     )
     BarGraph(modifier = Modifier.height(350.dp), barGraphData = barGraphData)
 }

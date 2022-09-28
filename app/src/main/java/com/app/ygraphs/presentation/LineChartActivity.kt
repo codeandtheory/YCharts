@@ -93,13 +93,17 @@ private fun LineGraph1(pointsData: List<Point>) {
             ((i * yScale) + yMin).formatToSinglePrecision()
         }.build()
     val data = LineGraphData(
-        line = Line(
-            dataPoints = pointsData,
-            LineStyle(),
-            IntersectionPoint(),
-            SelectionHighlightPoint(),
-            ShadowUnderLine(),
-            SelectionHighlightPopUp()
+        linePlotData = LinePlotData(
+            lines = listOf(
+                Line(
+                    dataPoints = pointsData,
+                    LineStyle(),
+                    IntersectionPoint(),
+                    SelectionHighlightPoint(),
+                    ShadowUnderLine(),
+                    SelectionHighlightPopUp()
+                )
+            )
         ),
         xAxisData = xAxisData,
         yAxisData = yAxisData,
@@ -134,15 +138,19 @@ private fun LineGraph2(pointsData: List<Point>) {
         .typeFace(Typeface.DEFAULT_BOLD)
         .build()
     val data = LineGraphData(
-        line = Line(
-            dataPoints = pointsData,
-            lineStyle = LineStyle(lineType = LineType.Straight(), color = Color.Blue),
-            intersectionPoint = IntersectionPoint(color = Color.Red),
-            selectionHighlightPopUp = SelectionHighlightPopUp(popUpLabel = { x, y ->
-                val xLabel = "x : ${(1900 + x).toInt()} "
-                val yLabel = "y : ${String.format("%.2f", y)}"
-                "$xLabel $yLabel"
-            })
+        linePlotData = LinePlotData(
+            lines = listOf(
+                Line(
+                    dataPoints = pointsData,
+                    lineStyle = LineStyle(lineType = LineType.Straight(), color = Color.Blue),
+                    intersectionPoint = IntersectionPoint(color = Color.Red),
+                    selectionHighlightPopUp = SelectionHighlightPopUp(popUpLabel = { x, y ->
+                        val xLabel = "x : ${(1900 + x).toInt()} "
+                        val yLabel = "y : ${String.format("%.2f", y)}"
+                        "$xLabel $yLabel"
+                    })
+                )
+            )
         ),
         xAxisData = xAxisData,
         yAxisData = yAxisData
@@ -176,28 +184,32 @@ private fun LineGraph3(pointsData: List<Point>) {
         .labelAndAxisLinePadding(20.dp)
         .build()
     val data = LineGraphData(
-        line = Line(
-            dataPoints = pointsData,
-            lineStyle = LineStyle(
-                lineType = LineType.SmoothCurve(isDotted = true),
-                color = Color.Green
-            ),
-            shadowUnderLine = ShadowUnderLine(
-                brush = Brush.verticalGradient(
-                    listOf(
-                        Color.Green,
-                        Color.Transparent
+        linePlotData = LinePlotData(
+            lines = listOf(
+                Line(
+                    dataPoints = pointsData,
+                    lineStyle = LineStyle(
+                        lineType = LineType.SmoothCurve(isDotted = true),
+                        color = Color.Green
+                    ),
+                    shadowUnderLine = ShadowUnderLine(
+                        brush = Brush.verticalGradient(
+                            listOf(
+                                Color.Green,
+                                Color.Transparent
+                            )
+                        ), alpha = 0.3f
+                    ),
+                    selectionHighlightPoint = SelectionHighlightPoint(
+                        color = Color.Green
+                    ),
+                    selectionHighlightPopUp = SelectionHighlightPopUp(
+                        backgroundColor = Color.Black,
+                        backgroundStyle = Stroke(2f),
+                        labelColor = Color.Red,
+                        labelTypeface = Typeface.DEFAULT_BOLD
                     )
-                ), alpha = 0.3f
-            ),
-            selectionHighlightPoint = SelectionHighlightPoint(
-                color = Color.Green
-            ),
-            selectionHighlightPopUp = SelectionHighlightPopUp(
-                backgroundColor = Color.Black,
-                backgroundStyle = Stroke(2f),
-                labelColor = Color.Red,
-                labelTypeface = Typeface.DEFAULT_BOLD
+                )
             )
         ),
         xAxisData = xAxisData,

@@ -1,4 +1,4 @@
-package com.ygraph.components.graph.bargraph.models
+package com.ygraph.components.graph.combinedgraph.model
 
 import android.graphics.Paint
 import android.graphics.Typeface
@@ -16,6 +16,8 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ygraph.components.common.extensions.getTextBackgroundRect
+import com.ygraph.components.common.model.Point
+import com.ygraph.components.graph.bargraph.models.BarData
 
 /**
  * Used to customise the highlighted text and the bar
@@ -34,14 +36,12 @@ import com.ygraph.components.common.extensions.getTextBackgroundRect
  * @param backgroundBlendMode:Blending algorithm to be applied to the path when it is drawn.
  * @param backgroundStyle: Whether or not the path is stroked or filled in.
  * @param isHighlightBarRequired: Boolean flag to enable disable highlight
- * @param popUpLabel : The text that can be shown on the popup given 2 input params x and y values
+ * @param popUpLabel : The text that can be shown on the popup given 3 input params x and y1 & y2 values
  * @param drawPopUp: Override this to change the default background implementation. You are provided
- * with the selected offset, x, y values, center point of bar.
- * @param drawHighlightBar: draw override this to change the default drawRoundRect implementation. You are provided
- * with the actual point x, y, height, width.
+ * with the selected offset, x, y values, center point.
  */
-data class SelectionHighlightData(
-    //highlight text 
+data class SelectionHighLightPopUp(
+    //highlight text
     val highlightTextOffset: Dp = 15.dp,
     val highlightTextSize: TextUnit = 12.sp,
     val highlightTextColor: Color = Color.Black,
@@ -59,81 +59,31 @@ data class SelectionHighlightData(
     val backgroundStyle: DrawStyle = Fill,
     val highlightLabelAlignment: Paint.Align = Paint.Align.CENTER,
     val isHighlightBarRequired: Boolean = true,
-    val popUpLabel: (Float, Float) -> (String) = { x, y ->
+    val popUpLabel: (Float, Float, Float) -> (String) = { x, y1, y2 ->
         val xLabel = "x : ${x.toInt()} "
-        val yLabel = "y : ${String.format("%.2f", y)}"
-        "$xLabel $yLabel"
+        val y1Label = " Point, y : ${String.format("%.2f", y1)}"
+        val y2Label = " Bar, y : ${String.format("%.2f", y2)}"
+        "$xLabel $y1Label $y2Label"
     },
 
-    val drawPopUp: DrawScope.(Offset, BarData, Float) -> Unit = { selectedOffset, identifiedPoint, centerPointOfBar ->
+    val drawPopUp: DrawScope.(Offset, Point, BarData, Float) -> Unit = { selectedOffset,
+                                                                         identifiedLinePoint,
+                                                                         identifiedBarPoint,
+                                                                         centerPoint ->
         val highlightTextPaint = TextPaint().apply {
             textSize = highlightTextSize.toPx()
             color = highlightTextColor.toArgb()
             textAlign = highlightLabelAlignment
             typeface = highlightTextTypeface
         }
-        val label = popUpLabel(identifiedPoint.point.x, identifiedPoint.point.y)
-        drawContext.canvas.nativeCanvas.apply {
-            val background = getTextBackgroundRect(
-                centerPointOfBar,
-                selectedOffset.y,
-                label,
-                highlightTextPaint
-            )
-            drawRoundRect(
-                color = highlightTextBackgroundColor,
-                topLeft = Offset(
-                    background.left.toFloat(),
-                    background.top.toFloat() - highlightTextOffset.toPx()
-                ),
-                size = Size(background.width().toFloat(), background.height().toFloat()),
-                alpha = highlightTextBackgroundAlpha,
-                cornerRadius = highlightPopUpCornerRadius,
-                colorFilter = backgroundColorFilter,
-                blendMode = backgroundBlendMode,
-                style = backgroundStyle
-            )
-            drawText(
-                label,
-                centerPointOfBar,
-                selectedOffset.y - highlightTextOffset.toPx(),
-                highlightTextPaint
-            )
-        }
-    },
-
-    val drawHighlightBar: DrawScope.(Float, Float, Float, Float) -> Unit = { x, y, width, height ->
-        drawRoundRect(
-            color = highlightBarColor,
-            topLeft = Offset(x, y),
-            size = Size(width, height),
-            cornerRadius = CornerRadius(
-                highlightBarCornerRadius.toPx(),
-                highlightBarCornerRadius.toPx()
-            ),
-            style = Stroke(width = highlightBarStrokeWidth.toPx())
+        val label = popUpLabel(
+            identifiedBarPoint.point.x,
+            identifiedLinePoint.y,
+            identifiedBarPoint.point.y
         )
-    },
-
-    val groupBarPopUpLabel: (String, Float) -> (String) = { name, value ->
-        val xLabel = "Name : $name "
-        val yLabel = "Value : ${String.format("%.2f", value)}"
-        "$xLabel $yLabel"
-    },
-
-
-    val drawGroupBarPopUp: DrawScope.(Offset, BarData, Float) -> Unit = { selectedOffset, identifiedPoint, centerPointOfBar ->
-        val highlightTextPaint = TextPaint().apply {
-            textSize = highlightTextSize.toPx()
-            color = highlightTextColor.toArgb()
-            textAlign = highlightLabelAlignment
-            typeface = highlightTextTypeface
-        }
-        val xLabel = "B${identifiedPoint.point.x.toInt()}"
-        val label = groupBarPopUpLabel(xLabel, identifiedPoint.point.y)
         drawContext.canvas.nativeCanvas.apply {
             val background = getTextBackgroundRect(
-                centerPointOfBar,
+                centerPoint,
                 selectedOffset.y,
                 label,
                 highlightTextPaint
@@ -153,7 +103,7 @@ data class SelectionHighlightData(
             )
             drawText(
                 label,
-                centerPointOfBar,
+                centerPoint,
                 selectedOffset.y - highlightTextOffset.toPx(),
                 highlightTextPaint
             )
