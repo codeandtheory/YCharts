@@ -4,23 +4,34 @@ import android.graphics.Paint
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.ygraph.components.common.extensions.collectIsTalkbackEnabledAsState
 import com.ygraph.components.common.model.PlotType
 import com.ygraph.components.piechart.models.PieChartConfig
 import com.ygraph.components.piechart.models.PieChartData
 import com.ygraph.components.piechart.utils.convertTouchEventPointToAngle
 import com.ygraph.components.piechart.utils.proportion
 import com.ygraph.components.piechart.utils.sweepAngles
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 
@@ -38,6 +49,7 @@ fun DonutPieChart(
     pieChartConfig: PieChartConfig,
     onSliceClick: (PieChartData.Slice) -> Unit = {}
 ) {
+    val talkbackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
     // Sum of all the values
     val sumOfValues = pieChartData.totalLength
 
@@ -54,12 +66,18 @@ fun DonutPieChart(
         progressSize.add(sweepAngles[x] + progressSize[x - 1])
     }
 
-    var activePie by rememberSaveable {
-        mutableStateOf(-1)
-    }
+    var activePie by rememberSaveable { mutableStateOf(-1) }
+    val focusRequesterContainer = remember { FocusRequester() }
+    val coroutineScope = rememberCoroutineScope()
+    var isContainerFocused by remember { mutableStateOf(false) }
+    var containerFocusedText by remember { mutableStateOf("") }
+    val focusRequesterNextBtn = remember { FocusRequester() }
+    val focusRequesterPrevBtn = remember { FocusRequester() }
 
-
-    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
         if (pieChartConfig.isLegendVisible) {
             Legends(
@@ -67,8 +85,14 @@ fun DonutPieChart(
                 pieChartConfig = pieChartConfig
             )
         }
-        
-        BoxWithConstraints(modifier = modifier.aspectRatio(1f)) {
+
+        BoxWithConstraints(modifier = modifier
+            .aspectRatio(1f)
+            .focusRequester(focusRequesterContainer)
+            .focusable()
+            .semantics {
+                contentDescription = if (isContainerFocused) containerFocusedText else ""
+            }) {
 
             val sideSize = Integer.min(constraints.maxWidth, constraints.maxHeight)
             val padding = (sideSize * pieChartConfig.chartPadding) / 100f
@@ -85,7 +109,7 @@ fun DonutPieChart(
                     )
                 }
             }
-            
+
             Canvas(
                 modifier = Modifier
                     .width(sideSize.dp)
@@ -140,12 +164,86 @@ fun DonutPieChart(
                                 color = pieChartConfig.percentColor.toArgb()
                                 textSize = fontSize
                                 textAlign = Paint.Align.CENTER
-                                typeface= pieChartConfig.percentageTypeface
+                                typeface = pieChartConfig.percentageTypeface
 
                             }
                         )
                     }
             }
         }
+    }
+    if (talkbackEnabled) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
+                .height(60.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Button(modifier = Modifier
+                .height(40.dp)
+                .focusRequester(focusRequesterPrevBtn)
+                .focusable(), onClick = {
+                if (activePie <= 0) {
+                    activePie = pieChartData.slices.size - 1
+                } else {
+                    activePie--
+                }
+                coroutineScope.launch {
+                    isContainerFocused = true
+                    containerFocusedText =
+                        pieChartConfig.chartAccessibilityConfig.contentDescription(
+                            activePie,
+                            pieChartData.slices.size,
+                            proportions[activePie].roundToInt(),
+                            pieChartData.slices[activePie]
+                        )
+                    focusRequesterContainer.requestFocus()
+                    // T0D0 : Add callback to notify container description is announced completely
+                    // For now handled using delay, need to be removed
+                    delay(5000)
+                    isContainerFocused = false
+                    focusRequesterPrevBtn.requestFocus()
+                }
+            }) {
+                Text(text = pieChartConfig.chartAccessibilityConfig.prevButtonText)
+            }
+            Spacer(modifier = Modifier.width(30.dp))
+            Button(
+                onClick = {
+                    if (activePie == pieChartData.slices.size - 1) {
+                        activePie = 0
+                    } else {
+                        activePie++
+                    }
+                    coroutineScope.launch {
+                        isContainerFocused = true
+                        containerFocusedText =
+                            pieChartConfig.chartAccessibilityConfig.contentDescription(
+                                activePie,
+                                pieChartData.slices.size,
+                                proportions[activePie].roundToInt(),
+                                pieChartData.slices[activePie]
+                            )
+                        focusRequesterContainer.requestFocus()
+                        // T0D0 : Add callback to notify container description is announced completely
+                        // For now handled using delay, need to be removed
+                        delay(5000)
+                        isContainerFocused = false
+                        focusRequesterNextBtn.requestFocus()
+                    }
+                }, modifier = Modifier
+                    .height(40.dp)
+                    .focusRequester(focusRequesterNextBtn)
+                    .focusable()
+            ) {
+                Text(text = pieChartConfig.chartAccessibilityConfig.nextButtonText)
+            }
+        }
+        LaunchedEffect(key1 = Unit, block = {
+            // T0D0: To be removed once we have support to get callback on announcement completely
+            delay(1000)
+            focusRequesterNextBtn.requestFocus()
+        })
     }
 }

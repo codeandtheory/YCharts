@@ -37,7 +37,8 @@ import com.ygraph.components.piechart.PieChartConstants.DEFAULT_STROKE_WIDTH
  * @param sliceMinTextWidthToEllipsize: Minimum width of the label post which label will be ellipsized
  * @param sliceLabelEllipsizeAt: Position at which the label will be truncated or ellipsized
  * @param chartPadding: Padding for the Pie chart/Donut Chart
- * @param legendBadgeWidth: Width of the legend badge
+ * @param legendBadgeWidth: Width of the legend badge.
+ * @param chartAccessibilityConfig: All configurations related to accessibility to be included in [ChartAccessibilityConfig]
  */
 data class PieChartConfig(
     val startAngle: Float = DEFAULT_START_ANGLE,
@@ -63,4 +64,6 @@ data class PieChartConfig(
     val sliceMinTextWidthToEllipsize: Dp = 80.dp,
     val sliceLabelEllipsizeAt: TextUtils.TruncateAt = TextUtils.TruncateAt.END,
     val chartPadding: Int = DEFAULT_PADDING,
-    val legendBadgeWidth: Dp = 16.dp)
+    val legendBadgeWidth: Dp = 16.dp,
+    val chartAccessibilityConfig: ChartAccessibilityConfig
+)
