@@ -65,5 +65,5 @@ data class PieChartConfig(
     val sliceLabelEllipsizeAt: TextUtils.TruncateAt = TextUtils.TruncateAt.END,
     val chartPadding: Int = DEFAULT_PADDING,
     val legendBadgeWidth: Dp = 16.dp,
-    val chartAccessibilityConfig: ChartAccessibilityConfig
+    val chartAccessibilityConfig: ChartAccessibilityConfig = ChartAccessibilityConfig()
 )

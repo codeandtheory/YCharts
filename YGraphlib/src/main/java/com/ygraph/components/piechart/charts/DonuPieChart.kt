@@ -201,7 +201,7 @@ fun DonutPieChart(
                     focusRequesterContainer.requestFocus()
                     // T0D0 : Add callback to notify container description is announced completely
                     // For now handled using delay, need to be removed
-                    delay(5000)
+                    delay(pieChartConfig.chartAccessibilityConfig.contentDescriptionDelay)
                     isContainerFocused = false
                     focusRequesterPrevBtn.requestFocus()
                 }
@@ -228,7 +228,7 @@ fun DonutPieChart(
                         focusRequesterContainer.requestFocus()
                         // T0D0 : Add callback to notify container description is announced completely
                         // For now handled using delay, need to be removed
-                        delay(5000)
+                        delay(pieChartConfig.chartAccessibilityConfig.contentDescriptionDelay)
                         isContainerFocused = false
                         focusRequesterNextBtn.requestFocus()
                     }
