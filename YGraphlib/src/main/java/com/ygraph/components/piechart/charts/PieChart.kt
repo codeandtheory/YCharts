@@ -13,7 +13,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -215,7 +214,7 @@ fun PieChart(
                     .fillMaxWidth()
                     .padding(20.dp)
                     .height(60.dp)
-                    .align(Alignment.BottomCenter),
+                    .align(pieChartConfig.chartAccessibilityConfig.buttonContainerAlignment),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Button(modifier = Modifier

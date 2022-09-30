@@ -11,7 +11,6 @@ import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -74,9 +73,8 @@ fun DonutPieChart(
     val focusRequesterNextBtn = remember { FocusRequester() }
     val focusRequesterPrevBtn = remember { FocusRequester() }
 
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+    Box(
+        modifier = modifier.fillMaxWidth()
     ) {
 
         if (pieChartConfig.isLegendVisible) {
@@ -86,13 +84,14 @@ fun DonutPieChart(
             )
         }
 
-        BoxWithConstraints(modifier = modifier
-            .aspectRatio(1f)
-            .focusRequester(focusRequesterContainer)
-            .focusable()
-            .semantics {
-                contentDescription = if (isContainerFocused) containerFocusedText else ""
-            }) {
+        BoxWithConstraints(
+            modifier = modifier
+                .aspectRatio(1f)
+                .focusRequester(focusRequesterContainer)
+                .focusable()
+                .semantics {
+                    contentDescription = if (isContainerFocused) containerFocusedText else ""
+                }) {
 
             val sideSize = Integer.min(constraints.maxWidth, constraints.maxHeight)
             val padding = (sideSize * pieChartConfig.chartPadding) / 100f
@@ -171,50 +170,23 @@ fun DonutPieChart(
                     }
             }
         }
-    }
-    if (talkbackEnabled) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp)
-                .height(60.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Button(modifier = Modifier
-                .height(40.dp)
-                .focusRequester(focusRequesterPrevBtn)
-                .focusable(), onClick = {
-                if (activePie <= 0) {
-                    activePie = pieChartData.slices.size - 1
-                } else {
-                    activePie--
-                }
-                coroutineScope.launch {
-                    isContainerFocused = true
-                    containerFocusedText =
-                        pieChartConfig.chartAccessibilityConfig.contentDescription(
-                            activePie,
-                            pieChartData.slices.size,
-                            proportions[activePie].roundToInt(),
-                            pieChartData.slices[activePie]
-                        )
-                    focusRequesterContainer.requestFocus()
-                    // T0D0 : Add callback to notify container description is announced completely
-                    // For now handled using delay, need to be removed
-                    delay(pieChartConfig.chartAccessibilityConfig.contentDescriptionDelay)
-                    isContainerFocused = false
-                    focusRequesterPrevBtn.requestFocus()
-                }
-            }) {
-                Text(text = pieChartConfig.chartAccessibilityConfig.prevButtonText)
-            }
-            Spacer(modifier = Modifier.width(30.dp))
-            Button(
-                onClick = {
-                    if (activePie == pieChartData.slices.size - 1) {
-                        activePie = 0
+        if (talkbackEnabled) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp)
+                    .height(60.dp)
+                    .align(pieChartConfig.chartAccessibilityConfig.buttonContainerAlignment),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Button(modifier = Modifier
+                    .height(40.dp)
+                    .focusRequester(focusRequesterPrevBtn)
+                    .focusable(), onClick = {
+                    if (activePie <= 0) {
+                        activePie = pieChartData.slices.size - 1
                     } else {
-                        activePie++
+                        activePie--
                     }
                     coroutineScope.launch {
                         isContainerFocused = true
@@ -230,20 +202,48 @@ fun DonutPieChart(
                         // For now handled using delay, need to be removed
                         delay(pieChartConfig.chartAccessibilityConfig.contentDescriptionDelay)
                         isContainerFocused = false
-                        focusRequesterNextBtn.requestFocus()
+                        focusRequesterPrevBtn.requestFocus()
                     }
-                }, modifier = Modifier
-                    .height(40.dp)
-                    .focusRequester(focusRequesterNextBtn)
-                    .focusable()
-            ) {
-                Text(text = pieChartConfig.chartAccessibilityConfig.nextButtonText)
+                }) {
+                    Text(text = pieChartConfig.chartAccessibilityConfig.prevButtonText)
+                }
+                Spacer(modifier = Modifier.width(30.dp))
+                Button(
+                    onClick = {
+                        if (activePie == pieChartData.slices.size - 1) {
+                            activePie = 0
+                        } else {
+                            activePie++
+                        }
+                        coroutineScope.launch {
+                            isContainerFocused = true
+                            containerFocusedText =
+                                pieChartConfig.chartAccessibilityConfig.contentDescription(
+                                    activePie,
+                                    pieChartData.slices.size,
+                                    proportions[activePie].roundToInt(),
+                                    pieChartData.slices[activePie]
+                                )
+                            focusRequesterContainer.requestFocus()
+                            // T0D0 : Add callback to notify container description is announced completely
+                            // For now handled using delay, need to be removed
+                            delay(pieChartConfig.chartAccessibilityConfig.contentDescriptionDelay)
+                            isContainerFocused = false
+                            focusRequesterNextBtn.requestFocus()
+                        }
+                    }, modifier = Modifier
+                        .height(40.dp)
+                        .focusRequester(focusRequesterNextBtn)
+                        .focusable()
+                ) {
+                    Text(text = pieChartConfig.chartAccessibilityConfig.nextButtonText)
+                }
             }
+            LaunchedEffect(key1 = Unit, block = {
+                // T0D0: To be removed once we have support to get callback on announcement completely
+                delay(1000)
+                focusRequesterNextBtn.requestFocus()
+            })
         }
-        LaunchedEffect(key1 = Unit, block = {
-            // T0D0: To be removed once we have support to get callback on announcement completely
-            delay(1000)
-            focusRequesterNextBtn.requestFocus()
-        })
     }
 }

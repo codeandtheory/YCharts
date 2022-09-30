@@ -45,10 +45,10 @@ class PieChartActivity : ComponentActivity() {
                         contentAlignment = Alignment.TopCenter
                     ) {
                         LazyColumn(content = {
-                            items(3) { item ->
+                            items(1) { item ->
                                 when (item) {
                                     0 -> PieChart1(LocalContext.current)
-                                    1 -> PieChart2(LocalContext.current)
+                                    //1 -> PieChart2(LocalContext.current)
                                 }
                             }
                         })
