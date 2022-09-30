@@ -60,13 +60,6 @@ fun DonutPieChart(
 
 
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-
-        if (pieChartConfig.isLegendVisible) {
-            Legends(
-                pieChartData = pieChartData,
-                pieChartConfig = pieChartConfig
-            )
-        }
         
         BoxWithConstraints(modifier = modifier.aspectRatio(1f)) {
 

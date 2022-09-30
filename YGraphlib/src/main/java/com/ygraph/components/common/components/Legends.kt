@@ -40,7 +40,7 @@ fun Legends(modifier: Modifier = Modifier, legendsConfig: LegendsConfig) {
 @Composable
 private fun Legend(config: LegendsConfig, legendLabel: LegendLabel) {
     Row(
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = config.legendsArrangement,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(

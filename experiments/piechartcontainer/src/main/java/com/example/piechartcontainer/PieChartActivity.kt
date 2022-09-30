@@ -6,6 +6,7 @@ import android.text.TextUtils
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,7 +17,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.piechartcontainer.ui.theme.YGraphsTheme
+import com.ygraph.components.common.components.Legends
 import com.ygraph.components.common.model.PlotType
+import com.ygraph.components.common.utils.DataUtils
 import com.ygraph.components.piechart.charts.PieChart
 import com.ygraph.components.piechart.models.PieChartConfig
 import com.ygraph.components.piechart.models.PieChartData
@@ -50,8 +53,6 @@ class PieChartActivity : ComponentActivity() {
                             percentVisible = true,
                             strokeWidth = 120f,
                             percentColor = Color.Black,
-                            isLegendVisible = true,
-                            legendGridSize = 3,
                             activeSliceAlpha = .9f,
                             isEllipsizeEnabled = true,
                             sliceLabelEllipsizeAt = TextUtils.TruncateAt.MIDDLE,
@@ -59,17 +60,23 @@ class PieChartActivity : ComponentActivity() {
                             isAnimationEnable = true,
                             showSliceLabels = true,
                             chartPadding = 25,
-                            legendBadgeWidth = 20.dp
                         )
-
-                    PieChart(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(500.dp),
-                        pieChartData,
-                        pieChartConfig
-                    ) { slice ->
-                        Toast.makeText(context, slice.label, Toast.LENGTH_SHORT).show()
+                    Column {
+                        Legends(
+                            legendsConfig = DataUtils.getLegendsConfigFromPieChartData(
+                                pieChartData,
+                                3
+                            )
+                        )
+                        PieChart(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(500.dp),
+                            pieChartData,
+                            pieChartConfig
+                        ) { slice ->
+                            Toast.makeText(context, slice.label, Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }

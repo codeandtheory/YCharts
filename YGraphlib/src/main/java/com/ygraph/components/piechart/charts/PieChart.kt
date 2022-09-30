@@ -10,7 +10,6 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
@@ -66,18 +65,9 @@ fun PieChart(
     var activePie by rememberSaveable {
         mutableStateOf(-1)
     }
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
+    Box(
+        modifier = modifier.fillMaxWidth()
     ) {
-
-        if (pieChartConfig.isLegendVisible) {
-            Legends(
-                pieChartData = pieChartData,
-                pieChartConfig = pieChartConfig,
-            )
-        }
-
         BoxWithConstraints(
             modifier = modifier.aspectRatio(1f),
         ) {

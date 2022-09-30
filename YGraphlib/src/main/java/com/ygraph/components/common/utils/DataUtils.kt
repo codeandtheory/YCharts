@@ -1,7 +1,10 @@
 package com.ygraph.components.common.utils
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import com.ygraph.components.common.model.LegendLabel
+import com.ygraph.components.common.model.LegendsConfig
 import com.ygraph.components.common.model.PlotType
 import com.ygraph.components.common.model.Point
 import com.ygraph.components.graph.bargraph.models.BarData
@@ -194,5 +197,18 @@ object DataUtils {
             )
         }
         return colorList
+    }
+
+    fun getLegendsConfigFromPieChartData(pieChartData: PieChartData, gridSize: Int): LegendsConfig {
+        val legendsList = mutableListOf<LegendLabel>()
+        pieChartData.slices.forEach { slice ->
+            legendsList.add(LegendLabel(slice.color, slice.label))
+        }
+        return LegendsConfig(
+            legendLabelList = legendsList,
+            gridColumnCount = gridSize,
+            legendsArrangement = Arrangement.Start,
+            textStyle = TextStyle()
+        )
     }
 }

@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.app.ygraphs.R
 import com.app.ygraphs.ui.compositions.AppBarWithBackButton
 import com.app.ygraphs.ui.theme.YGraphsTheme
+import com.ygraph.components.common.components.Legends
 import com.ygraph.components.common.utils.DataUtils
 import com.ygraph.components.piechart.charts.PieChart
 import com.ygraph.components.piechart.models.PieChartConfig
@@ -65,27 +66,26 @@ private fun PieChart1(context: Context) {
     val pieChartConfig =
         PieChartConfig(
             percentVisible = true,
-            isLegendVisible = true,
-            legendGridSize = 4,
             activeSliceAlpha = .9f,
             isEllipsizeEnabled = true,
             sliceLabelEllipsizeAt = TextUtils.TruncateAt.MIDDLE,
             isAnimationEnable = true,
             chartPadding = 30,
-            legendBadgeWidth = 20.dp,
-            legendPadding = 30.dp,
             showSliceLabels = false,
             animationDuration = 1500
         )
-
-    PieChart(
-        modifier = Modifier
-            .width(400.dp)
-            .height(400.dp),
-        pieChartData,
-        pieChartConfig
-    ) { slice ->
-        Toast.makeText(context, slice.label, Toast.LENGTH_SHORT).show()
+    Column(modifier = Modifier.height(500.dp)) {
+        Spacer(modifier = Modifier.height(20.dp))
+        Legends(legendsConfig = DataUtils.getLegendsConfigFromPieChartData(pieChartData, 3))
+        PieChart(
+            modifier = Modifier
+                .width(400.dp)
+                .height(400.dp),
+            pieChartData,
+            pieChartConfig
+        ) { slice ->
+            Toast.makeText(context, slice.label, Toast.LENGTH_SHORT).show()
+        }
     }
 }
 
@@ -96,8 +96,6 @@ private fun PieChart2(context: Context) {
 
     val pieChartConfig =
         PieChartConfig(
-            isLegendVisible = false,
-            legendGridSize = 3,
             activeSliceAlpha = .9f,
             isEllipsizeEnabled = true,
             sliceLabelEllipsizeAt = TextUtils.TruncateAt.MIDDLE,
@@ -107,15 +105,17 @@ private fun PieChart2(context: Context) {
             showSliceLabels = true,
             percentVisible = true
         )
-
-    PieChart(
-        modifier = Modifier
-            .width(400.dp)
-            .height(400.dp),
-        pieChartData,
-        pieChartConfig
-    ) { slice ->
-        Toast.makeText(context, slice.label, Toast.LENGTH_SHORT).show()
+    Column(modifier = Modifier.height(500.dp)) {
+        Legends(legendsConfig = DataUtils.getLegendsConfigFromPieChartData(pieChartData, 3))
+        PieChart(
+            modifier = Modifier
+                .width(400.dp)
+                .height(400.dp),
+            pieChartData,
+            pieChartConfig
+        ) { slice ->
+            Toast.makeText(context, slice.label, Toast.LENGTH_SHORT).show()
+        }
     }
 }
 

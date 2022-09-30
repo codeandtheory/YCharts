@@ -1,5 +1,6 @@
 package com.ygraph.components.common.model
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
@@ -22,7 +23,8 @@ data class LegendsConfig(
     val gridPaddingVertical: Dp = 8.dp,
     val colorBoxSize: Dp = 25.dp,
     val textStyle: TextStyle = TextStyle(),
-    val spaceBWLabelAndColorBox: Dp = 4.dp,
+    val spaceBWLabelAndColorBox: Dp = 8.dp,
+    val legendsArrangement: Arrangement.Horizontal = Arrangement.Center
 )
 
 /**
