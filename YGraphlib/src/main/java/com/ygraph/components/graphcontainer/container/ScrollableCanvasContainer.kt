@@ -3,8 +3,8 @@ package com.ygraph.components.graphcontainer.container
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -44,28 +44,23 @@ fun ScrollableCanvasContainer(
     modifier: Modifier,
     calculateMaxDistance: DrawScope.(Float) -> Float,
     onDraw: DrawScope.(Float, Float) -> Unit,
-    drawXAndYAxis: @Composable BoxScope.(Float, Float) -> Unit,
+    drawXAndYAxis: @Composable (BoxScope.(Float, Float) -> Unit),
     containerBackgroundColor: Color = Color.White,
     layoutDirection: LayoutDirection = LayoutDirection.Ltr,
     onPointClicked: (Offset, Float) -> Unit = { _, _ -> },
     isPinchZoomEnabled: Boolean = true,
     onScroll: () -> Unit = {},
-    onZoomInAndOut: () -> Unit = {}
+    onZoomInAndOut: () -> Unit = {},
+    scrollOffset: Float = 0f,
+    maxScrollOffset: (Float) -> Unit = {},
+    scrollState: ScrollableState? = null,
 ) {
-    val scrollOffset = remember { mutableStateOf(0f) }
-    val maxScrollOffset = remember { mutableStateOf(0f) }
     val xZoom = remember { mutableStateOf(1f) }
-    val scrollState = rememberScrollableState { delta ->
-        scrollOffset.value -= delta
-        scrollOffset.value = checkAndGetMaxScrollOffset(
-            scrollOffset.value,
-            maxScrollOffset.value
-        )
-        delta
-    }
 
-    if (scrollState.isScrollInProgress){
-        onScroll()
+    scrollState?.let {
+        if (it.isScrollInProgress) {
+            onScroll()
+        }
     }
 
     CompositionLocalProvider(
@@ -80,11 +75,11 @@ fun ScrollableCanvasContainer(
                 .fillMaxWidth()
                 .background(containerBackgroundColor)
                 .scrollable(
-                    state = scrollState, Orientation.Horizontal, enabled = true
+                    state = scrollState!!, Orientation.Horizontal, enabled = true
                 )
                 .pointerInput(Unit) {
                     detectTapGestures(onTap = {
-                        onPointClicked(it, scrollOffset.value)
+                        onPointClicked(it, scrollOffset)
                     })
                 }
                 .pointerInput(Unit) {
@@ -97,10 +92,10 @@ fun ScrollableCanvasContainer(
                     )
                 },
                 onDraw = {
-                    maxScrollOffset.value = calculateMaxDistance(xZoom.value)
-                    onDraw(scrollOffset.value, xZoom.value)
+                    maxScrollOffset(calculateMaxDistance(xZoom.value))
+                    onDraw(scrollOffset, xZoom.value)
                 })
-            drawXAndYAxis(scrollOffset.value, xZoom.value)
+            drawXAndYAxis(scrollOffset, xZoom.value)
         }
     }
 }

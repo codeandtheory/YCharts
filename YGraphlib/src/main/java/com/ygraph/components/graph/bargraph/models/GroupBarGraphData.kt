@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.axis.AxisData
+import com.ygraph.components.common.model.AccessibilityConfig
 
 /**
  * GroupBarGraph data class params used in drawing bar graph.
@@ -30,4 +31,5 @@ data class GroupBarGraphData(
     val showXAxis: Boolean = true,
     val tapPadding: Dp = 10.dp,
     val groupSeparatorConfig: GroupSeparatorConfig = GroupSeparatorConfig(),
+    val accessibilityConfig: AccessibilityConfig = AccessibilityConfig(),
 )
