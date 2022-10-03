@@ -304,7 +304,7 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                             }
                         )
                     }
-                    if (true) {
+                    if (talkbackEnabled) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()

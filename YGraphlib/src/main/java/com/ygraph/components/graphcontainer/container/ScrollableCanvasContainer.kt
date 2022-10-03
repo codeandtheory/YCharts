@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +38,9 @@ import com.ygraph.components.graphcontainer.gestures.detectZoomGesture
  * @param layoutDirection: Used to define the direction of scroll.
  * @param onPointClicked: Callback for tap detected along with offset for tap.
  * @param onScroll: Callback when user starts scrolling the graph.
+ * @param onZoomInAndOut: Callback on invoking zoom-in and out.
+ * @param scrollOffset: The scroll offset post scroll.
+ * @param maxScrollOffset: The callback for the user to save the ma
  */
 
 @Composable
@@ -53,7 +57,7 @@ fun ScrollableCanvasContainer(
     onZoomInAndOut: () -> Unit = {},
     scrollOffset: Float = 0f,
     maxScrollOffset: (Float) -> Unit = {},
-    scrollState: ScrollableState? = null,
+    scrollState: ScrollableState = rememberScrollState(),
 ) {
     val xZoom = remember { mutableStateOf(1f) }
 

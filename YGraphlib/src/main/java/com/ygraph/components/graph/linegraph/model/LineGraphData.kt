@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.axis.AxisData
+import com.ygraph.components.common.model.AccessibilityConfig
 import com.ygraph.components.common.model.Point
 
 /**
@@ -30,7 +31,8 @@ data class LineGraphData(
     val paddingRight: Dp = 10.dp,
     val containerPaddingEnd: Dp = 15.dp,
     val backgroundColor: Color = Color.White,
-    val gridLines: GridLines? = null
+    val gridLines: GridLines? = null,
+    val accessibilityConfig: AccessibilityConfig = AccessibilityConfig(),
 )
 
 /**

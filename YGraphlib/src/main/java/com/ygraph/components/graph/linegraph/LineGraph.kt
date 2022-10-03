@@ -1,14 +1,18 @@
 package com.ygraph.components.graph.linegraph
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollBy
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -18,17 +22,24 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
 import com.ygraph.components.axis.getXAxisScale
 import com.ygraph.components.common.extensions.RowClip
+import com.ygraph.components.common.extensions.collectIsTalkbackEnabledAsState
 import com.ygraph.components.common.extensions.drawGridLines
 import com.ygraph.components.common.extensions.isNotNull
 import com.ygraph.components.common.model.Point
 import com.ygraph.components.graph.linegraph.model.*
 import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
+import com.ygraph.components.graphcontainer.container.checkAndGetMaxScrollOffset
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  *
@@ -39,7 +50,7 @@ import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
  */
 @Composable
 fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
-    Column {
+    Box {
         with(lineGraphData) {
             var columnWidth by remember { mutableStateOf(0f) }
             var rowHeight by remember { mutableStateOf(0f) }
@@ -50,6 +61,32 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
             var selectionTextVisibility by remember { mutableStateOf(false) }
             var identifiedPoint by remember { mutableStateOf(Point(0f, 0f)) }
             val line = linePlotData.lines.first()
+            val talkbackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
+            val composableScope = rememberCoroutineScope()
+            var selectedIndex by remember { mutableStateOf(0) }
+            var pointsData: MutableList<Offset> = mutableListOf()
+            val tapPointLocks = mutableMapOf<Int, Pair<Point, Offset>>()
+
+            // Scroll related params
+            var scrollOffset by remember { mutableStateOf(0f) }
+            var maxScrollOffset by remember { mutableStateOf(0f) }
+            val scrollState = rememberScrollableState { delta ->
+                scrollOffset -= delta
+                scrollOffset = checkAndGetMaxScrollOffset(
+                    scrollOffset,
+                    maxScrollOffset
+                )
+                delta
+            }
+
+            // For accessibility
+            val focusRequesterContainer = remember { FocusRequester() }
+            val coroutineScope = rememberCoroutineScope()
+            var isContainerFocused by remember { mutableStateOf(false) }
+            var containerFocusedText by remember { mutableStateOf("") }
+            val focusRequesterNextBtn = remember { FocusRequester() }
+            val focusRequesterPrevBtn = remember { FocusRequester() }
+
             // Update must required values
             val xAxisData = xAxisData.copy(axisBottomPadding = bottomPadding)
             val yAxisData = yAxisData.copy(
@@ -63,7 +100,13 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                 getMaxElementInYAxis(yAxisScale, yAxisData.steps)
 
             ScrollableCanvasContainer(
-                modifier = modifier,
+                modifier = modifier
+                    .focusRequester(focusRequesterContainer)
+                    .focusable()
+                    .semantics {
+                        contentDescription =
+                            if (isContainerFocused) containerFocusedText else "Default content"
+                    },
                 calculateMaxDistance = { xZoom ->
                     xOffset = xAxisData.axisStepSize.toPx() * xZoom
                     getMaxScrollDistance(
@@ -76,9 +119,14 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                         containerPaddingEnd.toPx()
                     )
                 },
+                scrollOffset = scrollOffset,
+                maxScrollOffset = { maxScroll ->
+                    maxScrollOffset = maxScroll
+                },
+                scrollState = scrollState,
                 containerBackgroundColor = backgroundColor,
                 isPinchZoomEnabled = isZoomAllowed,
-                drawXAndYAxis = { scrollOffset, xZoom ->
+                drawXAndYAxis = { drawScrollOffset, xZoom ->
                     YAxis(
                         modifier = Modifier
                             .fillMaxHeight()
@@ -103,29 +151,27 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                                 )
                             ),
                         xStart = columnWidth,
-                        scrollOffset = scrollOffset,
+                        scrollOffset = drawScrollOffset,
                         zoomScale = xZoom,
                         graphData = line.dataPoints
                     )
                 },
-                onDraw = { scrollOffset, xZoom ->
+                onDraw = { drawScrollOffset, xZoom ->
                     val yBottom = size.height - rowHeight
                     val yOffset = ((yBottom - paddingTop.toPx()) / maxElementInYAxis)
                     xOffset = xAxisData.axisStepSize.toPx() * xZoom
                     val xLeft = columnWidth // To add extra space if needed
-                    val pointsData = getMappingPointsToGraph(
+                    pointsData = getMappingPointsToGraph(
                         line.dataPoints,
                         xMin,
                         xOffset,
                         xLeft,
-                        scrollOffset,
+                        drawScrollOffset,
                         yBottom,
                         yMin,
                         yOffset
                     )
                     val (cubicPoints1, cubicPoints2) = getCubicPoints(pointsData)
-                    val tapPointLocks = mutableMapOf<Int, Pair<Point, Offset>>()
-
                     // Draw guide lines
                     gridLines?.let {
                         drawGridLines(
@@ -133,7 +179,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                             yAxisData.axisTopPadding.toPx(),
                             xLeft,
                             paddingRight,
-                            scrollOffset,
+                            drawScrollOffset,
                             pointsData.size,
                             xZoom,
                             xAxisScale,
@@ -162,6 +208,11 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                     pointsData.forEachIndexed { index, point ->
                         if (isTapped && point.isTapped(tapOffset.x, xOffset)) {
                             // Dealing with only one line graph hence tapPointLocks[0]
+                            println("jhasdahsdgjhad tapOffset on click $tapOffset")
+                            println("jhasdahsdgjhad point on click $point")
+                            println("jhasdahsdgjhad tapPointLocks on click ${line.dataPoints[index]}")
+                            println("jhasdahsdgjhad index $index")
+
                             tapPointLocks[0] = line.dataPoints[index] to point
                         }
                     }
@@ -193,14 +244,100 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                     tapOffset = offset
                 },
                 onScroll = {
-                    isTapped = false
-                    selectionTextVisibility = false
+                    if (talkbackEnabled.not()) {
+                        isTapped = false
+                        selectionTextVisibility = false
+                    }
                 },
                 onZoomInAndOut = {
                     isTapped = false
                     selectionTextVisibility = false
                 }
             )
+            if (talkbackEnabled) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            horizontal = accessibilityConfig.paddingHorizontal,
+                            vertical = accessibilityConfig.paddingVertical
+                        )
+                        .align(accessibilityConfig.alignment),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Button(modifier = Modifier
+                        .focusRequester(focusRequesterNextBtn)
+                        .focusable(), onClick = {
+                        if (selectedIndex < line.dataPoints.size) {
+                            isTapped = true
+                            selectionTextVisibility = true
+                            if (selectedIndex > 0) {
+                                val scrollStep: Float = xOffset
+                                composableScope.launch {
+                                    scrollState.scrollBy(-scrollStep)
+                                }
+                            }
+                            tapOffset = pointsData[selectedIndex]
+                            println("jhasdahsdgjhad selectedIndex $selectedIndex")
+                            println("jhasdahsdgjhad tapOffset $tapOffset")
+
+                            tapPointLocks[0] =
+                                line.dataPoints[selectedIndex] to pointsData[selectedIndex]
+                            val tapPointValue = line.dataPoints[selectedIndex]
+                            val valueY = tapPointValue?.y
+                            val xLabel = "Name : ${tapPointValue?.x} "
+                            val yLabel = "Value : ${String.format("%.2f", valueY)}"
+                            coroutineScope.launch {
+                                isContainerFocused = true
+                                containerFocusedText = "$xLabel $yLabel"
+                                focusRequesterContainer.requestFocus()
+                                delay(6000)
+                                isContainerFocused = false
+                                focusRequesterNextBtn.requestFocus()
+                            }
+                            selectedIndex++
+                        }
+                    }) {
+                        Text(text = accessibilityConfig.nextButtonText)
+                    }
+
+                    Button(modifier = Modifier
+                        .focusRequester(focusRequesterPrevBtn)
+                        .focusable(), onClick = {
+                        if (selectedIndex > 0) {
+                            selectedIndex--
+                            isTapped = true
+                            selectionTextVisibility = true
+                            if (selectedIndex > 0) {
+                                val scrollStep: Float = xOffset
+                                composableScope.launch {
+                                    scrollState.scrollBy(+scrollStep)
+                                }
+                            }
+                            tapOffset = pointsData[selectedIndex]
+                            println("jhasdahsdgjhad selectedIndex $selectedIndex")
+                            println("jhasdahsdgjhad tapOffset $tapOffset")
+
+                            tapPointLocks[0] =
+                                line.dataPoints[selectedIndex] to pointsData[selectedIndex]
+                            val tapPointValue = line.dataPoints[selectedIndex]
+                            val valueY = tapPointValue?.y
+                            val xLabel = "Name : ${tapPointValue?.x} "
+                            val yLabel = "Value : ${String.format("%.2f", valueY)}"
+                            coroutineScope.launch {
+                                isContainerFocused = true
+                                containerFocusedText = "$xLabel $yLabel"
+                                focusRequesterContainer.requestFocus()
+                                delay(6000)
+                                isContainerFocused = false
+                                focusRequesterPrevBtn.requestFocus()
+                            }
+                        }
+                    }) {
+                        Text(text = accessibilityConfig.prevButtonText)
+                    }
+                }
+            }
         }
     }
 }
