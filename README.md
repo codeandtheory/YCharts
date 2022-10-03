@@ -313,13 +313,13 @@ Let's see how we can use the graph components and style them with available cust
      ```
      
    * Initialize the combined graph config data with `CombinedGraphData` data class inorder to achieve styling and configurations related to same.
-       ```
-  val combinedGraphData = CombinedGraphData(
+     ```
+    val combinedGraphData = CombinedGraphData(
         combinedPlotDataList = listOf(barPlotData, linePlotData),
         xAxisData = xAxisData,
         yAxisData = yAxisData
-    )
-     ```
+     )
+       ```
    * Finally, use the _**`CombinedGraph`**_ component to render the graph.
       ```  
      CombinedGraph(
