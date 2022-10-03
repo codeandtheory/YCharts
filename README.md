@@ -50,13 +50,17 @@ Let's see how we can use the graph components and style them with available cust
    * Initialize the Line graph data with axis and other line related styling using `LineGraphData` data class.
    ```
    val lineGraphData = LineGraphData(
-        line = Line(
-            dataPoints = pointsData,
-            LineStyle(),
-            IntersectionPoint(),
-            SelectionHighlightPoint(),
-            ShadowUnderLine(),
-            SelectionHighlightPopUp()
+        linePlotData = LinePlotData(
+            lines = listOf(
+                Line(
+                    dataPoints = pointsData,
+                    LineStyle(),
+                    IntersectionPoint(),
+                    SelectionHighlightPoint(),
+                    ShadowUnderLine(),
+                    SelectionHighlightPopUp()
+                )
+            ),
         ),
         xAxisData = xAxisData,
         yAxisData = yAxisData,
@@ -128,10 +132,17 @@ Let's see how we can use the graph components and style them with available cust
 
 3. **Grouped Bar Graph:**
    * Create list of grouped combinations of bar graph data using the random generator extension
-     and  `GroupBarGraphData` data class
+     and  `BarPlotData` data class
 
      ```
-     val groupBarData = DataUtils.getGroupBarChartData(barGraphListSize, maxRange, eachGroupBarSize)
+        val groupBarPlotData = BarPlotData(
+                        groupBarList = DataUtils.getGroupBarChartData(
+                            barGraphListSize,
+                            maxRange,
+                            eachGroupBarSize
+                        ),
+                        barColorPaletteList = getColorPaletteList(barSize)
+                    )
      ```
 
    * Initialize X and Y Axis builders using the `AxisData` data class.
@@ -154,13 +165,10 @@ Let's see how we can use the graph components and style them with available cust
      using `GroupBarGraphData`
      data class.
    ```
-     val groupBarGraphData = GroupBarGraphData(
-                        groupedBarList = groupBarData,
+      val groupBarGraphData = GroupBarGraphData(
+                        barPlotData = groupBarPlotData,
                         xAxisData = xAxisData,
-                        yAxisData = yAxisData,
-                        stackLabelConfig = StackLabelConfig(
-                            stackLabelList = DataUtils.getStackLabelData(barSize)
-                        )
+                        yAxisData = yAxisData
                     )
    ```
    * Use the _**`GroupBarGraph`**_ Component to render the bar graph with the above input params.
@@ -193,8 +201,6 @@ Let's see how we can use the graph components and style them with available cust
     ```
       val pieChartConfig = PieChartConfig(
         percentVisible = true,
-        isLegendVisible = true,
-        legendGridSize = 4,
         isAnimationEnable = true,
         showSliceLabels = false,
         animationDuration = 1500
@@ -237,8 +243,6 @@ Let's see how we can use the graph components and style them with available cust
         percentageFontSize = 42.sp,
         strokeWidth = 120f,
         percentColor = Color.Black,
-        isLegendVisible = true,
-        legendGridSize = 4,
         activeSliceAlpha = .9f,
         isAnimationEnable = true
     )
@@ -257,7 +261,79 @@ Let's see how we can use the graph components and style them with available cust
     <img width=233 src="https://user-images.githubusercontent.com/107846675/189868490-cbaecf87-2beb-4788-ba8e-f57b667cbf10.png" />
     <p>  Donut chart looks like this!</p>
     </div>
-    </figure>
+    </figure>    
+    
+6. **Combined Graph:**
+
+   * Similar to line and bar graph we can combine both entities in one graph, just need  to initialize the line and bar plot data using the random generator extension and add styling related to individual component.
+
+    ```
+      val linePlotData = LinePlotData(
+          lines = listOf(
+            Line(
+                DataUtils.getLineChartData(listSize, maxRange = 100),
+                lineStyle = LineStyle(color = Color.Blue),
+                intersectionPoint = IntersectionPoint(),
+                selectionHighlightPoint = SelectionHighlightPoint(),
+                selectionHighlightPopUp = SelectionHighlightPopUp()
+            ),
+            Line(
+                DataUtils.getLineChartData(listSize, maxRange),
+                lineStyle = LineStyle(color = Color.Black),
+                intersectionPoint = IntersectionPoint(),
+                selectionHighlightPoint = SelectionHighlightPoint(),
+                selectionHighlightPopUp = SelectionHighlightPopUp()
+            )
+        )
+    )
+    
+    val barPlotData = BarPlotData(
+        groupBarList = DataUtils.getGroupBarChartData(listSize, maxValueRange, barSize),
+        barStyle = BarStyle(barWidth = 35.dp),
+        barColorPaletteList = colorPaletteList
+     )
+    ```
+
+ * Initialize X and Y Axis builders using the `AxisData` data class.
+
+     ```
+    val xAxisData = AxisData.Builder()
+       .axisStepSize(30.dp)
+       .steps(maxOf(barGraphData.size - 1, lineGraphData.size - 1))
+       .bottomPadding(40.dp)
+       .labelData { index -> index.toString() }
+       .build()
+   val yAxisData = AxisData.Builder()
+       .steps(yStepSize)
+       .labelAndAxisLinePadding(20.dp)
+       .axisOffset(20.dp)
+       .labelData { index -> (index * (maxRange / yStepSize)).toString() }
+       .build()
+       
+     ```
+     
+   * Initialize the combined graph config data with `CombinedGraphData` data class inorder to achieve styling and configurations related to same.
+       ```
+  val combinedGraphData = CombinedGraphData(
+        combinedPlotDataList = listOf(barPlotData, linePlotData),
+        xAxisData = xAxisData,
+        yAxisData = yAxisData
+    )
+     ```
+   * Finally, use the _**`CombinedGraph`**_ component to render the graph.
+      ```  
+     CombinedGraph(
+            modifier = Modifier.height(400.dp),
+            combinedGraphData = combinedGraphData
+        )
+     ```
+    _Note_ : To show legends infomartion related to bar, `Legends` component can be used.
+   <figure>
+  <div align = "center">
+   <img width=292 src="https://user-images.githubusercontent.com/107846675/192773924-74421edd-7314-4b44-bdb1-13aaf3598796.png" />
+   <p>  Combined bar with line graph looks like this!</p>
+   </div>
+   </figure>
 
 ## License
 
