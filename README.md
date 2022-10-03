@@ -201,8 +201,6 @@ Let's see how we can use the graph components and style them with available cust
     ```
       val pieChartConfig = PieChartConfig(
         percentVisible = true,
-        isLegendVisible = true,
-        legendGridSize = 4,
         isAnimationEnable = true,
         showSliceLabels = false,
         animationDuration = 1500
@@ -245,8 +243,6 @@ Let's see how we can use the graph components and style them with available cust
         percentageFontSize = 42.sp,
         strokeWidth = 120f,
         percentColor = Color.Black,
-        isLegendVisible = true,
-        legendGridSize = 4,
         activeSliceAlpha = .9f,
         isAnimationEnable = true
     )
