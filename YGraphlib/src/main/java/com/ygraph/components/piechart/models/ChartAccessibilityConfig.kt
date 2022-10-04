@@ -13,10 +13,10 @@ import androidx.compose.ui.Alignment
 data class ChartAccessibilityConfig(
     val nextButtonText: String = NEXT_BUTTON_TEXT,
     val prevButtonText: String = PREV_BUTTON_TEXT,
-    val buttonContainerAlignment: Alignment = Alignment.BottomCenter,
+    val buttonContainerAlignment: Alignment = Alignment.Center,
     val contentDescriptionDelay: Long = 4000L,
     val contentDescription: (Int, Int, Int, PieChartData.Slice) -> String = { sliceIndex, totalSlices, slicePercentage, slice ->
-        "${sliceIndex + 1} of $totalSlices slices is selected that is ${slice.label} is ${slicePercentage}%"
+        "${sliceIndex + 1} of $totalSlices slices is selected that is  ${slice.label} is ${slicePercentage}%"
     }
 ) {
     companion object {

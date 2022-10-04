@@ -79,7 +79,7 @@ fun ScrollableCanvasContainer(
                 .fillMaxWidth()
                 .background(containerBackgroundColor)
                 .scrollable(
-                    state = scrollState!!, Orientation.Horizontal, enabled = true
+                    state = scrollState, Orientation.Horizontal, enabled = true
                 )
                 .pointerInput(Unit) {
                     detectTapGestures(onTap = {
