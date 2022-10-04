@@ -367,15 +367,15 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                                     dragLocks[0] =
                                         groupBarList[selectedIndex].barList[selectedSubIndex] to individualOffset
                                 }
-                                val dragLockValue = dragLocks.values.firstOrNull()?.second
+                                val dragLockValue = dragLocks.values.firstOrNull()?.first?.point
                                 val valueY = dragLockValue?.y
-                                val xLabel = "Name : ${dragLockValue?.x} "
-                                val yLabel = "Value : ${String.format("%.2f", valueY)}"
+                                val xLabel = "In Group bar $selectedIndex , bar at : ${dragLockValue?.x?.toInt()} is selected "
+                                val yLabel = " with value : ${String.format("%.2f", valueY)}"
                                 coroutineScope.launch {
                                     isContainerFocused = true
                                     containerFocusedText = "$xLabel $yLabel"
                                     focusRequesterContainer.requestFocus()
-                                    delay(5500)
+                                    delay(6000)
                                     isContainerFocused = false
                                     focusRequesterNextBtn.requestFocus()
                                 }
@@ -441,15 +441,15 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                                     dragLocks[0] =
                                         groupBarList[selectedIndex].barList[selectedSubIndex] to individualOffset
                                 }
-                                val dragLockValue = dragLocks.values.firstOrNull()?.second
+                                val dragLockValue = dragLocks.values.firstOrNull()?.first?.point
                                 val valueY = dragLockValue?.y
-                                val xLabel = "Name : ${dragLockValue?.x} "
-                                val yLabel = "Value : ${String.format("%.2f", valueY)}"
+                                val xLabel = "In Group bar $selectedIndex , bar at : ${dragLockValue?.x?.toInt()} is selected "
+                                val yLabel = " with value : ${String.format("%.2f", valueY)}"
                                 coroutineScope.launch {
                                     isContainerFocused = true
                                     containerFocusedText = "$xLabel $yLabel"
                                     focusRequesterContainer.requestFocus()
-                                    delay(5500)
+                                    delay(6000)
                                     isContainerFocused = false
                                     focusRequesterPrevBtn.requestFocus()
                                 }
@@ -460,6 +460,11 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                         }
                     }
                 }
+                LaunchedEffect(key1 = Unit, block = {
+                    // T0D0: To be removed once we have support to get callback on announcement completely
+                    delay(1000)
+                    focusRequesterNextBtn.requestFocus()
+                })
             }
         }
     }

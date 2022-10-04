@@ -32,10 +32,11 @@ class BarChartActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val barSize = 3
+                    val colorPaletteList = getColorPaletteList(barSize)
                     val groupBarData = getGroupBarChartData(50, 50, barSize)
                     val groupBarPlotData = BarPlotData(
                         groupBarList = groupBarData,
-                        barColorPaletteList = getColorPaletteList(barSize)
+                        barColorPaletteList = colorPaletteList
                     )
                     val yStepSize = 10
                     val xAxisData = AxisData.Builder()
@@ -50,7 +51,6 @@ class BarChartActivity : ComponentActivity() {
                         .axisOffset(20.dp)
                         .labelData { index -> (index * (50 / yStepSize)).toString() }
                         .build()
-                    val colorPaletteList = DataUtils.getColorPaletteList(barSize)
                     val legendsConfig = LegendsConfig(
                         legendLabelList = DataUtils.getLegendsLabelData(colorPaletteList),
                         gridColumnCount = 3
