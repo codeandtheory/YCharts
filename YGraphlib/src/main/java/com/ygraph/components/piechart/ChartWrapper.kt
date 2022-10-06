@@ -1,5 +1,6 @@
 package com.ygraph.components.piechart
 
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.ygraph.components.common.model.PlotType
@@ -8,6 +9,7 @@ import com.ygraph.components.piechart.charts.PieChart
 import com.ygraph.components.piechart.models.PieChartConfig
 import com.ygraph.components.piechart.models.PieChartData
 
+@OptIn(ExperimentalMaterialApi::class)
 object ChartWrapper {
 
     /**

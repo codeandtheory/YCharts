@@ -4,23 +4,33 @@ import android.graphics.Paint
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.Text
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.ygraph.components.AccessibilityBottomSheetDialog
 import com.ygraph.components.common.model.PlotType
 import com.ygraph.components.piechart.models.PieChartConfig
 import com.ygraph.components.piechart.models.PieChartData
 import com.ygraph.components.piechart.utils.convertTouchEventPointToAngle
 import com.ygraph.components.piechart.utils.proportion
 import com.ygraph.components.piechart.utils.sweepAngles
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 
@@ -31,6 +41,7 @@ import kotlin.math.roundToInt
  * @param pieChartConfig: configuration for the pie chart
  * @param onSliceClick(pieChartData.Slice)->Unit: The event that captures the click
  */
+@ExperimentalMaterialApi
 @Composable
 fun DonutPieChart(
     modifier: Modifier,
@@ -57,10 +68,13 @@ fun DonutPieChart(
     var activePie by rememberSaveable {
         mutableStateOf(-1)
     }
+    val accessibilitySheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val scope = rememberCoroutineScope()
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-
-    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        
         BoxWithConstraints(modifier = modifier.aspectRatio(1f)) {
 
             val sideSize = Integer.min(constraints.maxWidth, constraints.maxHeight)
@@ -78,7 +92,7 @@ fun DonutPieChart(
                     )
                 }
             }
-            
+
             Canvas(
                 modifier = Modifier
                     .width(sideSize.dp)
@@ -133,12 +147,13 @@ fun DonutPieChart(
                                 color = pieChartConfig.percentColor.toArgb()
                                 textSize = fontSize
                                 textAlign = Paint.Align.CENTER
-                                typeface= pieChartConfig.percentageTypeface
+                                typeface = pieChartConfig.percentageTypeface
 
                             }
                         )
                     }
             }
         }
+
     }
 }
