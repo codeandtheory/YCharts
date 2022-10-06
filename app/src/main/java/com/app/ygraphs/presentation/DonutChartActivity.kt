@@ -18,16 +18,18 @@ import androidx.compose.ui.unit.sp
 import com.app.ygraphs.R
 import com.app.ygraphs.ui.compositions.AppBarWithBackButton
 import com.app.ygraphs.ui.theme.YGraphsTheme
+import com.ygraph.components.common.components.Legends
 import com.ygraph.components.common.utils.DataUtils
 import com.ygraph.components.piechart.charts.DonutPieChart
 import com.ygraph.components.piechart.models.PieChartConfig
 
-class DonutChartActivity : ComponentActivity(){
+class DonutChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             YGraphsTheme {
-                Scaffold(modifier = Modifier.fillMaxSize(),
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
                     backgroundColor = YGraphsTheme.colors.background,
                     topBar = {
                         AppBarWithBackButton(
@@ -61,24 +63,23 @@ private fun DonutChart1(context: Context) {
             percentVisible = true,
             strokeWidth = 120f,
             percentColor = Color.Black,
-            isLegendVisible = true,
-            legendGridSize = 3,
             activeSliceAlpha = .9f,
             isEllipsizeEnabled = true,
             percentageTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
             isAnimationEnable = true,
             chartPadding = 25,
-            legendBadgeWidth = 20.dp,
             percentageFontSize = 42.sp
         )
-
-    DonutPieChart(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(500.dp),
-        data,
-        pieChartConfig
-    ) { slice ->
-        Toast.makeText(context, slice.label, Toast.LENGTH_SHORT).show()
+    Column {
+        Legends(legendsConfig = DataUtils.getLegendsConfigFromPieChartData(pieChartData = data, 3))
+        DonutPieChart(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(500.dp),
+            data,
+            pieChartConfig
+        ) { slice ->
+            Toast.makeText(context, slice.label, Toast.LENGTH_SHORT).show()
+        }
     }
 }

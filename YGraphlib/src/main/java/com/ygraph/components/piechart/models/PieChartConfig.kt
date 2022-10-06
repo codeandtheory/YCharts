@@ -21,8 +21,6 @@ import com.ygraph.components.piechart.PieChartConstants.DEFAULT_STROKE_WIDTH
  * @param sliceLabelTextSize: Text size of the labels
  * @param sliceLabelTextColor: Text color of the labels
  * @param sliceLabelTypeface: Typeface of the labels
- * @param isLegendVisible: visibility of legends
- * @param legendLabelTextColor: Text color of the legend labels
  * @param isAnimationEnable: Boolean Flag for enabling animation
  * @param animationDuration: Duration of animation
  * @param strokeWidth: Stroke width of Donut Chart
@@ -30,14 +28,12 @@ import com.ygraph.components.piechart.PieChartConstants.DEFAULT_STROKE_WIDTH
  * @param percentageTypeface: Percentage text typeface
  * @param percentVisible: Percentage text visibility
  * @param percentColor: Percentage text color
- * @param legendGridSize: Number of legends on each row
  * @param activeSliceAlpha: Opacity of the active slice
  * @param inActiveSliceAlpha: Opacity of the inactive slice
  * @param isEllipsizeEnabled: Boolean flag for enabling ellipsize
  * @param sliceMinTextWidthToEllipsize: Minimum width of the label post which label will be ellipsized
  * @param sliceLabelEllipsizeAt: Position at which the label will be truncated or ellipsized
  * @param chartPadding: Padding for the Pie chart/Donut Chart
- * @param legendBadgeWidth: Width of the legend badge
  */
 data class PieChartConfig(
     val startAngle: Float = DEFAULT_START_ANGLE,
@@ -45,10 +41,6 @@ data class PieChartConfig(
     val sliceLabelTextSize: TextUnit = DEFAULT_SLICE_LABEL_TEXT_SIZE.sp,
     val sliceLabelTextColor: Color = Color.White,
     val sliceLabelTypeface: Typeface = Typeface.DEFAULT,
-    val isLegendVisible: Boolean = false,
-    val legendLabelTextColor: Color = Color.Black,
-    val legendPadding: Dp = 15.dp,
-    val legendFontStyle: FontStyle = FontStyle.Normal,
     val isAnimationEnable: Boolean = false,
     @IntRange(from = 1) val animationDuration: Int = 500,
     val strokeWidth: Float = DEFAULT_STROKE_WIDTH,
@@ -56,11 +48,10 @@ data class PieChartConfig(
     val percentageTypeface: Typeface = Typeface.DEFAULT,
     val percentVisible: Boolean = false,
     val percentColor: Color = Color.White,
-    val legendGridSize: Int = 4,
     val activeSliceAlpha: Float = .8f,
     val inActiveSliceAlpha: Float = 1f,
     val isEllipsizeEnabled: Boolean = false,
     val sliceMinTextWidthToEllipsize: Dp = 80.dp,
     val sliceLabelEllipsizeAt: TextUtils.TruncateAt = TextUtils.TruncateAt.END,
-    val chartPadding: Int = DEFAULT_PADDING,
-    val legendBadgeWidth: Dp = 16.dp)
+    val chartPadding: Int = DEFAULT_PADDING
+)

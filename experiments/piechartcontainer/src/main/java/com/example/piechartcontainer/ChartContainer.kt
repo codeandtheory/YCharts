@@ -29,8 +29,7 @@ fun ChartContainer() {
             PieChartConfig(
                 percentVisible = true,
                 strokeWidth = 120f,
-                percentColor = Color.Black,
-                isLegendVisible = true
+                percentColor = Color.Black
             )
 
 
