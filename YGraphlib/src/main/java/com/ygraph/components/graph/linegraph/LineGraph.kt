@@ -63,8 +63,8 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
             val line = linePlotData.lines.first()
             val talkbackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
             val composableScope = rememberCoroutineScope()
-            var selectedIndex by remember { mutableStateOf(0) }
-            var pointsData: MutableList<Offset> = mutableListOf()
+            var selectedIndex by remember { mutableStateOf(-1) }
+            var pointsData: MutableList<Offset> = mutableListOf<Offset>()
             val tapPointLocks = mutableMapOf<Int, Pair<Point, Offset>>()
 
             // Scroll related params
@@ -105,7 +105,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                     .focusable()
                     .semantics {
                         contentDescription =
-                            if (isContainerFocused) containerFocusedText else "Default content"
+                            if (isContainerFocused) containerFocusedText else "Line graph"
                     },
                 calculateMaxDistance = { xZoom ->
                     xOffset = xAxisData.axisStepSize.toPx() * xZoom
@@ -206,13 +206,9 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                     drawUnderScrollMask(columnWidth, paddingRight, bgColor)
 
                     pointsData.forEachIndexed { index, point ->
-                        if (isTapped && point.isTapped(tapOffset.x, xOffset)) {
-                            // Dealing with only one line graph hence tapPointLocks[0]
-                            println("jhasdahsdgjhad tapOffset on click $tapOffset")
-                            println("jhasdahsdgjhad point on click $point")
-                            println("jhasdahsdgjhad tapPointLocks on click ${line.dataPoints[index]}")
-                            println("jhasdahsdgjhad index $index")
-
+                        if (talkbackEnabled && isTapped && selectedIndex == index) {
+                            tapPointLocks[0] = line.dataPoints[index] to point
+                        } else if (isTapped && point.isTapped(tapOffset.x, xOffset)) {
                             tapPointLocks[0] = line.dataPoints[index] to point
                         }
                     }
@@ -268,39 +264,32 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                     Button(modifier = Modifier
                         .focusRequester(focusRequesterNextBtn)
                         .focusable(), onClick = {
-                        if (selectedIndex < line.dataPoints.size) {
+                        if (selectedIndex < line.dataPoints.size - 1) {
+                            selectedIndex++
                             isTapped = true
                             selectionTextVisibility = true
-                            if (selectedIndex > 0) {
+                            if (selectedIndex > 5) {
                                 val scrollStep: Float = xOffset
                                 composableScope.launch {
                                     scrollState.scrollBy(-scrollStep)
                                 }
                             }
-                            tapOffset = pointsData[selectedIndex]
-                            println("jhasdahsdgjhad selectedIndex $selectedIndex")
-                            println("jhasdahsdgjhad tapOffset $tapOffset")
-
-                            tapPointLocks[0] =
-                                line.dataPoints[selectedIndex] to pointsData[selectedIndex]
                             val tapPointValue = line.dataPoints[selectedIndex]
-                            val valueY = tapPointValue?.y
-                            val xLabel = "Name : ${tapPointValue?.x} "
+                            val valueY = tapPointValue.y
+                            val xLabel = "Point : ${tapPointValue.x} "
                             val yLabel = "Value : ${String.format("%.2f", valueY)}"
                             coroutineScope.launch {
                                 isContainerFocused = true
                                 containerFocusedText = "$xLabel $yLabel"
                                 focusRequesterContainer.requestFocus()
-                                delay(6000)
+                                delay(5000)
                                 isContainerFocused = false
                                 focusRequesterNextBtn.requestFocus()
                             }
-                            selectedIndex++
                         }
                     }) {
                         Text(text = accessibilityConfig.nextButtonText)
                     }
-
                     Button(modifier = Modifier
                         .focusRequester(focusRequesterPrevBtn)
                         .focusable(), onClick = {
@@ -314,21 +303,15 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                                     scrollState.scrollBy(+scrollStep)
                                 }
                             }
-                            tapOffset = pointsData[selectedIndex]
-                            println("jhasdahsdgjhad selectedIndex $selectedIndex")
-                            println("jhasdahsdgjhad tapOffset $tapOffset")
-
-                            tapPointLocks[0] =
-                                line.dataPoints[selectedIndex] to pointsData[selectedIndex]
                             val tapPointValue = line.dataPoints[selectedIndex]
-                            val valueY = tapPointValue?.y
-                            val xLabel = "Name : ${tapPointValue?.x} "
+                            val valueY = tapPointValue.y
+                            val xLabel = "Point : ${tapPointValue.x} "
                             val yLabel = "Value : ${String.format("%.2f", valueY)}"
                             coroutineScope.launch {
                                 isContainerFocused = true
                                 containerFocusedText = "$xLabel $yLabel"
                                 focusRequesterContainer.requestFocus()
-                                delay(6000)
+                                delay(5000)
                                 isContainerFocused = false
                                 focusRequesterPrevBtn.requestFocus()
                             }
