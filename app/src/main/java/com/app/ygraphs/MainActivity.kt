@@ -12,10 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.app.ygraphs.presentation.BarChartActivity
-import com.app.ygraphs.presentation.DonutChartActivity
-import com.app.ygraphs.presentation.LineChartActivity
-import com.app.ygraphs.presentation.PieChartActivity
+import com.app.ygraphs.presentation.*
 import com.app.ygraphs.ui.theme.YGraphsTheme
 
 class MainActivity : ComponentActivity() {
@@ -69,6 +66,17 @@ class MainActivity : ComponentActivity() {
                             )
                             addActivityInOutAnim()
                         })
+                        ChartButton(
+                            title = getString(R.string.title_bar_with_line_chart),
+                            onClick = {
+                                startActivity(
+                                    Intent(
+                                        this@MainActivity,
+                                        CombinedLineAndBarChartActivity::class.java
+                                    )
+                                )
+                                addActivityInOutAnim()
+                            })
                     }
                 }
             }

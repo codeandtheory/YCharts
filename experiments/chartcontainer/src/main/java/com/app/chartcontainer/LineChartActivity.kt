@@ -44,13 +44,17 @@ class LineChartActivity : ComponentActivity() {
                             .labelData { i -> (i * 20).toString() }
                             .build()
                         val data = LineGraphData(
-                            line = Line(
-                                dataPoints = pointsData,
-                                LineStyle(),
-                                IntersectionPoint(),
-                                SelectionHighlightPoint(),
-                                ShadowUnderLine(),
-                                SelectionHighlightPopUp()
+                            LinePlotData(
+                                lines = listOf(
+                                    Line(
+                                        dataPoints = pointsData,
+                                        LineStyle(),
+                                        IntersectionPoint(),
+                                        SelectionHighlightPoint(),
+                                        ShadowUnderLine(),
+                                        SelectionHighlightPopUp()
+                                    )
+                                )
                             ),
                             xAxisData = xAxisData,
                             yAxisData = yAxisData

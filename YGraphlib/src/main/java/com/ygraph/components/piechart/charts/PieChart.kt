@@ -10,7 +10,6 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
@@ -20,6 +19,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.withRotation
 import com.ygraph.components.common.extensions.getTextHeight
+import com.ygraph.components.common.model.PlotType
 import com.ygraph.components.piechart.PieChartConstants.MINIMUM_PERCENTAGE_FOR_SLICE_LABELS
 import com.ygraph.components.piechart.models.PieChartConfig
 import com.ygraph.components.piechart.models.PieChartData
@@ -65,18 +65,9 @@ fun PieChart(
     var activePie by rememberSaveable {
         mutableStateOf(-1)
     }
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
+    Box(
+        modifier = modifier.fillMaxWidth()
     ) {
-
-        if (pieChartConfig.isLegendVisible) {
-            Legends(
-                pieChartData = pieChartData,
-                pieChartConfig = pieChartConfig,
-            )
-        }
-
         BoxWithConstraints(
             modifier = modifier.aspectRatio(1f),
         ) {
@@ -138,7 +129,7 @@ fun PieChart(
                             arcProgress * pathPortion.value else arcProgress,
                         size = size,
                         padding = padding,
-                        isDonut = false,
+                        isDonut = (pieChartData.plotType == PlotType.Pie).not(),
                         isActive = activePie == index,
                         pieChartConfig = pieChartConfig
                     )

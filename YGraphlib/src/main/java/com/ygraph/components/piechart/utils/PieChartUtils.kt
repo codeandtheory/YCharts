@@ -9,11 +9,6 @@ import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
 
-sealed class ChartType{
-    object PieChart : ChartType()
-    object DonutPieChart : ChartType()
-}
-
 fun convertTouchEventPointToAngle(
     width: Float,
     height: Float,
