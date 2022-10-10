@@ -13,14 +13,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.ygraphs.R
@@ -31,6 +30,7 @@ import com.ygraph.components.common.components.Legends
 import com.ygraph.components.common.utils.DataUtils
 import com.ygraph.components.piechart.charts.DonutPieChart
 import com.ygraph.components.piechart.models.PieChartConfig
+import com.ygraph.components.piechart.models.PieChartData
 import com.ygraph.components.piechart.utils.proportion
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -117,30 +117,35 @@ private fun DonutChart1(context: Context) {
         content = {
             LazyColumn {
                 items(data.slices.size) { index ->
-                    Row(
-                        modifier = Modifier.semantics(mergeDescendants = true) {},
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .background(data.slices[index].color)
-                                .size(30.dp)
-                        )
-                        Spacer(modifier = Modifier.padding(20.dp))
-                        Text(
-                            text = data.slices[index].label,
-                            style = TextStyle(),
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        Text(
-                            text = " Percentage : ${proportions[index].roundToInt()}",
-                            style = TextStyle(),
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
+                    SliceInfo(data.slices[index], proportions[index].roundToInt())
                 }
             }
         },
         sheetState = accessibilitySheetState
     )
+}
+
+@Composable
+private fun SliceInfo(slice: PieChartData.Slice, slicePercentage: Int) {
+    // Merge elements below for accessibility purposes
+    Row(modifier = Modifier
+        .clickable { }
+        .semantics(mergeDescendants = true) {},
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(10.dp)
+                .background(slice.color)
+                .size(30.dp)
+        )
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(top = 16.dp, bottom = 16.dp)
+        ) {
+            Text("Slice name : ${slice.label}")
+            Text("Percentage  : $slicePercentage %")
+        }
+    }
 }
