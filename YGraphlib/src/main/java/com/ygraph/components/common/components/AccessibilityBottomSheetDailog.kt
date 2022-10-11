@@ -1,4 +1,4 @@
-package com.ygraph.components
+package com.ygraph.components.common.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

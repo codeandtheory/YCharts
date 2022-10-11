@@ -145,6 +145,7 @@ object DataUtils {
                             i.toFloat(),
                             "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat()
                         ),
+                        label = "B$i"
                     )
                 )
             }

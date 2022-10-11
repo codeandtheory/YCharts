@@ -1,16 +1,16 @@
 package com.ygraph.components.piechart.charts
 
 import android.graphics.Paint
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Text
-import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -20,10 +20,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import com.ygraph.components.AccessibilityBottomSheetDialog
+import com.ygraph.components.common.components.AccessibilityBottomSheetDialog
+import com.ygraph.components.common.extensions.collectIsTalkbackEnabledAsState
 import com.ygraph.components.common.model.PlotType
 import com.ygraph.components.piechart.models.PieChartConfig
 import com.ygraph.components.piechart.models.PieChartData
@@ -68,14 +70,32 @@ fun DonutPieChart(
     var activePie by rememberSaveable {
         mutableStateOf(-1)
     }
-    val accessibilitySheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val accessibilitySheetState =
+        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
+    val isTalkBackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
+    if (accessibilitySheetState.isVisible && isTalkBackEnabled) {
+        BackHandler {
+            scope.launch {
+                accessibilitySheetState.hide()
+            }
+        }
+    }
+    Surface(
+        modifier = modifier
     ) {
-
-        BoxWithConstraints(modifier = modifier.aspectRatio(1f)) {
+        BoxWithConstraints(modifier = modifier
+            .aspectRatio(1f)
+            .semantics { contentDescription = "Double tap to know the graph in detail" }
+            .clickable {
+                if (isTalkBackEnabled) {
+                    scope.launch {
+                        accessibilitySheetState.animateTo(
+                            ModalBottomSheetValue.Expanded
+                        )
+                    }
+                }
+            }) {
 
             val sideSize = Integer.min(constraints.maxWidth, constraints.maxHeight)
             val padding = (sideSize * pieChartConfig.chartPadding) / 100f
@@ -154,6 +174,44 @@ fun DonutPieChart(
                     }
             }
         }
+        if (isTalkBackEnabled) {
+            AccessibilityBottomSheetDialog(
+                modifier = Modifier.fillMaxSize(),
+                backgroundColor = Color.White,
+                content = {
+                    LazyColumn {
+                        items(pieChartData.slices.size) { index ->
+                            SliceInfo(pieChartData.slices[index], proportions[index].roundToInt())
+                        }
+                    }
+                },
+                sheetState = accessibilitySheetState
+            )
+        }
+    }
+}
 
+@Composable
+fun SliceInfo(slice: PieChartData.Slice, slicePercentage: Int) {
+    // Merge elements below for accessibility purposes
+    Row(modifier = Modifier
+        .clickable { }
+        .semantics(mergeDescendants = true) {},
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(10.dp)
+                .background(slice.color)
+                .size(30.dp)
+        )
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(top = 16.dp, bottom = 16.dp)
+        ) {
+            Text("Slice name : ${slice.label}")
+            Text("Percentage  : $slicePercentage %")
+        }
     }
 }
