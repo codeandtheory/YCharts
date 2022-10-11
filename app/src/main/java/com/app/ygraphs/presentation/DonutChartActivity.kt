@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.sp
 import com.app.ygraphs.R
 import com.app.ygraphs.ui.compositions.AppBarWithBackButton
 import com.app.ygraphs.ui.theme.YGraphsTheme
-import com.ygraph.components.AccessibilityBottomSheetDialog
+import com.ygraph.components.common.components.AccessibilityBottomSheetDialog
 import com.ygraph.components.common.components.Legends
 import com.ygraph.components.common.utils.DataUtils
 import com.ygraph.components.piechart.charts.DonutPieChart
@@ -92,57 +92,12 @@ private fun DonutChart1(context: Context) {
         Legends(legendsConfig = DataUtils.getLegendsConfigFromPieChartData(pieChartData = data, 3))
         DonutPieChart(
             modifier = Modifier
-                .semantics { contentDescription = "Double tap to know the graph in detail" }
                 .fillMaxWidth()
-                .clickable {
-                    scope.launch {
-                        accessibilitySheetState.animateTo(
-                            ModalBottomSheetValue.HalfExpanded
-                        )
-                    }
-                }
                 .height(500.dp),
             data,
             pieChartConfig
         ) { slice ->
             Toast.makeText(context, slice.label, Toast.LENGTH_SHORT).show()
-        }
-    }
-    AccessibilityBottomSheetDialog(
-        modifier = Modifier.fillMaxSize(),
-        backgroundColor = Color.White,
-        content = {
-            LazyColumn {
-                items(data.slices.size) { index ->
-                    SliceInfo(data.slices[index], proportions[index].roundToInt())
-                }
-            }
-        },
-        sheetState = accessibilitySheetState
-    )
-}
-
-@Composable
-private fun SliceInfo(slice: PieChartData.Slice, slicePercentage: Int) {
-    // Merge elements below for accessibility purposes
-    Row(modifier = Modifier
-        .clickable { }
-        .semantics(mergeDescendants = true) {},
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-            modifier = Modifier
-                .padding(10.dp)
-                .background(slice.color)
-                .size(30.dp)
-        )
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(top = 16.dp, bottom = 16.dp)
-        ) {
-            Text("Slice name : ${slice.label}")
-            Text("Percentage  : $slicePercentage %")
         }
     }
 }
