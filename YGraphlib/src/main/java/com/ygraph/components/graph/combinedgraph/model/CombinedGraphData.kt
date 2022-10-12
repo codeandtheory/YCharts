@@ -4,12 +4,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.axis.AxisData
+import com.ygraph.components.common.constants.GraphConstants
 import com.ygraph.components.common.model.PlotData
-import com.ygraph.components.common.model.PlotType
-import com.ygraph.components.graph.bargraph.models.BarStyle
-import com.ygraph.components.graph.bargraph.models.GroupBar
-import com.ygraph.components.common.model.LegendsConfig
-import com.ygraph.components.graph.linegraph.model.Line
 
 /**
  *
@@ -23,6 +19,8 @@ import com.ygraph.components.graph.linegraph.model.Line
  * @param containerPaddingEnd: Container inside padding end after the last point of the graph.
  * @param backgroundColor: Background color of the Y & X components.,
  * @param isZoomAllowed: True if zoom in for all vertical graph components is allowed else false.
+ * @param shouldHandleBackWhenTalkBackPopUpShown: True by default to dismiss the accessibility dialog when back pressed else false
+ * @param graphDescription: Description to describe the graph details for accessibility service.
  */
 data class CombinedGraphData(
     val combinedPlotDataList: List<PlotData>,
@@ -35,5 +33,7 @@ data class CombinedGraphData(
     val containerPaddingEnd: Dp = 15.dp,
     val backgroundColor: Color = Color.White,
     val tapPadding: Dp = 10.dp,
-    val isZoomAllowed: Boolean = true
+    val isZoomAllowed: Boolean = true,
+    val shouldHandleBackWhenTalkBackPopUpShown: Boolean = true,
+    val graphDescription: String = GraphConstants.GRAPH_DESCRIPTION
 )

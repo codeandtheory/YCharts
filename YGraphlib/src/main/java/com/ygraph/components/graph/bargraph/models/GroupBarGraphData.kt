@@ -18,6 +18,7 @@ import com.ygraph.components.common.constants.GraphConstants
  * @param showYAxis: Boolean Flag to enable/disable Y axis
  * @param groupSeparatorConfig : All config related to the GroupSeparator.
  * @param shouldHandleBackWhenTalkBackPopUpShown: True by default to dismiss the accessibility dialog when back pressed else false
+ * @param graphDescription: Description to describe the graph details for accessibility service.
  */
 
 data class GroupBarGraphData(
