@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
  * @param axisLabelAngle: Angle for the axis labels
  * @param startDrawPadding: Padding between Axis and first point on the Axis
  * @param shouldDrawAxisLineTillEnd : Boolean to draw axis line till end.
+ * @param axisLabelDescription: Description to describe axis value for accessibility service
  */
 data class AxisData(
     val steps: Int,
@@ -54,7 +55,8 @@ data class AxisData(
     val typeface: Typeface,
     val axisConfig: AxisConfig,
     val startDrawPadding: Dp,
-    val shouldDrawAxisLineTillEnd: Boolean
+    val shouldDrawAxisLineTillEnd: Boolean,
+    val axisLabelDescription: (String) -> String
 ) {
     class Builder {
         private var steps: Int = 1
@@ -77,6 +79,7 @@ data class AxisData(
         private var startDrawPadding: Dp = 0.dp
         private var axisLabelAngle: Float = 0f
         private var shouldDrawAxisLineTillEnd: Boolean = false
+        private var axisLabelDescription: (String) -> String = { label -> "X Axis label $label" }
 
         fun steps(count: Int) = apply { this.steps = count }
 
@@ -120,6 +123,10 @@ data class AxisData(
         fun shouldDrawAxisLineTillEnd(flag: Boolean) =
             apply { this.shouldDrawAxisLineTillEnd = flag }
 
+        fun axisLabelDescription(description: (String) -> String) =
+            apply { this.axisLabelDescription = description }
+
+
         fun build() = AxisData(
             steps,
             labelData,
@@ -140,7 +147,8 @@ data class AxisData(
             typeface,
             axisConfig,
             startDrawPadding,
-            shouldDrawAxisLineTillEnd
+            shouldDrawAxisLineTillEnd,
+            axisLabelDescription
         )
     }
 }

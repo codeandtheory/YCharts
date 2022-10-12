@@ -32,6 +32,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.withRotation
 import com.ygraph.components.common.components.AccessibilityBottomSheetDialog
+import com.ygraph.components.common.components.accessibility.SliceInfo
 import com.ygraph.components.common.extensions.collectIsTalkbackEnabledAsState
 import com.ygraph.components.common.extensions.getTextHeight
 import com.ygraph.components.common.model.PlotType
@@ -84,7 +85,8 @@ fun PieChart(
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
     val isTalkBackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
-    if (accessibilitySheetState.isVisible && isTalkBackEnabled) {
+    if (accessibilitySheetState.isVisible && isTalkBackEnabled
+        && pieChartConfig.shouldHandleBackWhenTalkBackPopUpShown) {
         BackHandler {
             scope.launch {
                 accessibilitySheetState.hide()
@@ -97,7 +99,7 @@ fun PieChart(
         BoxWithConstraints(
             modifier = modifier
                 .aspectRatio(1f)
-                .semantics { contentDescription = "Double tap to know the graph in detail" }
+                .semantics { contentDescription = pieChartConfig.chartDescription }
                 .clickable {
                     if (isTalkBackEnabled) {
                         scope.launch {

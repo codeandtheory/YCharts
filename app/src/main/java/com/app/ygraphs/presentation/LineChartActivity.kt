@@ -122,7 +122,7 @@ private fun LineGraph2(pointsData: List<Point>) {
     val xAxisData = AxisData.Builder()
         .axisStepSize(40.dp)
         .steps(pointsData.size - 1)
-        .labelData { i -> if (i == 0) "" else (1900 + i).toString() }
+        .labelData { i -> (1900 + i).toString() }
         .axisLabelAngle(20f)
         .labelAndAxisLinePadding(15.dp)
         .axisLabelColor(Color.Blue)

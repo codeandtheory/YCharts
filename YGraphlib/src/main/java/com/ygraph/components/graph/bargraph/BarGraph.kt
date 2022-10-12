@@ -4,7 +4,6 @@ package com.ygraph.components.graph.bargraph
 
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,6 +29,7 @@ import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
 import com.ygraph.components.common.components.AccessibilityBottomSheetDialog
 import com.ygraph.components.common.components.ItemDivider
+import com.ygraph.components.common.components.accessibility.BarInfo
 import com.ygraph.components.common.extensions.*
 import com.ygraph.components.common.model.Point
 import com.ygraph.components.common.utils.GraphConstants.DEFAULT_YAXIS_BOTTOM_PADDING
@@ -56,7 +56,9 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
     val scope = rememberCoroutineScope()
     val isTalkBackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
 
-    if (accessibilitySheetState.isVisible && isTalkBackEnabled) {
+    if (accessibilitySheetState.isVisible && isTalkBackEnabled
+        && barGraphData.shouldHandleBackWhenTalkBackPopUpShown
+    ) {
         BackHandler {
             scope.launch {
                 accessibilitySheetState.hide()
@@ -92,7 +94,7 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
 
             ScrollableCanvasContainer(modifier = modifier
                 .semantics {
-                    contentDescription = "Double tap to know the graph in detail"
+                    contentDescription = barGraphData.graphDescription
                 }
                 .clickable {
                     if (isTalkBackEnabled) {
@@ -102,34 +104,40 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
                             )
                         }
                     }
-                }, containerBackgroundColor = backgroundColor, calculateMaxDistance = { xZoom ->
-                horizontalGap = horizontalExtraSpace.toPx()
-                val xLeft = columnWidth + horizontalGap
-                xOffset = (barStyle.barWidth.toPx() + barStyle.paddingBetweenBars.toPx()) * xZoom
-                getMaxScrollDistance(
-                    columnWidth, xMax, xMin, xOffset, xLeft, paddingRight.toPx(), size.width
-                )
-            }, onDraw = { scrollOffset, xZoom ->
-                val yBottom = size.height - rowHeight
-                val yOffset = ((yBottom - yAxisData.axisTopPadding.toPx()) / maxElementInYAxis)
-                xOffset = ((barStyle.barWidth).toPx() + barStyle.paddingBetweenBars.toPx()) * xZoom
-                val xLeft = columnWidth + horizontalGap + barStyle.barWidth.toPx() / 2
-                val dragLocks = mutableMapOf<Int, Pair<BarData, Offset>>()
-
-                // Draw bar lines
-                graphData.forEachIndexed { _, barData ->
-                    val drawOffset = getDrawOffset(
-                        barData.point, xMin, xOffset, xLeft, scrollOffset, yBottom, yOffset, 0f
+                },
+                containerBackgroundColor = backgroundColor,
+                calculateMaxDistance = { xZoom ->
+                    horizontalGap = horizontalExtraSpace.toPx()
+                    val xLeft = columnWidth + horizontalGap
+                    xOffset =
+                        (barStyle.barWidth.toPx() + barStyle.paddingBetweenBars.toPx()) * xZoom
+                    getMaxScrollDistance(
+                        columnWidth, xMax, xMin, xOffset, xLeft, paddingRight.toPx(), size.width
                     )
-                    val height = yBottom - drawOffset.y
+                },
+                onDraw = { scrollOffset, xZoom ->
+                    val yBottom = size.height - rowHeight
+                    val yOffset = ((yBottom - yAxisData.axisTopPadding.toPx()) / maxElementInYAxis)
+                    xOffset =
+                        ((barStyle.barWidth).toPx() + barStyle.paddingBetweenBars.toPx()) * xZoom
+                    val xLeft = columnWidth + horizontalGap + barStyle.barWidth.toPx() / 2
+                    val dragLocks = mutableMapOf<Int, Pair<BarData, Offset>>()
 
-                    // drawing each individual bars
-                    drawBarGraph(barGraphData.barStyle, barData, drawOffset, height)
+                    // Draw bar lines
+                    graphData.forEachIndexed { _, barData ->
+                        val drawOffset = getDrawOffset(
+                            barData.point, xMin, xOffset, xLeft, scrollOffset, yBottom, yOffset, 0f
+                        )
+                        val height = yBottom - drawOffset.y
 
-                    val middleOffset = Offset(drawOffset.x + barStyle.barWidth.toPx() / 2, drawOffset.y)
-                    // store the tap points for selection
-                    if (isTapped && middleOffset.isTapped(
-                            tapOffset, barStyle.barWidth.toPx(), yBottom, tapPadding.toPx()
+                        // drawing each individual bars
+                        drawBarGraph(barGraphData.barStyle, barData, drawOffset, height)
+
+                        val middleOffset =
+                            Offset(drawOffset.x + barStyle.barWidth.toPx() / 2, drawOffset.y)
+                        // store the tap points for selection
+                        if (isTapped && middleOffset.isTapped(
+                                tapOffset, barStyle.barWidth.toPx(), yBottom, tapPadding.toPx()
                         )
                     ) {
                         dragLocks[0] = barData to drawOffset
@@ -152,32 +160,33 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
                         yOffset
                     )
                 }
-            }, drawXAndYAxis = { scrollOffset, xZoom ->
-                if (showXAxis) {
-                    XAxis(
-                        xAxisData = xAxisData,
-                        modifier = Modifier
-                            .align(Alignment.BottomStart)
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .clip(
-                                RowClip(
-                                    columnWidth, paddingRight
+                },
+                drawXAndYAxis = { scrollOffset, xZoom ->
+                    if (showXAxis) {
+                        XAxis(
+                            xAxisData = xAxisData,
+                            modifier = Modifier
+                                .align(Alignment.BottomStart)
+                                .fillMaxWidth()
+                                .wrapContentHeight()
+                                .clip(
+                                    RowClip(
+                                        columnWidth, paddingRight
+                                    )
                                 )
-                            )
-                            .onGloballyPositioned {
-                                rowHeight = it.size.height.toFloat()
+                                .onGloballyPositioned {
+                                    rowHeight = it.size.height.toFloat()
+                                },
+                            xStart = columnWidth + horizontalGap + LocalDensity.current.run {
+                                (barStyle.barWidth.toPx())
                             },
-                        xStart = columnWidth + horizontalGap + LocalDensity.current.run {
-                            (barStyle.barWidth.toPx())
-                        },
-                        scrollOffset = scrollOffset,
-                        zoomScale = xZoom,
-                        graphData = points
-                    )
-                }
+                            scrollOffset = scrollOffset,
+                            zoomScale = xZoom,
+                            graphData = points
+                        )
+                    }
 
-                if (showYAxis) {
+                    if (showYAxis) {
                     YAxis(
                         modifier = Modifier
                             .align(Alignment.TopStart)
@@ -204,8 +213,12 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
                         items(barGraphData.graphData.size) { index ->
                             Column {
                                 BarInfo(
-                                    barGraphData.graphData[index],
-                                    index,
+                                    barGraphData.xAxisData.axisLabelDescription(
+                                        barGraphData.xAxisData.labelData(
+                                            index
+                                        )
+                                    ),
+                                    barGraphData.graphData[index].description,
                                     barGraphData.graphData[index].color
                                 )
                                 ItemDivider(thickness = 2.dp)
@@ -214,41 +227,6 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
                     }
                 }, sheetState = accessibilitySheetState
             )
-        }
-    }
-}
-
-@Composable
-private fun BarInfo(barData: BarData, xPosition: Int, barColor: Color) {
-    // Merge elements below for accessibility purposes
-    Row(modifier = Modifier
-        .padding(start = 10.dp, end = 10.dp)
-        .clickable { }
-        .semantics(mergeDescendants = true) {}, verticalAlignment = Alignment.CenterVertically
-    ) {
-        // ItemDivider(2.dp)
-        Text("X Axis \nPosition : $xPosition")
-        Spacer(modifier = Modifier.width(10.dp))
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(10.dp)
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .background(barColor)
-                        .size(20.dp)
-                )
-                Text(
-                    "Value of bar ${barData.label} is value ${
-                        String.format(
-                            "%.2f", barData.point.y
-                        )
-                    }"
-                )
-            }
         }
     }
 }

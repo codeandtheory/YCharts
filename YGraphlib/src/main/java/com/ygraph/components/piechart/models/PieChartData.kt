@@ -11,5 +11,12 @@ data class PieChartData(val slices: List<Slice>, override val plotType: PlotType
             return slices.sum()
         }
 
-    data class Slice(val label: String, val value: Float, val color: Color)
+    data class Slice(
+        val label: String,
+        val value: Float,
+        val color: Color,
+        val sliceDescription: (Int) -> String = { slicePercentage ->
+            "Slice name : $label  \nPercentage  : $slicePercentage %"
+        }
+    )
 }

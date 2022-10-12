@@ -139,13 +139,19 @@ object DataUtils {
         for (index in 0 until listSize) {
             val barList = mutableListOf<BarData>()
             for (i in 0 until barSize) {
+                val barValue = "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat()
                 barList.add(
                     BarData(
                         Point(
                             i.toFloat(),
-                            "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat()
+                            barValue
                         ),
-                        label = "B$i"
+                        label = "B$i",
+                        description = "Bar at $i with label B$i has value ${
+                            String.format(
+                                "%.2f", barValue
+                            )
+                        }"
                     )
                 )
             }

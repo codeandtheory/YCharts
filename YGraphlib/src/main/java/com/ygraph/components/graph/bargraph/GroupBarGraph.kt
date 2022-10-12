@@ -4,7 +4,6 @@ package com.ygraph.components.graph.bargraph
 
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,6 +28,7 @@ import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
 import com.ygraph.components.common.components.AccessibilityBottomSheetDialog
 import com.ygraph.components.common.components.ItemDivider
+import com.ygraph.components.common.components.accessibility.GroupBarInfo
 import com.ygraph.components.common.extensions.RowClip
 import com.ygraph.components.common.extensions.collectIsTalkbackEnabledAsState
 import com.ygraph.components.common.extensions.getMaxElementInYAxis
@@ -36,7 +36,6 @@ import com.ygraph.components.common.extensions.isTapped
 import com.ygraph.components.common.model.Point
 import com.ygraph.components.common.utils.GraphConstants.DEFAULT_YAXIS_BOTTOM_PADDING
 import com.ygraph.components.graph.bargraph.models.BarData
-import com.ygraph.components.graph.bargraph.models.GroupBar
 import com.ygraph.components.graph.bargraph.models.GroupBarGraphData
 import com.ygraph.components.graph.bargraph.models.SelectionHighlightData
 import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
@@ -57,7 +56,9 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
     val isTalkBackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
-    if (accessibilitySheetState.isVisible && isTalkBackEnabled) {
+    if (accessibilitySheetState.isVisible && isTalkBackEnabled
+        && groupBarGraphData.shouldHandleBackWhenTalkBackPopUpShown
+    ) {
         BackHandler {
             scope.launch {
                 accessibilitySheetState.hide()
@@ -95,7 +96,7 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
             }
             ScrollableCanvasContainer(modifier = modifier
                 .semantics {
-                    contentDescription = "Double tap to know the graph in detail"
+                    contentDescription = groupBarGraphData.graphDescription
                 }
                 .clickable {
                     if (isTalkBackEnabled) {
@@ -276,7 +277,9 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                             Column {
                                 GroupBarInfo(
                                     groupBarGraphData.barPlotData.groupBarList[index],
-                                    index,
+                                    groupBarGraphData.xAxisData.axisLabelDescription(
+                                        groupBarGraphData.xAxisData.labelData(index)
+                                    ),
                                     groupBarGraphData.barPlotData.barColorPaletteList
                                 )
                                 ItemDivider(thickness = 2.dp)
@@ -285,44 +288,6 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                     }
                 }, sheetState = accessibilitySheetState
             )
-        }
-    }
-}
-
-@Composable
-private fun GroupBarInfo(groupBar: GroupBar, xPosition: Int, barColorPaletteList: List<Color>) {
-    // Merge elements below for accessibility purposes
-    Row(modifier = Modifier
-        .padding(start = 10.dp, end = 10.dp)
-        .clickable { }
-        .semantics(mergeDescendants = true) {}, verticalAlignment = Alignment.CenterVertically
-    ) {
-        // ItemDivider(2.dp)
-        Text("X Axis \nPosition : $xPosition")
-        Spacer(modifier = Modifier.width(10.dp))
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(10.dp)
-        ) {
-            groupBar.barList.forEachIndexed { index, value ->
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .background(barColorPaletteList[index])
-                            .size(20.dp)
-                    )
-                    Text(
-                        "Bar at $index with label ${value.label} has value ${
-                            String.format(
-                                "%.2f", value.point.y
-                            )
-                        }"
-                    )
-                }
-                Spacer(modifier = Modifier.height(10.dp))
-            }
         }
     }
 }

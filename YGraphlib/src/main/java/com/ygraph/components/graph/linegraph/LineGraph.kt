@@ -3,7 +3,6 @@
 package com.ygraph.components.graph.linegraph
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,6 +31,7 @@ import com.ygraph.components.axis.YAxis
 import com.ygraph.components.axis.getXAxisScale
 import com.ygraph.components.common.components.AccessibilityBottomSheetDialog
 import com.ygraph.components.common.components.ItemDivider
+import com.ygraph.components.common.components.accessibility.LinePointInfo
 import com.ygraph.components.common.extensions.RowClip
 import com.ygraph.components.common.extensions.collectIsTalkbackEnabledAsState
 import com.ygraph.components.common.extensions.drawGridLines
@@ -54,7 +54,9 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
     val isTalkBackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
-    if (accessibilitySheetState.isVisible && isTalkBackEnabled) {
+    if (accessibilitySheetState.isVisible && isTalkBackEnabled
+        && lineGraphData.shouldHandleBackWhenTalkBackPopUpShown
+    ) {
         BackHandler {
             scope.launch {
                 accessibilitySheetState.hide()
@@ -85,7 +87,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
 
             ScrollableCanvasContainer(modifier = modifier
                 .semantics {
-                    contentDescription = "Double tap to know the graph in detail"
+                    contentDescription = lineGraphData.graphDescription
                 }
                 .clickable {
                     if (isTalkBackEnabled) {
@@ -228,8 +230,12 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                         items(linePoints?.size ?: 0) { index ->
                             Column {
                                 LinePointInfo(
-                                    linePoints?.get(index) ?: Point(0f, 0f),
-                                    index,
+                                    lineGraphData.xAxisData.axisLabelDescription(
+                                        lineGraphData.xAxisData.labelData(
+                                            index
+                                        )
+                                    ),
+                                    linePoints?.get(index)?.description ?: "",
                                     lineGraphData.linePlotData.lines.firstOrNull()?.lineStyle?.color
                                         ?: Color.Transparent
                                 )
@@ -239,37 +245,6 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                     }
                 }, sheetState = accessibilitySheetState
             )
-        }
-    }
-}
-
-@Composable
-private fun LinePointInfo(point: Point, xPosition: Int, lineColor: Color) {
-    // Merge elements below for accessibility purposes
-    Row(modifier = Modifier
-        .padding(start = 10.dp, end = 10.dp)
-        .clickable { }
-        .semantics(mergeDescendants = true) {}, verticalAlignment = Alignment.CenterVertically
-    ) {
-        // ItemDivider(2.dp)
-        Text("X Axis \nPosition : $xPosition")
-        Spacer(modifier = Modifier.width(10.dp))
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(10.dp)
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .background(lineColor)
-                        .size(20.dp)
-                )
-                Text(
-                    "Value of point is ${String.format("%.2f", point.y)}"
-                )
-            }
         }
     }
 }

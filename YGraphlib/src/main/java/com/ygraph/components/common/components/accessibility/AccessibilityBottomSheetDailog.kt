@@ -54,8 +54,7 @@ fun AccessibilityBottomSheetDialog(
             }
         },
         sheetState = sheetState,
-        sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-        sheetBackgroundColor = Color.Transparent,
+        sheetBackgroundColor = Color.White,
         sheetElevation = 0.dp
     ) {}
 }

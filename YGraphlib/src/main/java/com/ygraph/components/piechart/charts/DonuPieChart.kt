@@ -5,15 +5,16 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.Surface
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -25,6 +26,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.common.components.AccessibilityBottomSheetDialog
+import com.ygraph.components.common.components.accessibility.SliceInfo
 import com.ygraph.components.common.extensions.collectIsTalkbackEnabledAsState
 import com.ygraph.components.common.model.PlotType
 import com.ygraph.components.piechart.models.PieChartConfig
@@ -74,7 +76,9 @@ fun DonutPieChart(
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
     val isTalkBackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
-    if (accessibilitySheetState.isVisible && isTalkBackEnabled) {
+    if (accessibilitySheetState.isVisible && isTalkBackEnabled
+        && pieChartConfig.shouldHandleBackWhenTalkBackPopUpShown
+    ) {
         BackHandler {
             scope.launch {
                 accessibilitySheetState.hide()
@@ -84,18 +88,19 @@ fun DonutPieChart(
     Surface(
         modifier = modifier
     ) {
-        BoxWithConstraints(modifier = modifier
-            .aspectRatio(1f)
-            .semantics { contentDescription = "Double tap to know the graph in detail" }
-            .clickable {
-                if (isTalkBackEnabled) {
-                    scope.launch {
-                        accessibilitySheetState.animateTo(
-                            ModalBottomSheetValue.Expanded
-                        )
+        BoxWithConstraints(
+            modifier = modifier
+                .aspectRatio(1f)
+                .semantics { contentDescription = pieChartConfig.chartDescription }
+                .clickable {
+                    if (isTalkBackEnabled) {
+                        scope.launch {
+                            accessibilitySheetState.animateTo(
+                                ModalBottomSheetValue.Expanded
+                            )
+                        }
                     }
-                }
-            }) {
+                }) {
 
             val sideSize = Integer.min(constraints.maxWidth, constraints.maxHeight)
             val padding = (sideSize * pieChartConfig.chartPadding) / 100f
@@ -187,31 +192,6 @@ fun DonutPieChart(
                 },
                 sheetState = accessibilitySheetState
             )
-        }
-    }
-}
-
-@Composable
-fun SliceInfo(slice: PieChartData.Slice, slicePercentage: Int) {
-    // Merge elements below for accessibility purposes
-    Row(modifier = Modifier
-        .clickable { }
-        .semantics(mergeDescendants = true) {},
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-            modifier = Modifier
-                .padding(10.dp)
-                .background(slice.color)
-                .size(30.dp)
-        )
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(top = 16.dp, bottom = 16.dp)
-        ) {
-            Text("Slice name : ${slice.label}")
-            Text("Percentage  : $slicePercentage %")
         }
     }
 }
