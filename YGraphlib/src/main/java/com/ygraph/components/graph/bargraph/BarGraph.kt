@@ -27,8 +27,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
-import com.ygraph.components.common.components.AccessibilityBottomSheetDialog
 import com.ygraph.components.common.components.ItemDivider
+import com.ygraph.components.common.components.accessibility.AccessibilityBottomSheetDialog
 import com.ygraph.components.common.components.accessibility.BarInfo
 import com.ygraph.components.common.extensions.*
 import com.ygraph.components.common.model.Point
@@ -57,7 +57,7 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
     val isTalkBackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
 
     if (accessibilitySheetState.isVisible && isTalkBackEnabled
-        && barGraphData.shouldHandleBackWhenTalkBackPopUpShown
+        && barGraphData.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
     ) {
         BackHandler {
             scope.launch {
@@ -94,7 +94,7 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
 
             ScrollableCanvasContainer(modifier = modifier
                 .semantics {
-                    contentDescription = barGraphData.graphDescription
+                    contentDescription = barGraphData.accessibilityConfig.graphDescription
                 }
                 .clickable {
                     if (isTalkBackEnabled) {
@@ -207,26 +207,36 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
             })
         }
         if (isTalkBackEnabled) {
-            AccessibilityBottomSheetDialog(
-                modifier = Modifier.fillMaxSize(), backgroundColor = Color.White, content = {
-                    LazyColumn {
-                        items(barGraphData.graphData.size) { index ->
-                            Column {
-                                BarInfo(
-                                    barGraphData.xAxisData.axisLabelDescription(
-                                        barGraphData.xAxisData.labelData(
-                                            index
-                                        )
-                                    ),
-                                    barGraphData.graphData[index].description,
-                                    barGraphData.graphData[index].color
-                                )
-                                ItemDivider(thickness = 2.dp)
+            with(barGraphData) {
+                AccessibilityBottomSheetDialog(
+                    modifier = Modifier.fillMaxSize(),
+                    backgroundColor = Color.White,
+                    content = {
+                        LazyColumn {
+                            items(graphData.size) { index ->
+                                Column {
+                                    BarInfo(
+                                        xAxisData.axisLabelDescription(
+                                            xAxisData.labelData(
+                                                index
+                                            )
+                                        ),
+                                        graphData[index].description,
+                                        graphData[index].color
+                                    )
+                                    ItemDivider(
+                                        thickness = accessibilityConfig.dividerThickness,
+                                        dividerColor = accessibilityConfig.dividerColor
+                                    )
+                                }
                             }
                         }
-                    }
-                }, sheetState = accessibilitySheetState
-            )
+                    },
+                    popUpTopRightButtonTitle = accessibilityConfig.popUpTopRightButtonTitle,
+                    popUpTopRightButtonDescription = accessibilityConfig.popUpTopRightButtonDescription,
+                    sheetState = accessibilitySheetState
+                )
+            }
         }
     }
 }

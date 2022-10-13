@@ -1,8 +1,7 @@
-package com.ygraph.components.common.components
+package com.ygraph.components.common.components.accessibility
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -20,6 +19,8 @@ fun AccessibilityBottomSheetDialog(
     content: @Composable ColumnScope.() -> Unit,
     modifier: Modifier = Modifier,
     backgroundColor: Color,
+    popUpTopRightButtonTitle: String,
+    popUpTopRightButtonDescription: String,
     sheetState: ModalBottomSheetState
 ) {
     val composeScope = rememberCoroutineScope()
@@ -43,9 +44,9 @@ fun AccessibilityBottomSheetDialog(
                             composeScope.launch { sheetState.hide() }
                         }) {
                             Text(
-                                text = "Close",
+                                text = popUpTopRightButtonTitle,
                                 modifier = Modifier.semantics {
-                                    contentDescription = "Tap to close the dialog"
+                                    contentDescription = popUpTopRightButtonDescription
                                 })
                         }
                     }

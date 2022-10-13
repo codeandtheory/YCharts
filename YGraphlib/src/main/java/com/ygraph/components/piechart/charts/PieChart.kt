@@ -31,7 +31,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.withRotation
-import com.ygraph.components.common.components.AccessibilityBottomSheetDialog
+import com.ygraph.components.common.components.accessibility.AccessibilityBottomSheetDialog
 import com.ygraph.components.common.components.accessibility.SliceInfo
 import com.ygraph.components.common.extensions.collectIsTalkbackEnabledAsState
 import com.ygraph.components.common.extensions.getTextHeight
@@ -85,8 +85,7 @@ fun PieChart(
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
     val isTalkBackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
-    if (accessibilitySheetState.isVisible && isTalkBackEnabled
-        && pieChartConfig.shouldHandleBackWhenTalkBackPopUpShown) {
+    if (accessibilitySheetState.isVisible && isTalkBackEnabled && pieChartConfig.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown) {
         BackHandler {
             scope.launch {
                 accessibilitySheetState.hide()
@@ -99,7 +98,9 @@ fun PieChart(
         BoxWithConstraints(
             modifier = modifier
                 .aspectRatio(1f)
-                .semantics { contentDescription = pieChartConfig.chartDescription }
+                .semantics {
+                    contentDescription = pieChartConfig.accessibilityConfig.graphDescription
+                }
                 .clickable {
                     if (isTalkBackEnabled) {
                         scope.launch {
@@ -205,15 +206,24 @@ fun PieChart(
             }
         }
         if (isTalkBackEnabled) {
-            AccessibilityBottomSheetDialog(
-                modifier = Modifier.fillMaxSize(), backgroundColor = Color.White, content = {
-                    LazyColumn {
-                        items(pieChartData.slices.size) { index ->
-                            SliceInfo(pieChartData.slices[index], proportions[index].roundToInt())
+            with(pieChartConfig) {
+                AccessibilityBottomSheetDialog(
+                    modifier = Modifier.fillMaxSize(),
+                    backgroundColor = Color.White,
+                    content = {
+                        LazyColumn {
+                            items(pieChartData.slices.size) { index ->
+                                SliceInfo(
+                                    pieChartData.slices[index], proportions[index].roundToInt()
+                                )
+                            }
                         }
-                    }
-                }, sheetState = accessibilitySheetState
-            )
+                    },
+                    popUpTopRightButtonTitle = accessibilityConfig.popUpTopRightButtonTitle,
+                    popUpTopRightButtonDescription = accessibilityConfig.popUpTopRightButtonDescription,
+                    sheetState = accessibilitySheetState
+                )
+            }
         }
     }
 }

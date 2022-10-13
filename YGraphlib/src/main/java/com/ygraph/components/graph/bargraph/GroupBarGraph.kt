@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
-import com.ygraph.components.common.components.AccessibilityBottomSheetDialog
 import com.ygraph.components.common.components.ItemDivider
+import com.ygraph.components.common.components.accessibility.AccessibilityBottomSheetDialog
 import com.ygraph.components.common.components.accessibility.GroupBarInfo
 import com.ygraph.components.common.extensions.RowClip
 import com.ygraph.components.common.extensions.collectIsTalkbackEnabledAsState
@@ -57,7 +57,7 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
     val scope = rememberCoroutineScope()
     val isTalkBackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
     if (accessibilitySheetState.isVisible && isTalkBackEnabled
-        && groupBarGraphData.shouldHandleBackWhenTalkBackPopUpShown
+        && groupBarGraphData.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
     ) {
         BackHandler {
             scope.launch {
@@ -96,7 +96,7 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
             }
             ScrollableCanvasContainer(modifier = modifier
                 .semantics {
-                    contentDescription = groupBarGraphData.graphDescription
+                    contentDescription = groupBarGraphData.accessibilityConfig.graphDescription
                 }
                 .clickable {
                     if (isTalkBackEnabled) {
@@ -270,24 +270,32 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                 })
         }
         if (isTalkBackEnabled) {
-            AccessibilityBottomSheetDialog(
-                modifier = Modifier.fillMaxSize(), backgroundColor = Color.White, content = {
-                    LazyColumn {
-                        items(groupBarGraphData.barPlotData.groupBarList.size) { index ->
-                            Column {
-                                GroupBarInfo(
-                                    groupBarGraphData.barPlotData.groupBarList[index],
-                                    groupBarGraphData.xAxisData.axisLabelDescription(
-                                        groupBarGraphData.xAxisData.labelData(index)
-                                    ),
-                                    groupBarGraphData.barPlotData.barColorPaletteList
-                                )
-                                ItemDivider(thickness = 2.dp)
+            with(groupBarGraphData) {
+                AccessibilityBottomSheetDialog(
+                    modifier = Modifier.fillMaxSize(), backgroundColor = Color.White, content = {
+                        LazyColumn {
+                            items(barPlotData.groupBarList.size) { index ->
+                                Column {
+                                    GroupBarInfo(
+                                        barPlotData.groupBarList[index],
+                                        xAxisData.axisLabelDescription(
+                                            xAxisData.labelData(index)
+                                        ),
+                                        barPlotData.barColorPaletteList
+                                    )
+                                    ItemDivider(
+                                        thickness = accessibilityConfig.dividerThickness,
+                                        dividerColor = accessibilityConfig.dividerColor
+                                    )
+                                }
                             }
                         }
-                    }
-                }, sheetState = accessibilitySheetState
-            )
+                    },
+                    popUpTopRightButtonTitle = accessibilityConfig.popUpTopRightButtonTitle,
+                    popUpTopRightButtonDescription = accessibilityConfig.popUpTopRightButtonDescription,
+                    sheetState = accessibilitySheetState
+                )
+            }
         }
     }
 }

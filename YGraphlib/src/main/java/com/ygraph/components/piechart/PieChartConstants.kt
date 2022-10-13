@@ -9,5 +9,5 @@ object PieChartConstants {
         const val MINIMUM_PERCENTAGE_FOR_SLICE_LABELS = 5
         const val TOTAL_ANGLE = 360
         const val ONE_HUNDRED = 100
-        const val DESCRIPTION = "Double tap to know the graph in detail"
+        const val DESCRIPTION = "Double tap to know the chart in detail"
 }

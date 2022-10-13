@@ -23,7 +23,8 @@ fun CombinedGraphInfo(
     lineColor: List<Color>,
     groupBar: GroupBar?,
     axisLabelDescription: String,
-    barColorPaletteList: List<Color>
+    barColorPaletteList: List<Color>,
+    dividerColor: Color
 ) {
     // Merge elements below for accessibility purposes
     Row(modifier = Modifier
@@ -53,7 +54,7 @@ fun CombinedGraphInfo(
                 }
                 Spacer(modifier = Modifier.height(5.dp))
             }
-            ItemDivider(thickness = 1.dp)
+            ItemDivider(thickness = 1.dp, dividerColor = dividerColor)
             groupBar?.barList?.forEachIndexed { index, value ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(

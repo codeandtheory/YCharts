@@ -10,11 +10,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 
 @Composable
-fun ItemDivider(thickness: Dp) {
+fun ItemDivider(thickness: Dp, dividerColor: Color = Color.Black) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(thickness)
-            .background(Color.Gray)
+            .background(dividerColor)
     )
 }

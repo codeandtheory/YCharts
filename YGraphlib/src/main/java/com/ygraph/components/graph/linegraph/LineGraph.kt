@@ -25,12 +25,11 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
 import com.ygraph.components.axis.getXAxisScale
-import com.ygraph.components.common.components.AccessibilityBottomSheetDialog
 import com.ygraph.components.common.components.ItemDivider
+import com.ygraph.components.common.components.accessibility.AccessibilityBottomSheetDialog
 import com.ygraph.components.common.components.accessibility.LinePointInfo
 import com.ygraph.components.common.extensions.RowClip
 import com.ygraph.components.common.extensions.collectIsTalkbackEnabledAsState
@@ -55,7 +54,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
     val scope = rememberCoroutineScope()
     val isTalkBackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
     if (accessibilitySheetState.isVisible && isTalkBackEnabled
-        && lineGraphData.shouldHandleBackWhenTalkBackPopUpShown
+        && lineGraphData.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
     ) {
         BackHandler {
             scope.launch {
@@ -87,7 +86,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
 
             ScrollableCanvasContainer(modifier = modifier
                 .semantics {
-                    contentDescription = lineGraphData.graphDescription
+                    contentDescription = lineGraphData.accessibilityConfig.graphDescription
                 }
                 .clickable {
                     if (isTalkBackEnabled) {
@@ -223,28 +222,38 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                 })
         }
         if (isTalkBackEnabled) {
-            AccessibilityBottomSheetDialog(
-                modifier = Modifier.fillMaxSize(), backgroundColor = Color.White, content = {
-                    val linePoints = lineGraphData.linePlotData.lines.firstOrNull()?.dataPoints
-                    LazyColumn {
-                        items(linePoints?.size ?: 0) { index ->
-                            Column {
-                                LinePointInfo(
-                                    lineGraphData.xAxisData.axisLabelDescription(
-                                        lineGraphData.xAxisData.labelData(
-                                            index
-                                        )
-                                    ),
-                                    linePoints?.get(index)?.description ?: "",
-                                    lineGraphData.linePlotData.lines.firstOrNull()?.lineStyle?.color
-                                        ?: Color.Transparent
-                                )
-                                ItemDivider(thickness = 2.dp)
+            with(lineGraphData) {
+                AccessibilityBottomSheetDialog(
+                    modifier = Modifier.fillMaxSize(),
+                    backgroundColor = Color.White,
+                    content = {
+                        val linePoints = linePlotData.lines.firstOrNull()?.dataPoints
+                        LazyColumn {
+                            items(linePoints?.size ?: 0) { index ->
+                                Column {
+                                    LinePointInfo(
+                                        xAxisData.axisLabelDescription(
+                                            xAxisData.labelData(
+                                                index
+                                            )
+                                        ),
+                                        linePoints?.get(index)?.description ?: "",
+                                        linePlotData.lines.firstOrNull()?.lineStyle?.color
+                                            ?: Color.Transparent
+                                    )
+                                    ItemDivider(
+                                        thickness = accessibilityConfig.dividerThickness,
+                                        dividerColor = accessibilityConfig.dividerColor
+                                    )
+                                }
                             }
                         }
-                    }
-                }, sheetState = accessibilitySheetState
-            )
+                    },
+                    popUpTopRightButtonTitle = accessibilityConfig.popUpTopRightButtonTitle,
+                    popUpTopRightButtonDescription = accessibilityConfig.popUpTopRightButtonDescription,
+                    sheetState = accessibilitySheetState
+                )
+            }
         }
     }
 }

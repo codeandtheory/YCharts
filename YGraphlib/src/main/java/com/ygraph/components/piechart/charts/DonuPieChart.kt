@@ -25,7 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import com.ygraph.components.common.components.AccessibilityBottomSheetDialog
+import com.ygraph.components.common.components.accessibility.AccessibilityBottomSheetDialog
 import com.ygraph.components.common.components.accessibility.SliceInfo
 import com.ygraph.components.common.extensions.collectIsTalkbackEnabledAsState
 import com.ygraph.components.common.model.PlotType
@@ -77,7 +77,7 @@ fun DonutPieChart(
     val scope = rememberCoroutineScope()
     val isTalkBackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
     if (accessibilitySheetState.isVisible && isTalkBackEnabled
-        && pieChartConfig.shouldHandleBackWhenTalkBackPopUpShown
+        && pieChartConfig.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
     ) {
         BackHandler {
             scope.launch {
@@ -91,7 +91,9 @@ fun DonutPieChart(
         BoxWithConstraints(
             modifier = modifier
                 .aspectRatio(1f)
-                .semantics { contentDescription = pieChartConfig.chartDescription }
+                .semantics {
+                    contentDescription = pieChartConfig.accessibilityConfig.graphDescription
+                }
                 .clickable {
                     if (isTalkBackEnabled) {
                         scope.launch {
@@ -180,18 +182,25 @@ fun DonutPieChart(
             }
         }
         if (isTalkBackEnabled) {
-            AccessibilityBottomSheetDialog(
-                modifier = Modifier.fillMaxSize(),
-                backgroundColor = Color.White,
-                content = {
-                    LazyColumn {
-                        items(pieChartData.slices.size) { index ->
-                            SliceInfo(pieChartData.slices[index], proportions[index].roundToInt())
+            with(pieChartConfig) {
+                AccessibilityBottomSheetDialog(
+                    modifier = Modifier.fillMaxSize(),
+                    backgroundColor = Color.White,
+                    content = {
+                        LazyColumn {
+                            items(pieChartData.slices.size) { index ->
+                                SliceInfo(
+                                    pieChartData.slices[index],
+                                    proportions[index].roundToInt()
+                                )
+                            }
                         }
-                    }
-                },
-                sheetState = accessibilitySheetState
-            )
+                    },
+                    popUpTopRightButtonTitle = accessibilityConfig.popUpTopRightButtonTitle,
+                    popUpTopRightButtonDescription = accessibilityConfig.popUpTopRightButtonDescription,
+                    sheetState = accessibilitySheetState
+                )
+            }
         }
     }
 }

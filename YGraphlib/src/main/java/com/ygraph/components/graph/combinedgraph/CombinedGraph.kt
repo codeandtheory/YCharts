@@ -24,8 +24,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
-import com.ygraph.components.common.components.AccessibilityBottomSheetDialog
 import com.ygraph.components.common.components.ItemDivider
+import com.ygraph.components.common.components.accessibility.AccessibilityBottomSheetDialog
 import com.ygraph.components.common.components.accessibility.CombinedGraphInfo
 import com.ygraph.components.common.extensions.*
 import com.ygraph.components.common.extensions.getMaxElementInYAxis
@@ -58,7 +58,7 @@ fun CombinedGraph(modifier: Modifier, combinedGraphData: CombinedGraphData) {
     val scope = rememberCoroutineScope()
     val isTalkBackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
     if (accessibilitySheetState.isVisible && isTalkBackEnabled
-        && combinedGraphData.shouldHandleBackWhenTalkBackPopUpShown
+        && combinedGraphData.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
     ) {
         BackHandler {
             scope.launch {
@@ -114,7 +114,7 @@ fun CombinedGraph(modifier: Modifier, combinedGraphData: CombinedGraphData) {
             ScrollableCanvasContainer(
                 modifier = modifier
                     .semantics {
-                        contentDescription = graphDescription
+                        contentDescription = accessibilityConfig.graphDescription
                     }
                     .clickable {
                         if (isTalkBackEnabled) {
@@ -362,13 +362,20 @@ fun CombinedGraph(modifier: Modifier, combinedGraphData: CombinedGraphData) {
                                         axisLabelDescription = xAxisData.axisLabelDescription(
                                             xAxisData.labelData(index)
                                         ),
-                                        barColorPaletteList = barPlotData.barColorPaletteList
+                                        barColorPaletteList = barPlotData.barColorPaletteList,
+                                        dividerColor = accessibilityConfig.dividerColor
                                     )
-                                    ItemDivider(thickness = 2.dp)
+                                    ItemDivider(
+                                        thickness = accessibilityConfig.dividerThickness,
+                                        dividerColor = accessibilityConfig.dividerColor
+                                    )
                                 }
                             }
                         }
-                    }, sheetState = accessibilitySheetState
+                    },
+                    popUpTopRightButtonTitle = accessibilityConfig.popUpTopRightButtonTitle,
+                    popUpTopRightButtonDescription = accessibilityConfig.popUpTopRightButtonDescription,
+                    sheetState = accessibilitySheetState
                 )
             }
         }
