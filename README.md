@@ -334,6 +334,27 @@ Let's see how we can use the graph components and style them with available cust
    <p>  Combined bar with line graph looks like this!</p>
    </div>
    </figure>
+<br>
+
+## Accessibility Support
+To interact with your device with touch and spoken feedback, you can turn on the TalkBack screen reader. TalkBack describes the graphs/charts when tapped on the graph container.
+Compose views by deafult supports accessibility services, but for views drawn using canvas has no straight forward approach as of now, hence all our graph components supports an accessibility popup out of the box that will be shown over the graph with tapped on the container, with all the values described in an order to support accessibility services. User will be able to scroll the popup and find all the points, bars, slices or combined values in a descriptive manner, where user can tap and talkback would read it out loud.
+
+
+<figure>
+<div align = "center">
+   <span align = "center" style  = "display:inline-block">
+    <img width=250 src="https://user-images.githubusercontent.com/107846675/195833801-24e17e52-d3cd-45e1-9d3e-1d9bab4b0e22.png" />
+    <p> fig (a)</p>
+    </span>
+    <span align = "center"  style = "display:inline-block; padding-left:30px">
+      <img width= 250 src="https://user-images.githubusercontent.com/107846675/195833551-28f21bdb-a035-4858-832c-a9a0c4dc9927.png" />
+    <p> fig (b)</p>
+    </span>
+    </div>
+</figure>
+Here fig(a) represents the line graph with the container being highlighted & fig(b) represents the accessibility sheet with all values laid out in detail so that talkback can describe the graph values.<br><br>
+*Note*: All the descriptions that are visible in the accessibility popup can be customized to the required string.
 
 ## License
 
