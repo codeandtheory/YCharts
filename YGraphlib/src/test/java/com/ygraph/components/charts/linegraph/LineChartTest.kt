@@ -1,4 +1,4 @@
-package com.ygraph.components.graph.linegraph
+package com.ygraph.components.charts.linegraph
 
 import androidx.compose.ui.geometry.Offset
 import com.ygraph.components.charts.linechart.getCubicPoints
@@ -8,7 +8,7 @@ import com.ygraph.components.common.model.Point
 import org.junit.Assert
 import org.junit.Test
 
-class LineGraphTest {
+class LineChartTest {
 
     @Test
     fun `Given few points data n-1 size of cubicPoints1 & cubicPoints2 should be returned`() {

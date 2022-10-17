@@ -1,4 +1,4 @@
-package com.ygraph.components.graph.bargraph
+package com.ygraph.components.charts.bargraph
 
 import com.ygraph.components.charts.barchart.getDrawOffset
 import com.ygraph.components.charts.barchart.getMaxScrollDistance

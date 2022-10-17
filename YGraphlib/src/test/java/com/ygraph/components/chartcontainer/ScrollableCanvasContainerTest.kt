@@ -1,4 +1,4 @@
-package com.ygraph.components.graphcontainer
+package com.ygraph.components.chartcontainer
 
 import com.ygraph.components.chartcontainer.container.checkAndGetMaxScrollOffset
 import org.junit.Assert.assertEquals

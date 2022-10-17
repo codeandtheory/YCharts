@@ -1,11 +1,11 @@
-package com.ygraph.components.graph.linegraph
+package com.ygraph.components.charts.linegraph
 
 import com.ygraph.components.charts.linechart.getYAxisScale
 import com.ygraph.components.common.model.Point
 import org.junit.Assert
 import org.junit.Test
 
-class LineGraphExtensionsTest {
+class LineChartExtensionsTest {
     @Test
     fun `Given list of points exact yMin and yMax value should be calculated`() {
         // Given
