@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.axis.AxisData
+import com.ygraph.components.common.model.AccessibilityConfig
 
 
 /**
@@ -21,6 +22,7 @@ import com.ygraph.components.axis.AxisData
  * @param tapPadding: Extra padding area for tapping
  * @param showXAxis: Boolean Flag to enable/disable X axis
  * @param showYAxis: Boolean Flag to enable/disable Y axis
+ * @param accessibilityConfig: Configs related to accessibility service defined here in [AccessibilityConfig]
  */
 data class BarGraphData(
     val graphData: List<BarData>,
@@ -34,6 +36,7 @@ data class BarGraphData(
     val tapPadding: Dp = 10.dp,
     val showYAxis: Boolean = true,
     val showXAxis: Boolean = true,
+    val accessibilityConfig: AccessibilityConfig = AccessibilityConfig()
 )
 
 /**

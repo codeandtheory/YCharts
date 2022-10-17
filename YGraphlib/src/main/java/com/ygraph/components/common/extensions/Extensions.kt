@@ -1,8 +1,12 @@
 package com.ygraph.components.common.extensions
 
+import android.accessibilityservice.AccessibilityServiceInfo
+import android.content.Context
 import android.graphics.Paint
 import android.graphics.Rect
 import android.text.TextPaint
+import android.view.accessibility.AccessibilityManager
+import androidx.compose.runtime.*
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Outline
@@ -207,3 +211,32 @@ fun DrawScope.drawGridLines(
         }
     }
 }
+
+/**
+ * Returns true if accessibility services are enabled else false
+ */
+@Composable
+internal fun Context.collectIsTalkbackEnabledAsState(): State<Boolean> {
+    val accessibilityManager =
+        this.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
+    fun isTalkbackEnabled(): Boolean {
+        val accessibilityServiceInfoList =
+            accessibilityManager?.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_SPOKEN)
+        return accessibilityServiceInfoList?.any {
+            it.resolveInfo.serviceInfo.processName.equals(TALKBACK_PACKAGE_NAME)
+        } ?: false
+    }
+
+    val talkbackEnabled = remember { mutableStateOf(isTalkbackEnabled()) }
+    val accessibilityManagerEnabled = accessibilityManager?.isEnabled ?: false
+    var accessibilityEnabled by remember { mutableStateOf(accessibilityManagerEnabled) }
+
+    accessibilityManager?.addAccessibilityStateChangeListener { accessibilityEnabled = it }
+
+    LaunchedEffect(accessibilityEnabled) {
+        talkbackEnabled.value = if (accessibilityEnabled) isTalkbackEnabled() else false
+    }
+    return talkbackEnabled
+}
+
+private const val TALKBACK_PACKAGE_NAME = "com.google.android.marvin.talkback"

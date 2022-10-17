@@ -1,26 +1,40 @@
 package com.ygraph.components.piechart.charts
 
 import android.graphics.Paint
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.Surface
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.ygraph.components.common.components.accessibility.AccessibilityBottomSheetDialog
+import com.ygraph.components.common.components.accessibility.SliceInfo
+import com.ygraph.components.common.extensions.collectIsTalkbackEnabledAsState
 import com.ygraph.components.common.model.PlotType
 import com.ygraph.components.piechart.models.PieChartConfig
 import com.ygraph.components.piechart.models.PieChartData
 import com.ygraph.components.piechart.utils.convertTouchEventPointToAngle
 import com.ygraph.components.piechart.utils.proportion
 import com.ygraph.components.piechart.utils.sweepAngles
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 
@@ -31,6 +45,7 @@ import kotlin.math.roundToInt
  * @param pieChartConfig: configuration for the pie chart
  * @param onSliceClick(pieChartData.Slice)->Unit: The event that captures the click
  */
+@ExperimentalMaterialApi
 @Composable
 fun DonutPieChart(
     modifier: Modifier,
@@ -57,11 +72,37 @@ fun DonutPieChart(
     var activePie by rememberSaveable {
         mutableStateOf(-1)
     }
-
-
-    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        
-        BoxWithConstraints(modifier = modifier.aspectRatio(1f)) {
+    val accessibilitySheetState =
+        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val scope = rememberCoroutineScope()
+    val isTalkBackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
+    if (accessibilitySheetState.isVisible && isTalkBackEnabled
+        && pieChartConfig.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
+    ) {
+        BackHandler {
+            scope.launch {
+                accessibilitySheetState.hide()
+            }
+        }
+    }
+    Surface(
+        modifier = modifier
+    ) {
+        BoxWithConstraints(
+            modifier = modifier
+                .aspectRatio(1f)
+                .semantics {
+                    contentDescription = pieChartConfig.accessibilityConfig.graphDescription
+                }
+                .clickable {
+                    if (isTalkBackEnabled) {
+                        scope.launch {
+                            accessibilitySheetState.animateTo(
+                                ModalBottomSheetValue.Expanded
+                            )
+                        }
+                    }
+                }) {
 
             val sideSize = Integer.min(constraints.maxWidth, constraints.maxHeight)
             val padding = (sideSize * pieChartConfig.chartPadding) / 100f
@@ -78,7 +119,7 @@ fun DonutPieChart(
                     )
                 }
             }
-            
+
             Canvas(
                 modifier = Modifier
                     .width(sideSize.dp)
@@ -133,11 +174,32 @@ fun DonutPieChart(
                                 color = pieChartConfig.percentColor.toArgb()
                                 textSize = fontSize
                                 textAlign = Paint.Align.CENTER
-                                typeface= pieChartConfig.percentageTypeface
+                                typeface = pieChartConfig.percentageTypeface
 
                             }
                         )
                     }
+            }
+        }
+        if (isTalkBackEnabled) {
+            with(pieChartConfig) {
+                AccessibilityBottomSheetDialog(
+                    modifier = Modifier.fillMaxSize(),
+                    backgroundColor = Color.White,
+                    content = {
+                        LazyColumn {
+                            items(pieChartData.slices.size) { index ->
+                                SliceInfo(
+                                    pieChartData.slices[index],
+                                    proportions[index].roundToInt()
+                                )
+                            }
+                        }
+                    },
+                    popUpTopRightButtonTitle = accessibilityConfig.popUpTopRightButtonTitle,
+                    popUpTopRightButtonDescription = accessibilityConfig.popUpTopRightButtonDescription,
+                    sheetState = accessibilitySheetState
+                )
             }
         }
     }

@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.axis.AxisData
+import com.ygraph.components.common.model.AccessibilityConfig
 import com.ygraph.components.common.model.Point
 
 /**
@@ -17,8 +18,9 @@ import com.ygraph.components.common.model.Point
  * @param paddingRight: Padding from the end of the canvas to end of the graph container.
  * @param bottomPadding: Padding from the bottom of the canvas to bottom of the graph container.
  * @param containerPaddingEnd: Container inside padding end after the last point of the graph.
- * @param backgroundColor Background color of the Y & X components,
- * @param gridLines This enables graph to draw horizontal and vertical grid lines
+ * @param backgroundColor: Background color of the Y & X components,
+ * @param gridLines: This enables graph to draw horizontal and vertical grid lines
+ * @param accessibilityConfig: Configs related to accessibility service defined here in [AccessibilityConfig]
  */
 data class LineGraphData(
     val linePlotData: LinePlotData,
@@ -30,7 +32,8 @@ data class LineGraphData(
     val paddingRight: Dp = 10.dp,
     val containerPaddingEnd: Dp = 15.dp,
     val backgroundColor: Color = Color.White,
-    val gridLines: GridLines? = null
+    val gridLines: GridLines? = null,
+    val accessibilityConfig: AccessibilityConfig = AccessibilityConfig()
 )
 
 /**

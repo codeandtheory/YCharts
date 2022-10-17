@@ -4,11 +4,12 @@ import android.graphics.Typeface
 import android.text.TextUtils
 import androidx.annotation.IntRange
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ygraph.components.common.model.AccessibilityConfig
+import com.ygraph.components.piechart.PieChartConstants
 import com.ygraph.components.piechart.PieChartConstants.DEFAULT_PADDING
 import com.ygraph.components.piechart.PieChartConstants.DEFAULT_SLICE_LABEL_TEXT_SIZE
 import com.ygraph.components.piechart.PieChartConstants.DEFAULT_START_ANGLE
@@ -34,6 +35,7 @@ import com.ygraph.components.piechart.PieChartConstants.DEFAULT_STROKE_WIDTH
  * @param sliceMinTextWidthToEllipsize: Minimum width of the label post which label will be ellipsized
  * @param sliceLabelEllipsizeAt: Position at which the label will be truncated or ellipsized
  * @param chartPadding: Padding for the Pie chart/Donut Chart
+ * @param accessibilityConfig: Configs related to accessibility service defined here in [AccessibilityConfig]
  */
 data class PieChartConfig(
     val startAngle: Float = DEFAULT_START_ANGLE,
@@ -53,5 +55,8 @@ data class PieChartConfig(
     val isEllipsizeEnabled: Boolean = false,
     val sliceMinTextWidthToEllipsize: Dp = 80.dp,
     val sliceLabelEllipsizeAt: TextUtils.TruncateAt = TextUtils.TruncateAt.END,
-    val chartPadding: Int = DEFAULT_PADDING
+    val chartPadding: Int = DEFAULT_PADDING,
+    val accessibilityConfig: AccessibilityConfig = AccessibilityConfig(
+        graphDescription = PieChartConstants.DESCRIPTION
+    )
 )

@@ -1,10 +1,12 @@
+@file:OptIn(ExperimentalMaterialApi::class)
+
 package com.ygraph.components.graph.linegraph
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material.MaterialTheme
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,17 +20,25 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
 import com.ygraph.components.axis.getXAxisScale
+import com.ygraph.components.common.components.ItemDivider
+import com.ygraph.components.common.components.accessibility.AccessibilityBottomSheetDialog
+import com.ygraph.components.common.components.accessibility.LinePointInfo
 import com.ygraph.components.common.extensions.RowClip
+import com.ygraph.components.common.extensions.collectIsTalkbackEnabledAsState
 import com.ygraph.components.common.extensions.drawGridLines
 import com.ygraph.components.common.extensions.isNotNull
 import com.ygraph.components.common.model.Point
 import com.ygraph.components.graph.linegraph.model.*
 import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
+import kotlinx.coroutines.launch
 
 /**
  *
@@ -39,7 +49,20 @@ import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
  */
 @Composable
 fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
-    Column {
+    val accessibilitySheetState =
+        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val scope = rememberCoroutineScope()
+    val isTalkBackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
+    if (accessibilitySheetState.isVisible && isTalkBackEnabled
+        && lineGraphData.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
+    ) {
+        BackHandler {
+            scope.launch {
+                accessibilitySheetState.hide()
+            }
+        }
+    }
+    Surface(modifier = modifier) {
         with(lineGraphData) {
             var columnWidth by remember { mutableStateOf(0f) }
             var rowHeight by remember { mutableStateOf(0f) }
@@ -59,11 +82,21 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
 
             val (xMin, xMax, xAxisScale) = getXAxisScale(line.dataPoints, xAxisData.steps)
             val (yMin, _, yAxisScale) = getYAxisScale(line.dataPoints, yAxisData.steps)
-            val maxElementInYAxis =
-                getMaxElementInYAxis(yAxisScale, yAxisData.steps)
+            val maxElementInYAxis = getMaxElementInYAxis(yAxisScale, yAxisData.steps)
 
-            ScrollableCanvasContainer(
-                modifier = modifier,
+            ScrollableCanvasContainer(modifier = modifier
+                .semantics {
+                    contentDescription = lineGraphData.accessibilityConfig.graphDescription
+                }
+                .clickable {
+                    if (isTalkBackEnabled) {
+                        scope.launch {
+                            accessibilitySheetState.animateTo(
+                                ModalBottomSheetValue.Expanded
+                            )
+                        }
+                    }
+                },
                 calculateMaxDistance = { xZoom ->
                     xOffset = xAxisData.axisStepSize.toPx() * xZoom
                     getMaxScrollDistance(
@@ -84,11 +117,9 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                             .fillMaxHeight()
                             .onGloballyPositioned {
                                 columnWidth = it.size.width.toFloat()
-                            },
-                        yAxisData = yAxisData
+                            }, yAxisData = yAxisData
                     )
-                    XAxis(
-                        xAxisData = xAxisData,
+                    XAxis(xAxisData = xAxisData,
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
@@ -98,15 +129,13 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                             }
                             .clip(
                                 RowClip(
-                                    columnWidth,
-                                    paddingRight
+                                    columnWidth, paddingRight
                                 )
                             ),
                         xStart = columnWidth,
                         scrollOffset = scrollOffset,
                         zoomScale = xZoom,
-                        graphData = line.dataPoints
-                    )
+                        graphData = line.dataPoints)
                 },
                 onDraw = { scrollOffset, xZoom ->
                     val yBottom = size.height - rowHeight
@@ -114,14 +143,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                     xOffset = xAxisData.axisStepSize.toPx() * xZoom
                     val xLeft = columnWidth // To add extra space if needed
                     val pointsData = getMappingPointsToGraph(
-                        line.dataPoints,
-                        xMin,
-                        xOffset,
-                        xLeft,
-                        scrollOffset,
-                        yBottom,
-                        yMin,
-                        yOffset
+                        line.dataPoints, xMin, xOffset, xLeft, scrollOffset, yBottom, yMin, yOffset
                     )
                     val (cubicPoints1, cubicPoints2) = getCubicPoints(pointsData)
                     val tapPointLocks = mutableMapOf<Int, Pair<Point, Offset>>()
@@ -144,17 +166,15 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                     }
 
                     // Draw cubic line using the points and form a line graph
-                    val cubicPath =
-                        drawStraightOrCubicLine(
-                            pointsData,
-                            cubicPoints1,
-                            cubicPoints2,
-                            line.lineStyle
-                        )
+                    val cubicPath = drawStraightOrCubicLine(
+                        pointsData, cubicPoints1, cubicPoints2, line.lineStyle
+                    )
 
                     // Draw Lines and Points and AreaUnderLine
                     // Draw area under curve
-                    drawShadowUnderLineAndIntersectionPoint(cubicPath, pointsData, yBottom, line)
+                    drawShadowUnderLineAndIntersectionPoint(
+                        cubicPath, pointsData, yBottom, line
+                    )
 
                     // Draw column to make graph look scrollable under Yaxis
                     drawUnderScrollMask(columnWidth, paddingRight, bgColor)
@@ -199,8 +219,41 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                 onZoomInAndOut = {
                     isTapped = false
                     selectionTextVisibility = false
-                }
-            )
+                })
+        }
+        if (isTalkBackEnabled) {
+            with(lineGraphData) {
+                AccessibilityBottomSheetDialog(
+                    modifier = Modifier.fillMaxSize(),
+                    backgroundColor = Color.White,
+                    content = {
+                        val linePoints = linePlotData.lines.firstOrNull()?.dataPoints
+                        LazyColumn {
+                            items(linePoints?.size ?: 0) { index ->
+                                Column {
+                                    LinePointInfo(
+                                        xAxisData.axisLabelDescription(
+                                            xAxisData.labelData(
+                                                index
+                                            )
+                                        ),
+                                        linePoints?.get(index)?.description ?: "",
+                                        linePlotData.lines.firstOrNull()?.lineStyle?.color
+                                            ?: Color.Transparent
+                                    )
+                                    ItemDivider(
+                                        thickness = accessibilityConfig.dividerThickness,
+                                        dividerColor = accessibilityConfig.dividerColor
+                                    )
+                                }
+                            }
+                        }
+                    },
+                    popUpTopRightButtonTitle = accessibilityConfig.popUpTopRightButtonTitle,
+                    popUpTopRightButtonDescription = accessibilityConfig.popUpTopRightButtonDescription,
+                    sheetState = accessibilitySheetState
+                )
+            }
         }
     }
 }
@@ -257,8 +310,7 @@ fun getMaxScrollDistance(
     canvasWidth: Float,
     containerPaddingEnd: Float = 0f
 ): Float {
-    val xLastPoint =
-        (xMax - xMin) * xOffset + columnWidth + paddingRight + containerPaddingEnd
+    val xLastPoint = (xMax - xMin) * xOffset + columnWidth + paddingRight + containerPaddingEnd
     return if (xLastPoint > canvasWidth) {
         xLastPoint - canvasWidth
     } else 0f
@@ -317,8 +369,7 @@ fun DrawScope.drawStraightOrCubicLine(
  * @param lineStyle : The style for the path [lineStyle]
  */
 private fun getDrawStyleForPath(
-    lineType: LineType,
-    lineStyle: LineStyle
+    lineType: LineType, lineStyle: LineStyle
 ): DrawStyle = if (lineType.isDotted) Stroke(
     width = lineStyle.width, pathEffect = PathEffect.dashPathEffect(lineType.intervals)
 ) else lineStyle.style
@@ -342,9 +393,7 @@ private fun DrawScope.drawPointOnLine(offset: Offset, intersectionPoint: Interse
  */
 private fun DrawScope.drawUnderScrollMask(columnWidth: Float, paddingRight: Dp, bgColor: Color) {
     drawRect(
-        bgColor,
-        Offset(0f, 0f),
-        Size(columnWidth, size.height)
+        bgColor, Offset(0f, 0f), Size(columnWidth, size.height)
     )
     drawRect(
         bgColor,
@@ -363,10 +412,7 @@ private fun DrawScope.drawUnderScrollMask(columnWidth: Float, paddingRight: Dp, 
  * @param line : line on which shadow & intersectionPoints has to be drawn.
  */
 fun DrawScope.drawShadowUnderLineAndIntersectionPoint(
-    cubicPath: Path,
-    pointsData: MutableList<Offset>,
-    yBottom: Float,
-    line: Line
+    cubicPath: Path, pointsData: MutableList<Offset>, yBottom: Float, line: Line
 ) {
     if (line.shadowUnderLine.isNotNull()) {
         cubicPath.lineTo(pointsData.last().x, yBottom)
@@ -386,22 +432,19 @@ fun DrawScope.drawShadowUnderLineAndIntersectionPoint(
  * getCubicPoints method provides left and right average value for a given point to get a smooth curve.
  * @param pointsData : List of the points on the Line graph.
  */
-fun getCubicPoints(pointsData: List<Offset>):
-        Pair<MutableList<Offset>, MutableList<Offset>> {
+fun getCubicPoints(pointsData: List<Offset>): Pair<MutableList<Offset>, MutableList<Offset>> {
     val cubicPoints1 = mutableListOf<Offset>()
     val cubicPoints2 = mutableListOf<Offset>()
 
     for (i in 1 until pointsData.size) {
         cubicPoints1.add(
             Offset(
-                (pointsData[i].x + pointsData[i - 1].x) / 2,
-                pointsData[i - 1].y
+                (pointsData[i].x + pointsData[i - 1].x) / 2, pointsData[i - 1].y
             )
         )
         cubicPoints2.add(
             Offset(
-                (pointsData[i].x + pointsData[i - 1].x) / 2,
-                pointsData[i].y
+                (pointsData[i].x + pointsData[i - 1].x) / 2, pointsData[i].y
             )
         )
     }
@@ -448,9 +491,7 @@ fun DrawScope.drawHighLightOnSelectedPoint(
                 selectionHighlightPoint?.draw?.let { it(this, Offset(x, y)) }
                 if (selectionHighlightPoint?.isHighlightLineRequired == true) {
                     selectionHighlightPoint.drawHighlightLine(
-                        this,
-                        Offset(x, yBottom),
-                        Offset(x, y)
+                        this, Offset(x, yBottom), Offset(x, y)
                     )
                 }
             }

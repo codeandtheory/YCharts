@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterialApi::class)
+
 package com.app.ygraphs.presentation
 
 import android.os.Bundle
@@ -5,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -110,9 +113,13 @@ fun BarWithLineChart() {
         xAxisData = xAxisData,
         yAxisData = yAxisData
     )
-    Column(Modifier.height(500.dp)) {
+    Column(
+        Modifier
+            .height(500.dp)
+    ) {
         CombinedGraph(
-            modifier = Modifier.height(400.dp),
+            modifier = Modifier
+                .height(400.dp),
             combinedGraphData = combinedGraphData
         )
         Legends(

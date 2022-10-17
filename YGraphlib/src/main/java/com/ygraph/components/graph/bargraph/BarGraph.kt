@@ -1,8 +1,13 @@
+@file:OptIn(ExperimentalMaterialApi::class)
+
 package com.ygraph.components.graph.bargraph
 
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,11 +19,17 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
+import com.ygraph.components.common.components.ItemDivider
+import com.ygraph.components.common.components.accessibility.AccessibilityBottomSheetDialog
+import com.ygraph.components.common.components.accessibility.BarInfo
 import com.ygraph.components.common.extensions.*
 import com.ygraph.components.common.model.Point
 import com.ygraph.components.common.utils.GraphConstants.DEFAULT_YAXIS_BOTTOM_PADDING
@@ -27,6 +38,7 @@ import com.ygraph.components.graph.bargraph.models.BarGraphData
 import com.ygraph.components.graph.bargraph.models.BarStyle
 import com.ygraph.components.graph.bargraph.models.SelectionHighlightData
 import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
+import kotlinx.coroutines.launch
 
 
 /**
@@ -39,7 +51,21 @@ import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
  */
 @Composable
 fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
-    Column(modifier) {
+    val accessibilitySheetState =
+        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val scope = rememberCoroutineScope()
+    val isTalkBackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
+
+    if (accessibilitySheetState.isVisible && isTalkBackEnabled
+        && barGraphData.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
+    ) {
+        BackHandler {
+            scope.launch {
+                accessibilitySheetState.hide()
+            }
+        }
+    }
+    Surface(modifier) {
         with(barGraphData) {
             var barHighlightVisibility by remember { mutableStateOf(false) }
             var identifiedPoint by remember { mutableStateOf(BarData(Point(0f, 0f))) }
@@ -56,21 +82,29 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
             val (xMin, xMax) = getXMaxAndMinPoints(points)
             val (_, yMax) = getYMaxAndMinPoints(points)
 
-            val xAxisData = xAxisData.copy(
-                axisStepSize = barStyle.barWidth + barStyle.paddingBetweenBars,
+            val xAxisData = xAxisData.copy(axisStepSize = barStyle.barWidth + barStyle.paddingBetweenBars,
                 steps = graphData.size - 1,
-                startDrawPadding = LocalDensity.current.run { columnWidth.toDp() }
-            )
-            val yAxisData =
-                yAxisData.copy(axisBottomPadding = LocalDensity.current.run { rowHeight.toDp() })
+                startDrawPadding = LocalDensity.current.run { columnWidth.toDp() })
+            val yAxisData = yAxisData.copy(axisBottomPadding = LocalDensity.current.run { rowHeight.toDp() })
             val maxElementInYAxis = getMaxElementInYAxis(yMax, yAxisData.steps)
 
             if (!showXAxis) {
                 rowHeight = LocalDensity.current.run { DEFAULT_YAXIS_BOTTOM_PADDING.dp.toPx() }
             }
 
-            ScrollableCanvasContainer(
-                modifier = modifier,
+            ScrollableCanvasContainer(modifier = modifier
+                .semantics {
+                    contentDescription = barGraphData.accessibilityConfig.graphDescription
+                }
+                .clickable {
+                    if (isTalkBackEnabled) {
+                        scope.launch {
+                            accessibilitySheetState.animateTo(
+                                ModalBottomSheetValue.Expanded
+                            )
+                        }
+                    }
+                },
                 containerBackgroundColor = backgroundColor,
                 calculateMaxDistance = { xZoom ->
                     horizontalGap = horizontalExtraSpace.toPx()
@@ -78,13 +112,7 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
                     xOffset =
                         (barStyle.barWidth.toPx() + barStyle.paddingBetweenBars.toPx()) * xZoom
                     getMaxScrollDistance(
-                        columnWidth,
-                        xMax,
-                        xMin,
-                        xOffset,
-                        xLeft,
-                        paddingRight.toPx(),
-                        size.width
+                        columnWidth, xMax, xMin, xOffset, xLeft, paddingRight.toPx(), size.width
                     )
                 },
                 onDraw = { scrollOffset, xZoom ->
@@ -92,15 +120,13 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
                     val yOffset = ((yBottom - yAxisData.axisTopPadding.toPx()) / maxElementInYAxis)
                     xOffset =
                         ((barStyle.barWidth).toPx() + barStyle.paddingBetweenBars.toPx()) * xZoom
-                    val xLeft =
-                        columnWidth + horizontalGap + barStyle.barWidth.toPx() / 2
+                    val xLeft = columnWidth + horizontalGap + barStyle.barWidth.toPx() / 2
                     val dragLocks = mutableMapOf<Int, Pair<BarData, Offset>>()
 
                     // Draw bar lines
                     graphData.forEachIndexed { _, barData ->
                         val drawOffset = getDrawOffset(
-                            barData.point, xMin, xOffset, xLeft,
-                            scrollOffset, yBottom, yOffset, 0f
+                            barData.point, xMin, xOffset, xLeft, scrollOffset, yBottom, yOffset, 0f
                         )
                         val height = yBottom - drawOffset.y
 
@@ -111,32 +137,29 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
                             Offset(drawOffset.x + barStyle.barWidth.toPx() / 2, drawOffset.y)
                         // store the tap points for selection
                         if (isTapped && middleOffset.isTapped(
-                                tapOffset,
-                                barStyle.barWidth.toPx(),
-                                yBottom,
-                                tapPadding.toPx()
-                            )
-                        ) {
-                            dragLocks[0] = barData to drawOffset
-                        }
-                    }
-
-                    drawUnderScrollMask(columnWidth, paddingRight, bgColor)
-
-                    if (barStyle.selectionHighlightData != null) {
-                        // highlighting the selected bar and showing the data points
-                        identifiedPoint = highlightBar(
-                            dragLocks,
-                            barHighlightVisibility,
-                            identifiedPoint,
-                            barGraphData.barStyle,
-                            isTapped,
-                            columnWidth,
-                            yBottom,
-                            paddingRight,
-                            yOffset
+                                tapOffset, barStyle.barWidth.toPx(), yBottom, tapPadding.toPx()
                         )
+                    ) {
+                        dragLocks[0] = barData to drawOffset
                     }
+                }
+
+                drawUnderScrollMask(columnWidth, paddingRight, bgColor)
+
+                if (barStyle.selectionHighlightData != null) {
+                    // highlighting the selected bar and showing the data points
+                    identifiedPoint = highlightBar(
+                        dragLocks,
+                        barHighlightVisibility,
+                        identifiedPoint,
+                        barGraphData.barStyle,
+                        isTapped,
+                        columnWidth,
+                        yBottom,
+                        paddingRight,
+                        yOffset
+                    )
+                }
                 },
                 drawXAndYAxis = { scrollOffset, xZoom ->
                     if (showXAxis) {
@@ -148,8 +171,7 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
                                 .wrapContentHeight()
                                 .clip(
                                     RowClip(
-                                        columnWidth,
-                                        paddingRight
+                                        columnWidth, paddingRight
                                     )
                                 )
                                 .onGloballyPositioned {
@@ -165,28 +187,56 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
                     }
 
                     if (showYAxis) {
-                        YAxis(
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .fillMaxHeight()
-                                .wrapContentWidth()
-                                .onGloballyPositioned {
-                                    columnWidth = it.size.width.toFloat()
-                                },
-                            yAxisData = yAxisData
-                        )
-                    }
-                },
-                onPointClicked = { offset: Offset, _: Float ->
-                    isTapped = true
-                    barHighlightVisibility = true
-                    tapOffset = offset
-                },
-                onScroll = {
-                    isTapped = false
-                    barHighlightVisibility = false
+                    YAxis(
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .fillMaxHeight()
+                            .wrapContentWidth()
+                            .onGloballyPositioned {
+                                columnWidth = it.size.width.toFloat()
+                            }, yAxisData = yAxisData
+                    )
                 }
-            )
+            }, onPointClicked = { offset: Offset, _: Float ->
+                isTapped = true
+                barHighlightVisibility = true
+                tapOffset = offset
+            }, onScroll = {
+                isTapped = false
+                barHighlightVisibility = false
+            })
+        }
+        if (isTalkBackEnabled) {
+            with(barGraphData) {
+                AccessibilityBottomSheetDialog(
+                    modifier = Modifier.fillMaxSize(),
+                    backgroundColor = Color.White,
+                    content = {
+                        LazyColumn {
+                            items(graphData.size) { index ->
+                                Column {
+                                    BarInfo(
+                                        xAxisData.axisLabelDescription(
+                                            xAxisData.labelData(
+                                                index
+                                            )
+                                        ),
+                                        graphData[index].description,
+                                        graphData[index].color
+                                    )
+                                    ItemDivider(
+                                        thickness = accessibilityConfig.dividerThickness,
+                                        dividerColor = accessibilityConfig.dividerColor
+                                    )
+                                }
+                            }
+                        }
+                    },
+                    popUpTopRightButtonTitle = accessibilityConfig.popUpTopRightButtonTitle,
+                    popUpTopRightButtonDescription = accessibilityConfig.popUpTopRightButtonDescription,
+                    sheetState = accessibilitySheetState
+                )
+            }
         }
     }
 }
@@ -200,10 +250,7 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
  * @param highlightData: Data for the highlight section
  */
 private fun DrawScope.drawHighlightText(
-    identifiedPoint: BarData,
-    selectedOffset: Offset,
-    barWidth: Dp,
-    highlightData: SelectionHighlightData
+    identifiedPoint: BarData, selectedOffset: Offset, barWidth: Dp, highlightData: SelectionHighlightData
 ) {
     val centerPointOfBar = selectedOffset.x + barWidth.toPx() / 2
     // Drawing the highlighted background and text
@@ -219,8 +266,7 @@ private fun DrawScope.drawHighlightText(
  * @param height : height of the bar graph
  */
 fun DrawScope.drawBarGraph(
-    barStyle: BarStyle, barData: BarData, drawOffset: Offset,
-    height: Float
+    barStyle: BarStyle, barData: BarData, drawOffset: Offset, height: Float
 ) = with(barStyle) {
     // Draw bar lines
     if (isGradientEnabled) {
@@ -228,15 +274,9 @@ fun DrawScope.drawBarGraph(
             colors = barData.gradientColorList
         )
         drawRoundRect(
-            brush = brush,
-            topLeft = drawOffset,
-            size = Size(barWidth.toPx(), height),
-            cornerRadius = CornerRadius(
-                cornerRadius.toPx(),
-                cornerRadius.toPx()
-            ),
-            style = barDrawStyle,
-            blendMode = barBlendMode
+            brush = brush, topLeft = drawOffset, size = Size(barWidth.toPx(), height), cornerRadius = CornerRadius(
+                cornerRadius.toPx(), cornerRadius.toPx()
+            ), style = barDrawStyle, blendMode = barBlendMode
         )
     } else {
         drawRoundRect(
@@ -244,8 +284,7 @@ fun DrawScope.drawBarGraph(
             topLeft = drawOffset,
             size = Size(barWidth.toPx(), height),
             cornerRadius = CornerRadius(
-                cornerRadius.toPx(),
-                cornerRadius.toPx()
+                cornerRadius.toPx(), cornerRadius.toPx()
             ),
             style = barDrawStyle,
             blendMode = barBlendMode
@@ -273,8 +312,7 @@ fun getMaxScrollDistance(
     paddingRight: Float,
     canvasWidth: Float
 ): Float {
-    val xLastPoint =
-        (xMax - xMin) * xOffset + xLeft + columnWidth + paddingRight
+    val xLastPoint = (xMax - xMin) * xOffset + xLeft + columnWidth + paddingRight
     return if (xLastPoint > canvasWidth) {
         xLastPoint - canvasWidth
     } else 0f
@@ -321,11 +359,7 @@ fun DrawScope.highlightBar(
                 if (xPoint >= columnWidth && xPoint <= size.width - paddingRight.toPx()) {
                     val y1 = yBottom - ((barData.point.y - 0) * yOffset)
                     barStyle.selectionHighlightData.drawHighlightBar(
-                        this,
-                        xPoint,
-                        yPoint,
-                        barStyle.barWidth.toPx(),
-                        yBottom - y1
+                        this, xPoint, yPoint, barStyle.barWidth.toPx(), yBottom - y1
                     )
                 }
             }
@@ -333,14 +367,9 @@ fun DrawScope.highlightBar(
     }
     if (shouldShowHighlightPopUp) {
         val selectedOffset = dragLocks.values.firstOrNull()?.second
-        if (barHighlightVisibility && selectedOffset != null &&
-            barStyle.selectionHighlightData != null
-        ) {
+        if (barHighlightVisibility && selectedOffset != null && barStyle.selectionHighlightData != null) {
             drawHighlightText(
-                mutableIdentifiedPoint,
-                selectedOffset,
-                barStyle.barWidth,
-                barStyle.selectionHighlightData
+                mutableIdentifiedPoint, selectedOffset, barStyle.barWidth, barStyle.selectionHighlightData
             )
         }
     }
@@ -357,15 +386,11 @@ fun DrawScope.highlightBar(
 fun DrawScope.drawUnderScrollMask(columnWidth: Float, paddingRight: Dp, bgColor: Color) {
     // Draw column to make graph look scrollable under Yaxis
     drawRect(
-        bgColor,
-        Offset(0f, 0f),
-        Size(columnWidth, size.height)
+        bgColor, Offset(0f, 0f), Size(columnWidth, size.height)
     )
     // Draw right padding
     drawRect(
-        bgColor,
-        Offset(size.width - paddingRight.toPx(), 0f),
-        Size(paddingRight.toPx(), size.height)
+        bgColor, Offset(size.width - paddingRight.toPx(), 0f), Size(paddingRight.toPx(), size.height)
     )
 }
 

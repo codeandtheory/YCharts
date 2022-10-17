@@ -1,7 +1,12 @@
+@file:OptIn(ExperimentalMaterialApi::class)
+
 package com.ygraph.components.graph.combinedgraph
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,9 +17,16 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
+import com.ygraph.components.common.components.ItemDivider
+import com.ygraph.components.common.components.accessibility.AccessibilityBottomSheetDialog
+import com.ygraph.components.common.components.accessibility.CombinedGraphInfo
 import com.ygraph.components.common.extensions.*
 import com.ygraph.components.common.extensions.getMaxElementInYAxis
 import com.ygraph.components.common.model.PlotData
@@ -24,10 +36,12 @@ import com.ygraph.components.graph.bargraph.*
 import com.ygraph.components.graph.bargraph.getMaxScrollDistance
 import com.ygraph.components.graph.bargraph.models.BarData
 import com.ygraph.components.graph.bargraph.models.BarPlotData
+import com.ygraph.components.graph.bargraph.models.GroupBar
 import com.ygraph.components.graph.combinedgraph.model.CombinedGraphData
 import com.ygraph.components.graph.linegraph.*
 import com.ygraph.components.graph.linegraph.model.LinePlotData
 import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
+import kotlinx.coroutines.launch
 
 /**
  *
@@ -39,7 +53,20 @@ import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
  */
 @Composable
 fun CombinedGraph(modifier: Modifier, combinedGraphData: CombinedGraphData) {
-    Column(modifier) {
+    val accessibilitySheetState =
+        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val scope = rememberCoroutineScope()
+    val isTalkBackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
+    if (accessibilitySheetState.isVisible && isTalkBackEnabled
+        && combinedGraphData.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
+    ) {
+        BackHandler {
+            scope.launch {
+                accessibilitySheetState.hide()
+            }
+        }
+    }
+    Surface(modifier) {
         with(combinedGraphData) {
             var xOffset by remember { mutableStateOf(0f) }
             var isTapped by remember { mutableStateOf(false) }
@@ -85,7 +112,19 @@ fun CombinedGraph(modifier: Modifier, combinedGraphData: CombinedGraphData) {
             var tapOffset by remember { mutableStateOf(Offset(0f, 0f)) }
 
             ScrollableCanvasContainer(
-                modifier = modifier,
+                modifier = modifier
+                    .semantics {
+                        contentDescription = accessibilityConfig.graphDescription
+                    }
+                    .clickable {
+                        if (isTalkBackEnabled) {
+                            scope.launch {
+                                accessibilitySheetState.animateTo(
+                                    ModalBottomSheetValue.Expanded
+                                )
+                            }
+                        }
+                    },
                 containerBackgroundColor = backgroundColor,
                 isPinchZoomEnabled = isZoomAllowed,
                 calculateMaxDistance = { xZoom ->
@@ -95,208 +134,250 @@ fun CombinedGraph(modifier: Modifier, combinedGraphData: CombinedGraphData) {
                     getMaxScrollDistance(
                         columnWidth,
                         xMax,
-                            xMin,
-                            xOffset,
-                            0f,
-                            paddingRight.toPx(),
-                            size.width
-                        )
-                    },
-                    drawXAndYAxis = { scrollOffset, xZoom ->
-                        val axisPoints = mutableListOf<Point>()
-                        for (index in barPlotData.groupBarList.indices) {
-                            axisPoints.add(Point(index.toFloat(), 0f))
-                        }
-                        XAxis(
-                            xAxisData = xAxisData,
-                            modifier = Modifier
-                                .align(Alignment.BottomStart)
-                                .fillMaxWidth()
-                                .wrapContentHeight()
-                                .clip(
-                                    RowClip(
-                                        columnWidth,
-                                        paddingRight
-                                    )
+                        xMin,
+                        xOffset,
+                        0f,
+                        paddingRight.toPx(),
+                        size.width
+                    )
+                },
+                drawXAndYAxis = { scrollOffset, xZoom ->
+                    val axisPoints = mutableListOf<Point>()
+                    for (index in barPlotData.groupBarList.indices) {
+                        axisPoints.add(Point(index.toFloat(), 0f))
+                    }
+                    XAxis(
+                        xAxisData = xAxisData,
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .clip(
+                                RowClip(
+                                    columnWidth,
+                                    paddingRight
                                 )
-                                .onGloballyPositioned {
-                                    rowHeight = it.size.height.toFloat()
-                                },
-                            xStart = columnWidth + LocalDensity.current.run {
-                                (barPlotData.barStyle.barWidth.toPx() * barPlotData.groupingSize) / 2 + horizontalExtraSpace.toPx()
+                            )
+                            .onGloballyPositioned {
+                                rowHeight = it.size.height.toFloat()
                             },
-                            scrollOffset = scrollOffset,
-                            zoomScale = xZoom,
-                            graphData = axisPoints
-                        )
-                        YAxis(
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .fillMaxHeight()
-                                .wrapContentWidth()
-                                .onGloballyPositioned {
-                                    columnWidth = it.size.width.toFloat()
-                                },
-                            yAxisData = yAxisData
-                        )
-                    },
-                    onDraw = { scrollOffset, xZoom ->
-                        val yBottom = size.height - rowHeight
-                        val yOffset =
-                            ((yBottom - yAxisData.axisTopPadding.toPx()) / maxElementInYAxis)
-                        xOffset =
-                            ((barPlotData.barStyle.barWidth.toPx() * barPlotData.groupingSize) +
-                                    barPlotData.barStyle.paddingBetweenBars.toPx()) * xZoom
-                        val xLeft =
-                            columnWidth + horizontalExtraSpace.toPx()
-                        val barTapLocks = mutableMapOf<Int, Pair<BarData, Offset>>()
-                        val linePointLocks = mutableMapOf<Int, Pair<Point, Offset>>()
+                        xStart = columnWidth + LocalDensity.current.run {
+                            (barPlotData.barStyle.barWidth.toPx() * barPlotData.groupingSize) / 2 + horizontalExtraSpace.toPx()
+                        },
+                        scrollOffset = scrollOffset,
+                        zoomScale = xZoom,
+                        graphData = axisPoints
+                    )
+                    YAxis(
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .fillMaxHeight()
+                            .wrapContentWidth()
+                            .onGloballyPositioned {
+                                columnWidth = it.size.width.toFloat()
+                            },
+                        yAxisData = yAxisData
+                    )
+                },
+                onDraw = { scrollOffset, xZoom ->
+                    val yBottom = size.height - rowHeight
+                    val yOffset =
+                        ((yBottom - yAxisData.axisTopPadding.toPx()) / maxElementInYAxis)
+                    xOffset =
+                        ((barPlotData.barStyle.barWidth.toPx() * barPlotData.groupingSize) +
+                                barPlotData.barStyle.paddingBetweenBars.toPx()) * xZoom
+                    val xLeft =
+                        columnWidth + horizontalExtraSpace.toPx()
+                    val barTapLocks = mutableMapOf<Int, Pair<BarData, Offset>>()
+                    val linePointLocks = mutableMapOf<Int, Pair<Point, Offset>>()
 
-                        for (plotData in combinedPlotDataList) {
-                            when (plotData) {
-                                is LinePlotData -> {
-                                    // Draw line graph
-                                    val xStartPosition =
-                                        columnWidth + horizontalExtraSpace.toPx() +
-                                                ((barPlotData.barStyle.barWidth.toPx() * barPlotData.groupingSize) / 2)
-                                    plotData.lines.forEach { line ->
-                                        val pointsData = getMappingPointsToGraph(
-                                            line.dataPoints,
-                                            xMin,
-                                            xOffset,
-                                            xStartPosition,
-                                            scrollOffset,
-                                            yBottom,
-                                            yMin,
-                                            yOffset
-                                        )
-                                        val (cubicPoints1, cubicPoints2) = getCubicPoints(pointsData)
+                    for (plotData in combinedPlotDataList) {
+                        when (plotData) {
+                            is LinePlotData -> {
+                                // Draw line graph
+                                val xStartPosition =
+                                    columnWidth + horizontalExtraSpace.toPx() +
+                                            ((barPlotData.barStyle.barWidth.toPx() * barPlotData.groupingSize) / 2)
+                                plotData.lines.forEach { line ->
+                                    val pointsData = getMappingPointsToGraph(
+                                        line.dataPoints,
+                                        xMin,
+                                        xOffset,
+                                        xStartPosition,
+                                        scrollOffset,
+                                        yBottom,
+                                        yMin,
+                                        yOffset
+                                    )
+                                    val (cubicPoints1, cubicPoints2) = getCubicPoints(pointsData)
 
-                                        // Draw cubic line using the points and form a line graph
-                                        val cubicPath =
-                                            drawStraightOrCubicLine(
-                                                pointsData,
-                                                cubicPoints1,
-                                                cubicPoints2,
-                                                line.lineStyle
-                                            )
-
-                                        // Draw area under curve
-                                        drawShadowUnderLineAndIntersectionPoint(
-                                            cubicPath,
+                                    // Draw cubic line using the points and form a line graph
+                                    val cubicPath =
+                                        drawStraightOrCubicLine(
                                             pointsData,
-                                            yBottom,
-                                            line
+                                            cubicPoints1,
+                                            cubicPoints2,
+                                            line.lineStyle
                                         )
 
-                                        pointsData.forEachIndexed { index, point ->
-                                            if (isTapped && point.isPointTapped(
-                                                    tapOffset,
-                                                    tapPadding.toPx()
-                                                )
-                                            ) {
-                                                // Dealing with only one line graph hence tapPointLocks[0]
-                                                linePointLocks[0] = line.dataPoints[index] to point
-                                            }
-                                        }
-                                        if (isTapped && linePointLocks.isNotEmpty()) {
-                                            drawHighLightOnSelectedPoint(
-                                                linePointLocks,
-                                                columnWidth,
-                                                paddingRight,
-                                                yBottom,
-                                                line.selectionHighlightPoint?.copy(
-                                                    isHighlightLineRequired = false
-                                                )
+                                    // Draw area under curve
+                                    drawShadowUnderLineAndIntersectionPoint(
+                                        cubicPath,
+                                        pointsData,
+                                        yBottom,
+                                        line
+                                    )
+
+                                    pointsData.forEachIndexed { index, point ->
+                                        if (isTapped && point.isPointTapped(
+                                                tapOffset,
+                                                tapPadding.toPx()
                                             )
-                                            if (line.selectionHighlightPopUp != null) {
-                                                val x =
-                                                    linePointLocks.values.firstOrNull()?.second?.x
-                                                if (x != null) identifiedPoint =
-                                                    linePointLocks.values.map { it.first }.first()
-                                                val selectedOffset =
-                                                    linePointLocks.values.firstOrNull()?.second
-                                                if (selectedOffset.isNotNull()) {
-                                                    drawHighlightText(
-                                                        identifiedPoint,
-                                                        selectedOffset ?: Offset(0f, 0f),
-                                                        line.selectionHighlightPopUp
-                                                    )
-                                                }
-                                            }
+                                        ) {
+                                            // Dealing with only one line graph hence tapPointLocks[0]
+                                            linePointLocks[0] = line.dataPoints[index] to point
                                         }
                                     }
-                                }
-                                is BarPlotData -> {
-                                    // Draw bar graph
-                                    plotData.groupBarList.forEachIndexed { index, groupBarData ->
-                                        var insideOffset = 0f
-                                        groupBarData.barList.forEachIndexed { subIndex, individualBar ->
-                                            val drawOffset = getGroupBarDrawOffset(
-                                                index, individualBar.point.y, xOffset, xLeft,
-                                                scrollOffset, yBottom, yOffset, 0f
+                                    if (isTapped && linePointLocks.isNotEmpty()) {
+                                        drawHighLightOnSelectedPoint(
+                                            linePointLocks,
+                                            columnWidth,
+                                            paddingRight,
+                                            yBottom,
+                                            line.selectionHighlightPoint?.copy(
+                                                isHighlightLineRequired = false
                                             )
-                                            val height = yBottom - drawOffset.y
-
-                                            val individualOffset =
-                                                Offset(drawOffset.x + insideOffset, drawOffset.y)
-
-                                            // drawing each individual bars
-                                            drawGroupBarGraph(
-                                                plotData,
-                                                individualOffset,
-                                                height,
-                                                subIndex
-                                            )
-                                            insideOffset += plotData.barStyle.barWidth.toPx()
-
-                                            val middleOffset =
-                                                Offset(
-                                                    individualOffset.x + plotData.barStyle.barWidth.toPx() / 2,
-                                                    drawOffset.y
+                                        )
+                                        if (line.selectionHighlightPopUp != null) {
+                                            val x =
+                                                linePointLocks.values.firstOrNull()?.second?.x
+                                            if (x != null) identifiedPoint =
+                                                linePointLocks.values.map { it.first }.first()
+                                            val selectedOffset =
+                                                linePointLocks.values.firstOrNull()?.second
+                                            if (selectedOffset.isNotNull()) {
+                                                drawHighlightText(
+                                                    identifiedPoint,
+                                                    selectedOffset ?: Offset(0f, 0f),
+                                                    line.selectionHighlightPopUp
                                                 )
-                                            // store the tap points for selection
-                                            if (isTapped && middleOffset.isTapped(
-                                                    tapOffset,
-                                                    plotData.barStyle.barWidth.toPx(),
-                                                    yBottom,
-                                                    tapPadding.toPx()
-                                                )
-                                            ) {
-                                                barTapLocks[0] = individualBar to individualOffset
                                             }
                                         }
                                     }
                                 }
                             }
+                            is BarPlotData -> {
+                                // Draw bar graph
+                                plotData.groupBarList.forEachIndexed { index, groupBarData ->
+                                    var insideOffset = 0f
+                                    groupBarData.barList.forEachIndexed { subIndex, individualBar ->
+                                        val drawOffset = getGroupBarDrawOffset(
+                                            index, individualBar.point.y, xOffset, xLeft,
+                                            scrollOffset, yBottom, yOffset, 0f
+                                        )
+                                        val height = yBottom - drawOffset.y
+
+                                        val individualOffset =
+                                            Offset(drawOffset.x + insideOffset, drawOffset.y)
+
+                                        // drawing each individual bars
+                                        drawGroupBarGraph(
+                                            plotData,
+                                            individualOffset,
+                                            height,
+                                            subIndex
+                                        )
+                                        insideOffset += plotData.barStyle.barWidth.toPx()
+
+                                        val middleOffset =
+                                            Offset(
+                                                individualOffset.x + plotData.barStyle.barWidth.toPx() / 2,
+                                                drawOffset.y
+                                            )
+                                        // store the tap points for selection
+                                        if (isTapped && middleOffset.isTapped(
+                                                tapOffset,
+                                                plotData.barStyle.barWidth.toPx(),
+                                                yBottom,
+                                                tapPadding.toPx()
+                                            )
+                                        ) {
+                                            barTapLocks[0] = individualBar to individualOffset
+                                        }
+                                    }
+                                }
+                            }
                         }
-                        if (isTapped && linePointLocks.isEmpty() &&
-                            barPlotData.barStyle.selectionHighlightData != null
-                        ) {
-                            // highlighting the selected bar and showing the data points
-                            identifiedBarPoint = highlightGroupBar(
-                                barTapLocks,
-                                true,
-                                identifiedBarPoint,
-                                barPlotData.barStyle.selectionHighlightData,
-                                isTapped,
-                                columnWidth,
-                                yBottom,
-                                paddingRight,
-                                yOffset,
-                                barPlotData.barStyle.barWidth
-                            )
-                        }
-                        drawUnderScrollMask(columnWidth, paddingRight, bgColor)
-                    },
-                    onPointClicked = { offset: Offset, _: Float ->
-                        isTapped = true
-                        tapOffset = offset
-                    },
-                    onScroll = {
-                        isTapped = false
                     }
+                    if (isTapped && linePointLocks.isEmpty() &&
+                        barPlotData.barStyle.selectionHighlightData != null
+                    ) {
+                        // highlighting the selected bar and showing the data points
+                        identifiedBarPoint = highlightGroupBar(
+                            barTapLocks,
+                            true,
+                            identifiedBarPoint,
+                            barPlotData.barStyle.selectionHighlightData,
+                            isTapped,
+                            columnWidth,
+                            yBottom,
+                            paddingRight,
+                            yOffset,
+                            barPlotData.barStyle.barWidth
+                        )
+                    }
+                    drawUnderScrollMask(columnWidth, paddingRight, bgColor)
+                },
+                onPointClicked = { offset: Offset, _: Float ->
+                    isTapped = true
+                    tapOffset = offset
+                },
+                onScroll = {
+                    isTapped = false
+                }
+            )
+            if (isTalkBackEnabled) {
+                AccessibilityBottomSheetDialog(
+                    modifier = Modifier.fillMaxSize(), backgroundColor = Color.White, content = {
+                        LazyColumn {
+                            items(xMax.toInt()) { index ->
+                                Column {
+                                    val lineData: MutableList<Point> = mutableListOf()
+                                    val lineColors: MutableList<Color> = mutableListOf()
+                                    linePlotData.lines.forEachIndexed { _, line ->
+                                        lineColors.add(line.lineStyle.color)
+                                        line.dataPoints.forEachIndexed { pointIndex, point ->
+                                            if (pointIndex == index) {
+                                                lineData.add(point)
+                                            }
+                                        }
+                                    }
+                                    val groupBarData: GroupBar? =
+                                        barPlotData.groupBarList.filterIndexed { barIndex, _ -> barIndex == index }
+                                            .firstOrNull()
+                                    CombinedGraphInfo(
+                                        pointsList = lineData,
+                                        lineColor = lineColors,
+                                        groupBar = groupBarData,
+                                        axisLabelDescription = xAxisData.axisLabelDescription(
+                                            xAxisData.labelData(index)
+                                        ),
+                                        barColorPaletteList = barPlotData.barColorPaletteList,
+                                        dividerColor = accessibilityConfig.dividerColor
+                                    )
+                                    ItemDivider(
+                                        thickness = accessibilityConfig.dividerThickness,
+                                        dividerColor = accessibilityConfig.dividerColor
+                                    )
+                                }
+                            }
+                        }
+                    },
+                    popUpTopRightButtonTitle = accessibilityConfig.popUpTopRightButtonTitle,
+                    popUpTopRightButtonDescription = accessibilityConfig.popUpTopRightButtonDescription,
+                    sheetState = accessibilitySheetState
                 )
+            }
         }
     }
 }

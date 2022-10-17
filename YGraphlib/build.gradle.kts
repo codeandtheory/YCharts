@@ -53,6 +53,7 @@ dependencies {
     implementation(YChartDependency.MATERIAL)
     implementation (YChartDependency.MATERIAL_3)
     implementation(YChartDependency.COMPOSE_UI)
+    implementation(YChartDependency.COMPOSE_ACTIVITY)
     implementation(YChartDependency.COMPOSE_MATERIAL)
     implementation(YChartDependency.COMPOSE_TOOLING_PREVIEW)
     testImplementation(YChartDependency.JUNIT)
