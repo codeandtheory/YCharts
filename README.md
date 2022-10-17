@@ -1,8 +1,8 @@
-# YGraphs
+# YCharts
 
-YGraphs is a light and extensible chart library for Jetpack Compose system. It comprises two main modules:
+YCharts is a light and extensible chart library for Jetpack Compose system. It comprises two main modules:
 
--   `YGraphlib` (Graph components for Jetpack Compose)
+-   `YChartslib` (Graph components for Jetpack Compose)
 -   `app` (sample app to showcase graph components)
 
 ## Modules
@@ -18,7 +18,7 @@ The following table outlines the modules included in this library:
 
 ## Sample app
 
-Included in this repository is a [sample app](https://github.com/yml-org/YGraphs/tree/main/app) with multiple graphs with different styling in each section. Studying the source code of the app will give you a deep understanding of how to use YGraphs, including customizing and styling the graphs. All of the graphs i.e line, bar, groupedBar, pie & donut are implemented in the sample app.
+Included in this repository is a [sample app](https://github.com/yml-org/YCharts/tree/main/app) with multiple graphs with different styling in each section. Studying the source code of the app will give you a deep understanding of how to use YCharts, including customizing and styling the graphs. All of the graphs i.e line, bar, groupedBar, pie & donut are implemented in the sample app.
 
 ## Basic example
 
@@ -338,7 +338,7 @@ Let's see how we can use the graph components and style them with available cust
 ## License
 
 ```
-    Copyright 2022 YGraphs
+    Copyright 2022 YCharts
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
