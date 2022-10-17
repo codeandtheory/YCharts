@@ -13,7 +13,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.app.ygraphs.R
-import com.app.ygraphs.ui.theme.YGraphsTheme
+import com.app.ygraphs.ui.theme.YChartsTheme
 
 @Composable
 fun AppBarWithBackButton(title: String, onBackPressed: () -> Unit) {
@@ -21,7 +21,7 @@ fun AppBarWithBackButton(title: String, onBackPressed: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp),
-        backgroundColor = YGraphsTheme.colors.button,
+        backgroundColor = YChartsTheme.colors.button,
         elevation = 6.dp,
         content = {
             Box(
@@ -50,9 +50,9 @@ fun AppBarWithBackButton(title: String, onBackPressed: () -> Unit) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = title,
-                    color = YGraphsTheme.colors.text,
+                    color = YChartsTheme.colors.text,
                     textAlign = TextAlign.Center,
-                    style = YGraphsTheme.typography.header
+                    style = YChartsTheme.typography.header
                 )
             }
         }

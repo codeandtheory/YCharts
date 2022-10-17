@@ -13,15 +13,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.app.ygraphs.presentation.*
-import com.app.ygraphs.ui.theme.YGraphsTheme
+import com.app.ygraphs.ui.theme.YChartsTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            YGraphsTheme {
+            YChartsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize(),
-                    backgroundColor = YGraphsTheme.colors.background,
+                    backgroundColor = YChartsTheme.colors.background,
                     topBar = { AppBar() })
                 {
                     Column(
@@ -97,14 +97,14 @@ private fun AppBar() {
     TopAppBar(
         modifier = Modifier
             .fillMaxWidth(),
-        backgroundColor = YGraphsTheme.colors.button,
+        backgroundColor = YChartsTheme.colors.button,
         elevation = 6.dp,
         title = {
             Text(
                 text = stringResource(R.string.app_name),
-                color = YGraphsTheme.colors.text,
+                color = YChartsTheme.colors.text,
                 textAlign = TextAlign.Center,
-                style = YGraphsTheme.typography.header
+                style = YChartsTheme.typography.header
             )
         }
     )
@@ -119,12 +119,12 @@ private fun ChartButton(title: String, onClick: () -> Unit) {
                 .padding(end = 10.dp, start = 10.dp)
                 .fillMaxWidth()
                 .height(50.dp), onClick = onClick,
-            colors = ButtonDefaults.buttonColors(backgroundColor = YGraphsTheme.colors.button)
+            colors = ButtonDefaults.buttonColors(backgroundColor = YChartsTheme.colors.button)
         ) {
             Text(
                 text = title,
-                style = YGraphsTheme.typography.button,
-                color = YGraphsTheme.colors.text
+                style = YChartsTheme.typography.button,
+                color = YChartsTheme.colors.text
             )
         }
     }

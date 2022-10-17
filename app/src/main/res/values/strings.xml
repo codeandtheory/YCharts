@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">YGraphs</string>
+    <string name="app_name">YCharts</string>
     <string name="title_activity_bar_chart">BarChartActivity</string>
     <string name="title_activity_line_chart">LineChartActivity</string>
     <string name="title_activity_pie_chart">PieChartActivity</string>
