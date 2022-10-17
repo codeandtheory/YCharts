@@ -19,9 +19,9 @@ import com.ygraph.components.common.components.Legends
 import com.ygraph.components.common.model.LegendsConfig
 import com.ygraph.components.common.utils.DataUtils
 import com.ygraph.components.common.utils.DataUtils.getGroupBarChartData
-import com.ygraph.components.graph.bargraph.GroupBarGraph
-import com.ygraph.components.graph.bargraph.models.BarPlotData
-import com.ygraph.components.graph.bargraph.models.GroupBarGraphData
+import com.ygraph.components.charts.bargraph.GroupBarGraph
+import com.ygraph.components.charts.bargraph.models.BarPlotData
+import com.ygraph.components.charts.bargraph.models.GroupBarGraphData
 
 class BarChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

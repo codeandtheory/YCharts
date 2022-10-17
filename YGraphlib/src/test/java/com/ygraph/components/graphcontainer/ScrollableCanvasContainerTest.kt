@@ -1,6 +1,6 @@
 package com.ygraph.components.graphcontainer
 
-import com.ygraph.components.graphcontainer.container.checkAndGetMaxScrollOffset
+import com.ygraph.components.chartcontainer.container.checkAndGetMaxScrollOffset
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

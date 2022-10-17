@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ygraph.components.common.components.ItemDivider
 import com.ygraph.components.common.model.Point
-import com.ygraph.components.graph.bargraph.models.GroupBar
+import com.ygraph.components.charts.bargraph.models.GroupBar
 
 @Composable
 fun CombinedGraphInfo(

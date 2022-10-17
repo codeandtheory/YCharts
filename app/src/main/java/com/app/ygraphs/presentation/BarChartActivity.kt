@@ -20,10 +20,10 @@ import com.app.ygraphs.ui.compositions.AppBarWithBackButton
 import com.app.ygraphs.ui.theme.YGraphsTheme
 import com.ygraph.components.axis.AxisData
 import com.ygraph.components.common.utils.DataUtils
-import com.ygraph.components.graph.bargraph.BarGraph
-import com.ygraph.components.graph.bargraph.models.BarGraphData
-import com.ygraph.components.graph.bargraph.models.BarStyle
-import com.ygraph.components.graph.bargraph.models.SelectionHighlightData
+import com.ygraph.components.charts.bargraph.BarGraph
+import com.ygraph.components.charts.bargraph.models.BarGraphData
+import com.ygraph.components.charts.bargraph.models.BarStyle
+import com.ygraph.components.charts.bargraph.models.SelectionHighlightData
 
 class BarChartActivity : ComponentActivity() {
 

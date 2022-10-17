@@ -21,9 +21,9 @@ import com.app.ygraphs.ui.compositions.AppBarWithBackButton
 import com.app.ygraphs.ui.theme.YGraphsTheme
 import com.ygraph.components.common.components.Legends
 import com.ygraph.components.common.utils.DataUtils
-import com.ygraph.components.piechart.charts.DonutPieChart
-import com.ygraph.components.piechart.models.PieChartConfig
-import com.ygraph.components.piechart.utils.proportion
+import com.ygraph.components.charts.piechart.charts.DonutPieChart
+import com.ygraph.components.charts.piechart.models.PieChartConfig
+import com.ygraph.components.charts.piechart.utils.proportion
 
 @OptIn(ExperimentalMaterialApi::class)
 class DonutChartActivity : ComponentActivity() {

@@ -5,9 +5,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import com.ygraph.components.charts.piechart.charts.DonutPieChart
 import com.ygraph.components.common.model.PlotType
-import com.ygraph.components.piechart.models.PieChartConfig
-import com.ygraph.components.piechart.models.PieChartData
+import com.ygraph.components.charts.piechart.models.PieChartConfig
+import com.ygraph.components.charts.piechart.models.PieChartData
 import org.junit.Rule
 import org.junit.Test
 

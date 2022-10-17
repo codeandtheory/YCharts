@@ -22,8 +22,8 @@ import com.ygraph.components.axis.AxisData
 import com.ygraph.components.common.extensions.formatToSinglePrecision
 import com.ygraph.components.common.model.Point
 import com.ygraph.components.common.utils.DataUtils
-import com.ygraph.components.graph.linegraph.LineGraph
-import com.ygraph.components.graph.linegraph.model.*
+import com.ygraph.components.charts.linegraph.LineGraph
+import com.ygraph.components.charts.linegraph.model.*
 
 class LineChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

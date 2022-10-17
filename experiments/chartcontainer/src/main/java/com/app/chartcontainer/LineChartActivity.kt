@@ -13,7 +13,8 @@ import androidx.compose.ui.unit.dp
 import com.app.chartcontainer.ui.theme.YGraphsTheme
 import com.ygraph.components.axis.AxisData
 import com.ygraph.components.common.utils.DataUtils
-import com.ygraph.components.graph.linegraph.LineGraph
+import com.ygraph.components.charts.linegraph.LineGraph
+import com.ygraph.components.charts.linegraph.model.*
 import com.ygraph.components.graph.linegraph.model.*
 
 

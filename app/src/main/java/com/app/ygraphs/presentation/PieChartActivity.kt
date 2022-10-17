@@ -21,8 +21,8 @@ import com.app.ygraphs.ui.compositions.AppBarWithBackButton
 import com.app.ygraphs.ui.theme.YGraphsTheme
 import com.ygraph.components.common.components.Legends
 import com.ygraph.components.common.utils.DataUtils
-import com.ygraph.components.piechart.charts.PieChart
-import com.ygraph.components.piechart.models.PieChartConfig
+import com.ygraph.components.charts.piechart.charts.PieChart
+import com.ygraph.components.charts.piechart.models.PieChartConfig
 
 class PieChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

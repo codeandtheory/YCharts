@@ -1,5 +1,6 @@
 package com.ygraph.components.graph.linegraph
 
+import com.ygraph.components.charts.linegraph.getYAxisScale
 import com.ygraph.components.common.model.Point
 import org.junit.Assert
 import org.junit.Test

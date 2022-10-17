@@ -2,9 +2,10 @@ package com.ygraph.components.piechart.utils
 
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import com.ygraph.components.piechart.PieChartConstants.DEFAULT_PADDING
-import com.ygraph.components.piechart.PieChartConstants.DEFAULT_START_ANGLE
-import com.ygraph.components.piechart.models.PieChartData
+import com.ygraph.components.charts.piechart.PieChartConstants.DEFAULT_PADDING
+import com.ygraph.components.charts.piechart.PieChartConstants.DEFAULT_START_ANGLE
+import com.ygraph.components.charts.piechart.models.PieChartData
+import com.ygraph.components.charts.piechart.utils.*
 import org.junit.Assert.*
 import org.junit.Test
 

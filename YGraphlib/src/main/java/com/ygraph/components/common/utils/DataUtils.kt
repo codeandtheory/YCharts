@@ -7,9 +7,9 @@ import com.ygraph.components.common.model.LegendLabel
 import com.ygraph.components.common.model.LegendsConfig
 import com.ygraph.components.common.model.PlotType
 import com.ygraph.components.common.model.Point
-import com.ygraph.components.graph.bargraph.models.BarData
-import com.ygraph.components.graph.bargraph.models.GroupBar
-import com.ygraph.components.piechart.models.PieChartData
+import com.ygraph.components.charts.bargraph.models.BarData
+import com.ygraph.components.charts.bargraph.models.GroupBar
+import com.ygraph.components.charts.piechart.models.PieChartData
 import kotlin.random.Random
 
 object DataUtils {
