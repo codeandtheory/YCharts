@@ -5,10 +5,10 @@
     <string name="title_activity_pie_chart">PieChartActivity</string>
     <string name="title_activity_donut_chart">DonutChartActivity</string>
     <string name="title_activity_combined_line_bar_chart">CombinedLineAndBarChartActivity</string>
-    <string name="title_bar_chart">Bar Graph</string>
-    <string name="title_line_chart">Line Graph</string>
-    <string name="title_pie_chart">Pie Graph</string>
-    <string name="title_donut_chart">Donut Graph</string>
-    <string name="title_bar_with_line_chart">Combined Graph</string>
+    <string name="title_bar_chart">Bar Chart</string>
+    <string name="title_line_chart">Line Chart</string>
+    <string name="title_pie_chart">Pie Chart</string>
+    <string name="title_donut_chart">Donut Chart</string>
+    <string name="title_bar_with_line_chart">Combined Chart</string>
 
 </resources>

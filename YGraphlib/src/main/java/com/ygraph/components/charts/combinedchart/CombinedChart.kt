@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterialApi::class)
 
-package com.ygraph.components.charts.combinedgraph
+package com.ygraph.components.charts.combinedchart
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
@@ -27,41 +27,38 @@ import com.ygraph.components.charts.barchart.drawUnderScrollMask
 import com.ygraph.components.charts.barchart.getGroupBarDrawOffset
 import com.ygraph.components.common.components.ItemDivider
 import com.ygraph.components.common.components.accessibility.AccessibilityBottomSheetDialog
-import com.ygraph.components.common.components.accessibility.CombinedGraphInfo
+import com.ygraph.components.common.components.accessibility.CombinedChartInfo
 import com.ygraph.components.common.extensions.*
 import com.ygraph.components.common.extensions.getMaxElementInYAxis
 import com.ygraph.components.common.model.PlotData
 import com.ygraph.components.common.model.PlotType
 import com.ygraph.components.common.model.Point
-import com.ygraph.components.graph.bargraph.*
 import com.ygraph.components.charts.barchart.getMaxScrollDistance
 import com.ygraph.components.charts.barchart.highlightGroupBar
 import com.ygraph.components.charts.barchart.models.BarData
 import com.ygraph.components.charts.barchart.models.BarPlotData
 import com.ygraph.components.charts.barchart.models.GroupBar
-import com.ygraph.components.charts.combinedgraph.model.CombinedGraphData
+import com.ygraph.components.charts.combinedchart.model.CombinedChartData
 import com.ygraph.components.charts.linechart.*
-import com.ygraph.components.graph.linegraph.*
 import com.ygraph.components.charts.linechart.model.LinePlotData
 import com.ygraph.components.chartcontainer.container.ScrollableCanvasContainer
 import kotlinx.coroutines.launch
 
 /**
  *
- * CombinedLineAndBarGraph compose method for drawing combined line and bar graph.
+ * CombinedChart compose method for drawing combined line and bar charts.
  * @param modifier: All modifier related properties
- * @param combineGraphData : All data needed to Bar Graph
- * @see com.ygraph.components.graph.combinedgraph.model.CombinedGraphData Data class to save all params
- * related to Bar Graph
+ * @param combinedChartData : All data needed to Bar chart
+ * @see [CombinedChartData] Data class to save all params related to combined line and bar chart.
  */
 @Composable
-fun CombinedGraph(modifier: Modifier, combinedGraphData: CombinedGraphData) {
+fun CombinedChart(modifier: Modifier, combinedChartData: CombinedChartData) {
     val accessibilitySheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
     val isTalkBackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
     if (accessibilitySheetState.isVisible && isTalkBackEnabled
-        && combinedGraphData.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
+        && combinedChartData.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
     ) {
         BackHandler {
             scope.launch {
@@ -70,7 +67,7 @@ fun CombinedGraph(modifier: Modifier, combinedGraphData: CombinedGraphData) {
         }
     }
     Surface(modifier) {
-        with(combinedGraphData) {
+        with(combinedChartData) {
             var xOffset by remember { mutableStateOf(0f) }
             var isTapped by remember { mutableStateOf(false) }
             var columnWidth by remember { mutableStateOf(0f) }
@@ -197,7 +194,7 @@ fun CombinedGraph(modifier: Modifier, combinedGraphData: CombinedGraphData) {
                     for (plotData in combinedPlotDataList) {
                         when (plotData) {
                             is LinePlotData -> {
-                                // Draw line graph
+                                // Draw line chart
                                 val xStartPosition =
                                     columnWidth + horizontalExtraSpace.toPx() +
                                             ((barPlotData.barStyle.barWidth.toPx() * barPlotData.groupingSize) / 2)
@@ -358,7 +355,7 @@ fun CombinedGraph(modifier: Modifier, combinedGraphData: CombinedGraphData) {
                                     val groupBarData: GroupBar? =
                                         barPlotData.groupBarList.filterIndexed { barIndex, _ -> barIndex == index }
                                             .firstOrNull()
-                                    CombinedGraphInfo(
+                                    CombinedChartInfo(
                                         pointsList = lineData,
                                         lineColor = lineColors,
                                         groupBar = groupBarData,

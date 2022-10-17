@@ -18,7 +18,7 @@ import com.ygraph.components.common.model.Point
 import com.ygraph.components.charts.barchart.models.GroupBar
 
 @Composable
-fun CombinedGraphInfo(
+fun CombinedChartInfo(
     pointsList: List<Point>,
     lineColor: List<Color>,
     groupBar: GroupBar?,

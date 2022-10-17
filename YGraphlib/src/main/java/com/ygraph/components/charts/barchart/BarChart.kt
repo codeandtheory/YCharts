@@ -32,7 +32,7 @@ import com.ygraph.components.common.components.accessibility.AccessibilityBottom
 import com.ygraph.components.common.components.accessibility.BarInfo
 import com.ygraph.components.common.extensions.*
 import com.ygraph.components.common.model.Point
-import com.ygraph.components.common.utils.GraphConstants.DEFAULT_YAXIS_BOTTOM_PADDING
+import com.ygraph.components.common.utils.ChartConstants.DEFAULT_YAXIS_BOTTOM_PADDING
 import com.ygraph.components.charts.barchart.models.BarData
 import com.ygraph.components.charts.barchart.models.BarChartData
 import com.ygraph.components.charts.barchart.models.BarStyle
@@ -43,7 +43,7 @@ import kotlinx.coroutines.launch
 
 /**
  *
- * BarGraph compose method for drawing bar chart.
+ * [BarChart] compose method for drawing bar chart.
  * @param modifier: All modifier related properties
  * @param barChartData : All data needed to Bar Chart
  * @see [BarChartData] Data class to save all params related to Bar Chart

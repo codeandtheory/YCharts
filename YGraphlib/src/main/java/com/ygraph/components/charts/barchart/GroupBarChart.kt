@@ -34,7 +34,7 @@ import com.ygraph.components.common.extensions.collectIsTalkbackEnabledAsState
 import com.ygraph.components.common.extensions.getMaxElementInYAxis
 import com.ygraph.components.common.extensions.isTapped
 import com.ygraph.components.common.model.Point
-import com.ygraph.components.common.utils.GraphConstants.DEFAULT_YAXIS_BOTTOM_PADDING
+import com.ygraph.components.common.utils.ChartConstants.DEFAULT_YAXIS_BOTTOM_PADDING
 import com.ygraph.components.charts.barchart.models.BarData
 import com.ygraph.components.charts.barchart.models.GroupBarChartData
 import com.ygraph.components.charts.barchart.models.SelectionHighlightData
@@ -44,7 +44,7 @@ import kotlinx.coroutines.launch
 
 /**
  *
- * GroupBarGraph compose method for drawing group bar chart.
+ * [GroupBarChart] compose method for drawing group bar chart.
  * @param modifier: All modifier related properties
  * @param groupBarChartData : All data needed to group bar chart
  * @see [GroupBarChartData] Data class to save all params related to Bar Chart

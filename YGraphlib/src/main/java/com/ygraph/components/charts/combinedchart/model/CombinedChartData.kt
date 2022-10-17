@@ -1,4 +1,4 @@
-package com.ygraph.components.charts.combinedgraph.model
+package com.ygraph.components.charts.combinedchart.model
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
@@ -21,7 +21,7 @@ import com.ygraph.components.common.model.PlotData
  * @param isZoomAllowed: True if zoom in for all vertical graph components is allowed else false.
  * @param accessibilityConfig: Configs related to accessibility service defined here in [AccessibilityConfig]
  */
-data class CombinedGraphData(
+data class CombinedChartData(
     val combinedPlotDataList: List<PlotData>,
     val xAxisData: AxisData = AxisData.Builder().build(),
     val yAxisData: AxisData = AxisData.Builder().build(),

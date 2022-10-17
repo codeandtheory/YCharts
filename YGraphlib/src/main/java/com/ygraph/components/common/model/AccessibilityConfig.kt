@@ -3,7 +3,7 @@ package com.ygraph.components.common.model
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.ygraph.components.common.constants.ChartConstants
+import com.ygraph.components.common.utils.ChartConstants
 
 /**
  * AccessibilityConfig is a data class to configure all params needed for accessibility service.

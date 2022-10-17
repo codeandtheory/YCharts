@@ -24,8 +24,8 @@ import com.ygraph.components.common.model.LegendsConfig
 import com.ygraph.components.common.utils.DataUtils
 import com.ygraph.components.charts.barchart.models.BarPlotData
 import com.ygraph.components.charts.barchart.models.BarStyle
-import com.ygraph.components.charts.combinedgraph.CombinedGraph
-import com.ygraph.components.charts.combinedgraph.model.CombinedGraphData
+import com.ygraph.components.charts.combinedchart.CombinedChart
+import com.ygraph.components.charts.combinedchart.model.CombinedChartData
 import com.ygraph.components.charts.linechart.model.*
 
 class CombinedLineAndBarChartActivity : ComponentActivity() {
@@ -108,7 +108,7 @@ fun BarWithLineChart() {
         barStyle = BarStyle(barWidth = 35.dp),
         barColorPaletteList = colorPaletteList
     )
-    val combinedGraphData = CombinedGraphData(
+    val combinedChartData = CombinedChartData(
         combinedPlotDataList = listOf(barPlotData, linePlotData),
         xAxisData = xAxisData,
         yAxisData = yAxisData
@@ -117,10 +117,10 @@ fun BarWithLineChart() {
         Modifier
             .height(500.dp)
     ) {
-        CombinedGraph(
+        CombinedChart(
             modifier = Modifier
                 .height(400.dp),
-            combinedGraphData = combinedGraphData
+            combinedChartData = combinedChartData
         )
         Legends(
             legendsConfig = legendsConfig

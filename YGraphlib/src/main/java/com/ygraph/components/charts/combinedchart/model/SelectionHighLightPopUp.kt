@@ -1,4 +1,4 @@
-package com.ygraph.components.charts.combinedgraph.model
+package com.ygraph.components.charts.combinedchart.model
 
 import android.graphics.Paint
 import android.graphics.Typeface
