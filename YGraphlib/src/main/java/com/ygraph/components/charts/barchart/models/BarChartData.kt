@@ -1,4 +1,4 @@
-package com.ygraph.components.charts.bargraph.models
+package com.ygraph.components.charts.barchart.models
 
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
@@ -13,7 +13,7 @@ import com.ygraph.components.common.model.AccessibilityConfig
 
 /**
  * BarGraph data class params used in drawing bar graph.
- * @param graphData : List of BarData
+ * @param chartData : List of BarData
  * @param xAxisData: All the configurations related to X-Axis to be defined here in [AxisData]
  * @param yAxisData: All the configurations related to Y-Axis to be defined here in [AxisData]
  * @param horizontalExtraSpace: Extra space added in the horizontal axis
@@ -24,8 +24,8 @@ import com.ygraph.components.common.model.AccessibilityConfig
  * @param showYAxis: Boolean Flag to enable/disable Y axis
  * @param accessibilityConfig: Configs related to accessibility service defined here in [AccessibilityConfig]
  */
-data class BarGraphData(
-    val graphData: List<BarData>,
+data class BarChartData(
+    val chartData: List<BarData>,
     val xAxisData: AxisData = AxisData.Builder().build(),
     val yAxisData: AxisData = AxisData.Builder().build(),
     val backgroundColor: Color = Color.White,

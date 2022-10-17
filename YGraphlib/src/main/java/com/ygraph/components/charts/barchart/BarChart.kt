@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterialApi::class)
 
-package com.ygraph.components.charts.bargraph
+package com.ygraph.components.charts.barchart
 
 
 import androidx.activity.compose.BackHandler
@@ -33,31 +33,30 @@ import com.ygraph.components.common.components.accessibility.BarInfo
 import com.ygraph.components.common.extensions.*
 import com.ygraph.components.common.model.Point
 import com.ygraph.components.common.utils.GraphConstants.DEFAULT_YAXIS_BOTTOM_PADDING
-import com.ygraph.components.charts.bargraph.models.BarData
-import com.ygraph.components.charts.bargraph.models.BarGraphData
-import com.ygraph.components.charts.bargraph.models.BarStyle
-import com.ygraph.components.charts.bargraph.models.SelectionHighlightData
+import com.ygraph.components.charts.barchart.models.BarData
+import com.ygraph.components.charts.barchart.models.BarChartData
+import com.ygraph.components.charts.barchart.models.BarStyle
+import com.ygraph.components.charts.barchart.models.SelectionHighlightData
 import com.ygraph.components.chartcontainer.container.ScrollableCanvasContainer
 import kotlinx.coroutines.launch
 
 
 /**
  *
- * BarGraph compose method for drawing bar graph.
+ * BarGraph compose method for drawing bar chart.
  * @param modifier: All modifier related properties
- * @param barGraphData : All data needed to Bar Graph
- * @see  com.ygraph.components.graph.bargraph.models.BarGraphData Data class to save all params
- * related to Bar Graph
+ * @param barChartData : All data needed to Bar Chart
+ * @see [BarChartData] Data class to save all params related to Bar Chart
  */
 @Composable
-fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
+fun BarChart(modifier: Modifier, barChartData: BarChartData) {
     val accessibilitySheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
     val isTalkBackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
 
     if (accessibilitySheetState.isVisible && isTalkBackEnabled
-        && barGraphData.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
+        && barChartData.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
     ) {
         BackHandler {
             scope.launch {
@@ -66,7 +65,7 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
         }
     }
     Surface(modifier) {
-        with(barGraphData) {
+        with(barChartData) {
             var barHighlightVisibility by remember { mutableStateOf(false) }
             var identifiedPoint by remember { mutableStateOf(BarData(Point(0f, 0f))) }
             var xOffset by remember { mutableStateOf(0f) }
@@ -76,14 +75,14 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
             var horizontalGap by remember { mutableStateOf(0f) }
             var rowHeight by remember { mutableStateOf(0f) }
             val paddingRight = paddingEnd
-            val points = graphData.map { it.point }
+            val points = chartData.map { it.point }
             val bgColor = MaterialTheme.colors.surface
 
             val (xMin, xMax) = getXMaxAndMinPoints(points)
             val (_, yMax) = getYMaxAndMinPoints(points)
 
             val xAxisData = xAxisData.copy(axisStepSize = barStyle.barWidth + barStyle.paddingBetweenBars,
-                steps = graphData.size - 1,
+                steps = chartData.size - 1,
                 startDrawPadding = LocalDensity.current.run { columnWidth.toDp() })
             val yAxisData = yAxisData.copy(axisBottomPadding = LocalDensity.current.run { rowHeight.toDp() })
             val maxElementInYAxis = getMaxElementInYAxis(yMax, yAxisData.steps)
@@ -94,7 +93,7 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
 
             ScrollableCanvasContainer(modifier = modifier
                 .semantics {
-                    contentDescription = barGraphData.accessibilityConfig.graphDescription
+                    contentDescription = barChartData.accessibilityConfig.chartDescription
                 }
                 .clickable {
                     if (isTalkBackEnabled) {
@@ -124,14 +123,14 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
                     val dragLocks = mutableMapOf<Int, Pair<BarData, Offset>>()
 
                     // Draw bar lines
-                    graphData.forEachIndexed { _, barData ->
+                    chartData.forEachIndexed { _, barData ->
                         val drawOffset = getDrawOffset(
                             barData.point, xMin, xOffset, xLeft, scrollOffset, yBottom, yOffset, 0f
                         )
                         val height = yBottom - drawOffset.y
 
                         // drawing each individual bars
-                        drawBarGraph(barGraphData.barStyle, barData, drawOffset, height)
+                        drawBarGraph(barChartData.barStyle, barData, drawOffset, height)
 
                         val middleOffset =
                             Offset(drawOffset.x + barStyle.barWidth.toPx() / 2, drawOffset.y)
@@ -152,7 +151,7 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
                         dragLocks,
                         barHighlightVisibility,
                         identifiedPoint,
-                        barGraphData.barStyle,
+                        barChartData.barStyle,
                         isTapped,
                         columnWidth,
                         yBottom,
@@ -182,7 +181,7 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
                             },
                             scrollOffset = scrollOffset,
                             zoomScale = xZoom,
-                            graphData = points
+                            chartData = points
                         )
                     }
 
@@ -207,13 +206,13 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
             })
         }
         if (isTalkBackEnabled) {
-            with(barGraphData) {
+            with(barChartData) {
                 AccessibilityBottomSheetDialog(
                     modifier = Modifier.fillMaxSize(),
                     backgroundColor = Color.White,
                     content = {
                         LazyColumn {
-                            items(graphData.size) { index ->
+                            items(chartData.size) { index ->
                                 Column {
                                     BarInfo(
                                         xAxisData.axisLabelDescription(
@@ -221,8 +220,8 @@ fun BarGraph(modifier: Modifier, barGraphData: BarGraphData) {
                                                 index
                                             )
                                         ),
-                                        graphData[index].description,
-                                        graphData[index].color
+                                        chartData[index].description,
+                                        chartData[index].color
                                     )
                                     ItemDivider(
                                         thickness = accessibilityConfig.dividerThickness,

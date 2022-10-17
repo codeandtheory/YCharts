@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterialApi::class)
 
-package com.ygraph.components.charts.linegraph
+package com.ygraph.components.charts.linechart
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.Dp
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
 import com.ygraph.components.axis.getXAxisScale
-import com.ygraph.components.charts.linegraph.model.*
+import com.ygraph.components.charts.linechart.model.*
 import com.ygraph.components.common.components.ItemDivider
 import com.ygraph.components.common.components.accessibility.AccessibilityBottomSheetDialog
 import com.ygraph.components.common.components.accessibility.LinePointInfo
@@ -37,25 +37,24 @@ import com.ygraph.components.common.extensions.collectIsTalkbackEnabledAsState
 import com.ygraph.components.common.extensions.drawGridLines
 import com.ygraph.components.common.extensions.isNotNull
 import com.ygraph.components.common.model.Point
-import com.ygraph.components.graph.linegraph.model.*
 import com.ygraph.components.chartcontainer.container.ScrollableCanvasContainer
 import kotlinx.coroutines.launch
 
 /**
  *
- * [LineGraph] compose method used for drawing a Line Graph.
+ * [LineChart] compose method used for drawing a Line Chart.
  * @param modifier :All modifier related property.
- * Data class [LineGraphData] to save all params needed to draw the line graph.
- * @param lineGraphData : Add data related to line graph.
+ * Data class [LineChartData] to save all params needed to draw the line chart.
+ * @param lineChartData : Add data related to line chart.
  */
 @Composable
-fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
+fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
     val accessibilitySheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
     val isTalkBackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
     if (accessibilitySheetState.isVisible && isTalkBackEnabled
-        && lineGraphData.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
+        && lineChartData.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
     ) {
         BackHandler {
             scope.launch {
@@ -64,7 +63,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
         }
     }
     Surface(modifier = modifier) {
-        with(lineGraphData) {
+        with(lineChartData) {
             var columnWidth by remember { mutableStateOf(0f) }
             var rowHeight by remember { mutableStateOf(0f) }
             var xOffset by remember { mutableStateOf(0f) }
@@ -87,7 +86,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
 
             ScrollableCanvasContainer(modifier = modifier
                 .semantics {
-                    contentDescription = lineGraphData.accessibilityConfig.graphDescription
+                    contentDescription = lineChartData.accessibilityConfig.chartDescription
                 }
                 .clickable {
                     if (isTalkBackEnabled) {
@@ -136,7 +135,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                         xStart = columnWidth,
                         scrollOffset = scrollOffset,
                         zoomScale = xZoom,
-                        graphData = line.dataPoints)
+                        chartData = line.dataPoints)
                 },
                 onDraw = { scrollOffset, xZoom ->
                     val yBottom = size.height - rowHeight
@@ -223,7 +222,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
                 })
         }
         if (isTalkBackEnabled) {
-            with(lineGraphData) {
+            with(lineChartData) {
                 AccessibilityBottomSheetDialog(
                     modifier = Modifier.fillMaxSize(),
                     backgroundColor = Color.White,
@@ -262,7 +261,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
 /**
  *
  * returns the list of transformed points supported to be drawn on the container using the input points .
- * @param lineGraphPoints :Input data points
+ * @param lineChartPoints :Input data points
  * @param xMin: Min X-Axis value.
  * @param xOffset : Total distance between two X-Axis points.
  * @param xLeft: Total left padding in X-Axis.
@@ -272,7 +271,7 @@ fun LineGraph(modifier: Modifier, lineGraphData: LineGraphData) {
  * @param yOffset : Distance between two Y-Axis points.
  */
 fun getMappingPointsToGraph(
-    lineGraphPoints: List<Point>,
+    lineChartPoints: List<Point>,
     xMin: Float,
     xOffset: Float,
     xLeft: Float,
@@ -282,7 +281,7 @@ fun getMappingPointsToGraph(
     yOffset: Float,
 ): MutableList<Offset> {
     val pointsData = mutableListOf<Offset>()
-    lineGraphPoints.forEachIndexed { _, point ->
+    lineChartPoints.forEachIndexed { _, point ->
         val (x, y) = point
         val x1 = ((x - xMin) * xOffset) + xLeft - scrollOffset
         val y1 = yBottom - ((y - yMin) * yOffset)

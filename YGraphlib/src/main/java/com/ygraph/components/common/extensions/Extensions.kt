@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import com.ygraph.components.common.model.Point
-import com.ygraph.components.charts.linegraph.model.GridLines
+import com.ygraph.components.charts.linechart.model.GridLines
 import java.text.DecimalFormat
 
 

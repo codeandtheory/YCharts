@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ygraph.components.charts.bargraph.models.GroupBar
+import com.ygraph.components.charts.barchart.models.GroupBar
 
 @Composable
 fun GroupBarInfo(

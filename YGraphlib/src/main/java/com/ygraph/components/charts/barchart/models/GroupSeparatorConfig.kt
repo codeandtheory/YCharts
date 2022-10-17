@@ -1,4 +1,4 @@
-package com.ygraph.components.charts.bargraph.models
+package com.ygraph.components.charts.barchart.models
 
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color

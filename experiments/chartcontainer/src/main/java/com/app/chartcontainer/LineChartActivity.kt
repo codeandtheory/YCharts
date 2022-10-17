@@ -13,9 +13,8 @@ import androidx.compose.ui.unit.dp
 import com.app.chartcontainer.ui.theme.YGraphsTheme
 import com.ygraph.components.axis.AxisData
 import com.ygraph.components.common.utils.DataUtils
-import com.ygraph.components.charts.linegraph.LineGraph
-import com.ygraph.components.charts.linegraph.model.*
-import com.ygraph.components.graph.linegraph.model.*
+import com.ygraph.components.charts.linechart.LineChart
+import com.ygraph.components.charts.linechart.model.*
 
 
 class LineChartActivity : ComponentActivity() {
@@ -44,7 +43,7 @@ class LineChartActivity : ComponentActivity() {
                             .steps(5)
                             .labelData { i -> (i * 20).toString() }
                             .build()
-                        val data = LineGraphData(
+                        val data = LineChartData(
                             LinePlotData(
                                 lines = listOf(
                                     Line(
@@ -60,11 +59,11 @@ class LineChartActivity : ComponentActivity() {
                             xAxisData = xAxisData,
                             yAxisData = yAxisData
                         )
-                        LineGraph(
+                        LineChart(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(300.dp),
-                            lineGraphData = data
+                            lineChartData = data
                         )
                     }
                 }

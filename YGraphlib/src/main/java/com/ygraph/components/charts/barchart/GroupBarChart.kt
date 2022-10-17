@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterialApi::class)
 
-package com.ygraph.components.charts.bargraph
+package com.ygraph.components.charts.barchart
 
 
 import androidx.activity.compose.BackHandler
@@ -35,29 +35,28 @@ import com.ygraph.components.common.extensions.getMaxElementInYAxis
 import com.ygraph.components.common.extensions.isTapped
 import com.ygraph.components.common.model.Point
 import com.ygraph.components.common.utils.GraphConstants.DEFAULT_YAXIS_BOTTOM_PADDING
-import com.ygraph.components.charts.bargraph.models.BarData
-import com.ygraph.components.charts.bargraph.models.GroupBarGraphData
-import com.ygraph.components.charts.bargraph.models.SelectionHighlightData
+import com.ygraph.components.charts.barchart.models.BarData
+import com.ygraph.components.charts.barchart.models.GroupBarChartData
+import com.ygraph.components.charts.barchart.models.SelectionHighlightData
 import com.ygraph.components.chartcontainer.container.ScrollableCanvasContainer
 import kotlinx.coroutines.launch
 
 
 /**
  *
- * GroupBarGraph compose method for drawing group bar graph.
+ * GroupBarGraph compose method for drawing group bar chart.
  * @param modifier: All modifier related properties
- * @param groupBarGraphData : All data needed to group bar graph
- * @see com.ygraph.components.graph.bargraph.models.GroupBarGraphData Data class to save all
- * params related to Bar Graph
+ * @param groupBarChartData : All data needed to group bar chart
+ * @see [GroupBarChartData] Data class to save all params related to Bar Chart
  */
 @Composable
-fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
+fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
     val accessibilitySheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
     val isTalkBackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
     if (accessibilitySheetState.isVisible && isTalkBackEnabled
-        && groupBarGraphData.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
+        && groupBarChartData.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
     ) {
         BackHandler {
             scope.launch {
@@ -66,7 +65,7 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
         }
     }
     Surface(modifier.fillMaxSize()) {
-        with(groupBarGraphData.barPlotData) {
+        with(groupBarChartData.barPlotData) {
             var visibility by remember { mutableStateOf(false) }
             var identifiedPoint by remember { mutableStateOf(BarData(Point(0f, 0f))) }
             var xOffset by remember { mutableStateOf(0f) }
@@ -75,28 +74,28 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
             var columnWidth by remember { mutableStateOf(0f) }
             var horizontalGap by remember { mutableStateOf(0f) }
             var rowHeight by remember { mutableStateOf(0f) }
-            val paddingRight = groupBarGraphData.paddingEnd
+            val paddingRight = groupBarChartData.paddingEnd
             val valueList = groupBarList.map { it.yMax }
             val bgColor = MaterialTheme.colors.surface
 
             val xMax = groupBarList.size
             val yMax = valueList.maxOrNull() ?: 0f
             val xAxisData =
-                groupBarGraphData.xAxisData.copy(axisStepSize = ((barStyle.barWidth * groupingSize) + barStyle.paddingBetweenBars),
+                groupBarChartData.xAxisData.copy(axisStepSize = ((barStyle.barWidth * groupingSize) + barStyle.paddingBetweenBars),
                     shouldDrawAxisLineTillEnd = true,
                     steps = groupBarList.size - 1,
                     startDrawPadding = LocalDensity.current.run { columnWidth.toDp() })
             val yAxisData =
-                groupBarGraphData.yAxisData.copy(axisBottomPadding = LocalDensity.current.run { rowHeight.toDp() })
+                groupBarChartData.yAxisData.copy(axisBottomPadding = LocalDensity.current.run { rowHeight.toDp() })
 
             val maxElementInYAxis = getMaxElementInYAxis(yMax, yAxisData.steps)
 
-            if (!groupBarGraphData.showXAxis) {
+            if (!groupBarChartData.showXAxis) {
                 rowHeight = LocalDensity.current.run { DEFAULT_YAXIS_BOTTOM_PADDING.dp.toPx() }
             }
             ScrollableCanvasContainer(modifier = modifier
                 .semantics {
-                    contentDescription = groupBarGraphData.accessibilityConfig.graphDescription
+                    contentDescription = groupBarChartData.accessibilityConfig.chartDescription
                 }
                 .clickable {
                     if (isTalkBackEnabled) {
@@ -107,9 +106,9 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                         }
                     }
                 },
-                containerBackgroundColor = groupBarGraphData.backgroundColor,
+                containerBackgroundColor = groupBarChartData.backgroundColor,
                 calculateMaxDistance = { xZoom ->
-                    horizontalGap = groupBarGraphData.horizontalExtraSpace.toPx()
+                    horizontalGap = groupBarChartData.horizontalExtraSpace.toPx()
                     val xLeft = columnWidth + horizontalGap
                     xOffset =
                         ((barStyle.barWidth.toPx() * groupingSize) + barStyle.paddingBetweenBars.toPx()) * xZoom
@@ -152,7 +151,7 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
 
                             // drawing each individual bars
                             drawGroupBarGraph(
-                                groupBarGraphData, individualOffset, height, subIndex
+                                groupBarChartData, individualOffset, height, subIndex
                             )
                             insideOffset += barStyle.barWidth.toPx()
 
@@ -164,14 +163,14 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                                     tapOffset,
                                     barStyle.barWidth.toPx(),
                                     yBottom,
-                                    groupBarGraphData.tapPadding.toPx()
+                                    groupBarChartData.tapPadding.toPx()
                                 )
                             ) {
                                 dragLocks[0] = individualBar to individualOffset
                             }
                         }
 
-                        if (groupBarGraphData.groupSeparatorConfig.showSeparator && index != groupBarList.size - 1) {
+                        if (groupBarChartData.groupSeparatorConfig.showSeparator && index != groupBarList.size - 1) {
                             // drawing each Group Separator bars
                             val yOffset2 = (yBottom - yAxisData.axisTopPadding.toPx())
                             val height = yBottom - yAxisData.axisTopPadding.toPx()
@@ -186,15 +185,15 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                                 0f
                             )
                             val xOffset2 =
-                                (drawOffset2.x + insideOffset + (barStyle.paddingBetweenBars.toPx() / 2) - groupBarGraphData.groupSeparatorConfig.separatorWidth.toPx() / 2)
+                                (drawOffset2.x + insideOffset + (barStyle.paddingBetweenBars.toPx() / 2) - groupBarChartData.groupSeparatorConfig.separatorWidth.toPx() / 2)
                             val individualOffset = Offset(xOffset2, yAxisData.axisTopPadding.toPx())
 
                             drawGroupSeparator(
                                 individualOffset,
                                 height,
-                                groupBarGraphData.groupSeparatorConfig.separatorWidth.toPx(),
-                                groupBarGraphData.groupSeparatorConfig.separatorColor,
-                                groupBarGraphData
+                                groupBarChartData.groupSeparatorConfig.separatorWidth.toPx(),
+                                groupBarChartData.groupSeparatorConfig.separatorColor,
+                                groupBarChartData
                             )
                         }
                     }
@@ -222,7 +221,7 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                         points.add(Point(index.toFloat(), 0f))
                     }
 
-                    if (groupBarGraphData.showXAxis) {
+                    if (groupBarChartData.showXAxis) {
                         XAxis(
                             xAxisData = xAxisData,
                             modifier = Modifier
@@ -242,11 +241,11 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                             },
                             scrollOffset = scrollOffset,
                             zoomScale = xZoom,
-                            graphData = points,
+                            chartData = points,
                         )
                     }
 
-                    if (groupBarGraphData.showYAxis) {
+                    if (groupBarChartData.showYAxis) {
                         YAxis(
                             modifier = Modifier
                                 .align(Alignment.TopStart)
@@ -270,7 +269,7 @@ fun GroupBarGraph(modifier: Modifier, groupBarGraphData: GroupBarGraphData) {
                 })
         }
         if (isTalkBackEnabled) {
-            with(groupBarGraphData) {
+            with(groupBarChartData) {
                 AccessibilityBottomSheetDialog(
                     modifier = Modifier.fillMaxSize(), backgroundColor = Color.White, content = {
                         LazyColumn {
@@ -329,7 +328,7 @@ private fun DrawScope.drawGroupHighlightText(
  * @param subIndex : Index of the bar
  */
 private fun DrawScope.drawGroupBarGraph(
-    barGraphData: GroupBarGraphData, drawOffset: Offset, height: Float, subIndex: Int
+    barGraphData: GroupBarChartData, drawOffset: Offset, height: Float, subIndex: Int
 ) {
     with(barGraphData.barPlotData) {
         val color = barColorPaletteList[subIndex]
@@ -425,7 +424,7 @@ fun getGroupBarDrawOffset(
 /**
  *
  * Used to draw the group separator
- * @param barGraphData: [GroupBarGraphData]
+ * @param barGraphData: [GroupBarChartData]
  * @param drawOffset: topLeft offset for the drawing the separator
  * @param height : height of the separator
  * @param width : width of the separator
@@ -436,7 +435,7 @@ private fun DrawScope.drawGroupSeparator(
     height: Float,
     width: Float,
     color: Color,
-    barGraphData: GroupBarGraphData,
+    barGraphData: GroupBarChartData,
 ) {
     drawRoundRect(
         color = color,

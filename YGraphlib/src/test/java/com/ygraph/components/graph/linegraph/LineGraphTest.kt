@@ -1,9 +1,9 @@
 package com.ygraph.components.graph.linegraph
 
 import androidx.compose.ui.geometry.Offset
-import com.ygraph.components.charts.linegraph.getCubicPoints
-import com.ygraph.components.charts.linegraph.getMappingPointsToGraph
-import com.ygraph.components.charts.linegraph.getMaxScrollDistance
+import com.ygraph.components.charts.linechart.getCubicPoints
+import com.ygraph.components.charts.linechart.getMappingPointsToGraph
+import com.ygraph.components.charts.linechart.getMaxScrollDistance
 import com.ygraph.components.common.model.Point
 import org.junit.Assert
 import org.junit.Test

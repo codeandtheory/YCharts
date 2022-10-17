@@ -1,4 +1,4 @@
-package com.ygraph.components.charts.linegraph.model
+package com.ygraph.components.charts.linechart.model
 
 import com.ygraph.components.common.model.PlotData
 import com.ygraph.components.common.model.PlotType

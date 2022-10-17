@@ -99,7 +99,7 @@ fun PieChart(
             modifier = modifier
                 .aspectRatio(1f)
                 .semantics {
-                    contentDescription = pieChartConfig.accessibilityConfig.graphDescription
+                    contentDescription = pieChartConfig.accessibilityConfig.chartDescription
                 }
                 .clickable {
                     if (isTalkBackEnabled) {

@@ -1,4 +1,4 @@
-package com.ygraph.components.charts.linegraph.model
+package com.ygraph.components.charts.linechart.model
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
@@ -22,7 +22,7 @@ import com.ygraph.components.common.model.Point
  * @param gridLines: This enables graph to draw horizontal and vertical grid lines
  * @param accessibilityConfig: Configs related to accessibility service defined here in [AccessibilityConfig]
  */
-data class LineGraphData(
+data class LineChartData(
     val linePlotData: LinePlotData,
     val xAxisData: AxisData = AxisData.Builder().build(),
     val yAxisData: AxisData = AxisData.Builder().build(),

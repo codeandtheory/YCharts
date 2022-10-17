@@ -22,11 +22,11 @@ import com.ygraph.components.axis.AxisData
 import com.ygraph.components.common.components.Legends
 import com.ygraph.components.common.model.LegendsConfig
 import com.ygraph.components.common.utils.DataUtils
-import com.ygraph.components.charts.bargraph.models.BarPlotData
-import com.ygraph.components.charts.bargraph.models.BarStyle
+import com.ygraph.components.charts.barchart.models.BarPlotData
+import com.ygraph.components.charts.barchart.models.BarStyle
 import com.ygraph.components.charts.combinedgraph.CombinedGraph
 import com.ygraph.components.charts.combinedgraph.model.CombinedGraphData
-import com.ygraph.components.charts.linegraph.model.*
+import com.ygraph.components.charts.linechart.model.*
 
 class CombinedLineAndBarChartActivity : ComponentActivity() {
 

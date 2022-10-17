@@ -1,10 +1,9 @@
-package com.ygraph.components.charts.bargraph.models
+package com.ygraph.components.charts.barchart.models
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.axis.AxisData
-import com.ygraph.components.common.constants.GraphConstants
 import com.ygraph.components.common.model.AccessibilityConfig
 
 /**
@@ -21,7 +20,7 @@ import com.ygraph.components.common.model.AccessibilityConfig
  * @param accessibilityConfig: Configs related to accessibility service defined here in [AccessibilityConfig]
  */
 
-data class GroupBarGraphData(
+data class GroupBarChartData(
     val barPlotData: BarPlotData,
     val xAxisData: AxisData = AxisData.Builder().build(),
     val yAxisData: AxisData = AxisData.Builder().build(),

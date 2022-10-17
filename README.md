@@ -9,12 +9,12 @@ YCharts is a light and extensible chart library for Jetpack Compose system. It c
 
 The following table outlines the modules included in this library:
 
-| Artifact     | Description                                                                                         |
-| ------------ |-----------------------------------------------------------------------------------------------------|
-| `axis`       | Includes the horizontal and vertical axis components along with the math engines.                   |
-| `graph`       | Includes the all the chart components i.e: Line, Bar etc. also the math engines                     |
-| `graphcontainer` | Provides the base container to draw any chart inside it with scroll tap feature etc out of the box. |
-| `piechart` | Includes all the 360' chart components i.e Pie, Donut charts etc.                                   |
+| Artifact         | Description                                                                                            |
+|------------------|--------------------------------------------------------------------------------------------------------|
+| `axis`           | Includes the horizontal and vertical axis components along with the math engines.                      |
+| `charts`         | Includes the all the chart components i.e: Line, Bar, Combined, Pie & Donut etc. also the math engines |
+| `chartcontainer` | Provides the base container to draw any chart inside it with scroll tap feature etc out of the box.    |
+| `piechart`       | Includes all the 360' chart components i.e Pie, Donut charts etc.                                      |
 
 ## Sample app
 

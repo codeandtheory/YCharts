@@ -21,11 +21,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.dp
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
-import com.ygraph.components.charts.bargraph.drawUnderScrollMask
-import com.ygraph.components.charts.bargraph.getGroupBarDrawOffset
+import com.ygraph.components.charts.barchart.drawUnderScrollMask
+import com.ygraph.components.charts.barchart.getGroupBarDrawOffset
 import com.ygraph.components.common.components.ItemDivider
 import com.ygraph.components.common.components.accessibility.AccessibilityBottomSheetDialog
 import com.ygraph.components.common.components.accessibility.CombinedGraphInfo
@@ -35,15 +34,15 @@ import com.ygraph.components.common.model.PlotData
 import com.ygraph.components.common.model.PlotType
 import com.ygraph.components.common.model.Point
 import com.ygraph.components.graph.bargraph.*
-import com.ygraph.components.charts.bargraph.getMaxScrollDistance
-import com.ygraph.components.charts.bargraph.highlightGroupBar
-import com.ygraph.components.charts.bargraph.models.BarData
-import com.ygraph.components.charts.bargraph.models.BarPlotData
-import com.ygraph.components.charts.bargraph.models.GroupBar
+import com.ygraph.components.charts.barchart.getMaxScrollDistance
+import com.ygraph.components.charts.barchart.highlightGroupBar
+import com.ygraph.components.charts.barchart.models.BarData
+import com.ygraph.components.charts.barchart.models.BarPlotData
+import com.ygraph.components.charts.barchart.models.GroupBar
 import com.ygraph.components.charts.combinedgraph.model.CombinedGraphData
-import com.ygraph.components.charts.linegraph.*
+import com.ygraph.components.charts.linechart.*
 import com.ygraph.components.graph.linegraph.*
-import com.ygraph.components.charts.linegraph.model.LinePlotData
+import com.ygraph.components.charts.linechart.model.LinePlotData
 import com.ygraph.components.chartcontainer.container.ScrollableCanvasContainer
 import kotlinx.coroutines.launch
 
@@ -118,7 +117,7 @@ fun CombinedGraph(modifier: Modifier, combinedGraphData: CombinedGraphData) {
             ScrollableCanvasContainer(
                 modifier = modifier
                     .semantics {
-                        contentDescription = accessibilityConfig.graphDescription
+                        contentDescription = accessibilityConfig.chartDescription
                     }
                     .clickable {
                         if (isTalkBackEnabled) {
@@ -170,7 +169,7 @@ fun CombinedGraph(modifier: Modifier, combinedGraphData: CombinedGraphData) {
                         },
                         scrollOffset = scrollOffset,
                         zoomScale = xZoom,
-                        graphData = axisPoints
+                        chartData = axisPoints
                     )
                     YAxis(
                         modifier = Modifier

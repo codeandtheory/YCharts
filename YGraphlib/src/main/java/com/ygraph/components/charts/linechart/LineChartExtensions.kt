@@ -1,4 +1,4 @@
-package com.ygraph.components.charts.linegraph
+package com.ygraph.components.charts.linechart
 
 import androidx.compose.ui.geometry.Offset
 import com.ygraph.components.common.model.Point

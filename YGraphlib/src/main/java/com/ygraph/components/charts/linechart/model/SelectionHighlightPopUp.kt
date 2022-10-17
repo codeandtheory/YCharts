@@ -1,4 +1,4 @@
-package com.ygraph.components.charts.linegraph.model
+package com.ygraph.components.charts.linechart.model
 
 import android.graphics.Paint
 import android.graphics.Typeface

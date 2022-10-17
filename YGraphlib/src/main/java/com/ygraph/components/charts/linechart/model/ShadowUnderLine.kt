@@ -1,4 +1,4 @@
-package com.ygraph.components.charts.linegraph.model
+package com.ygraph.components.charts.linechart.model
 
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope

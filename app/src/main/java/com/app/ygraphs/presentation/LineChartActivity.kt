@@ -22,8 +22,8 @@ import com.ygraph.components.axis.AxisData
 import com.ygraph.components.common.extensions.formatToSinglePrecision
 import com.ygraph.components.common.model.Point
 import com.ygraph.components.common.utils.DataUtils
-import com.ygraph.components.charts.linegraph.LineGraph
-import com.ygraph.components.charts.linegraph.model.*
+import com.ygraph.components.charts.linechart.LineChart
+import com.ygraph.components.charts.linechart.model.*
 
 class LineChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,7 +92,7 @@ private fun LineGraph1(pointsData: List<Point>) {
             val yScale = 50 / steps
             ((i * yScale) + yMin).formatToSinglePrecision()
         }.build()
-    val data = LineGraphData(
+    val data = LineChartData(
         linePlotData = LinePlotData(
             lines = listOf(
                 Line(
@@ -109,11 +109,11 @@ private fun LineGraph1(pointsData: List<Point>) {
         yAxisData = yAxisData,
         gridLines = GridLines()
     )
-    LineGraph(
+    LineChart(
         modifier = Modifier
             .fillMaxWidth()
             .height(300.dp),
-        lineGraphData = data
+        lineChartData = data
     )
 }
 
@@ -137,7 +137,7 @@ private fun LineGraph2(pointsData: List<Point>) {
         .axisLineColor(Color.DarkGray)
         .typeFace(Typeface.DEFAULT_BOLD)
         .build()
-    val data = LineGraphData(
+    val data = LineChartData(
         linePlotData = LinePlotData(
             lines = listOf(
                 Line(
@@ -155,11 +155,11 @@ private fun LineGraph2(pointsData: List<Point>) {
         xAxisData = xAxisData,
         yAxisData = yAxisData
     )
-    LineGraph(
+    LineChart(
         modifier = Modifier
             .fillMaxWidth()
             .height(300.dp),
-        lineGraphData = data
+        lineChartData = data
     )
 }
 
@@ -183,7 +183,7 @@ private fun LineGraph3(pointsData: List<Point>) {
         .axisLineColor(Color.Red)
         .labelAndAxisLinePadding(20.dp)
         .build()
-    val data = LineGraphData(
+    val data = LineChartData(
         linePlotData = LinePlotData(
             lines = listOf(
                 Line(
@@ -215,10 +215,10 @@ private fun LineGraph3(pointsData: List<Point>) {
         xAxisData = xAxisData,
         yAxisData = yAxisData
     )
-    LineGraph(
+    LineChart(
         modifier = Modifier
             .fillMaxWidth()
             .height(300.dp),
-        lineGraphData = data
+        lineChartData = data
     )
 }

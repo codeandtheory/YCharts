@@ -4,7 +4,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ygraph.components.axis.AxisData
-import com.ygraph.components.common.constants.GraphConstants
 import com.ygraph.components.common.model.AccessibilityConfig
 import com.ygraph.components.common.model.PlotData
 

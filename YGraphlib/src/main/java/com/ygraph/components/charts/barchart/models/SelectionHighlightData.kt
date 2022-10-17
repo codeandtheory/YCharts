@@ -1,4 +1,4 @@
-package com.ygraph.components.charts.bargraph.models
+package com.ygraph.components.charts.barchart.models
 
 import android.graphics.Paint
 import android.graphics.Typeface

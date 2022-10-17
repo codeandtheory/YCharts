@@ -20,10 +20,10 @@ import com.app.ygraphs.ui.compositions.AppBarWithBackButton
 import com.app.ygraphs.ui.theme.YGraphsTheme
 import com.ygraph.components.axis.AxisData
 import com.ygraph.components.common.utils.DataUtils
-import com.ygraph.components.charts.bargraph.BarGraph
-import com.ygraph.components.charts.bargraph.models.BarGraphData
-import com.ygraph.components.charts.bargraph.models.BarStyle
-import com.ygraph.components.charts.bargraph.models.SelectionHighlightData
+import com.ygraph.components.charts.barchart.BarChart
+import com.ygraph.components.charts.barchart.models.BarChartData
+import com.ygraph.components.charts.barchart.models.BarStyle
+import com.ygraph.components.charts.barchart.models.SelectionHighlightData
 
 class BarChartActivity : ComponentActivity() {
 
@@ -81,8 +81,8 @@ private fun BarChart1() {
         .axisOffset(20.dp)
         .labelData { index -> (index * (maxRange / yStepSize)).toString() }
         .build()
-    val barGraphData = BarGraphData(
-        graphData = barData,
+    val barChartData = BarChartData(
+        chartData = barData,
         xAxisData = xAxisData,
         yAxisData = yAxisData,
         barStyle = BarStyle(
@@ -93,7 +93,7 @@ private fun BarChart1() {
         showXAxis = true,
         horizontalExtraSpace = 10.dp,
     )
-    BarGraph(modifier = Modifier.height(350.dp), barGraphData = barGraphData)
+    BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
 }
 
 @Composable
@@ -114,8 +114,8 @@ private fun BarChart2() {
         .axisOffset(20.dp)
         .labelData { index -> (index * (maxRange / yStepSize)).toString() }
         .build()
-    val barGraphData = BarGraphData(
-        graphData = barData,
+    val barChartData = BarChartData(
+        chartData = barData,
         xAxisData = xAxisData,
         yAxisData = yAxisData,
         barStyle = BarStyle(paddingBetweenBars = 20.dp,
@@ -130,6 +130,6 @@ private fun BarChart2() {
         showXAxis = true,
         horizontalExtraSpace = 20.dp
     )
-    BarGraph(modifier = Modifier.height(350.dp), barGraphData = barGraphData)
+    BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
 }
 

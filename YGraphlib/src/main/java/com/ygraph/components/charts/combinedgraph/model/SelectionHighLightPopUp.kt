@@ -10,14 +10,13 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Fill
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ygraph.components.common.extensions.getTextBackgroundRect
 import com.ygraph.components.common.model.Point
-import com.ygraph.components.charts.bargraph.models.BarData
+import com.ygraph.components.charts.barchart.models.BarData
 
 /**
  * Used to customise the highlighted text and the bar

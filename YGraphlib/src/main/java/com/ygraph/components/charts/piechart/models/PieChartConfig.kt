@@ -57,6 +57,6 @@ data class PieChartConfig(
     val sliceLabelEllipsizeAt: TextUtils.TruncateAt = TextUtils.TruncateAt.END,
     val chartPadding: Int = DEFAULT_PADDING,
     val accessibilityConfig: AccessibilityConfig = AccessibilityConfig(
-        graphDescription = PieChartConstants.DESCRIPTION
+        chartDescription = PieChartConstants.DESCRIPTION
     )
 )
