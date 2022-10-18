@@ -1,8 +1,8 @@
-package com.ygraph.components.charts.bargraph
+package co.yml.charts.charts.bargraph
 
-import com.ygraph.components.charts.barchart.getDrawOffset
-import com.ygraph.components.charts.barchart.getMaxScrollDistance
-import com.ygraph.components.common.model.Point
+import co.yml.charts.charts.barchart.getDrawOffset
+import co.yml.charts.charts.barchart.getMaxScrollDistance
+import co.yml.charts.common.model.Point
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test

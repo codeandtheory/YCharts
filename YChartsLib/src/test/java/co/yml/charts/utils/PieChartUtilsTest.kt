@@ -1,11 +1,15 @@
-package com.ygraph.components.piechart.utils
+package co.yml.charts.utils
 
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import com.ygraph.components.charts.piechart.PieChartConstants.DEFAULT_PADDING
-import com.ygraph.components.charts.piechart.PieChartConstants.DEFAULT_START_ANGLE
-import com.ygraph.components.charts.piechart.models.PieChartData
-import com.ygraph.components.charts.piechart.utils.*
+import co.yml.charts.charts.piechart.PieChartConstants.DEFAULT_PADDING
+import co.yml.charts.charts.piechart.PieChartConstants.DEFAULT_START_ANGLE
+import co.yml.charts.charts.piechart.models.PieChartData
+import co.yml.charts.charts.piechart.utils.convertTouchEventPointToAngle
+import co.yml.charts.charts.piechart.utils.getSliceCenterPoints
+import co.yml.charts.charts.piechart.utils.proportion
+import co.yml.charts.charts.piechart.utils.sum
+import co.yml.charts.charts.piechart.utils.sweepAngles
 import org.junit.Assert.*
 import org.junit.Test
 

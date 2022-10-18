@@ -1,7 +1,11 @@
-package com.ygraph.components.common.extensions
+package co.yml.charts.extensions
 
 import androidx.compose.ui.geometry.Offset
-import com.ygraph.components.common.model.Point
+import co.yml.charts.common.extensions.getMaxElementInYAxis
+import co.yml.charts.common.extensions.getXMaxAndMinPoints
+import co.yml.charts.common.extensions.getYMaxAndMinPoints
+import co.yml.charts.common.extensions.isDragLocked
+import co.yml.charts.common.model.Point
 import org.junit.Assert.*
 import org.junit.Test
 

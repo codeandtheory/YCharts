@@ -1,6 +1,6 @@
-package com.ygraph.components.chartcontainer
+package co.yml.charts.chartcontainer
 
-import com.ygraph.components.chartcontainer.container.checkAndGetMaxScrollOffset
+import co.yml.charts.chartcontainer.container.checkAndGetMaxScrollOffset
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

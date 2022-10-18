@@ -1,7 +1,7 @@
-package com.ygraph.components.charts.linegraph
+package co.yml.charts.charts.linegraph
 
-import com.ygraph.components.charts.linechart.getYAxisScale
-import com.ygraph.components.common.model.Point
+import co.yml.charts.charts.linechart.getYAxisScale
+import co.yml.charts.common.model.Point
 import org.junit.Assert
 import org.junit.Test
 

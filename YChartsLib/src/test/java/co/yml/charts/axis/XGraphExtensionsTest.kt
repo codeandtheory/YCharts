@@ -1,6 +1,6 @@
-package com.ygraph.components.axis
+package co.yml.charts.axis
 
-import com.ygraph.components.common.model.Point
+import co.yml.charts.common.model.Point
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
