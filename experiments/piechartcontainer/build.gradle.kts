@@ -50,8 +50,7 @@ android {
 
 dependencies {
 
-    implementation(project(":YGraphlib"))
-
+    implementation(project(":YChartsLib"))
     implementation(com.ygraph.dependency.YChartDependency.CORE_KTX)
     implementation(com.ygraph.dependency.YChartDependency.COMPOSE_UI)
     implementation(com.ygraph.dependency.YChartDependency.COMPOSE_MATERIAL)

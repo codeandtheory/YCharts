@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterialApi::class)
+
 package com.app.ygraphs.presentation
 
 import android.os.Bundle
@@ -5,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -14,25 +17,25 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.app.ygraphs.R
 import com.app.ygraphs.ui.compositions.AppBarWithBackButton
-import com.app.ygraphs.ui.theme.YGraphsTheme
+import com.app.ygraphs.ui.theme.YChartsTheme
 import com.ygraph.components.axis.AxisData
 import com.ygraph.components.common.components.Legends
 import com.ygraph.components.common.model.LegendsConfig
 import com.ygraph.components.common.utils.DataUtils
-import com.ygraph.components.graph.bargraph.models.BarPlotData
-import com.ygraph.components.graph.bargraph.models.BarStyle
-import com.ygraph.components.graph.combinedgraph.CombinedGraph
-import com.ygraph.components.graph.combinedgraph.model.CombinedGraphData
-import com.ygraph.components.graph.linegraph.model.*
+import com.ygraph.components.charts.barchart.models.BarPlotData
+import com.ygraph.components.charts.barchart.models.BarStyle
+import com.ygraph.components.charts.combinedchart.CombinedChart
+import com.ygraph.components.charts.combinedchart.model.CombinedChartData
+import com.ygraph.components.charts.linechart.model.*
 
 class CombinedLineAndBarChartActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            YGraphsTheme {
+            YChartsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize(),
-                    backgroundColor = YGraphsTheme.colors.background,
+                    backgroundColor = YChartsTheme.colors.background,
                     topBar = {
                         AppBarWithBackButton(
                             stringResource(id = R.string.title_bar_with_line_chart),
@@ -105,15 +108,19 @@ fun BarWithLineChart() {
         barStyle = BarStyle(barWidth = 35.dp),
         barColorPaletteList = colorPaletteList
     )
-    val combinedGraphData = CombinedGraphData(
+    val combinedChartData = CombinedChartData(
         combinedPlotDataList = listOf(barPlotData, linePlotData),
         xAxisData = xAxisData,
         yAxisData = yAxisData
     )
-    Column(Modifier.height(500.dp)) {
-        CombinedGraph(
-            modifier = Modifier.height(400.dp),
-            combinedGraphData = combinedGraphData
+    Column(
+        Modifier
+            .height(500.dp)
+    ) {
+        CombinedChart(
+            modifier = Modifier
+                .height(400.dp),
+            combinedChartData = combinedChartData
         )
         Legends(
             legendsConfig = legendsConfig

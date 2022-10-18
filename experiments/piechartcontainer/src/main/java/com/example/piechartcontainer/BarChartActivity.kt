@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterialApi::class)
+
 package com.example.piechartcontainer
 
 import android.os.Bundle
@@ -6,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
@@ -15,11 +18,10 @@ import com.ygraph.components.axis.AxisData
 import com.ygraph.components.common.components.Legends
 import com.ygraph.components.common.model.LegendsConfig
 import com.ygraph.components.common.utils.DataUtils
-import com.ygraph.components.common.utils.DataUtils.getColorPaletteList
 import com.ygraph.components.common.utils.DataUtils.getGroupBarChartData
-import com.ygraph.components.graph.bargraph.GroupBarGraph
-import com.ygraph.components.graph.bargraph.models.BarPlotData
-import com.ygraph.components.graph.bargraph.models.GroupBarGraphData
+import com.ygraph.components.charts.barchart.GroupBarChart
+import com.ygraph.components.charts.barchart.models.BarPlotData
+import com.ygraph.components.charts.barchart.models.GroupBarChartData
 
 class BarChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,9 +35,10 @@ class BarChartActivity : ComponentActivity() {
                 ) {
                     val barSize = 3
                     val groupBarData = getGroupBarChartData(50, 50, barSize)
+                    val colorPaletteList = DataUtils.getColorPaletteList(barSize)
                     val groupBarPlotData = BarPlotData(
                         groupBarList = groupBarData,
-                        barColorPaletteList = getColorPaletteList(barSize)
+                        barColorPaletteList = colorPaletteList
                     )
                     val yStepSize = 10
                     val xAxisData = AxisData.Builder()
@@ -50,20 +53,20 @@ class BarChartActivity : ComponentActivity() {
                         .axisOffset(20.dp)
                         .labelData { index -> (index * (50 / yStepSize)).toString() }
                         .build()
-                    val colorPaletteList = DataUtils.getColorPaletteList(barSize)
                     val legendsConfig = LegendsConfig(
-                        legendLabelList = DataUtils.getLegendsLabelData(colorPaletteList),
+                        DataUtils.getLegendsLabelData(colorPaletteList),
                         gridColumnCount = 3
                     )
-                    val groupBarGraphData = GroupBarGraphData(
+                    val groupBarChartData = GroupBarChartData(
                         barPlotData = groupBarPlotData,
                         xAxisData = xAxisData,
                         yAxisData = yAxisData
                     )
                     Column {
-                        GroupBarGraph(
-                            modifier = Modifier.height(600.dp),
-                            groupBarGraphData = groupBarGraphData
+                        GroupBarChart(
+                            modifier = Modifier
+                                .height(400.dp),
+                            groupBarChartData = groupBarChartData
                         )
                         Legends(legendsConfig = legendsConfig)
                     }
@@ -72,4 +75,3 @@ class BarChartActivity : ComponentActivity() {
         }
     }
 }
-

@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
-class YGraphsColors(
+class YChartsColors(
     background: Color,
     primary: Color,
     text: Color,
@@ -28,7 +28,7 @@ fun lightColors(
     primary: Color = Color.White,
     text: Color = Color.White,
     button: Color = DarkGrey
-): YGraphsColors = YGraphsColors(
+): YChartsColors = YChartsColors(
     background,
     primary,
     text,
@@ -40,7 +40,7 @@ fun darkColors(
     primary: Color = DarkGrey,
     text: Color = DarkGrey,
     button: Color = Color.White
-): YGraphsColors = YGraphsColors(
+): YChartsColors = YChartsColors(
     background,
     primary,
     text,
