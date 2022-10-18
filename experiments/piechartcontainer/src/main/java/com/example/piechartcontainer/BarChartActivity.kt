@@ -19,9 +19,9 @@ import com.ygraph.components.common.components.Legends
 import com.ygraph.components.common.model.LegendsConfig
 import com.ygraph.components.common.utils.DataUtils
 import com.ygraph.components.common.utils.DataUtils.getGroupBarChartData
-import com.ygraph.components.graph.bargraph.GroupBarGraph
-import com.ygraph.components.graph.bargraph.models.BarPlotData
-import com.ygraph.components.graph.bargraph.models.GroupBarGraphData
+import com.ygraph.components.charts.barchart.GroupBarChart
+import com.ygraph.components.charts.barchart.models.BarPlotData
+import com.ygraph.components.charts.barchart.models.GroupBarChartData
 
 class BarChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,16 +57,16 @@ class BarChartActivity : ComponentActivity() {
                         DataUtils.getLegendsLabelData(colorPaletteList),
                         gridColumnCount = 3
                     )
-                    val groupBarGraphData = GroupBarGraphData(
+                    val groupBarChartData = GroupBarChartData(
                         barPlotData = groupBarPlotData,
                         xAxisData = xAxisData,
                         yAxisData = yAxisData
                     )
                     Column {
-                        GroupBarGraph(
+                        GroupBarChart(
                             modifier = Modifier
                                 .height(400.dp),
-                            groupBarGraphData = groupBarGraphData
+                            groupBarChartData = groupBarChartData
                         )
                         Legends(legendsConfig = legendsConfig)
                     }

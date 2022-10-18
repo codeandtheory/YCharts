@@ -52,7 +52,7 @@ android {
 
 dependencies {
 
-    implementation(project(":YGraphlib"))
+    implementation(project(":YChartsLib"))
     implementation(YChartDependency.CORE_KTX)
     implementation(YChartDependency.COMPOSE_UI)
     implementation(YChartDependency.COMPOSE_MATERIAL)

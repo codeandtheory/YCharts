@@ -20,29 +20,29 @@ private val LightColorPalette = lightColors(
     button = DarkGrey
 )
 
-object YGraphsTheme {
+object YChartsTheme {
 
-    val colors: YGraphsColors
+    val colors: YChartsColors
         @Composable
         @ReadOnlyComposable
         get() = LocalColors.current
 
-    val typography: YGraphsTypography
+    val typography: YChartsTypography
         @Composable
         @ReadOnlyComposable
         get() = LocalTypography.current
 
-    val shapes: YGraphsShapes
+    val shapes: YChartsShapes
         @Composable
         @ReadOnlyComposable
         get() = LocalShapes.current
 }
 
 @Composable
-fun YGraphsTheme(
+fun YChartsTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    typography: YGraphsTypography = YGraphsTheme.typography,
-    shapes: YGraphsShapes = YGraphsTheme.shapes,
+    typography: YChartsTypography = YChartsTheme.typography,
+    shapes: YChartsShapes = YChartsTheme.shapes,
     content: @Composable () -> Unit
 ) {
     val colors = if (darkTheme) DarkColorPalette else LightColorPalette

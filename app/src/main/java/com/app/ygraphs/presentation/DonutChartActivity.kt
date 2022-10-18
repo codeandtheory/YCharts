@@ -18,22 +18,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.ygraphs.R
 import com.app.ygraphs.ui.compositions.AppBarWithBackButton
-import com.app.ygraphs.ui.theme.YGraphsTheme
+import com.app.ygraphs.ui.theme.YChartsTheme
 import com.ygraph.components.common.components.Legends
 import com.ygraph.components.common.utils.DataUtils
-import com.ygraph.components.piechart.charts.DonutPieChart
-import com.ygraph.components.piechart.models.PieChartConfig
-import com.ygraph.components.piechart.utils.proportion
+import com.ygraph.components.charts.piechart.charts.DonutPieChart
+import com.ygraph.components.charts.piechart.models.PieChartConfig
+import com.ygraph.components.charts.piechart.utils.proportion
 
 @OptIn(ExperimentalMaterialApi::class)
 class DonutChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            YGraphsTheme {
+            YChartsTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    backgroundColor = YGraphsTheme.colors.background,
+                    backgroundColor = YChartsTheme.colors.background,
                     topBar = {
                         AppBarWithBackButton(
                             stringResource(id = R.string.title_donut_chart),

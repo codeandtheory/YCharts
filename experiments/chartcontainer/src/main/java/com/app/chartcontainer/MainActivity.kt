@@ -20,7 +20,7 @@ import com.ygraph.components.axis.AxisData
 import com.ygraph.components.axis.XAxis
 import com.ygraph.components.axis.YAxis
 import com.ygraph.components.common.model.Point
-import com.ygraph.components.graphcontainer.container.ScrollableCanvasContainer
+import com.ygraph.components.chartcontainer.container.ScrollableCanvasContainer
 import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
@@ -98,7 +98,7 @@ private fun ScrollableContainer() {
                         xStart = columnWidth.value,
                         scrollOffset = scrollOffset,
                         zoomScale = xZoom,
-                        graphData = getLineChartData(100, 100)
+                        chartData = getLineChartData(100, 100)
                     )
                 },
                 onDraw = { _, _ ->

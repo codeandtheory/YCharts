@@ -1,30 +1,30 @@
-# YGraphs
+# YCharts
 
-YGraphs is a light and extensible chart library for Jetpack Compose system. It comprises two main modules:
+YCharts is a light and extensible chart library for Jetpack Compose system. It comprises two main modules:
 
--   `YGraphlib` (Graph components for Jetpack Compose)
--   `app` (sample app to showcase graph components)
+-   `YChartslib` (Chart components for Jetpack Compose)
+-   `app` (sample app to showcase chart components)
 
 ## Modules
 
 The following table outlines the modules included in this library:
 
-| Artifact     | Description                                                                                   |
-| ------------ | --------------------------------------------------------------------------------------------- |
-| `axis`       | Includes the horizontal and vertical axis components along with the math engines. |
-| `graph`       | Includes the all the graph components i.e: Line, Bar etc. also the math engines  |
-| `graphcontainer` | Provides the base container to draw any graph inside it with scroll tap feature etc out of the box.                                 |
-| `piechart` | Includes all the 360' graph components i.e Pie, Donut charts etc.  |
+| Artifact         | Description                                                                                            |
+|------------------|--------------------------------------------------------------------------------------------------------|
+| `axis`           | Includes the horizontal and vertical axis components along with the math engines.                      |
+| `charts`         | Includes the all the chart components i.e: Line, Bar, Combined, Pie & Donut etc. also the math engines |
+| `chartcontainer` | Provides the base container to draw any chart inside it with scroll tap feature etc out of the box.    |
+| `piechart`       | Includes all the 360' chart components i.e Pie, Donut charts etc.                                      |
 
 ## Sample app
 
-Included in this repository is a [sample app](https://github.com/yml-org/YGraphs/tree/main/app) with multiple graphs with different styling in each section. Studying the source code of the app will give you a deep understanding of how to use YGraphs, including customizing and styling the graphs. All of the graphs i.e line, bar, groupedBar, pie & donut are implemented in the sample app.
+Included in this repository is a [sample app](https://github.com/yml-org/YCharts/tree/main/app) with multiple charts with different styling in each section. Studying the source code of the app will give you a deep understanding of how to use YCharts, including customizing and styling the charts. All of the charts i.e line, bar, groupedBar, pie & donut are implemented in the sample app.
 
 ## Basic example
 
-Let's see how we can use the graph components and style them with available customization options.
+Let's see how we can use the chart components and style them with available customization options.
 
-1. **Line Graph:**
+1. **Line Chart:**
    * Create list of points with x & y co-ordinates using `Point` data class.
    ```
    val pointsData: List<Point> =
@@ -47,9 +47,9 @@ Let's see how we can use the graph components and style them with available cust
             (i * yScale).formatToSinglePrecision()
         }.build()
    ```
-   * Initialize the Line graph data with axis and other line related styling using `LineGraphData` data class.
+   * Initialize the Line chart data with axis and other line related styling using `LineChartData` data class.
    ```
-   val lineGraphData = LineGraphData(
+   val lineChartData = LineChartData(
         linePlotData = LinePlotData(
             lines = listOf(
                 Line(
@@ -67,35 +67,35 @@ Let's see how we can use the graph components and style them with available cust
         gridLines = GridLines()
     )
    ```
-   * Finally use the _**`LineGraph`**_ Component to render the line graph with the above input
+   * Finally use the _**`LineChart`**_ Component to render the line chart with the above input
      params.
    ``` 
-   LineGraph(
+   LineChart(
         modifier = Modifier
             .fillMaxWidth()
             .height(300.dp),
-        lineGraphData = lineGraphData
+        lineChartData = lineChartData
     )
    ```
    <figure>
    <div align = "center">
     <img width=317 src="https://user-images.githubusercontent.com/107846675/189699724-c8064338-8894-45e2-b60b-3d830123e813.png" />
-    <p> Line graph looks like this!</p>
+    <p> Line chart looks like this!</p>
     </div>
     </figure>
 
-2. **Bar Graph:**
-   * Create list of barGraphData using the random generator extension and  `BarData` data class
+2. **Bar Chart:**
+   * Create list of barChartData using the random generator extension and  `BarData` data class
 
      ```
-     val barGraphData = DataUtils.getBarChartData(barGraphListSize, maxRange)
+     val barChartData = DataUtils.getBarChartData(barChartListSize, maxRange)
      ```
 
    * Initialize X and Y Axis builders using the `AxisData` data class.
    ```
         val xAxisData = AxisData.Builder()
         .axisStepSize(30.dp)
-        .steps(barGraphData.size - 1)
+        .steps(barChartData.size - 1)
         .bottomPadding(40.dp)
         .axisLabelAngle(20f)
         .labelData { index -> barData[index].label }
@@ -108,36 +108,36 @@ Let's see how we can use the graph components and style them with available cust
         .labelData { index -> (index * (maxRange / yStepSize)).toString() }
         .build()
    ```
-   * Initialize the Bar graph data with axis and other line related styling using `BarGraphData`
+   * Initialize the Bar chart data with axis and other line related styling using `BarChartData`
      data class.
    ```
-    val barGraphData = BarGraphData(
-        graphData = barGraphData,
+    val barChartData = BarChartData(
+        chartData = barChartData,
         xAxisData = xAxisData,
         yAxisData = yAxisData,
         paddingBetweenBars = 20.dp,
         barWidth = 25.dp
     )
    ```
-   * Last, use the _**`BarGraph`**_ Component to render the bar graph with the above input params.
+   * Last, use the _**`BarChart`**_ Component to render the bar chart with the above input params.
    ``` 
-   BarGraph(modifier = Modifier.height(350.dp), barGraphData = barGraphData)
+   BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
    ```
    <figure>
    <div align = "center">
     <img width=347 src="https://user-images.githubusercontent.com/107846675/189836621-eeac8181-f7de-491e-8fd8-7e1276e2fb9f.png" />
-    <p> Bar graph looks like this!</p>
+    <p> Bar chart looks like this!</p>
     </div>
     </figure>
 
-3. **Grouped Bar Graph:**
-   * Create list of grouped combinations of bar graph data using the random generator extension
+3. **Grouped Bar Chart:**
+   * Create list of grouped combinations of bar chart data using the random generator extension
      and  `BarPlotData` data class
 
      ```
         val groupBarPlotData = BarPlotData(
                         groupBarList = DataUtils.getGroupBarChartData(
-                            barGraphListSize,
+                            barChartListSize,
                             maxRange,
                             eachGroupBarSize
                         ),
@@ -161,24 +161,24 @@ Let's see how we can use the graph components and style them with available cust
                .labelData { index -> (index * (maxRange / yStepSize)).toString() }
                .build()
    ```
-   * Initialize the group bar graph data with axis and other line related styling
-     using `GroupBarGraphData`
+   * Initialize the group bar chart data with axis and other line related styling
+     using `GroupBarChartData`
      data class.
    ```
-      val groupBarGraphData = GroupBarGraphData(
+      val groupBarChartData = GroupBarChartData(
                         barPlotData = groupBarPlotData,
                         xAxisData = xAxisData,
                         yAxisData = yAxisData
                     )
    ```
-   * Use the _**`GroupBarGraph`**_ Component to render the bar graph with the above input params.
+   * Use the _**`GroupBarChart`**_ Component to render the bar chart with the above input params.
    ``` 
-   GroupBarGraph(modifier = Modifier.height(300.dp), groupBarGraphData = groupBarGraphData)
+   GroupBarChart(modifier = Modifier.height(300.dp), groupBarChartData = groupBarChartData)
    ```
    <figure>
    <div align = "center">
     <img width=338 src="https://user-images.githubusercontent.com/107846675/189845009-6ef2ccc6-3c75-446e-9273-fe1b1e1e94d0.png" />
-    <p> Grouped Bar graph looks like this!</p>
+    <p> Grouped Bar chart looks like this!</p>
     </div>
     </figure>
 
@@ -206,7 +206,7 @@ Let's see how we can use the graph components and style them with available cust
         animationDuration = 1500
     )
    ```
-   * Finally, use the _**`PieChart`**_ component to render the graph.
+   * Finally, use the _**`PieChart`**_ component to render the chart.
    ```  
    PieChart(modifier = Modifier
             .width(400.dp)
@@ -247,7 +247,7 @@ Let's see how we can use the graph components and style them with available cust
         isAnimationEnable = true
     )
    ```
-   * Finally, use the _**`DonutPieChart`**_ component to render the graph.
+   * Finally, use the _**`DonutPieChart`**_ component to render the chart.
    ```  
    DonutPieChart( modifier = Modifier
             .fillMaxWidth()
@@ -263,9 +263,9 @@ Let's see how we can use the graph components and style them with available cust
     </div>
     </figure>    
     
-6. **Combined Graph:**
+6. **Combined Chart:**
 
-   * Similar to line and bar graph we can combine both entities in one graph, just need  to initialize the line and bar plot data using the random generator extension and add styling related to individual component.
+   * Similar to line and bar chart we can combine both entities in one chart, just need  to initialize the line and bar plot data using the random generator extension and add styling related to individual component.
 
     ```
       val linePlotData = LinePlotData(
@@ -299,7 +299,7 @@ Let's see how we can use the graph components and style them with available cust
      ```
     val xAxisData = AxisData.Builder()
        .axisStepSize(30.dp)
-       .steps(maxOf(barGraphData.size - 1, lineGraphData.size - 1))
+       .steps(maxOf(barChartData.size - 1, lineChartData.size - 1))
        .bottomPadding(40.dp)
        .labelData { index -> index.toString() }
        .build()
@@ -312,26 +312,26 @@ Let's see how we can use the graph components and style them with available cust
        
      ```
      
-   * Initialize the combined graph config data with `CombinedGraphData` data class inorder to achieve styling and configurations related to same.
+   * Initialize the combined chart config data with `CombinedChartData` data class inorder to achieve styling and configurations related to same.
        ```
-  val combinedGraphData = CombinedGraphData(
+  val combinedChartData = CombinedChartData(
         combinedPlotDataList = listOf(barPlotData, linePlotData),
         xAxisData = xAxisData,
         yAxisData = yAxisData
     )
      ```
-   * Finally, use the _**`CombinedGraph`**_ component to render the graph.
+   * Finally, use the _**`CombinedChart`**_ component to render the chart.
       ```  
-     CombinedGraph(
+     CombinedChart(
             modifier = Modifier.height(400.dp),
-            combinedGraphData = combinedGraphData
+            combinedCharthData = combinedChartData
         )
      ```
     _Note_ : To show legends infomartion related to bar, `Legends` component can be used.
    <figure>
   <div align = "center">
    <img width=292 src="https://user-images.githubusercontent.com/107846675/192773924-74421edd-7314-4b44-bdb1-13aaf3598796.png" />
-   <p>  Combined bar with line graph looks like this!</p>
+   <p>  Combined bar with line chart looks like this!</p>
    </div>
    </figure>
 <br>
@@ -359,7 +359,7 @@ Here fig(a) represents the line graph with the container being highlighted & fig
 ## License
 
 ```
-    Copyright 2022 YGraphs
+    Copyright 2022 YCharts
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

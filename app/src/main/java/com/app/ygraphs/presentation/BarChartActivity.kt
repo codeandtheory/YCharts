@@ -17,22 +17,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.app.ygraphs.R
 import com.app.ygraphs.ui.compositions.AppBarWithBackButton
-import com.app.ygraphs.ui.theme.YGraphsTheme
+import com.app.ygraphs.ui.theme.YChartsTheme
 import com.ygraph.components.axis.AxisData
 import com.ygraph.components.common.utils.DataUtils
-import com.ygraph.components.graph.bargraph.BarGraph
-import com.ygraph.components.graph.bargraph.models.BarGraphData
-import com.ygraph.components.graph.bargraph.models.BarStyle
-import com.ygraph.components.graph.bargraph.models.SelectionHighlightData
+import com.ygraph.components.charts.barchart.BarChart
+import com.ygraph.components.charts.barchart.models.BarChartData
+import com.ygraph.components.charts.barchart.models.BarStyle
+import com.ygraph.components.charts.barchart.models.SelectionHighlightData
 
 class BarChartActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            YGraphsTheme {
+            YChartsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize(),
-                    backgroundColor = YGraphsTheme.colors.background,
+                    backgroundColor = YChartsTheme.colors.background,
                     topBar = {
                         AppBarWithBackButton(
                             stringResource(id = R.string.title_bar_chart),
@@ -81,8 +81,8 @@ private fun BarChart1() {
         .axisOffset(20.dp)
         .labelData { index -> (index * (maxRange / yStepSize)).toString() }
         .build()
-    val barGraphData = BarGraphData(
-        graphData = barData,
+    val barChartData = BarChartData(
+        chartData = barData,
         xAxisData = xAxisData,
         yAxisData = yAxisData,
         barStyle = BarStyle(
@@ -93,7 +93,7 @@ private fun BarChart1() {
         showXAxis = true,
         horizontalExtraSpace = 10.dp,
     )
-    BarGraph(modifier = Modifier.height(350.dp), barGraphData = barGraphData)
+    BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
 }
 
 @Composable
@@ -114,8 +114,8 @@ private fun BarChart2() {
         .axisOffset(20.dp)
         .labelData { index -> (index * (maxRange / yStepSize)).toString() }
         .build()
-    val barGraphData = BarGraphData(
-        graphData = barData,
+    val barChartData = BarChartData(
+        chartData = barData,
         xAxisData = xAxisData,
         yAxisData = yAxisData,
         barStyle = BarStyle(paddingBetweenBars = 20.dp,
@@ -130,6 +130,6 @@ private fun BarChart2() {
         showXAxis = true,
         horizontalExtraSpace = 20.dp
     )
-    BarGraph(modifier = Modifier.height(350.dp), barGraphData = barGraphData)
+    BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
 }
 
