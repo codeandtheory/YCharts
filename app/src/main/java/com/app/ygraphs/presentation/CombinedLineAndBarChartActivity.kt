@@ -15,18 +15,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import co.yml.charts.axis.AxisData
 import com.app.ygraphs.R
 import com.app.ygraphs.ui.compositions.AppBarWithBackButton
 import com.app.ygraphs.ui.theme.YChartsTheme
-import com.ygraph.components.axis.AxisData
-import com.ygraph.components.common.components.Legends
-import com.ygraph.components.common.model.LegendsConfig
-import com.ygraph.components.common.utils.DataUtils
-import com.ygraph.components.charts.barchart.models.BarPlotData
-import com.ygraph.components.charts.barchart.models.BarStyle
-import com.ygraph.components.charts.combinedchart.CombinedChart
-import com.ygraph.components.charts.combinedchart.model.CombinedChartData
-import com.ygraph.components.charts.linechart.model.*
+import co.yml.charts.charts.barchart.models.BarPlotData
+import co.yml.charts.charts.barchart.models.BarStyle
+import co.yml.charts.charts.combinedchart.CombinedChart
+import co.yml.charts.charts.combinedchart.model.CombinedChartData
+import co.yml.charts.charts.linechart.model.IntersectionPoint
+import co.yml.charts.charts.linechart.model.Line
+import co.yml.charts.charts.linechart.model.LinePlotData
+import co.yml.charts.charts.linechart.model.LineStyle
+import co.yml.charts.charts.linechart.model.SelectionHighlightPoint
+import co.yml.charts.charts.linechart.model.SelectionHighlightPopUp
+import co.yml.charts.common.components.Legends
+import co.yml.charts.common.model.LegendsConfig
+import co.yml.charts.common.utils.DataUtils
 
 class CombinedLineAndBarChartActivity : ComponentActivity() {
 

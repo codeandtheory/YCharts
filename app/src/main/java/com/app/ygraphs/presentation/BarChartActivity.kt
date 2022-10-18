@@ -18,12 +18,12 @@ import androidx.compose.ui.unit.dp
 import com.app.ygraphs.R
 import com.app.ygraphs.ui.compositions.AppBarWithBackButton
 import com.app.ygraphs.ui.theme.YChartsTheme
-import com.ygraph.components.axis.AxisData
-import com.ygraph.components.common.utils.DataUtils
-import com.ygraph.components.charts.barchart.BarChart
-import com.ygraph.components.charts.barchart.models.BarChartData
-import com.ygraph.components.charts.barchart.models.BarStyle
-import com.ygraph.components.charts.barchart.models.SelectionHighlightData
+import co.yml.charts.axis.AxisData
+import co.yml.charts.charts.barchart.BarChart
+import co.yml.charts.charts.barchart.models.BarChartData
+import co.yml.charts.charts.barchart.models.BarStyle
+import co.yml.charts.charts.barchart.models.SelectionHighlightData
+import co.yml.charts.common.utils.DataUtils
 
 class BarChartActivity : ComponentActivity() {
 

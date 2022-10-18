@@ -9,10 +9,9 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ygraph.components.axis.AxisConfig
-import com.ygraph.components.axis.AxisData
-import com.ygraph.components.axis.Gravity
-import com.ygraph.components.axis.YAxis
+import co.yml.charts.axis.AxisData
+import co.yml.charts.axis.Gravity
+import co.yml.charts.axis.YAxis
 import org.junit.Ignore
 import org.junit.Rule
 
@@ -26,18 +25,15 @@ class YGraphTest {
         with(composeTestRule) {
             // Given
             val axisData = AxisData.Builder()
-                .ySteps(DEFAULT_AXIS_STEP_SIZE)
-                .xAxisPos(Gravity.LEFT)
+                .steps(DEFAULT_AXIS_STEP_SIZE)
+                .axisPosition(Gravity.LEFT)
                 .axisLabelFontSize(AXIS_LABEL_FONT_SIZE.sp)
-                .yLabelData { index -> index.toString() }
+                .labelData { index -> index.toString() }
                 .build()
 
             // When
             setContent {
-                YAxis(
-                    modifier = Modifier.height(AXIS_HEIGHT.dp),
-                    axisData = axisData
-                )
+                YAxis(modifier = Modifier.height(AXIS_HEIGHT.dp), yAxisData = axisData)
             }
 
             // Then
@@ -48,18 +44,18 @@ class YGraphTest {
     fun whenGivenYaxisLineNotRequiredIsConfiguredShouldNotBeVisible(): Unit =
         with(composeTestRule) {
             // Given
-            val axisData = AxisData.Builder()
-                .xAxisPos(Gravity.LEFT)
+            val axisData = co.yml.charts.axis.AxisData.Builder()
+                .axisPosition(Gravity.LEFT)
                 .axisLabelFontSize(AXIS_LABEL_FONT_SIZE.sp)
-                .axisConfig(AxisConfig(isAxisLineRequired = false))
-                .yLabelData { index -> index.toString() }
+                .axisConfig(co.yml.charts.axis.AxisConfig(isAxisLineRequired = false))
+                .labelData { index -> index.toString() }
                 .build()
 
             // When
             setContent {
                 YAxis(
                     modifier = Modifier.height(AXIS_HEIGHT.dp),
-                    axisData = axisData
+                    yAxisData = axisData
                 )
             }
 

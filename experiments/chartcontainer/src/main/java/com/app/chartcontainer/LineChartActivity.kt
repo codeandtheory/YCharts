@@ -11,10 +11,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.app.chartcontainer.ui.theme.YGraphsTheme
-import com.ygraph.components.axis.AxisData
-import com.ygraph.components.common.utils.DataUtils
-import com.ygraph.components.charts.linechart.LineChart
-import com.ygraph.components.charts.linechart.model.*
+import co.yml.charts.charts.linechart.LineChart
+import co.yml.charts.charts.linechart.model.IntersectionPoint
+import co.yml.charts.charts.linechart.model.Line
+import co.yml.charts.charts.linechart.model.LineChartData
+import co.yml.charts.charts.linechart.model.LinePlotData
+import co.yml.charts.charts.linechart.model.LineStyle
+import co.yml.charts.charts.linechart.model.SelectionHighlightPoint
+import co.yml.charts.charts.linechart.model.SelectionHighlightPopUp
+import co.yml.charts.charts.linechart.model.ShadowUnderLine
+import co.yml.charts.common.utils.DataUtils
 
 
 class LineChartActivity : ComponentActivity() {
@@ -34,12 +40,12 @@ class LineChartActivity : ComponentActivity() {
                         verticalArrangement = Arrangement.Center
                     ) {
                         val pointsData = DataUtils.getLineChartData(100, maxRange = 100)
-                        val xAxisData = AxisData.Builder()
+                        val xAxisData = co.yml.charts.axis.AxisData.Builder()
                             .axisStepSize(30.dp)
                             .steps(pointsData.size -1)
                             .labelData { i -> i.toString() }
                             .build()
-                        val yAxisData = AxisData.Builder()
+                        val yAxisData = co.yml.charts.axis.AxisData.Builder()
                             .steps(5)
                             .labelData { i -> (i * 20).toString() }
                             .build()

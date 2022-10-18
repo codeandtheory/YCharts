@@ -1,5 +1,6 @@
 package com.ygraph.components.axis
 
+import co.yml.charts.axis.getAxisInitValues
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
@@ -9,7 +10,7 @@ import org.junit.Test
 class YGraphExtensionsTest {
 
     @MockK
-    private val axisData: AxisData = mockk()
+    private val axisData: co.yml.charts.axis.AxisData = mockk()
 
     @Test
     fun `When getAxisInitValues extension is invoked should not return values lesser than zero`() {

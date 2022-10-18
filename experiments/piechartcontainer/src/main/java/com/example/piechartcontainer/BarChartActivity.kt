@@ -14,14 +14,13 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.piechartcontainer.ui.theme.YGraphsTheme
-import com.ygraph.components.axis.AxisData
-import com.ygraph.components.common.components.Legends
-import com.ygraph.components.common.model.LegendsConfig
-import com.ygraph.components.common.utils.DataUtils
-import com.ygraph.components.common.utils.DataUtils.getGroupBarChartData
-import com.ygraph.components.charts.barchart.GroupBarChart
-import com.ygraph.components.charts.barchart.models.BarPlotData
-import com.ygraph.components.charts.barchart.models.GroupBarChartData
+import co.yml.charts.charts.barchart.GroupBarChart
+import co.yml.charts.charts.barchart.models.BarPlotData
+import co.yml.charts.charts.barchart.models.GroupBarChartData
+import co.yml.charts.common.components.Legends
+import co.yml.charts.common.model.LegendsConfig
+import co.yml.charts.common.utils.DataUtils
+import co.yml.charts.common.utils.DataUtils.getGroupBarChartData
 
 class BarChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,13 +40,13 @@ class BarChartActivity : ComponentActivity() {
                         barColorPaletteList = colorPaletteList
                     )
                     val yStepSize = 10
-                    val xAxisData = AxisData.Builder()
+                    val xAxisData = co.yml.charts.axis.AxisData.Builder()
                         .axisStepSize(30.dp)
                         .steps(groupBarData.size - 1)
                         .bottomPadding(10.dp)
                         .labelData { index -> groupBarData[index].label }
                         .build()
-                    val yAxisData = AxisData.Builder()
+                    val yAxisData = co.yml.charts.axis.AxisData.Builder()
                         .steps(yStepSize)
                         .labelAndAxisLinePadding(20.dp)
                         .axisOffset(20.dp)

@@ -7,10 +7,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.ygraph.components.common.model.PlotType
-import com.ygraph.components.charts.piechart.ChartWrapper.DrawChart
-import com.ygraph.components.charts.piechart.models.PieChartConfig
-import com.ygraph.components.charts.piechart.models.PieChartData
+import co.yml.charts.charts.piechart.ChartWrapper.DrawChart
+import co.yml.charts.charts.piechart.models.PieChartConfig
+import co.yml.charts.charts.piechart.models.PieChartData
+import co.yml.charts.common.model.PlotType
 
 @Composable
 fun ChartContainer() {

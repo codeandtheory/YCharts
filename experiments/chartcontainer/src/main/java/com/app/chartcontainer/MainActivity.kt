@@ -16,11 +16,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import com.app.chartcontainer.ui.theme.YGraphsTheme
-import com.ygraph.components.axis.AxisData
-import com.ygraph.components.axis.XAxis
-import com.ygraph.components.axis.YAxis
-import com.ygraph.components.common.model.Point
-import com.ygraph.components.chartcontainer.container.ScrollableCanvasContainer
+import co.yml.charts.axis.XAxis
+import co.yml.charts.axis.YAxis
+import co.yml.charts.chartcontainer.container.ScrollableCanvasContainer
+import co.yml.charts.common.model.Point
 import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
@@ -65,12 +64,12 @@ private fun ScrollableContainer() {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Start
         ) {
-            val xAxisData = AxisData.Builder()
+            val xAxisData = co.yml.charts.axis.AxisData.Builder()
                 .axisStepSize(30.dp)
                 .steps(10)
                 .labelData { i -> i.toString() }
                 .build()
-            val yAxisData = AxisData.Builder()
+            val yAxisData = co.yml.charts.axis.AxisData.Builder()
                 .steps(5)
                 .labelData { i -> (i * 20).toString() }
                 .build()
