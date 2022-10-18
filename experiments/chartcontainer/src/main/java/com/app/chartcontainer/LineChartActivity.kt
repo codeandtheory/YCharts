@@ -10,6 +10,7 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import co.yml.charts.axis.AxisData
 import com.app.chartcontainer.ui.theme.YGraphsTheme
 import co.yml.charts.charts.linechart.LineChart
 import co.yml.charts.charts.linechart.model.IntersectionPoint
@@ -40,12 +41,12 @@ class LineChartActivity : ComponentActivity() {
                         verticalArrangement = Arrangement.Center
                     ) {
                         val pointsData = DataUtils.getLineChartData(100, maxRange = 100)
-                        val xAxisData = co.yml.charts.axis.AxisData.Builder()
+                        val xAxisData = AxisData.Builder()
                             .axisStepSize(30.dp)
                             .steps(pointsData.size -1)
                             .labelData { i -> i.toString() }
                             .build()
-                        val yAxisData = co.yml.charts.axis.AxisData.Builder()
+                        val yAxisData = AxisData.Builder()
                             .steps(5)
                             .labelData { i -> (i * 20).toString() }
                             .build()
