@@ -16,13 +16,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import co.yml.charts.ui.piechart.charts.PieChart
+import co.yml.charts.ui.piechart.models.PieChartConfig
+import co.yml.charts.common.components.Legends
+import co.yml.charts.common.utils.DataUtils
 import com.app.ygraphs.R
 import com.app.ygraphs.ui.compositions.AppBarWithBackButton
 import com.app.ygraphs.ui.theme.YChartsTheme
-import com.ygraph.components.common.components.Legends
-import com.ygraph.components.common.utils.DataUtils
-import com.ygraph.components.charts.piechart.charts.PieChart
-import com.ygraph.components.charts.piechart.models.PieChartConfig
 
 class PieChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

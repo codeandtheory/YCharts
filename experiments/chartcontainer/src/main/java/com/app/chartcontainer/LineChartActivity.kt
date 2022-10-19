@@ -10,11 +10,18 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import co.yml.charts.axis.AxisData
 import com.app.chartcontainer.ui.theme.YGraphsTheme
-import com.ygraph.components.axis.AxisData
-import com.ygraph.components.common.utils.DataUtils
-import com.ygraph.components.charts.linechart.LineChart
-import com.ygraph.components.charts.linechart.model.*
+import co.yml.charts.ui.linechart.LineChart
+import co.yml.charts.ui.linechart.model.IntersectionPoint
+import co.yml.charts.ui.linechart.model.Line
+import co.yml.charts.ui.linechart.model.LineChartData
+import co.yml.charts.ui.linechart.model.LinePlotData
+import co.yml.charts.ui.linechart.model.LineStyle
+import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
+import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
+import co.yml.charts.ui.linechart.model.ShadowUnderLine
+import co.yml.charts.common.utils.DataUtils
 
 
 class LineChartActivity : ComponentActivity() {

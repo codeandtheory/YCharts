@@ -12,7 +12,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "YGraphs"
+rootProject.name = "YCharts"
 include(
     ":app",
     ":YChartsLib",

@@ -18,12 +18,21 @@ import androidx.compose.ui.unit.dp
 import com.app.ygraphs.R
 import com.app.ygraphs.ui.compositions.AppBarWithBackButton
 import com.app.ygraphs.ui.theme.YChartsTheme
-import com.ygraph.components.axis.AxisData
-import com.ygraph.components.common.extensions.formatToSinglePrecision
-import com.ygraph.components.common.model.Point
-import com.ygraph.components.common.utils.DataUtils
-import com.ygraph.components.charts.linechart.LineChart
-import com.ygraph.components.charts.linechart.model.*
+import co.yml.charts.axis.AxisData
+import co.yml.charts.ui.linechart.LineChart
+import co.yml.charts.ui.linechart.model.GridLines
+import co.yml.charts.ui.linechart.model.IntersectionPoint
+import co.yml.charts.ui.linechart.model.Line
+import co.yml.charts.ui.linechart.model.LineChartData
+import co.yml.charts.ui.linechart.model.LinePlotData
+import co.yml.charts.ui.linechart.model.LineStyle
+import co.yml.charts.ui.linechart.model.LineType
+import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
+import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
+import co.yml.charts.ui.linechart.model.ShadowUnderLine
+import co.yml.charts.common.extensions.formatToSinglePrecision
+import co.yml.charts.common.model.Point
+import co.yml.charts.common.utils.DataUtils
 
 class LineChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
