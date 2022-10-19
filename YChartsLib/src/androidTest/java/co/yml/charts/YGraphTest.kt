@@ -1,4 +1,4 @@
-package com.ygraph.components
+package co.yml.charts
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.ui.Modifier
