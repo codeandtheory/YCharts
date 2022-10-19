@@ -2,14 +2,14 @@ package co.yml.charts.utils
 
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import co.yml.charts.charts.piechart.PieChartConstants.DEFAULT_PADDING
-import co.yml.charts.charts.piechart.PieChartConstants.DEFAULT_START_ANGLE
-import co.yml.charts.charts.piechart.models.PieChartData
-import co.yml.charts.charts.piechart.utils.convertTouchEventPointToAngle
-import co.yml.charts.charts.piechart.utils.getSliceCenterPoints
-import co.yml.charts.charts.piechart.utils.proportion
-import co.yml.charts.charts.piechart.utils.sum
-import co.yml.charts.charts.piechart.utils.sweepAngles
+import co.yml.charts.ui.piechart.PieChartConstants.DEFAULT_PADDING
+import co.yml.charts.ui.piechart.PieChartConstants.DEFAULT_START_ANGLE
+import co.yml.charts.ui.piechart.models.PieChartData
+import co.yml.charts.ui.piechart.utils.convertTouchEventPointToAngle
+import co.yml.charts.ui.piechart.utils.getSliceCenterPoints
+import co.yml.charts.ui.piechart.utils.proportion
+import co.yml.charts.ui.piechart.utils.sum
+import co.yml.charts.ui.piechart.utils.sweepAngles
 import org.junit.Assert.*
 import org.junit.Test
 

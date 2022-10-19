@@ -3,9 +3,9 @@ package co.yml.charts.common.utils
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import co.yml.charts.charts.barchart.models.BarData
-import co.yml.charts.charts.barchart.models.GroupBar
-import co.yml.charts.charts.piechart.models.PieChartData
+import co.yml.charts.ui.barchart.models.BarData
+import co.yml.charts.ui.barchart.models.GroupBar
+import co.yml.charts.ui.piechart.models.PieChartData
 import co.yml.charts.common.model.LegendLabel
 import co.yml.charts.common.model.LegendsConfig
 import co.yml.charts.common.model.PlotType

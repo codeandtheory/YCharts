@@ -16,9 +16,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import co.yml.charts.charts.piechart.charts.DonutPieChart
-import co.yml.charts.charts.piechart.models.PieChartConfig
-import co.yml.charts.charts.piechart.utils.proportion
+import co.yml.charts.ui.piechart.charts.DonutPieChart
+import co.yml.charts.ui.piechart.models.PieChartConfig
+import co.yml.charts.ui.piechart.utils.proportion
 import co.yml.charts.common.components.Legends
 import co.yml.charts.common.utils.DataUtils
 import com.app.ygraphs.R

@@ -12,15 +12,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import co.yml.charts.axis.AxisData
 import com.app.chartcontainer.ui.theme.YGraphsTheme
-import co.yml.charts.charts.linechart.LineChart
-import co.yml.charts.charts.linechart.model.IntersectionPoint
-import co.yml.charts.charts.linechart.model.Line
-import co.yml.charts.charts.linechart.model.LineChartData
-import co.yml.charts.charts.linechart.model.LinePlotData
-import co.yml.charts.charts.linechart.model.LineStyle
-import co.yml.charts.charts.linechart.model.SelectionHighlightPoint
-import co.yml.charts.charts.linechart.model.SelectionHighlightPopUp
-import co.yml.charts.charts.linechart.model.ShadowUnderLine
+import co.yml.charts.ui.linechart.LineChart
+import co.yml.charts.ui.linechart.model.IntersectionPoint
+import co.yml.charts.ui.linechart.model.Line
+import co.yml.charts.ui.linechart.model.LineChartData
+import co.yml.charts.ui.linechart.model.LinePlotData
+import co.yml.charts.ui.linechart.model.LineStyle
+import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
+import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
+import co.yml.charts.ui.linechart.model.ShadowUnderLine
 import co.yml.charts.common.utils.DataUtils
 
 

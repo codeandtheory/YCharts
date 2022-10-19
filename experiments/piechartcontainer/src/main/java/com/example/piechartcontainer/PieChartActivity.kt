@@ -16,9 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import co.yml.charts.charts.piechart.charts.PieChart
-import co.yml.charts.charts.piechart.models.PieChartConfig
-import co.yml.charts.charts.piechart.models.PieChartData
+import co.yml.charts.ui.piechart.charts.PieChart
+import co.yml.charts.ui.piechart.models.PieChartConfig
+import co.yml.charts.ui.piechart.models.PieChartData
 import co.yml.charts.common.components.Legends
 import co.yml.charts.common.model.PlotType
 import co.yml.charts.common.utils.DataUtils

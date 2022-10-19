@@ -7,9 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import co.yml.charts.charts.piechart.ChartWrapper.DrawChart
-import co.yml.charts.charts.piechart.models.PieChartConfig
-import co.yml.charts.charts.piechart.models.PieChartData
+import co.yml.charts.ui.piechart.ChartWrapper.DrawChart
+import co.yml.charts.ui.piechart.models.PieChartConfig
+import co.yml.charts.ui.piechart.models.PieChartData
 import co.yml.charts.common.model.PlotType
 
 @Composable

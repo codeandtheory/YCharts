@@ -19,10 +19,10 @@ import com.app.ygraphs.R
 import com.app.ygraphs.ui.compositions.AppBarWithBackButton
 import com.app.ygraphs.ui.theme.YChartsTheme
 import co.yml.charts.axis.AxisData
-import co.yml.charts.charts.barchart.BarChart
-import co.yml.charts.charts.barchart.models.BarChartData
-import co.yml.charts.charts.barchart.models.BarStyle
-import co.yml.charts.charts.barchart.models.SelectionHighlightData
+import co.yml.charts.ui.barchart.BarChart
+import co.yml.charts.ui.barchart.models.BarChartData
+import co.yml.charts.ui.barchart.models.BarStyle
+import co.yml.charts.ui.barchart.models.SelectionHighlightData
 import co.yml.charts.common.utils.DataUtils
 
 class BarChartActivity : ComponentActivity() {

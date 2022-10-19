@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import co.yml.charts.charts.barchart.models.GroupBar
+import co.yml.charts.ui.barchart.models.GroupBar
 import co.yml.charts.common.components.ItemDivider
 import co.yml.charts.common.model.Point
 

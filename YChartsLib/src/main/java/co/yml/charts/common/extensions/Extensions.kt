@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
-import co.yml.charts.charts.linechart.model.GridLines
+import co.yml.charts.ui.linechart.model.GridLines
 import co.yml.charts.common.model.Point
 import java.text.DecimalFormat
 
