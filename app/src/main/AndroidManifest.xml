@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.app.ygraphs">
+    package="co.yml.ycharts.app">
 
     <application
         android:allowBackup="true"
@@ -11,38 +11,38 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.YGraphs"
+        android:theme="@style/Theme.YCharts"
         tools:targetApi="31">
         <activity
-            android:name=".presentation.BarChartActivity"
+            android:name="co.yml.ycharts.app.presentation.BarChartActivity"
             android:exported="false"
             android:label="@string/title_activity_bar_chart"
-            android:theme="@style/Theme.YGraphs" />
+            android:theme="@style/Theme.YCharts" />
         <activity
-            android:name=".presentation.LineChartActivity"
+            android:name="co.yml.ycharts.app.presentation.LineChartActivity"
             android:exported="false"
             android:label="@string/title_activity_line_chart"
-            android:theme="@style/Theme.YGraphs" />
+            android:theme="@style/Theme.YCharts" />
         <activity
-            android:name=".presentation.PieChartActivity"
+            android:name="co.yml.ycharts.app.presentation.PieChartActivity"
             android:exported="false"
             android:label="@string/title_activity_pie_chart"
-            android:theme="@style/Theme.YGraphs" />
+            android:theme="@style/Theme.YCharts" />
         <activity
-            android:name=".presentation.DonutChartActivity"
+            android:name="co.yml.ycharts.app.presentation.DonutChartActivity"
             android:exported="false"
             android:label="@string/title_activity_donut_chart"
-            android:theme="@style/Theme.YGraphs" />
+            android:theme="@style/Theme.YCharts" />
         <activity
-            android:name=".presentation.CombinedLineAndBarChartActivity"
+            android:name="co.yml.ycharts.app.presentation.CombinedLineAndBarChartActivity"
             android:exported="false"
             android:label="@string/title_activity_combined_line_bar_chart"
-            android:theme="@style/Theme.YGraphs" />
+            android:theme="@style/Theme.YCharts" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.YGraphs">
+            android:theme="@style/Theme.YCharts">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

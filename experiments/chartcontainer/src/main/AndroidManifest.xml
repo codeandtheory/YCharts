@@ -8,12 +8,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.YGraphs">
+        android:theme="@style/Theme.YCharts">
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.YGraphs">
+            android:theme="@style/Theme.YCharts">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,7 +24,7 @@
             android:name=".LineChartActivity"
             android:exported="false"
             android:label="@string/title_activity_line_chart"
-            android:theme="@style/Theme.YGraphs" />
+            android:theme="@style/Theme.YCharts" />
     </application>
 
 </manifest>

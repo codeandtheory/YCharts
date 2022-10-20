@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import co.yml.charts.axis.AxisData
-import com.app.chartcontainer.ui.theme.YGraphsTheme
+import com.app.chartcontainer.ui.theme.YChartsTheme
 import co.yml.charts.ui.linechart.LineChart
 import co.yml.charts.ui.linechart.model.IntersectionPoint
 import co.yml.charts.ui.linechart.model.Line
@@ -28,7 +28,7 @@ class LineChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            YGraphsTheme {
+            YChartsTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier,
