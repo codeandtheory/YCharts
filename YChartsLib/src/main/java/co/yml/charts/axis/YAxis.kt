@@ -73,7 +73,7 @@ fun YAxis(modifier: Modifier, yAxisData: AxisData) {
     }
 }
 
-private fun getAxisInitValues(
+fun getAxisInitValues(
     axisData: AxisData,
     canvasHeight: Float,
     bottomPadding: Float,
