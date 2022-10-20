@@ -39,7 +39,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = com.ygraph.dependency.Version.KOTLIN_COMPILER_EXT
+        kotlinCompilerExtensionVersion = co.ycharts.dependency.Version.KOTLIN_COMPILER_EXT
     }
     packagingOptions {
         resources {
@@ -51,15 +51,15 @@ android {
 dependencies {
 
     implementation(project(":YChartsLib"))
-    implementation(com.ygraph.dependency.YChartDependency.CORE_KTX)
-    implementation(com.ygraph.dependency.YChartDependency.COMPOSE_UI)
-    implementation(com.ygraph.dependency.YChartDependency.COMPOSE_MATERIAL)
-    implementation(com.ygraph.dependency.YChartDependency.COMPOSE_TOOLING_PREVIEW)
-    implementation(com.ygraph.dependency.YChartDependency.RUNTIME_KTX)
-    implementation(com.ygraph.dependency.YChartDependency.COMPOSE_ACTIVITY)
-    testImplementation(com.ygraph.dependency.YChartDependency.JUNIT)
-    androidTestImplementation(com.ygraph.dependency.YChartDependency.TEST_EXTN)
-    androidTestImplementation(com.ygraph.dependency.YChartDependency.ESPRESSO_CORE)
-    androidTestImplementation(com.ygraph.dependency.YChartDependency.COMPOSE_JUNIT)
-    debugImplementation(com.ygraph.dependency.YChartDependency.COMPOSE_UI_TOOLING)
-    debugImplementation(com.ygraph.dependency.YChartDependency.COMPOSE_UI_TEST_MANIFEST)}
+    implementation(co.ycharts.dependency.YChartDependency.CORE_KTX)
+    implementation(co.ycharts.dependency.YChartDependency.COMPOSE_UI)
+    implementation(co.ycharts.dependency.YChartDependency.COMPOSE_MATERIAL)
+    implementation(co.ycharts.dependency.YChartDependency.COMPOSE_TOOLING_PREVIEW)
+    implementation(co.ycharts.dependency.YChartDependency.RUNTIME_KTX)
+    implementation(co.ycharts.dependency.YChartDependency.COMPOSE_ACTIVITY)
+    testImplementation(co.ycharts.dependency.YChartDependency.JUNIT)
+    androidTestImplementation(co.ycharts.dependency.YChartDependency.TEST_EXTN)
+    androidTestImplementation(co.ycharts.dependency.YChartDependency.ESPRESSO_CORE)
+    androidTestImplementation(co.ycharts.dependency.YChartDependency.COMPOSE_JUNIT)
+    debugImplementation(co.ycharts.dependency.YChartDependency.COMPOSE_UI_TOOLING)
+    debugImplementation(co.ycharts.dependency.YChartDependency.COMPOSE_UI_TEST_MANIFEST)}

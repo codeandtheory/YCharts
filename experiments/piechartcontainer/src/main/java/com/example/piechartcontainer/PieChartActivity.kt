@@ -22,13 +22,13 @@ import co.yml.charts.ui.piechart.models.PieChartData
 import co.yml.charts.common.components.Legends
 import co.yml.charts.common.model.PlotType
 import co.yml.charts.common.utils.DataUtils
-import com.example.piechartcontainer.ui.theme.YGraphsTheme
+import com.example.piechartcontainer.ui.theme.YChartsTheme
 
 class PieChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            YGraphsTheme {
+            YChartsTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
