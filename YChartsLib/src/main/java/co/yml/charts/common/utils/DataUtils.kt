@@ -13,7 +13,12 @@ import co.yml.charts.common.model.Point
 import kotlin.random.Random
 
 object DataUtils {
-    // T0D0 pass data through the graph component
+    /**
+     * Returns list of points
+     * @param listSize: Size of total number of points needed.
+     * @param start: X values to start from. ex: 50 to 100
+     * @param maxRange: Max range of Y values
+     */
     fun getLineChartData(listSize: Int, start: Int = 0, maxRange: Int): List<Point> {
         val list = arrayListOf<Point>()
         for (index in 0 until listSize) {
@@ -28,9 +33,9 @@ object DataUtils {
     }
 
     /**
+     * Return the sample bar chart data
      * @param listSize Size of the list
      * @param maxRange Maximum range for the values
-    return the sample bar chart data
      */
     fun getBarChartData(listSize: Int, maxRange: Int): List<BarData> {
         val list = arrayListOf<BarData>()
@@ -52,9 +57,9 @@ object DataUtils {
     }
 
     /**
+     * Return the sample gradient bar chart data
      * @param listSize Size of the list
      * @param maxRange Maximum range for the values
-    return the sample gradient bar chart data
      */
     fun getGradientBarChartData(listSize: Int, maxRange: Int): List<BarData> {
         val list = arrayListOf<BarData>()
@@ -86,6 +91,9 @@ object DataUtils {
         return list
     }
 
+    /**
+     * Returns sample pie chart data
+     */
     fun getPieChartData(): PieChartData {
         return PieChartData(
             slices = listOf(
@@ -102,6 +110,9 @@ object DataUtils {
         )
     }
 
+    /**
+     * Returns sample pie chart data
+     */
     fun getPieChartData2(): PieChartData {
         return PieChartData(
             slices = listOf(
@@ -114,6 +125,9 @@ object DataUtils {
         )
     }
 
+    /**
+     * Returns sample donut chart data
+     */
     fun getDonutChartData(): PieChartData {
         return PieChartData(
             slices = listOf(
@@ -129,10 +143,10 @@ object DataUtils {
     }
 
     /**
+     * Returns the sample gradient bar chart data.
      * @param listSize Size of the list
      * @param maxRange Maximum range for the values
      * @param barSize size of bars in one group
-    return the sample gradient bar chart data
      */
     fun getGroupBarChartData(listSize: Int, maxRange: Int, barSize: Int): List<GroupBar> {
         val list = mutableListOf<GroupBar>()
@@ -161,24 +175,8 @@ object DataUtils {
     }
 
     /**
-     * @param listSize Size of the list
-    return the sample color list
-     */
-    fun getColorList(listSize: Int): List<Color> {
-        val list = mutableListOf<Color>()
-        for (index in 0 until listSize) {
-            list.add(
-                Color(
-                    (0 until 256).random(), (0 until 256).random(), (0 until 256).random()
-                )
-            )
-        }
-        return list
-    }
-
-    /**
+     * Returns the sample stackLabelList data
      * @param colorPaletteList color list for each legend
-    return the sample stackLabelList data
      */
     fun getLegendsLabelData(colorPaletteList: List<Color>): List<LegendLabel> {
         val legendLabelList = mutableListOf<LegendLabel>()
@@ -193,6 +191,10 @@ object DataUtils {
         return legendLabelList
     }
 
+    /**
+     * Returns the sample colors list for given size
+     * @param listSize:  Size of the colors list.
+     */
     fun getColorPaletteList(listSize: Int): List<Color> {
         val colorList = mutableListOf<Color>()
 
@@ -206,6 +208,11 @@ object DataUtils {
         return colorList
     }
 
+    /**
+     * Returns the legends config for given pie chart data
+     * @param pieChartData:  Pie chart details.
+     * @param gridSize: Legends grid size.
+     */
     fun getLegendsConfigFromPieChartData(pieChartData: PieChartData, gridSize: Int): LegendsConfig {
         val legendsList = mutableListOf<LegendLabel>()
         pieChartData.slices.forEach { slice ->

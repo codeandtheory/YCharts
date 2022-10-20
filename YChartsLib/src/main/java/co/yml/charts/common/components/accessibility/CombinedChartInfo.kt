@@ -17,6 +17,15 @@ import co.yml.charts.ui.barchart.models.GroupBar
 import co.yml.charts.common.components.ItemDivider
 import co.yml.charts.common.model.Point
 
+/**
+ * Composable to display each combined chart item for given combined chart.
+ * @param pointsList: List of points in each item.
+ * @param lineColor: List of colors of lines as per line chart.
+ * @param groupBar: Details of each group bar.
+ * @param axisLabelDescription: Axis label description.
+ * @param barColorPaletteList: List of each bar colors for a given group bar.
+ * @param dividerColor: Divider color between each point items.
+ */
 @Composable
 fun CombinedChartInfo(
     pointsList: List<Point>,

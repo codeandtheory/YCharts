@@ -57,8 +57,8 @@ import kotlinx.coroutines.launch
  *
  * CombinedChart compose method for drawing combined line and bar charts.
  * @param modifier: All modifier related properties
- * @param combinedChartData : All data needed to Bar chart
- * @see [CombinedChartData] Data class to save all params related to combined line and bar chart.
+ * @param combinedChartData : All data needed to draw combined chart. [CombinedChartData] Data
+ * class to save all params related to combined line and bar chart.
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

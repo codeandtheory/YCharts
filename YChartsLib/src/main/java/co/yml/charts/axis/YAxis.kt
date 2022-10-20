@@ -179,7 +179,7 @@ private fun DrawScope.drawAxisLabel(
 
 @Preview(showBackground = true)
 @Composable
-fun YAxisPreview() {
+private fun YAxisPreview() {
     val yAxisData = AxisData.Builder()
         .steps(5)
         .bottomPadding(10.dp)

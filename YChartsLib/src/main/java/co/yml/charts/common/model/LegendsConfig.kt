@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
  * @param gridColumnCount : Column Count for stackLabel grid
  * @param gridPaddingHorizontal : Horizontal padding for stackLabel grid
  * @param gridPaddingVertical :  Vertical padding for stackLabel grid
- * @param spaceBWLabelAndColorBox: space between Label and ColorBox for stackLabel grid item
+ * @param spaceBWLabelAndColorBox: Space between Label and ColorBox for stackLabel grid item
  * @param colorBoxSize: Blend mode for the groupSeparator
  * @param textStyle: TextStyle for label
  *  */
@@ -29,8 +29,8 @@ data class LegendsConfig(
 
 /**
  * LegendLabel data class params used in drawing label in graph.
- * @param color : color of label.
- * @param name : name of label.
+ * @param color : Color of label.
+ * @param name : Name of label.
  *  */
 data class LegendLabel(
     val color: Color,

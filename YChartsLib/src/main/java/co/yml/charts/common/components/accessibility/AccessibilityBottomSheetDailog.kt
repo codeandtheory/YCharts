@@ -13,6 +13,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
+/**
+ * Bottom sheet to show items in vertical list view with a close button at top
+ */
 @ExperimentalMaterialApi
 @Composable
 fun AccessibilityBottomSheetDialog(

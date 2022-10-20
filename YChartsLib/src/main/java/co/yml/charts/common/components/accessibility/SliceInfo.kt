@@ -12,6 +12,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.yml.charts.ui.piechart.models.PieChartData
 
+/**
+ * Composable to display each slice for a given pie chart.
+ * @param slice: Details of each slice in pie/ donut chart.
+ * @param slicePercentage: Percentage of each slice.
+ */
 @Composable
 fun SliceInfo(slice: PieChartData.Slice, slicePercentage: Int) {
     // Merge elements below for accessibility purposes
