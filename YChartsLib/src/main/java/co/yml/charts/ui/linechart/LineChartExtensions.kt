@@ -33,6 +33,8 @@ fun getYAxisScale(
 
 /**
  * Returns true if the given tap offset is selected point or not else false
+ * @param tapOffset: Offset of the tapped point.
+ * @param xOffset: Distance between two points in X-Axis.
  */
 fun Offset.isTapped(tapOffset: Float, xOffset: Float) =
     ((tapOffset) > x - xOffset / 2) && ((tapOffset) < x + xOffset / 2)

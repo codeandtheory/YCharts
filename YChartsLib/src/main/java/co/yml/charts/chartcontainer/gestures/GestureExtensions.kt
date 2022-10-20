@@ -8,6 +8,11 @@ import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.positionChanged
 import kotlin.math.abs
 
+/**
+ * Gesture support to detect and filter pointer scopes to give a zoom start callback
+ * @param isZoomAllowed: True if user is allowed to zoom.
+ * @param onZoom: Callback when zoom gesture is detected.
+ */
 internal suspend fun PointerInputScope.detectZoomGesture(
     isZoomAllowed: Boolean = true,
     onZoom: (zoom: Float) -> Unit

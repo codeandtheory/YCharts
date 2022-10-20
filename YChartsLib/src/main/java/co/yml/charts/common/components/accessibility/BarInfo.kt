@@ -12,6 +12,11 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+/**
+ * Composable to display each bar item for given bar chart
+ * @param axisLabelDescription: Axis label description
+ * @param barDescription: Bar description
+ */
 @Composable
 fun BarInfo(
     axisLabelDescription: String,
