@@ -3,11 +3,11 @@ package co.yml.charts.ui.piechart
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import co.yml.charts.common.model.PlotType
 import co.yml.charts.ui.piechart.charts.DonutPieChart
 import co.yml.charts.ui.piechart.charts.PieChart
 import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
-import co.yml.charts.common.model.PlotType
 
 @OptIn(ExperimentalMaterialApi::class)
 object ChartWrapper {
@@ -17,6 +17,7 @@ object ChartWrapper {
      * @param modifier : All modifier related property
      * @param plotType: Type of the chart (Pie or Donut)
      * @param pieChartData: data list for the pie chart
+     * @param onSliceClick: Callback when any slice is clicked.
      */
 
     @Composable
@@ -43,6 +44,8 @@ object ChartWrapper {
                     pieChartConfig = pieChartConfig,
                     onSliceClick = onSliceClick
                 )
+            }
+            else -> { // T0DO Handle if required for other types
             }
         }
     }

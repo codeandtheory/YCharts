@@ -13,6 +13,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.yml.charts.ui.barchart.models.GroupBar
 
+
+/**
+ * Composable to display each group bar item for given group bar chart.
+ * @param axisLabelDescription: Axis label description.
+ * @param groupBar: Details of each group bar.
+ * @param barColorPaletteList: List of each bar colors for a given group bar.
+ */
 @Composable
 fun GroupBarInfo(
     groupBar: GroupBar,

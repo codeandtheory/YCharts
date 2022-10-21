@@ -8,14 +8,16 @@ import co.yml.charts.common.model.AccessibilityConfig
 
 /**
  * GroupBarGraph data class params used in drawing bar graph.
- * @param barPlotData : Group bar plot data  .
+ * @param barPlotData : Group bar plot data.
  * @param xAxisData: All the configurations related to X-Axis to be defined here in [AxisData]
  * @param yAxisData: All the configurations related to Y-Axis to be defined here in [AxisData]
- * @param horizontalExtraSpace: Extra space added in the horizontal axis
- * @param paddingEnd: End Padding
- * @param paddingTop: Top Padding
- * @param showXAxis: Boolean Flag to enable/disable X axis
- * @param showYAxis: Boolean Flag to enable/disable Y axis
+ * @param horizontalExtraSpace: Extra space added in the horizontal axis.
+ * @param backgroundColor: Background color of the graph.
+ * @param paddingEnd: End Padding.
+ * @param paddingTop: Top Padding.
+ * @param showXAxis: Boolean Flag to enable/disable X axis.
+ * @param showYAxis: Boolean Flag to enable/disable Y axis.
+ * @param tapPadding: Tap padding offset.
  * @param groupSeparatorConfig : All config related to the GroupSeparator.
  * @param accessibilityConfig: Configs related to accessibility service defined here in [AccessibilityConfig]
  */

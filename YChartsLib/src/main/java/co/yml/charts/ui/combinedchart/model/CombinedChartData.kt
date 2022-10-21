@@ -19,6 +19,8 @@ import co.yml.charts.common.model.PlotData
  * @param containerPaddingEnd: Container inside padding end after the last point of the graph.
  * @param backgroundColor: Background color of the Y & X components.,
  * @param isZoomAllowed: True if zoom in for all vertical graph components is allowed else false.
+ * @param tapPadding: Tap padding offset for selected point.
+ * @param horizontalExtraSpace: Extra padding at the end of the canvas container.
  * @param accessibilityConfig: Configs related to accessibility service defined here in [AccessibilityConfig]
  */
 data class CombinedChartData(

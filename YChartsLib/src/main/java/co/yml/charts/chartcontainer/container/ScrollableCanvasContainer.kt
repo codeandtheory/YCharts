@@ -34,9 +34,11 @@ import co.yml.charts.chartcontainer.gestures.detectZoomGesture
  * @param onDraw: Draw any canvas inside the onDraw scope using the input params in the lambda fxn
  * @param drawXAndYAxis: Draw the X and Y axis along with the drawing area.
  * @param containerBackgroundColor: Background color of the whole container.
+ * @param isPinchZoomEnabled: True if user can zoom in and out else false
  * @param layoutDirection: Used to define the direction of scroll.
  * @param onPointClicked: Callback for tap detected along with offset for tap.
  * @param onScroll: Callback when user starts scrolling the graph.
+ * @param onZoomInAndOut: Callback when user starts zoomIn and Out w.r.t to the graph
  */
 
 @Composable
@@ -105,6 +107,11 @@ fun ScrollableCanvasContainer(
     }
 }
 
+/**
+ * Returns the scroll state within the start and computed max scrollOffset & filters invalid scroll states.
+ * @param currentScrollOffset: Current scroll offset when user trying to scroll the canvas.
+ * @param computedMaxScrollOffset: Maximum calculated scroll offset for given data set.
+ */
 fun checkAndGetMaxScrollOffset(currentScrollOffset: Float, computedMaxScrollOffset: Float): Float {
     return when {
         currentScrollOffset < 0f -> 0f

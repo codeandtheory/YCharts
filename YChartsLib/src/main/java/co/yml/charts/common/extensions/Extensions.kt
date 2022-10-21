@@ -15,8 +15,8 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
-import co.yml.charts.ui.linechart.model.GridLines
 import co.yml.charts.common.model.Point
+import co.yml.charts.ui.linechart.model.GridLines
 import java.text.DecimalFormat
 
 
@@ -65,11 +65,14 @@ internal class RowClip(
     }
 }
 
+/**
+ * Returns true or false if the object is null
+ */
 fun Any?.isNotNull() = this != null
 
 
 /**
- * returns the background rect for the highlighted text.
+ * Returns the background rect for the highlighted text.
  * @param x : X point.
  * @param y: Y point.
  * @param text: Text to be drawn inside the background.
@@ -92,7 +95,8 @@ fun getTextBackgroundRect(
 }
 
 /**
-return the maximum and minimum points of X axis
+ * Returns the maximum and minimum points of X axis.
+ * @param points: List of the points to be drawn.
  */
 fun getXMaxAndMinPoints(
     points: List<Point>,
@@ -104,8 +108,8 @@ fun getXMaxAndMinPoints(
 
 
 /**
+ * Returns the maximum and minimum points of Y axis
  * @param points List of points
-return the maximum and minimum points of Y axis
  */
 fun getYMaxAndMinPoints(
     points: List<Point>,
@@ -118,9 +122,9 @@ fun getYMaxAndMinPoints(
 }
 
 /**
+ * Returns the maximum value of Y axis
  * @param yMax Maximum value in the Y axis
  * @param yStepSize size of one step in the Y axis
-return the maximum value of Y axis
  */
 fun getMaxElementInYAxis(yMax: Float, yStepSize: Int): Int {
     var reqYLabelsQuo =
@@ -133,15 +137,20 @@ fun getMaxElementInYAxis(yMax: Float, yStepSize: Int): Int {
 }
 
 
+/**
+ * Return true if the point is locked
+ * @param dragOffset Tapped offset
+ * @param xOffset in the X axis
+ */
 fun Offset.isDragLocked(dragOffset: Float, xOffset: Float) =
     ((dragOffset) > x - xOffset / 2) && ((dragOffset) < x + xOffset / 2)
 
 
 /**
+ * Return true if the point is selected
  * @param tapOffset Tapped offset
  * @param xOffset in the X axis
  * @param bottom bottom Value
-return true if the point is selected
  */
 fun Offset.isTapped(tapOffset: Offset, xOffset: Float, bottom: Float, tapPadding: Float) =
     ((tapOffset.x) > x - (xOffset + tapPadding) / 2) && ((tapOffset.x) < x + (xOffset + tapPadding) / 2) &&

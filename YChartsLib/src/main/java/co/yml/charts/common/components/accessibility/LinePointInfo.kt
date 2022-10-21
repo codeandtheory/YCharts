@@ -12,6 +12,12 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+/**
+ * Composable to display each line point data for given line chart.
+ * @param axisLabelDescription: Axis label description.
+ * @param pointDescription: Details of each point on the line.
+ * @param lineColor: Color of each line.
+ */
 @Composable
 fun LinePointInfo(
     axisLabelDescription: String,

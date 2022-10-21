@@ -161,6 +161,11 @@ private fun DrawScope.drawXAxisLabel(
     calculatedXAxisHeight
 }
 
+/**
+ * Returns triple of Xmax, Xmin & scale for given list of points and steps
+ * @param points: List of points in axis
+ * @param steps: Total steps in axis
+ */
 fun getXAxisScale(
     points: List<Point>,
     steps: Int,

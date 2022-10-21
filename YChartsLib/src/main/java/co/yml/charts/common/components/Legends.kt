@@ -14,6 +14,11 @@ import androidx.compose.ui.unit.dp
 import co.yml.charts.common.model.LegendLabel
 import co.yml.charts.common.model.LegendsConfig
 
+/**
+ * Renders the list of legends in a grid format for given given grid column count
+ * @param modifier: Defines the arrangements of ui compositions.
+ * @param legendsConfig: Defines the configurations required for rendering legends in [LegendsConfig]
+ */
 @Composable
 fun Legends(modifier: Modifier = Modifier, legendsConfig: LegendsConfig) {
     with(legendsConfig) {

@@ -39,6 +39,9 @@ import co.yml.charts.common.extensions.getTextBackgroundRect
  * with the selected offset, x, y values, center point of bar.
  * @param drawHighlightBar: draw override this to change the default drawRoundRect implementation. You are provided
  * with the actual point x, y, height, width.
+ * @param groupBarPopUpLabel: Popup label for selected bar in group bar chart.
+ * @param drawGroupBarPopUp: draw override this to change the default popup implementation. You are provided
+ * with the actual point x, y, height, width.
  */
 data class SelectionHighlightData(
     //highlight text 
