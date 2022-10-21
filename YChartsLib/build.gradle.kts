@@ -1,6 +1,8 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("maven-publish")
+    id("signing")
     id("org.jetbrains.dokka")
 }
 
@@ -49,7 +51,7 @@ dependencies {
     implementation(co.ycharts.dependency.YChartDependency.CORE_KTX)
     implementation(co.ycharts.dependency.YChartDependency.APPCOMPAT)
     implementation(co.ycharts.dependency.YChartDependency.MATERIAL)
-    implementation (co.ycharts.dependency.YChartDependency.MATERIAL_3)
+    implementation(co.ycharts.dependency.YChartDependency.MATERIAL_3)
     implementation(co.ycharts.dependency.YChartDependency.COMPOSE_UI)
     implementation(co.ycharts.dependency.YChartDependency.COMPOSE_ACTIVITY)
     implementation(co.ycharts.dependency.YChartDependency.COMPOSE_MATERIAL)
@@ -60,4 +62,85 @@ dependencies {
     debugImplementation(co.ycharts.dependency.YChartDependency.COMPOSE_UI_TEST_MANIFEST)
     androidTestImplementation(co.ycharts.dependency.YChartDependency.TEST_EXTN)
     androidTestImplementation(co.ycharts.dependency.YChartDependency.ESPRESSO_CORE)
+}
+val dokkaOutputDir = "$buildDir/dokka"
+
+tasks.dokkaHtml {
+    outputDirectory.set(file(dokkaOutputDir))
+}
+
+val deleteDokkaOutputDir by tasks.register<Delete>("deleteDokkaOutputDirectory") {
+    delete(dokkaOutputDir)
+}
+val javadocJar = tasks.register<Jar>("javadocJar") {
+    dependsOn(deleteDokkaOutputDir, tasks.dokkaHtml)
+    archiveClassifier.set("javadoc")
+    from(dokkaOutputDir)
+}
+publishing {
+    repositories {
+        maven {
+            name = "YCharts"
+            setUrl("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2")
+            credentials {
+                username = project.findProperty("mavenCentralUsername").toString()
+                password = project.findProperty("mavenCentralPassword").toString()
+            }
+        }
+    }
+    publications {
+        register<MavenPublication>("release") {
+            groupId = "co.yml"
+            artifactId = "ycharts"
+            version = "1.0.0"
+            afterEvaluate {
+                from(components["release"])
+            }
+            artifact(javadocJar)
+            pom {
+                name.set("YCharts")
+                description.set("YCharts is a light and extensible chart library for Jetpack Compose system.")
+                url.set("https://github.com/yml-org/YCharts")
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                        distribution.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("dkk009")
+                        name.set("Deepak KK")
+                        url.set("https://github.com/dkk009")
+                    }
+                    developer {
+                        id.set("preetham1316")
+                        name.set("Preetham Ivan Dsouza")
+                        url.set("https://github.com/preetham1316")
+                    }
+                    developer {
+                        id.set("kikoso")
+                        name.set("Enrique López Mañas")
+                        url.set("https://github.com/kikoso")
+                    }
+                }
+                scm {
+                    url.set("https://github.com/yml-org/YCharts")
+                    connection.set("scm:git:git://github.com/yml-org/YCharts.git")
+                    developerConnection.set("scm:git:ssh://git@github.com:yml-org/YCharts.git")
+                }
+            }
+        }
+    }
+}
+
+
+signing {
+    useInMemoryPgpKeys(
+        project.findProperty("signing.keyId").toString(),
+        project.findProperty("signing.InMemoryKey").toString(),
+        project.findProperty("signing.password").toString()
+    )
+    sign(publishing.publications)
 }
