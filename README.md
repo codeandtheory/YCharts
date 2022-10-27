@@ -356,6 +356,14 @@ Compose views by deafult supports accessibility services, but for views drawn us
 Here fig(a) represents the line graph with the container being highlighted & fig(b) represents the accessibility sheet with all values laid out in detail so that talkback can describe the graph values.<br><br>
 *Note*: All the descriptions that are visible in the accessibility popup can be customized to the required string.
 
+## Download
+You can add automatically the library via Maven Central:
+// https://mvnrepository.com/artifact/co.yml/ycharts
+Gradle:
+```groovy
+implementation 'co.yml:ycharts:1.0.0'
+```
+
 ## License
 
 ```
