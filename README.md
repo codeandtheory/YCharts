@@ -5,6 +5,15 @@ YCharts is a light and extensible chart library for Jetpack Compose system. It c
 -   `YChartslib` (Chart components for Jetpack Compose)
 -   `app` (sample app to showcase chart components)
 
+## Adding YCharts to your project:
+
+You can add automatically the library via Maven:
+
+Gradle:
+```groovy
+implementation 'co.yml:ycharts:1.0.0'
+```
+
 ## Modules
 
 The following table outlines the modules included in this library:
@@ -355,14 +364,6 @@ Compose views by deafult supports accessibility services, but for views drawn us
 </figure>
 Here fig(a) represents the line graph with the container being highlighted & fig(b) represents the accessibility sheet with all values laid out in detail so that talkback can describe the graph values.<br><br>
 *Note*: All the descriptions that are visible in the accessibility popup can be customized to the required string.
-
-## Download
-You can add automatically the library via Maven Central:
-// https://mvnrepository.com/artifact/co.yml/ycharts
-Gradle:
-```groovy
-implementation 'co.yml:ycharts:1.0.0'
-```
 
 ## License
 
