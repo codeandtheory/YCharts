@@ -19,10 +19,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import co.yml.ycharts.app.R
-import co.yml.ycharts.app.ui.compositions.AppBarWithBackButton
-import co.yml.ycharts.app.ui.theme.YChartsTheme
 import co.yml.charts.axis.AxisData
+import co.yml.charts.common.extensions.formatToSinglePrecision
+import co.yml.charts.common.model.Point
+import co.yml.charts.common.utils.DataUtils
 import co.yml.charts.ui.linechart.LineChart
 import co.yml.charts.ui.linechart.model.GridLines
 import co.yml.charts.ui.linechart.model.IntersectionPoint
@@ -34,9 +34,9 @@ import co.yml.charts.ui.linechart.model.LineType
 import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 import co.yml.charts.ui.linechart.model.ShadowUnderLine
-import co.yml.charts.common.extensions.formatToSinglePrecision
-import co.yml.charts.common.model.Point
-import co.yml.charts.common.utils.DataUtils
+import co.yml.ycharts.app.R
+import co.yml.ycharts.app.ui.compositions.AppBarWithBackButton
+import co.yml.ycharts.app.ui.theme.YChartsTheme
 
 class LineChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,7 +103,7 @@ private fun LineGraph1(pointsData: List<Point>) {
             // Add yMin to get the negative axis values to the scale
             val yMin = pointsData.minOf { it.y }
             val yMax = pointsData.maxOf { it.y }
-            val yScale = (yMax - yMin)/steps
+            val yScale = (yMax - yMin) / steps
             ((i * yScale) + yMin).formatToSinglePrecision()
         }.build()
     val data = LineChartData(
@@ -192,7 +192,7 @@ private fun LineGraph3(pointsData: List<Point>) {
         .labelData { i ->
             val yMin = pointsData.minOf { it.y }
             val yMax = pointsData.maxOf { it.y }
-            val yScale = (yMax - yMin)/steps
+            val yScale = (yMax - yMin) / steps
             ((i * yScale) + yMin).formatToSinglePrecision()
         }
         .axisLineColor(Color.Red)
