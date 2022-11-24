@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
 import co.yml.charts.axis.XAxis
 import co.yml.charts.axis.YAxis
 import co.yml.charts.chartcontainer.container.ScrollableCanvasContainer
@@ -94,18 +95,18 @@ fun CombinedChart(modifier: Modifier, combinedChartData: CombinedChartData) {
             val barPoints = barPlotData.groupBarList.flatMap { bar -> bar.barList.map { it } }
             val bgColor = MaterialTheme.colors.surface
             val xMin =
-                minOf(linePoints.minOf { it.x }, (barPlotData.groupBarList.size).toFloat())
+                minOf(if(linePoints.isEmpty()) 0.0f else linePoints.minOf { it.x }, (barPlotData.groupBarList.size).toFloat())
             val xMax =
-                maxOf(linePoints.maxOf { it.x }, (barPlotData.groupBarList.size).toFloat())
-            val yMin = minOf(linePoints.minOf { it.y }, barPoints.minOf { it.point.y })
-            val yMax = maxOf(linePoints.maxOf { it.y }, barPoints.maxOf { it.point.y })
+                maxOf(if(linePoints.isEmpty()) 0.0f else linePoints.maxOf { it.x }, (barPlotData.groupBarList.size).toFloat())
+            val yMin = minOf(if(linePoints.isEmpty()) 0.0f else linePoints.minOf { it.y }, if(barPoints.isEmpty())0.0f else barPoints.minOf { it.point.y })
+            val yMax = maxOf(if(linePoints.isEmpty()) 0.0f else linePoints.maxOf { it.y }, if(barPoints.isEmpty())0.0f else barPoints.maxOf { it.point.y })
             val requiredSteps =
                 maxOf(
-                    linePlotData.lines.map { it.dataPoints.size - 1 }.maxOf { it },
-                    barPlotData.groupBarList.map { it.barList.size - 1 }.maxOf { it }
+                    if(linePlotData.lines.isEmpty()) 0 else linePlotData.lines.map { it.dataPoints.size - 1 }.maxOf { it },
+                    if(barPlotData.groupBarList.isEmpty()) 0 else barPlotData.groupBarList.size
                 )
             val xAxisData = xAxisData.copy(
-                axisStepSize = ((barPlotData.barStyle.barWidth * barPlotData.groupingSize) +
+                axisStepSize = if(barPlotData.groupBarList.isEmpty()) 30.dp else((barPlotData.barStyle.barWidth * barPlotData.groupingSize) +
                         barPlotData.barStyle.paddingBetweenBars),
                 steps = requiredSteps,
                 startDrawPadding = LocalDensity.current.run { columnWidth.toDp() },
@@ -153,7 +154,7 @@ fun CombinedChart(modifier: Modifier, combinedChartData: CombinedChartData) {
                 },
                 drawXAndYAxis = { scrollOffset, xZoom ->
                     val axisPoints = mutableListOf<Point>()
-                    for (index in barPlotData.groupBarList.indices) {
+                    for (index in 0 until xMax.toInt()) {
                         axisPoints.add(Point(index.toFloat(), 0f))
                     }
                     XAxis(
@@ -176,7 +177,7 @@ fun CombinedChart(modifier: Modifier, combinedChartData: CombinedChartData) {
                         },
                         scrollOffset = scrollOffset,
                         zoomScale = xZoom,
-                        chartData = axisPoints
+                        chartData = if(barPoints.isEmpty()) linePoints else axisPoints
                     )
                     YAxis(
                         modifier = Modifier
@@ -193,7 +194,7 @@ fun CombinedChart(modifier: Modifier, combinedChartData: CombinedChartData) {
                     val yBottom = size.height - rowHeight
                     val yOffset =
                         ((yBottom - yAxisData.axisTopPadding.toPx()) / maxElementInYAxis)
-                    xOffset =
+                    xOffset = if(barPoints.isEmpty())xAxisData.axisStepSize.toPx() * xZoom else
                         ((barPlotData.barStyle.barWidth.toPx() * barPlotData.groupingSize) +
                                 barPlotData.barStyle.paddingBetweenBars.toPx()) * xZoom
                     val xLeft =
@@ -400,8 +401,8 @@ fun CombinedChart(modifier: Modifier, combinedChartData: CombinedChartData) {
  */
 private fun getDataFromType(combinedPlotDataList: List<PlotData>, type: PlotType): PlotData? {
     return when (type) {
-        is PlotType.Line -> combinedPlotDataList.filterIsInstance<LinePlotData>().firstOrNull() as PlotData
-        is PlotType.Bar -> combinedPlotDataList.filterIsInstance<BarPlotData>().firstOrNull() as PlotData
+        is PlotType.Line -> combinedPlotDataList.filterIsInstance<LinePlotData?>().firstOrNull()
+        is PlotType.Bar -> combinedPlotDataList.filterIsInstance<BarPlotData?>().firstOrNull()
         else -> null // Handle if required in future.
     }
 }
