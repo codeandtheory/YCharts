@@ -26,4 +26,3 @@ jobs:
           MEMORY_KEY: ${{ secrets.SIGNINGINMEMORYKEY}}
           SIGNINGKEY: ${{ secrets.SIGNINGKEYID}}
           SIGNINGPASSWORD: ${{ secrets.SIGNINGPASSWORD}}
-          #MAVEN_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
