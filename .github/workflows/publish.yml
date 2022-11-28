@@ -1,4 +1,4 @@
-name: release and push to central
+name: Maven Release
 on:
   push:
     tags:
