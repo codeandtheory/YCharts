@@ -1,0 +1,28 @@
+name: Maven Release
+on:
+  push:
+    tags:
+      - '*'
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Java for publishing to Maven Central Repository
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Build with Gradle
+        run: ./gradlew :YChartsLib:clean build publish
+
+        env:
+          MAVEN_USERNAME: ${{ secrets.MAVENCENTRALUSERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVENCENTRALPASSWORD}}
+          MEMORY_KEY: ${{ secrets.SIGNINGINMEMORYKEY}}
+          SIGNINGKEY: ${{ secrets.SIGNINGKEYID}}
+          SIGNINGPASSWORD: ${{ secrets.SIGNINGPASSWORD}}
