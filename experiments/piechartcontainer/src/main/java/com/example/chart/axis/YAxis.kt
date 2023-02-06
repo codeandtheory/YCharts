@@ -41,7 +41,8 @@ fun YAxis(
     scrollOffset: Float = 0f,
     zoomScale: Float = 0f,
     chartData: List<Point> = emptyList(),
-    dataCategoryWidth: Float = 0f
+    dataCategoryWidth: Float = 0f,
+    yStart: Float = 0f
 ) {
     with(yAxisData) {
         var yAxisWidth by remember { mutableStateOf(0.dp) }
@@ -62,8 +63,8 @@ fun YAxis(
                     isDataCategoryInYAxis,
                     dataCategoryWidth
                 )
-                val (_, _, yAxisScale) = getYAxisScale(chartData, steps)
-                var yPos = yAxisHeight + scrollOffset
+                val (_, _, yAxisScale) = getYAxisScale(chartData, yAxisData.steps)
+                var yPos = yAxisHeight - yStart + scrollOffset
 
                 for (index in 0 until steps) {
                     // Drawing the axis labels
@@ -85,7 +86,6 @@ fun YAxis(
                         yAxisWidth,
                         yAxisHeight,
                         segmentHeight,
-                        startDrawPadding,
                         zoomScale,
                         yAxisScale
                     )
@@ -125,24 +125,24 @@ private fun DrawScope.drawAxisLineWithPointers(
     yAxisWidth: Dp,
     yAxisHeight: Float,
     segmentHeight: Float,
-    startDrawPadding: Dp,
     zoomScale: Float,
-    yAxisScale: Float,
+    yAxisScale: Float
 ) {
     with(axisData) {
         if (axisConfig.isAxisLineRequired) {
             // Draw line only until reqXLabelsQuo -1 else will be a extra line at top with no label
             val axisStepWidth = (axisStepSize.toPx() * (zoomScale * yAxisScale))
 
+            //todo sree_ check the line height
             if (startDrawPadding != 0.dp && isDataCategoryInYAxis) {
                 drawLine(
                     start = Offset(
                         x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
-                        y = yPos
+                        y = yAxisHeight - startDrawPadding.toPx()
                     ),
                     end = Offset(
                         x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
-                        y = startDrawPadding.toPx()
+                        y = yAxisHeight
                     ),
                     color = axisLineColor, strokeWidth = axisLineThickness.toPx()
                 )
@@ -154,13 +154,13 @@ private fun DrawScope.drawAxisLineWithPointers(
                     start = Offset(
                         x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
                         y = if (isDataCategoryInYAxis) {
-                            yPos - startDrawPadding.toPx()
+                            yPos
                         } else yAxisHeight - (segmentHeight * index)
                     ),
                     end = Offset(
                         x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
                         y = if (isDataCategoryInYAxis) {
-                            yPos - startDrawPadding.toPx() - axisStepWidth
+                            yPos - axisStepWidth
                         } else yAxisHeight - (segmentHeight * (index + 1))
                     ),
                     color = axisLineColor, strokeWidth = axisLineThickness.toPx()
@@ -174,13 +174,13 @@ private fun DrawScope.drawAxisLineWithPointers(
                         yAxisWidth.toPx() - indicatorLineWidth.toPx()
                     },
                     y = if (isDataCategoryInYAxis) {
-                        yPos - startDrawPadding.toPx()
+                        yPos
                     } else yAxisHeight - (segmentHeight * index)
                 ),
                 end = Offset(
                     x = if (isRightAligned) indicatorLineWidth.toPx() else yAxisWidth.toPx(),
                     y = if (isDataCategoryInYAxis) {
-                        yPos - startDrawPadding.toPx()
+                        yPos
                     } else yAxisHeight - (segmentHeight * index)
                 ),
                 color = axisLineColor, strokeWidth = axisLineThickness.toPx()
@@ -229,7 +229,7 @@ private fun DrawScope.drawAxisLabel(
             if (isRightAligned) calculatedYAxisWidth.toPx() - labelAndAxisLinePadding.toPx() else {
                 axisStartPadding.toPx()
             },
-            if (isDataCategoryInYAxis) yPos - startDrawPadding.toPx() + height / 2 else yAxisHeight + height / 2 - ((segmentHeight * index)),
+            if (isDataCategoryInYAxis) yPos + height / 2 else yAxisHeight + height / 2 - ((segmentHeight * index)),
             yAxisTextPaint
         )
     }
