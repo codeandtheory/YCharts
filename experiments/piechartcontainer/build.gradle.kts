@@ -34,7 +34,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
-        freeCompilerArgs = freeCompilerArgs + "-Xjvm-default=all"
     }
     buildFeatures {
         compose = true
