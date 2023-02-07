@@ -43,7 +43,8 @@ fun XAxis(
     xStart: Float,
     scrollOffset: Float,
     zoomScale: Float,
-    chartData: List<Point>
+    chartData: List<Point>,
+    dataValueWidth: Float = 0f
 ) {
     with(xAxisData) {
         var xAxisHeight by remember { mutableStateOf(0.dp) }
@@ -72,14 +73,19 @@ fun XAxis(
                         xAxisData,
                         index,
                         xAxisScale,
-                        xPos
+                        xPos,
+                        xStart,
+                        dataValueWidth
                     )
                     drawAxisLineWithPointers(
                         xPos,
                         xAxisData,
                         zoomScale,
                         xAxisScale,
-                        index != steps
+                        index != steps,
+                        xStart,
+                        index,
+                        dataValueWidth
                     )
                     xPos += ((axisStepSize.toPx() * (zoomScale * xAxisScale)))
                 }
@@ -93,7 +99,10 @@ private fun DrawScope.drawAxisLineWithPointers(
     axisData: AxisData,
     zoomScale: Float,
     xAxisScale: Float,
-    canDrawEndLine: Boolean // Added check to avoid drawing an extra line post the last point
+    canDrawEndLine: Boolean, // Added check to avoid drawing an extra line post the last point
+    xStart: Float,
+    index: Int,
+    dataValueWidth: Float
 ) {
     with(axisData) {
         if (axisConfig.isAxisLineRequired) {
@@ -101,18 +110,31 @@ private fun DrawScope.drawAxisLineWithPointers(
                 val axisStepWidth = (axisStepSize.toPx() * (zoomScale * xAxisScale))
                 drawLine(
                     axisLineColor,
-                    Offset(xPos, 0f),
+                    if (axisData.dataCategoryOptions.isDataCategoryInYAxis) Offset(
+                        xStart,
+                        0f
+                    ) else Offset(xPos, 0f),
                     if (shouldDrawAxisLineTillEnd) {
+                        //todo sree_ check this case for horizontal chart
                         Offset((xPos + (axisStepWidth / 2) + axisStepWidth), 0f)
                     } else {
-                        Offset(xPos + axisStepWidth, 0f)
-                    },                    strokeWidth = axisLineThickness.toPx()
+                        if (axisData.dataCategoryOptions.isDataCategoryInYAxis) Offset(
+                            xStart + (dataValueWidth * (index + 1)),
+                            0f
+                        ) else Offset(xPos + axisStepWidth, 0f)
+                    }, strokeWidth = axisLineThickness.toPx()
                 )
             }
             drawLine(
                 axisLineColor,
-                Offset(xPos, 0f),
-                Offset(xPos, indicatorLineWidth.toPx()),
+                if (axisData.dataCategoryOptions.isDataCategoryInYAxis) Offset(
+                    xStart + (dataValueWidth * index),
+                    0f
+                ) else Offset(xPos, 0f),
+                if (axisData.dataCategoryOptions.isDataCategoryInYAxis) Offset(
+                    xStart + (dataValueWidth * index),
+                    indicatorLineWidth.toPx()
+                ) else Offset(xPos, indicatorLineWidth.toPx()),
                 strokeWidth = axisLineThickness.toPx()
             )
         }
@@ -123,7 +145,9 @@ private fun DrawScope.drawXAxisLabel(
     axisData: AxisData,
     index: Int,
     xAxisScale: Float,
-    xPos: Float
+    xPos: Float,
+    xStart: Float,
+    dataValueWidth: Float
 ): Dp = with(axisData) {
     val calculatedXAxisHeight: Dp
     val xAxisTextPaint = TextPaint().apply {
@@ -147,7 +171,8 @@ private fun DrawScope.drawXAxisLabel(
         axisConfig.ellipsizeAt
     )
     drawContext.canvas.nativeCanvas.apply {
-        val x = xPos - (labelWidth / 2)
+        val x =
+            if (axisData.dataCategoryOptions.isDataCategoryInYAxis) xStart + (dataValueWidth * index) - (labelWidth / 2) else xPos - (labelWidth / 2)
         val y = labelHeight / 2 + indicatorLineWidth.toPx() + labelAndAxisLinePadding.toPx()
         withRotation(axisLabelAngle, x, y) {
             drawText(

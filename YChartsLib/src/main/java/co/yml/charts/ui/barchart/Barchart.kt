@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterialApi::class)
 
-package com.example.barchart.ui
+package co.yml.charts.ui.barchart
 
 
 import androidx.activity.compose.BackHandler
@@ -26,23 +26,17 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import co.yml.charts.axis.DataCategoryOptions
+import co.yml.charts.axis.XAxis
+import co.yml.charts.axis.YAxis
+import co.yml.charts.chartcontainer.container.ScrollableCanvasContainer
 import co.yml.charts.common.components.ItemDivider
 import co.yml.charts.common.components.accessibility.AccessibilityBottomSheetDialog
 import co.yml.charts.common.components.accessibility.BarInfo
 import co.yml.charts.common.extensions.*
 import co.yml.charts.common.model.Point
 import co.yml.charts.common.utils.ChartConstants.DEFAULT_YAXIS_BOTTOM_PADDING
-import co.yml.charts.ui.barchart.models.BarData
-import com.example.barchart.model.BarChartData
-import com.example.barchart.model.BarChartType
-import com.example.barchart.model.BarStyle
-import com.example.barchart.model.SelectionHighlightData
-import com.example.chart.axis.DataCategoryOptions
-import com.example.chart.axis.XAxis
-import com.example.chart.axis.YAxis
-import com.example.chartcontainer.container.ScrollableCanvasContainer
-import com.example.common.extensions.*
-import com.example.common.extensions.collectIsTalkbackEnabledAsState
+import co.yml.charts.ui.barchart.models.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -246,7 +240,7 @@ fun VerticalBarChart(
                             .fillMaxWidth()
                             .wrapContentHeight()
                             .clip(
-                                RowClipṣ(
+                                RowClip(
                                     columnWidth, paddingRight
                                 )
                             )

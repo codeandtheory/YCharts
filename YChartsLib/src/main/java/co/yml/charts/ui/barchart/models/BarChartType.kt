@@ -1,4 +1,4 @@
-package com.example.barchart.model
+package co.yml.charts.ui.barchart.models
 
 /**
  * To specify barchart type

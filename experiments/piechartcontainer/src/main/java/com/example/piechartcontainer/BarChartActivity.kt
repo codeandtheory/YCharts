@@ -16,18 +16,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import co.yml.charts.axis.AxisData
+import co.yml.charts.axis.DataCategoryOptions
 import co.yml.charts.common.model.LegendsConfig
 import co.yml.charts.common.utils.DataUtils
 import co.yml.charts.common.utils.DataUtils.getGroupBarChartData
+import co.yml.charts.ui.barchart.BarChart
 import co.yml.charts.ui.barchart.GroupBarChart
-import co.yml.charts.ui.barchart.models.BarPlotData
-import co.yml.charts.ui.barchart.models.GroupBarChartData
-import com.example.barchart.model.BarChartData
-import com.example.barchart.model.BarChartType
-import com.example.barchart.model.BarStyle
-import com.example.barchart.model.SelectionHighlightData
-import com.example.chart.axis.AxisData
-import com.example.chart.axis.DataCategoryOptions
+import co.yml.charts.ui.barchart.models.*
 import com.example.piechartcontainer.ui.theme.YChartsTheme
 
 class BarChartActivity : ComponentActivity() {
@@ -113,7 +109,7 @@ private fun BarChartGroup() {
 private fun HorizontalBarChart() {
     val maxRange = 10
     val barData =
-        com.example.common.util.DataUtils.getBarChartData(10, maxRange, BarChartType.HORIZONTAL)
+        DataUtils.getBarChartData(10, maxRange, BarChartType.HORIZONTAL)
     val xStepSize = 10
 
     val xAxisData = AxisData.Builder()
@@ -153,7 +149,7 @@ private fun HorizontalBarChart() {
         horizontalExtraSpace = 20.dp,
         barChartType = BarChartType.HORIZONTAL
     )
-    com.example.barchart.ui.BarChart(
+    BarChart(
         modifier = Modifier.height(350.dp),
         barChartData = barChartData
     )
@@ -163,7 +159,7 @@ private fun HorizontalBarChart() {
 private fun VerticalBarChart() {
     val maxRange = 10
     val barData =
-        com.example.common.util.DataUtils.getBarChartData(10, maxRange, BarChartType.VERTICAL)
+        DataUtils.getBarChartData(10, maxRange, BarChartType.VERTICAL)
     val yStepSize = 10
     val xAxisData = AxisData.Builder()
         .axisStepSize(30.dp)
@@ -196,7 +192,7 @@ private fun VerticalBarChart() {
         horizontalExtraSpace = 20.dp,
         barChartType = BarChartType.VERTICAL
     )
-    com.example.barchart.ui.BarChart(
+    BarChart(
         modifier = Modifier.height(350.dp),
         barChartData = barChartData
     )

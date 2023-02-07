@@ -3,13 +3,14 @@ package co.yml.charts.common.utils
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import co.yml.charts.ui.barchart.models.BarData
-import co.yml.charts.ui.barchart.models.GroupBar
-import co.yml.charts.ui.piechart.models.PieChartData
 import co.yml.charts.common.model.LegendLabel
 import co.yml.charts.common.model.LegendsConfig
 import co.yml.charts.common.model.PlotType
 import co.yml.charts.common.model.Point
+import co.yml.charts.ui.barchart.models.BarChartType
+import co.yml.charts.ui.barchart.models.BarData
+import co.yml.charts.ui.barchart.models.GroupBar
+import co.yml.charts.ui.piechart.models.PieChartData
 import kotlin.random.Random
 
 object DataUtils {
@@ -36,20 +37,36 @@ object DataUtils {
      * Return the sample bar chart data
      * @param listSize Size of the list
      * @param maxRange Maximum range for the values
+     * @param barChartType type of bar chart [Horizontal or Vertical]
      */
-    fun getBarChartData(listSize: Int, maxRange: Int): List<BarData> {
+    //todo sree_ update Point data once testing is done
+    fun getBarChartData(listSize: Int, maxRange: Int, barChartType: BarChartType): List<BarData> {
         val list = arrayListOf<BarData>()
         for (index in 0 until listSize) {
-            list.add(
-                BarData(
+            val point = when (barChartType) {
+                BarChartType.VERTICAL -> {
                     Point(
                         index.toFloat(),
-                        "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat()
-                    ),
+//                        "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat()
+                        (index + 1) * 1f
+                    )
+                }
+                BarChartType.HORIZONTAL -> {
+                    Point(
+//                        "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat(),
+                        (index + 1) * 1f,
+                        index.toFloat()
+                    )
+                }
+            }
+
+            list.add(
+                BarData(
+                    point,
                     Color(
                         Random.nextInt(256), Random.nextInt(256), Random.nextInt(256)
                     ),
-                    "Bar$index"
+                    "Bar$index",
                 )
             )
         }
