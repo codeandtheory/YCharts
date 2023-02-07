@@ -113,12 +113,15 @@ private fun DrawScope.drawAxisLineWithPointers(
                 val axisStepWidth = (axisStepSize.toPx() * (zoomScale * xAxisScale))
                 drawLine(
                     axisLineColor,
-                    if (isDataCategoryInYAxis) Offset(xStart, 0f) else Offset(xPos, 0f),
+                    if (axisData.dataCategoryOptions.isDataCategoryInYAxis) Offset(
+                        xStart,
+                        0f
+                    ) else Offset(xPos, 0f),
                     if (shouldDrawAxisLineTillEnd) {
                         //todo sree_ check this case for horizontal chart
                         Offset((xPos + (axisStepWidth / 2) + axisStepWidth), 0f)
                     } else {
-                        if (isDataCategoryInYAxis) Offset(
+                        if (axisData.dataCategoryOptions.isDataCategoryInYAxis) Offset(
                             xStart + (dataValueWidth * (index + 1)),
                             0f
                         ) else Offset(xPos + axisStepWidth, 0f)
@@ -127,11 +130,11 @@ private fun DrawScope.drawAxisLineWithPointers(
             }
             drawLine(
                 axisLineColor,
-                if (isDataCategoryInYAxis) Offset(
+                if (axisData.dataCategoryOptions.isDataCategoryInYAxis) Offset(
                     xStart + (dataValueWidth * index),
                     0f
                 ) else Offset(xPos, 0f),
-                if (isDataCategoryInYAxis) Offset(
+                if (axisData.dataCategoryOptions.isDataCategoryInYAxis) Offset(
                     xStart + (dataValueWidth * index),
                     indicatorLineWidth.toPx()
                 ) else Offset(xPos, indicatorLineWidth.toPx()),
@@ -172,7 +175,7 @@ private fun DrawScope.drawXAxisLabel(
     )
     drawContext.canvas.nativeCanvas.apply {
         val x =
-            if (isDataCategoryInYAxis) xStart + (dataValueWidth * index) - (labelWidth / 2) else xPos - (labelWidth / 2)
+            if (axisData.dataCategoryOptions.isDataCategoryInYAxis) xStart + (dataValueWidth * index) - (labelWidth / 2) else xPos - (labelWidth / 2)
         val y = labelHeight / 2 + indicatorLineWidth.toPx() + labelAndAxisLinePadding.toPx()
         withRotation(axisLabelAngle, x, y) {
             drawText(

@@ -27,6 +27,7 @@ import com.example.barchart.model.BarChartType
 import com.example.barchart.model.BarStyle
 import com.example.barchart.model.SelectionHighlightData
 import com.example.chart.axis.AxisData
+import com.example.chart.axis.DataCategoryOptions
 import com.example.piechartcontainer.ui.theme.YChartsTheme
 
 class BarChartActivity : ComponentActivity() {
@@ -125,7 +126,12 @@ private fun HorizontalBarChart() {
         .steps(barData.size - 1)
         .labelAndAxisLinePadding(20.dp)
         .axisOffset(20.dp)
-        .isDataCategoryInYAxis(true)
+        .setDataCategoryOptions(
+            DataCategoryOptions(
+                isDataCategoryInYAxis = true,
+                isDataCategoryStartFromBottom = false
+            )
+        )
         .labelData { index -> barData[index].label }
         .build()
     val barChartData = BarChartData(

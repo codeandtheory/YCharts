@@ -45,6 +45,7 @@ data class AxisData(
     val axisTopPadding: Dp,
     val axisBottomPadding: Dp,
     val axisStartPadding: Dp,
+    val axisEndPadding: Dp,
     val axisStepSize: Dp,
     val axisLabelAngle: Float,
     val axisLineColor: Color,
@@ -58,7 +59,7 @@ data class AxisData(
     val startDrawPadding: Dp,
     val shouldDrawAxisLineTillEnd: Boolean,
     val axisLabelDescription: (String) -> String,
-    val isDataCategoryInYAxis: Boolean
+    val dataCategoryOptions: DataCategoryOptions
 ) {
     class Builder {
         private var steps: Int = 1
@@ -68,6 +69,7 @@ data class AxisData(
         private var axisStartPadding: Dp = 10.dp
         private var axisOffset: Dp = 10.dp
         private var axisTopPadding: Dp = 20.dp
+        private var axisEndPadding: Dp = 20.dp
         private var axisBottomPadding: Dp = 10.dp
         private var axisStepSize: Dp = 30.dp
         private var axisConfig = AxisConfig()
@@ -82,7 +84,7 @@ data class AxisData(
         private var axisLabelAngle: Float = 0f
         private var shouldDrawAxisLineTillEnd: Boolean = false
         private var axisLabelDescription: (String) -> String = { label -> "X Axis label $label" }
-        private var isDataCategoryInYAxis: Boolean = false
+        private var dataCategoryOptions: DataCategoryOptions = DataCategoryOptions()
 
         fun steps(count: Int) = apply { this.steps = count }
 
@@ -105,6 +107,8 @@ data class AxisData(
         fun topPadding(padding: Dp) = apply { this.axisTopPadding = padding }
 
         fun startPadding(padding: Dp) = apply { this.axisStartPadding = padding }
+
+        fun endPadding(padding: Dp) = apply { this.axisEndPadding = padding }
 
         fun bottomPadding(padding: Dp) = apply { this.axisBottomPadding = padding }
 
@@ -129,8 +133,8 @@ data class AxisData(
         fun axisLabelDescription(description: (String) -> String) =
             apply { this.axisLabelDescription = description }
 
-        fun isDataCategoryInYAxis(isInYAxis: Boolean) = apply {
-            this.isDataCategoryInYAxis = isInYAxis
+        fun setDataCategoryOptions(dataCategoryOptions: DataCategoryOptions) = apply {
+            this.dataCategoryOptions = dataCategoryOptions
         }
 
 
@@ -143,6 +147,7 @@ data class AxisData(
             axisTopPadding,
             axisBottomPadding,
             axisStartPadding,
+            axisEndPadding,
             axisStepSize,
             axisLabelAngle,
             axisLineColor,
@@ -156,7 +161,12 @@ data class AxisData(
             startDrawPadding,
             shouldDrawAxisLineTillEnd,
             axisLabelDescription,
-            isDataCategoryInYAxis
+            dataCategoryOptions
         )
     }
 }
+
+data class DataCategoryOptions(
+    val isDataCategoryInYAxis: Boolean = false,
+    val isDataCategoryStartFromBottom: Boolean = false
+)

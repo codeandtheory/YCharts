@@ -60,11 +60,12 @@ fun YAxis(
                     size.height,
                     axisBottomPadding.toPx(),
                     axisTopPadding.toPx(),
-                    isDataCategoryInYAxis,
+                    dataCategoryOptions.isDataCategoryInYAxis,
                     dataCategoryWidth
                 )
                 val (_, _, yAxisScale) = getYAxisScale(chartData, yAxisData.steps)
-                var yPos = yAxisHeight - yStart + scrollOffset
+                var yPos =
+                    if (dataCategoryOptions.isDataCategoryStartFromBottom) yAxisHeight - yStart + scrollOffset else yStart - scrollOffset
 
                 for (index in 0 until steps) {
                     // Drawing the axis labels
@@ -89,7 +90,12 @@ fun YAxis(
                         zoomScale,
                         yAxisScale
                     )
-                    yPos -= ((axisStepSize.toPx() * (zoomScale * yAxisScale)))
+                    if (dataCategoryOptions.isDataCategoryStartFromBottom) {
+                        yPos -= ((axisStepSize.toPx() * (zoomScale * yAxisScale)))
+                    } else {
+                        yPos += ((axisStepSize.toPx() * (zoomScale * yAxisScale)))
+                    }
+
                 }
             }
         }
@@ -134,7 +140,7 @@ private fun DrawScope.drawAxisLineWithPointers(
             val axisStepWidth = (axisStepSize.toPx() * (zoomScale * yAxisScale))
 
             //todo sree_ check the line height
-            if (startDrawPadding != 0.dp && isDataCategoryInYAxis) {
+            if (startDrawPadding != 0.dp && dataCategoryOptions.isDataCategoryInYAxis) {
                 drawLine(
                     start = Offset(
                         x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
@@ -153,14 +159,14 @@ private fun DrawScope.drawAxisLineWithPointers(
                 drawLine(
                     start = Offset(
                         x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
-                        y = if (isDataCategoryInYAxis) {
+                        y = if (dataCategoryOptions.isDataCategoryInYAxis) {
                             yPos
                         } else yAxisHeight - (segmentHeight * index)
                     ),
                     end = Offset(
                         x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
-                        y = if (isDataCategoryInYAxis) {
-                            yPos - axisStepWidth
+                        y = if (dataCategoryOptions.isDataCategoryInYAxis) {
+                            if (dataCategoryOptions.isDataCategoryStartFromBottom) yPos - axisStepWidth else yPos + axisStepWidth
                         } else yAxisHeight - (segmentHeight * (index + 1))
                     ),
                     color = axisLineColor, strokeWidth = axisLineThickness.toPx()
@@ -173,13 +179,13 @@ private fun DrawScope.drawAxisLineWithPointers(
                     x = if (isRightAligned) 0.dp.toPx() else {
                         yAxisWidth.toPx() - indicatorLineWidth.toPx()
                     },
-                    y = if (isDataCategoryInYAxis) {
+                    y = if (dataCategoryOptions.isDataCategoryInYAxis) {
                         yPos
                     } else yAxisHeight - (segmentHeight * index)
                 ),
                 end = Offset(
                     x = if (isRightAligned) indicatorLineWidth.toPx() else yAxisWidth.toPx(),
-                    y = if (isDataCategoryInYAxis) {
+                    y = if (dataCategoryOptions.isDataCategoryInYAxis) {
                         yPos
                     } else yAxisHeight - (segmentHeight * index)
                 ),
@@ -229,7 +235,7 @@ private fun DrawScope.drawAxisLabel(
             if (isRightAligned) calculatedYAxisWidth.toPx() - labelAndAxisLinePadding.toPx() else {
                 axisStartPadding.toPx()
             },
-            if (isDataCategoryInYAxis) yPos + height / 2 else yAxisHeight + height / 2 - ((segmentHeight * index)),
+            if (dataCategoryOptions.isDataCategoryInYAxis) yPos + height / 2 else yAxisHeight + height / 2 - ((segmentHeight * index)),
             yAxisTextPaint
         )
     }
