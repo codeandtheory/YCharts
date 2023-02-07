@@ -16,4 +16,5 @@ sealed interface PlotType {
     object Bar : PlotType
     object Pie : PlotType
     object Donut : PlotType
+    object Wave : PlotType
 }
