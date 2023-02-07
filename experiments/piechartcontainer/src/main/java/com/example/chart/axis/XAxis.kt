@@ -119,7 +119,7 @@ private fun DrawScope.drawAxisLineWithPointers(
                         Offset((xPos + (axisStepWidth / 2) + axisStepWidth), 0f)
                     } else {
                         if (isDataCategoryInYAxis) Offset(
-                            xStart + (dataValueWidth * index),
+                            xStart + (dataValueWidth * (index + 1)),
                             0f
                         ) else Offset(xPos + axisStepWidth, 0f)
                     }, strokeWidth = axisLineThickness.toPx()
