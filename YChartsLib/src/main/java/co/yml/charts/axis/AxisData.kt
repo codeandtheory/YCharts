@@ -82,8 +82,9 @@ data class AxisData(
         private var startDrawPadding: Dp = 0.dp
         private var axisLabelAngle: Float = 0f
         private var shouldDrawAxisLineTillEnd: Boolean = false
-        private var axisLabelDescription: (String) -> String = { label -> "X Axis label $label" }
         private var dataCategoryOptions: DataCategoryOptions = DataCategoryOptions()
+        private var axisLabelDescription: (String) -> String =
+            { label -> if (dataCategoryOptions.isDataCategoryInYAxis) "Y Axis label $label" else "X Axis label $label" }
 
         fun steps(count: Int) = apply { this.steps = count }
 

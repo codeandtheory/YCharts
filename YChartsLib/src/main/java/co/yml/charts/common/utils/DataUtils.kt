@@ -3,6 +3,7 @@ package co.yml.charts.common.utils
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import co.yml.charts.axis.DataCategoryOptions
 import co.yml.charts.common.model.LegendLabel
 import co.yml.charts.common.model.LegendsConfig
 import co.yml.charts.common.model.PlotType
@@ -40,7 +41,12 @@ object DataUtils {
      * @param barChartType type of bar chart [Horizontal or Vertical]
      */
     //todo sree_ update Point data once testing is done
-    fun getBarChartData(listSize: Int, maxRange: Int, barChartType: BarChartType): List<BarData> {
+    fun getBarChartData(
+        listSize: Int,
+        maxRange: Int,
+        barChartType: BarChartType,
+        dataCategoryOptions: DataCategoryOptions
+    ): List<BarData> {
         val list = arrayListOf<BarData>()
         for (index in 0 until listSize) {
             val point = when (barChartType) {
@@ -62,11 +68,12 @@ object DataUtils {
 
             list.add(
                 BarData(
-                    point,
-                    Color(
+                    point = point,
+                    color = Color(
                         Random.nextInt(256), Random.nextInt(256), Random.nextInt(256)
                     ),
-                    "Bar$index",
+                    dataCategoryOptions = dataCategoryOptions,
+                    label = "Bar$index",
                 )
             )
         }

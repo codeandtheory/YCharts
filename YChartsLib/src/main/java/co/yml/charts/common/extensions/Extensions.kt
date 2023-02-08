@@ -248,7 +248,9 @@ internal fun Context.collectIsTalkbackEnabledAsState(): State<Boolean> {
     return talkbackEnabled
 }
 
-private const val TALKBACK_PACKAGE_NAME = "com.google.android.marvin.talkback"
+//private const val TALKBACK_PACKAGE_NAME = "com.google.android.marvin.talkback"
+private const val TALKBACK_PACKAGE_NAME = "com.samsung.android.accessibility.talkback"
+
 
 /**
 return the shape that is used to mask a particular area for given top & bottom

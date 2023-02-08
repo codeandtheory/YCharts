@@ -94,11 +94,19 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                             items(chartData.size) { index ->
                                 Column {
                                     BarInfo(
-                                        xAxisData.axisLabelDescription(
-                                            xAxisData.labelData(
-                                                index
+                                        if (barChartType == BarChartType.VERTICAL) {
+                                            xAxisData.axisLabelDescription(
+                                                xAxisData.labelData(
+                                                    index
+                                                )
                                             )
-                                        ),
+                                        } else {
+                                            yAxisData.axisLabelDescription(
+                                                yAxisData.labelData(
+                                                    index
+                                                )
+                                            )
+                                        },
                                         chartData[index].description,
                                         chartData[index].color
                                     )
@@ -119,6 +127,7 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun VerticalBarChart(
     barChartData: BarChartData,

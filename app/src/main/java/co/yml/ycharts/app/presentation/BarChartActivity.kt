@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import co.yml.charts.axis.AxisData
+import co.yml.charts.axis.DataCategoryOptions
 import co.yml.charts.common.utils.DataUtils
 import co.yml.charts.ui.barchart.BarChart
 import co.yml.charts.ui.barchart.models.BarChartData
@@ -66,7 +67,8 @@ class BarChartActivity : ComponentActivity() {
 @Composable
 private fun BarChart1() {
     val maxRange = 50
-    val barData = DataUtils.getBarChartData(50, maxRange, BarChartType.VERTICAL)
+    val barData =
+        DataUtils.getBarChartData(50, maxRange, BarChartType.VERTICAL, DataCategoryOptions())
     val yStepSize = 10
 
     val xAxisData = AxisData.Builder()

@@ -109,7 +109,12 @@ private fun BarChartGroup() {
 private fun HorizontalBarChart() {
     val maxRange = 10
     val barData =
-        DataUtils.getBarChartData(10, maxRange, BarChartType.HORIZONTAL)
+        DataUtils.getBarChartData(
+            10,
+            maxRange,
+            BarChartType.HORIZONTAL,
+            DataCategoryOptions(isDataCategoryInYAxis = true)
+        )
     val xStepSize = 10
 
     val xAxisData = AxisData.Builder()
@@ -159,7 +164,7 @@ private fun HorizontalBarChart() {
 private fun VerticalBarChart() {
     val maxRange = 10
     val barData =
-        DataUtils.getBarChartData(10, maxRange, BarChartType.VERTICAL)
+        DataUtils.getBarChartData(10, maxRange, BarChartType.VERTICAL, DataCategoryOptions())
     val yStepSize = 10
     val xAxisData = AxisData.Builder()
         .axisStepSize(30.dp)
