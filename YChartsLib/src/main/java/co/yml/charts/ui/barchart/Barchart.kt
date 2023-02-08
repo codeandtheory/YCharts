@@ -414,10 +414,8 @@ fun HorizontalBarChart(
                         identifiedPoint,
                         barChartData.barStyle,
                         isTapped,
-                        columnWidth,
                         yBottom,
-                        paddingTop,
-                        yOffset,
+                        yAxisData.axisTopPadding,
                         xLeft,
                         xOffset
                     )
@@ -450,7 +448,7 @@ fun HorizontalBarChart(
                             .wrapContentWidth()
                             .clip(
                                 ColumnClip(
-                                    columnWidth,
+                                    0f,
                                     LocalDensity.current.run { yAxisData.axisTopPadding.toPx() },
                                     columnWidth,
                                     rowHeight
@@ -683,10 +681,8 @@ fun DrawScope.highlightHorizontalBar(
     identifiedPoint: BarData,
     barStyle: BarStyle,
     isDragging: Boolean,
-    columnWidth: Float,
     yBottom: Float,
-    paddingRight: Dp,
-    yOffset: Float,
+    paddingTop: Dp,
     xStart: Float,
     xOffset: Float,
     shouldShowHighlightPopUp: Boolean = true
@@ -704,10 +700,10 @@ fun DrawScope.highlightHorizontalBar(
         if (barStyle.selectionHighlightData?.isHighlightBarRequired == true) {
             dragLocks.values.firstOrNull()?.let { (barData, location) ->
                 val (xPoint, yPoint) = location
-                if (yPoint <= yBottom && yPoint >= paddingRight.toPx()) {
+                selectedXAxisWidth =
+                    xStart + ((barData.point.x - 0) * xOffset) + barStyle.barWidth.toPx()
+                if (yPoint + barStyle.barWidth.toPx() <= yBottom && yPoint >= paddingTop.toPx()) {
                     val x1 = xStart + ((barData.point.x - 0) * xOffset)
-                    selectedXAxisWidth =
-                        xStart + ((barData.point.x - 0) * xOffset) + barStyle.barWidth.toPx()
                     barStyle.selectionHighlightData?.drawHighlightBar?.invoke(
                         this,
                         xPoint,

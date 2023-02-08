@@ -181,6 +181,11 @@ data class AxisConfig(
     val ellipsizeAt: TextUtils.TruncateAt = TextUtils.TruncateAt.END
 )
 
+/**
+ * DataCategoryOptions used to hold information about data category like where should draw the data category.
+ * @param isDataCategoryInYAxis: true if data category draws in y axis, false if it draws is in x axis.
+ * @param isDataCategoryStartFromBottom true when data category start from bottom of y axis, false if it start from top of y axis
+ */
 data class DataCategoryOptions(
     val isDataCategoryInYAxis: Boolean = false,
     val isDataCategoryStartFromBottom: Boolean = false

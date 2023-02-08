@@ -249,6 +249,7 @@ internal fun Context.collectIsTalkbackEnabledAsState(): State<Boolean> {
 }
 
 //private const val TALKBACK_PACKAGE_NAME = "com.google.android.marvin.talkback"
+//todo sree_ update the package name once testing is done
 private const val TALKBACK_PACKAGE_NAME = "com.samsung.android.accessibility.talkback"
 
 
@@ -256,7 +257,7 @@ private const val TALKBACK_PACKAGE_NAME = "com.samsung.android.accessibility.tal
 return the shape that is used to mask a particular area for given top & bottom
  */
 internal class ColumnClip(
-    private val leftPadding: Float,
+    private val leftPadding: Float = 0f,
     private val topPadding: Float = 0f,
     private val rightPadding: Float,
     private val bottomPadding: Float
@@ -268,7 +269,7 @@ internal class ColumnClip(
     ): Outline {
         return Outline.Rectangle(
             androidx.compose.ui.geometry.Rect(
-                0f,
+                leftPadding,
                 topPadding,
                 rightPadding,
                 size.height - bottomPadding
