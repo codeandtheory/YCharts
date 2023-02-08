@@ -40,7 +40,7 @@ object DataUtils {
      * @param maxRange Maximum range for the values
      * @param barChartType type of bar chart [Horizontal or Vertical]
      */
-    //todo sree_ update Point data once testing is done
+
     fun getBarChartData(
         listSize: Int,
         maxRange: Int,
@@ -53,14 +53,12 @@ object DataUtils {
                 BarChartType.VERTICAL -> {
                     Point(
                         index.toFloat(),
-//                        "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat()
-                        (index + 1) * 1f
+                        "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat()
                     )
                 }
                 BarChartType.HORIZONTAL -> {
                     Point(
-//                        "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat(),
-                        (index + 1) * 1f,
+                        "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat(),
                         index.toFloat()
                     )
                 }

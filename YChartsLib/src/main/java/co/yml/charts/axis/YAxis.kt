@@ -29,10 +29,14 @@ import kotlin.math.ceil
  * YAxis compose method used for drawing yAxis in any given graph.
  * @param modifier : All modifier related property.
  * @param yAxisData : All data needed to draw Yaxis.
+ * @param scrollOffset : Offset of delta scrolled position.
+ * @param zoomScale : Scale at which zoom transformation being applied.
+ * @param chartData : List of data points used in the graph.
+ * @param dataCategoryWidth length of horizontal bar
+ * @param yStart start position of Y axis pointer
  * @see co.yml.charts.axis Data class to save all params related to Yaxis
  */
 
-//todo sree_ add documentation
 @Composable
 fun YAxis(
     modifier: Modifier,

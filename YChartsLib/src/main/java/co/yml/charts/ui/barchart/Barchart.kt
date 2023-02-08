@@ -395,9 +395,15 @@ fun HorizontalBarChart(
                     val middleOffset =
                         Offset(drawOffset.x, drawOffset.y + barStyle.barWidth.toPx() / 2)
 
+                    val xAxisWidth =
+                        xLeft + ((barData.point.x - 0) * xOffset) + barStyle.barWidth.toPx()
                     // store the tap points for selection
                     if (isTapped && middleOffset.isYAxisTapped(
-                            tapOffset, barStyle.barWidth.toPx(), xLeft, tapPadding.toPx()
+                            tapOffset,
+                            barStyle.barWidth.toPx(),
+                            xLeft,
+                            tapPadding.toPx(),
+                            xAxisWidth
                         )
                     ) {
                         dragLocks[0] = barData to drawOffset

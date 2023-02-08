@@ -232,7 +232,9 @@ internal fun Context.collectIsTalkbackEnabledAsState(): State<Boolean> {
         val accessibilityServiceInfoList =
             accessibilityManager?.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_SPOKEN)
         return accessibilityServiceInfoList?.any {
-            it.resolveInfo.serviceInfo.processName.equals(TALKBACK_PACKAGE_NAME)
+            it.resolveInfo.serviceInfo.processName.equals(TALKBACK_PACKAGE_NAME) || it.resolveInfo.serviceInfo.processName.equals(
+                TALKBACK_PACKAGE_NAME_SAMSUNG
+            )
         } ?: false
     }
 
@@ -248,9 +250,8 @@ internal fun Context.collectIsTalkbackEnabledAsState(): State<Boolean> {
     return talkbackEnabled
 }
 
-//private const val TALKBACK_PACKAGE_NAME = "com.google.android.marvin.talkback"
-//todo sree_ update the package name once testing is done
-private const val TALKBACK_PACKAGE_NAME = "com.samsung.android.accessibility.talkback"
+private const val TALKBACK_PACKAGE_NAME = "com.google.android.marvin.talkback"
+private const val TALKBACK_PACKAGE_NAME_SAMSUNG = "com.samsung.android.accessibility.talkback"
 
 
 /**
@@ -293,7 +294,14 @@ fun getMaxElementInXAxis(xMax: Float, xStepSize: Int): Int {
  * @param tapOffset Tapped offset
  * @param yOffset in the Y axis
  * @param left left Value
+ * @param xAxisWidth width of horizontal bar
  */
-fun Offset.isYAxisTapped(tapOffset: Offset, yOffset: Float, left: Float, tapPadding: Float) =
-    (((tapOffset.y) < y + (yOffset + tapPadding) / 2) && ((tapOffset.y) > y - (yOffset + tapPadding) / 2) &&
-            ((tapOffset.plus(Offset(tapPadding, 0f))).x > x) && ((tapOffset.x) > left))
+fun Offset.isYAxisTapped(
+    tapOffset: Offset,
+    yOffset: Float,
+    left: Float,
+    tapPadding: Float,
+    xAxisWidth: Float
+) =
+    ((tapOffset.y) < y + (yOffset + tapPadding) / 2) && ((tapOffset.y) > y - (yOffset + tapPadding) / 2) &&
+            ((tapOffset.plus(Offset(tapPadding, 0f))).x < xAxisWidth) && ((tapOffset.x) > left)
