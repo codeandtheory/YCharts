@@ -13,13 +13,9 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.DrawStyle
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -27,7 +23,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.unit.Dp
 import androidx.core.graphics.withRotation
 import co.yml.charts.axis.AxisData
 import co.yml.charts.axis.YAxis
@@ -38,21 +33,24 @@ import co.yml.charts.common.components.accessibility.AccessibilityBottomSheetDia
 import co.yml.charts.common.components.accessibility.LinePointInfo
 import co.yml.charts.common.extensions.collectIsTalkbackEnabledAsState
 import co.yml.charts.common.extensions.drawGridLines
-import co.yml.charts.ui.linechart.getMaxElementInYAxis as getMaxElementInLineYAxis
 import co.yml.charts.common.extensions.getTextHeight
 import co.yml.charts.common.extensions.getTextWidth
 import co.yml.charts.common.extensions.isNotNull
 import co.yml.charts.common.model.Point
+import co.yml.charts.ui.barchart.drawUnderScrollMask
+import co.yml.charts.ui.linechart.drawHighLightOnSelectedPoint
+import co.yml.charts.ui.linechart.drawHighlightText
+import co.yml.charts.ui.linechart.drawPointOnLine
+import co.yml.charts.ui.linechart.drawStraightOrCubicLine
+import co.yml.charts.ui.linechart.getCubicPoints
+import co.yml.charts.ui.linechart.getMappingPointsToGraph
+import co.yml.charts.ui.linechart.getMaxScrollDistance
 import co.yml.charts.ui.linechart.getYAxisScale
 import co.yml.charts.ui.linechart.isTapped
-import co.yml.charts.ui.linechart.model.IntersectionPoint
-import co.yml.charts.ui.linechart.model.LineStyle
-import co.yml.charts.ui.linechart.model.LineType
-import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
-import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 import co.yml.charts.ui.wavechart.model.Wave
 import co.yml.charts.ui.wavechart.model.WaveChartData
 import kotlinx.coroutines.launch
+import co.yml.charts.ui.linechart.getMaxElementInYAxis as getMaxElementInLineYAxis
 
 /**
  *
@@ -127,7 +125,7 @@ fun WaveChart(modifier: Modifier, waveChartData: WaveChartData) {
                 },
                 containerBackgroundColor = backgroundColor,
                 isPinchZoomEnabled = isZoomAllowed,
-                drawXAndYAxis = {scrollOffset, xZoom ->
+                drawXAndYAxis = { _, _ ->
                     YAxis(
                         modifier = Modifier
                             .fillMaxHeight()
@@ -284,150 +282,6 @@ fun WaveChart(modifier: Modifier, waveChartData: WaveChartData) {
 
 /**
  *
- * returns the list of transformed points supported to be drawn on the container using the input points .
- * @param waveChartPoints :Input data points
- * @param xMin: Min X-Axis value.
- * @param xOffset : Total distance between two X-Axis points.
- * @param xLeft: Total left padding in X-Axis.
- * @param scrollOffset : Total scrolled offset.
- * @param yBottom : Bottom start offset for X-Axis.
- * @param yMin : Min Y-Axis value.
- * @param yOffset : Distance between two Y-Axis points.
- */
-fun getMappingPointsToGraph(
-    waveChartPoints: List<Point>,
-    xMin: Float,
-    xOffset: Float,
-    xLeft: Float,
-    scrollOffset: Float,
-    yBottom: Float,
-    yMin: Float,
-    yOffset: Float,
-): MutableList<Offset> {
-    val pointsData = mutableListOf<Offset>()
-    waveChartPoints.forEachIndexed { _, point ->
-        val (x, y) = point
-        val x1 = ((x - xMin) * xOffset) + xLeft - scrollOffset
-        val y1 = yBottom - ((y - yMin) * yOffset)
-        pointsData.add(Offset(x1, y1))
-    }
-    return pointsData
-}
-
-/**
- *
- * returns the max scrollable distance based on the points to be drawn along with padding etc.
- * @param columnWidth : Width of the Y-Axis.
- * @param xMax : Max X-Axis value.
- * @param xMin: Min X-Axis value.
- * @param xOffset: Total distance between two X-Axis points.
- * @param paddingRight : Padding at the end of the canvas.
- * @param canvasWidth : Total available canvas width.
- * @param containerPaddingEnd : Container inside padding end after the last point of the graph.
- */
-fun getMaxScrollDistance(
-    columnWidth: Float,
-    xMax: Float,
-    xMin: Float,
-    xOffset: Float,
-    paddingRight: Float,
-    canvasWidth: Float,
-    containerPaddingEnd: Float = 0f
-): Float {
-    val xLastPoint = (xMax - xMin) * xOffset + columnWidth + paddingRight + containerPaddingEnd
-    return if (xLastPoint > canvasWidth) {
-        xLastPoint - canvasWidth
-    } else 0f
-}
-
-/**
- *
- * DrawScope.drawStraightOrCubicLine extension method used for drawing a straight/cubic line for a given Point(x,y).
- * @param pointsData : List of points to be drawn on the canvas
- * @param cubicPoints1 : List of average left side values for a given Point(x,y).
- * @param cubicPoints2 : List of average right side values for a given Point(x,y).
- * @param lineStyle : All styles related to the path are included in [LineStyle].
- */
-fun DrawScope.drawStraightOrCubicLine(
-    pointsData: MutableList<Offset>,
-    cubicPoints1: MutableList<Offset>,
-    cubicPoints2: MutableList<Offset>,
-    lineStyle: LineStyle
-): Path {
-    val path = Path()
-    path.moveTo(pointsData.first().x, pointsData.first().y)
-    for (i in 1 until pointsData.size) {
-        when (lineStyle.lineType) {
-            is LineType.Straight -> {
-                path.lineTo(pointsData[i].x, pointsData[i].y)
-            }
-            is LineType.SmoothCurve -> {
-                path.cubicTo(
-                    cubicPoints1[i - 1].x,
-                    cubicPoints1[i - 1].y,
-                    cubicPoints2[i - 1].x,
-                    cubicPoints2[i - 1].y,
-                    pointsData[i].x,
-                    pointsData[i].y
-                )
-            }
-        }
-    }
-    with(lineStyle) {
-        drawPath(
-            path,
-            color = color,
-            style = getDrawStyleForPath(lineStyle.lineType, lineStyle),
-            alpha = alpha,
-            colorFilter = colorFilter,
-            blendMode = blendMode
-        )
-    }
-    return path
-}
-
-/**
- *
- * Returns the Drawstyle for the path.
- * @param lineType : Type of the line [LineType]
- * @param lineStyle : The style for the path [lineStyle]
- */
-private fun getDrawStyleForPath(
-    lineType: LineType, lineStyle: LineStyle
-): DrawStyle = if (lineType.isDotted) Stroke(
-    width = lineStyle.width, pathEffect = PathEffect.dashPathEffect(lineType.intervals)
-) else lineStyle.style
-
-
-/**
- *
- * DrawScope.drawPointOnLine extension method  used for drawing a circle/mark on a line for a given Point(x,y).
- * @param offset : Point at which circle/mark has to be drawn.
- */
-private fun DrawScope.drawPointOnLine(offset: Offset, intersectionPoint: IntersectionPoint?) {
-    intersectionPoint?.draw?.let { it(this, offset) }
-}
-
-/**
- *
- * DrawScope.drawUnderScrollMask extension method used  for drawing a rectangular mask to make graph scrollable under the YAxis.
- * @param columnWidth : Width of the rectangular mask here width of Y Axis is used.
- * @param paddingRight : Padding given at the end of the graph.
- * @param bgColor : Background of the rectangular mask.
- */
-private fun DrawScope.drawUnderScrollMask(columnWidth: Float, paddingRight: Dp, bgColor: Color) {
-    drawRect(
-        bgColor, Offset(0f, 0f), Size(columnWidth, size.height)
-    )
-    drawRect(
-        bgColor,
-        Offset(size.width - paddingRight.toPx(), 0f),
-        Size(paddingRight.toPx(), size.height)
-    )
-}
-
-/**
- *
  * DrawScope.drawShadowUnderLineAndIntersectionPoint extension method used  for drawing a
  * shadow below the line graph points and also drawing intersection points on the line graph.
  * @param cubicPath : Path used to draw the shadow
@@ -446,79 +300,6 @@ fun DrawScope.drawShadowUnderLineAndIntersectionPoint(
     if (line.intersectionPoint.isNotNull()) {
         pointsData.forEach { offset ->
             drawPointOnLine(offset, line.intersectionPoint)
-        }
-    }
-}
-
-
-/**
- *
- * getCubicPoints method provides left and right average value for a given point to get a smooth curve.
- * @param pointsData : List of the points on the Line graph.
- */
-fun getCubicPoints(pointsData: List<Offset>): Pair<MutableList<Offset>, MutableList<Offset>> {
-    val cubicPoints1 = mutableListOf<Offset>()
-    val cubicPoints2 = mutableListOf<Offset>()
-
-    for (i in 1 until pointsData.size) {
-        cubicPoints1.add(
-            Offset(
-                (pointsData[i].x + pointsData[i - 1].x) / 2, pointsData[i - 1].y
-            )
-        )
-        cubicPoints2.add(
-            Offset(
-                (pointsData[i].x + pointsData[i - 1].x) / 2, pointsData[i].y
-            )
-        )
-    }
-    return Pair(cubicPoints1, cubicPoints2)
-}
-
-/**
- * Used to draw the highlighted text
- * @param identifiedPoint : Selected points
- * @param selectedOffset: Offset selected
- * @param selectionHighlightPopUp : Data class with all styling related info [SelectionHighlightPopUp]
- */
-fun DrawScope.drawHighlightText(
-    identifiedPoint: Point,
-    selectedOffset: Offset,
-    selectionHighlightPopUp: SelectionHighlightPopUp?
-) {
-    selectionHighlightPopUp?.run {
-        draw(selectedOffset, identifiedPoint)
-    }
-}
-
-/**
- *
- * DrawScope.drawHighLightOnSelectedPoint extension method used for drawing and  highlight the selected
- * point when dragging.
- * @param dragLocks : List of points to be drawn on the canvas and that can be selected.
- * @param columnWidth : Width of the Axis in the left or right.
- * @param paddingRight : Padding given to the right side of the canvas.
- * @param yBottom : Start position from below of the canvas.
- * @param selectionHighlightPoint : Data class to define all the styles to be drawn in [SelectionHighlightPoint]
- */
-fun DrawScope.drawHighLightOnSelectedPoint(
-    dragLocks: MutableMap<Int, Pair<Point, Offset>>,
-    columnWidth: Float,
-    paddingRight: Dp,
-    yBottom: Float,
-    selectionHighlightPoint: SelectionHighlightPoint?
-) {
-    if (selectionHighlightPoint.isNotNull()) {
-        dragLocks.values.firstOrNull()?.let { (_, location) ->
-            val (x, y) = location
-            if (x >= columnWidth && x <= size.width - paddingRight.toPx()) {
-                selectionHighlightPoint?.draw?.let { it(this, Offset(x, y)) }
-                if (selectionHighlightPoint?.isHighlightLineRequired == true) {
-                    selectionHighlightPoint.drawHighlightLine(
-                        this, Offset(x, yBottom), Offset(x, y)
-                    )
-                }
-            }
         }
     }
 }
