@@ -115,7 +115,6 @@ private fun DrawScope.drawAxisLineWithPointers(
                         0f
                     ) else Offset(xPos, 0f),
                     if (shouldDrawAxisLineTillEnd) {
-                        //todo sree_ check this case for horizontal chart
                         Offset((xPos + (axisStepWidth / 2) + axisStepWidth), 0f)
                     } else {
                         if (axisData.dataCategoryOptions.isDataCategoryInYAxis) Offset(

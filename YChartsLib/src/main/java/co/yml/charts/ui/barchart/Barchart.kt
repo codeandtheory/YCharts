@@ -527,11 +527,13 @@ fun DrawScope.drawBarGraph(
         val brush = Brush.verticalGradient(
             colors = barData.gradientColorList
         )
-        //todo sree_ made changes here for horizontal chart
         drawRoundRect(
             brush = brush,
             topLeft = drawOffset,
-            size = Size(barWidth.toPx(), height),
+            size = if (barChartType == BarChartType.VERTICAL) Size(
+                barWidth.toPx(),
+                height
+            ) else Size(height, barWidth.toPx()),
             cornerRadius = CornerRadius(
                 cornerRadius.toPx(), cornerRadius.toPx()
             ),
@@ -539,7 +541,6 @@ fun DrawScope.drawBarGraph(
             blendMode = barBlendMode
         )
     } else {
-        //todo sree_ made changes here for horizontal chart like height and width
         drawRoundRect(
             color = barData.color,
             topLeft = drawOffset,

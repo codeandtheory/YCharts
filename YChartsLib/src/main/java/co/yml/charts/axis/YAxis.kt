@@ -159,7 +159,7 @@ private fun DrawScope.drawAxisLineWithPointers(
                     start = Offset(
                         x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
                         y = if (dataCategoryOptions.isDataCategoryInYAxis) {
-                            yPos
+                            if (shouldDrawAxisLineTillEnd) yPos - axisStepWidth / 2 else yPos
                         } else yAxisHeight - (segmentHeight * index)
                     ),
                     end = Offset(

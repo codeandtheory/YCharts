@@ -294,26 +294,3 @@ fun getMaxElementInXAxis(xMax: Float, xStepSize: Int): Int {
 fun Offset.isYAxisTapped(tapOffset: Offset, yOffset: Float, left: Float, tapPadding: Float) =
     (((tapOffset.y) < y + (yOffset + tapPadding) / 2) && ((tapOffset.y) > y - (yOffset + tapPadding) / 2) &&
             ((tapOffset.plus(Offset(tapPadding, 0f))).x > x) && ((tapOffset.x) > left))
-
-/**
- * Returns the background rect for the highlighted text.
- * @param x : X point.
- * @param y: Y point.
- * @param text: Text to be drawn inside the background.
- * @param paint: Background paint.
- */
-fun getYaxisTextBackgroundRect(
-    x: Float,
-    y: Float,
-    text: String,
-    paint: TextPaint
-): Rect {
-    val fontMetrics = paint.fontMetrics
-    val textLength = paint.measureText(text)
-    return Rect(
-        (x - (textLength / 2)).toInt(),
-        (y + fontMetrics.top).toInt(),
-        (x + (textLength / 2)).toInt(),
-        (y + fontMetrics.bottom).toInt()
-    )
-}

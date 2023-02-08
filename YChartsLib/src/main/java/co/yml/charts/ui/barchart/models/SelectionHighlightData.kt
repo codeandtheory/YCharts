@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.yml.charts.common.extensions.getTextBackgroundRect
-import co.yml.charts.common.extensions.getYaxisTextBackgroundRect
 
 /**
  * Used to customise the highlighted text and the bar
@@ -82,7 +81,7 @@ data class SelectionHighlightData(
                 if (barChartType == BarChartType.VERTICAL) centerPointOfBar else selectedXAxisWidth + highlightTextOffset.toPx()
             val y =
                 if (barChartType == BarChartType.VERTICAL) selectedOffset.y else centerPointOfBar
-            val background = getYaxisTextBackgroundRect(
+            val background = getTextBackgroundRect(
                 x,
                 y,
                 label,
@@ -92,7 +91,7 @@ data class SelectionHighlightData(
                 color = highlightTextBackgroundColor,
                 topLeft = Offset(
                     background.left.toFloat(),
-                    if (barChartType == BarChartType.VERTICAL) background.top.toFloat() - highlightTextOffset.toPx() else background.top.toFloat()
+                    if (barChartType == BarChartType.VERTICAL) background.top.toFloat() - highlightTextOffset.toPx() else (y - background.height() / 2)
                 ),
                 size = Size(background.width().toFloat(), background.height().toFloat()),
                 alpha = highlightTextBackgroundAlpha,
@@ -104,7 +103,7 @@ data class SelectionHighlightData(
             val drawTextX =
                 if (barChartType == BarChartType.VERTICAL) centerPointOfBar else selectedXAxisWidth + highlightTextOffset.toPx()
             val drawTextY =
-                if (barChartType == BarChartType.VERTICAL) selectedOffset.y - highlightTextOffset.toPx() else centerPointOfBar
+                if (barChartType == BarChartType.VERTICAL) selectedOffset.y - highlightTextOffset.toPx() else (y + background.height() / 2) - (highlightTextPaint.fontMetrics.descent)
             drawText(
                 label,
                 drawTextX,

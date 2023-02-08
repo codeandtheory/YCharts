@@ -140,7 +140,7 @@ private fun HorizontalBarChart() {
             selectionHighlightData = SelectionHighlightData(
                 highlightBarColor = Color.Red,
                 highlightTextBackgroundColor = Color.Green,
-                popUpLabel = { _, y -> " Value : $y " },
+                popUpLabel = { x, _ -> " Value : $x " },
                 barChartType = BarChartType.HORIZONTAL
             ),
         ),
