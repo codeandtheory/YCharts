@@ -289,7 +289,7 @@ fun WaveChart(modifier: Modifier, waveChartData: WaveChartData) {
  * @param yBottom : Offset of X-Axis starting position i.e shade to be drawn until.
  * @param line : line on which shadow & intersectionPoints has to be drawn.
  */
-fun DrawScope.drawShadowUnderLineAndIntersectionPoint(
+private fun DrawScope.drawShadowUnderLineAndIntersectionPoint(
     cubicPath: Path, pointsData: MutableList<Offset>, yBottom: Float, line: Wave
 ) {
     if (line.shadowUnderLine.isNotNull()) {
