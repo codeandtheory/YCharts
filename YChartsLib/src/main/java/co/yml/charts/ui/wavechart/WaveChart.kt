@@ -175,7 +175,7 @@ fun WaveChart(modifier: Modifier, waveChartData: WaveChartData) {
                     // Draw Lines and Points and AreaUnderLine
                     // Draw area under curve
                     drawShadowUnderLineAndIntersectionPoint(
-                        cubicPath, pointsData, yBottom, wave
+                        cubicPath, pointsData, yPointOfOrigin, wave
                     )
 
                     // Draw the Y-axis
