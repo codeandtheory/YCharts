@@ -351,7 +351,6 @@ fun HorizontalBarChart(
             calculateMaxDistance = { yZoom ->
                 horizontalGap = horizontalExtraSpace.toPx()
                 val yStart = horizontalGap + barStyle.barWidth.toPx() + barStyle.barWidth.toPx() / 2
-
                 yOffset =
                     (barStyle.barWidth.toPx() + barStyle.paddingBetweenBars.toPx()) * yZoom
 
@@ -367,8 +366,12 @@ fun HorizontalBarChart(
             },
             onDraw = { scrollOffset, yZoom ->
                 val xLeft = columnWidth
+                val startPaddingFromBottom =
+                    horizontalGap + barStyle.barWidth.toPx() + barStyle.barWidth.toPx() / 2
                 val yStart =
-                    if (yAxisData.dataCategoryOptions.isDataCategoryStartFromBottom) horizontalGap + barStyle.barWidth.toPx() + barStyle.barWidth.toPx() / 2 else yAxisData.axisTopPadding.toPx()
+                    if (yAxisData.dataCategoryOptions.isDataCategoryStartFromBottom) startPaddingFromBottom else {
+                        if (yZoom < 1) startPaddingFromBottom else yAxisData.axisTopPadding.toPx()
+                    }
                 val yBottom = size.height - rowHeight
                 yOffset = (barStyle.barWidth.toPx() + barStyle.paddingBetweenBars.toPx()) * yZoom
 
@@ -384,8 +387,10 @@ fun HorizontalBarChart(
                         yBottom,
                         yOffset,
                         yMin,
+                        yMax,
                         yStart,
-                        yAxisData.dataCategoryOptions
+                        yAxisData.dataCategoryOptions,
+                        yZoom
                     )
                     val width = (barData.point.x) * xOffset
 
@@ -447,6 +452,9 @@ fun HorizontalBarChart(
                 }
 
                 if (showYAxis) {
+                    val startPaddingFromBottom = horizontalGap + LocalDensity.current.run {
+                        (barStyle.barWidth.toPx())
+                    }
                     YAxis(
                         modifier = Modifier
                             .align(Alignment.TopStart)
@@ -469,14 +477,18 @@ fun HorizontalBarChart(
                         chartData = points,
                         dataCategoryWidth = LocalDensity.current.run { yAxisData.axisStepSize.toPx() },
                         yStart =
-                        if (yAxisData.dataCategoryOptions.isDataCategoryStartFromBottom)
-                            horizontalGap + LocalDensity.current.run {
-                                (barStyle.barWidth.toPx())
+                        if (yAxisData.dataCategoryOptions.isDataCategoryStartFromBottom) {
+                            startPaddingFromBottom
+                        } else {
+                            if (xZoom < 1) {
+                                startPaddingFromBottom
+                            } else {
+                                LocalDensity.current.run {
+                                    (yAxisData.axisTopPadding.toPx() + barStyle.barWidth.toPx() / 2)
+                                }
                             }
-                        else
-                            LocalDensity.current.run {
-                                (yAxisData.axisTopPadding.toPx() + barStyle.barWidth.toPx() / 2)
-                            })
+                        }, LocalDensity.current.run { barStyle.barWidth.toPx() }
+                    )
                 }
             }, onPointClicked = { offset: Offset, _: Float ->
                 isTapped = true
@@ -570,7 +582,6 @@ fun DrawScope.drawBarGraph(
     }
 }
 
-//todo sree_ reusing the function for Y axis update the documentation or param names
 /**
  *
  * returns the max scrollable distance based on the points to be drawn along with padding etc.
@@ -806,12 +817,20 @@ fun getDrawHorizontalOffset(
     yBottom: Float,
     yOffset: Float,
     yMin: Float,
+    yMax: Float,
     yStart: Float,
-    dataCategoryOptions: DataCategoryOptions
+    dataCategoryOptions: DataCategoryOptions,
+    zoomScale: Float
 ): Offset {
-    val (x, y) = point
+    val (_, y) = point
     val x1 = xLeft
     val y1 =
-        if (dataCategoryOptions.isDataCategoryStartFromBottom) yBottom - yStart - ((y - yMin) * yOffset) + scrollOffset else yStart + ((y - yMin) * yOffset) - scrollOffset
+        if (dataCategoryOptions.isDataCategoryStartFromBottom) yBottom - yStart - ((y - yMin) * yOffset) + scrollOffset else {
+            if (zoomScale < 1) {
+                yBottom - yStart - ((yMax - y) * yOffset) + scrollOffset
+            } else {
+                yStart + ((y - yMin) * yOffset) - scrollOffset
+            }
+        }
     return Offset(x1, y1)
 }

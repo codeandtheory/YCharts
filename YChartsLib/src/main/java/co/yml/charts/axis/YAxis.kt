@@ -45,7 +45,8 @@ fun YAxis(
     zoomScale: Float = 0f,
     chartData: List<Point> = emptyList(),
     dataCategoryWidth: Float = 0f,
-    yStart: Float = 0f
+    yStart: Float = 0f,
+    barWidth: Float = 0f
 ) {
     with(yAxisData) {
         var yAxisWidth by remember { mutableStateOf(0.dp) }
@@ -67,8 +68,11 @@ fun YAxis(
                     dataCategoryWidth
                 )
                 val (_, _, yAxisScale) = getYAxisScale(chartData, yAxisData.steps)
+                val yPositionFromBottom = yAxisHeight - yStart + scrollOffset
                 var yPos =
-                    if (dataCategoryOptions.isDataCategoryStartFromBottom) yAxisHeight - yStart + scrollOffset else yStart - scrollOffset
+                    if (dataCategoryOptions.isDataCategoryStartFromBottom) yPositionFromBottom else {
+                        if (zoomScale < 1) yPositionFromBottom else yStart - scrollOffset
+                    }
 
                 for (index in 0 until steps) {
                     // Drawing the axis labels
@@ -79,7 +83,9 @@ fun YAxis(
                         yAxisWidth,
                         isRightAligned,
                         yAxisHeight,
-                        segmentHeight
+                        segmentHeight,
+                        zoomScale,
+                        steps - 1
                     )
                     drawAxisLineWithPointers(
                         yPos,
@@ -91,12 +97,19 @@ fun YAxis(
                         yAxisHeight,
                         segmentHeight,
                         zoomScale,
-                        yAxisScale
+                        yAxisScale,
+                        yStart,
+                        barWidth
                     )
+                    val yPosChangeFromBottom = (axisStepSize.toPx() * (zoomScale * yAxisScale))
                     if (dataCategoryOptions.isDataCategoryStartFromBottom) {
-                        yPos -= ((axisStepSize.toPx() * (zoomScale * yAxisScale)))
+                        yPos -= yPosChangeFromBottom
                     } else {
-                        yPos += ((axisStepSize.toPx() * (zoomScale * yAxisScale)))
+                        if (zoomScale < 1) {
+                            yPos -= yPosChangeFromBottom
+                        } else {
+                            yPos += ((axisStepSize.toPx() * (zoomScale * yAxisScale)))
+                        }
                     }
 
                 }
@@ -135,19 +148,20 @@ private fun DrawScope.drawAxisLineWithPointers(
     yAxisHeight: Float,
     segmentHeight: Float,
     zoomScale: Float,
-    yAxisScale: Float
+    yAxisScale: Float,
+    yStart: Float = 0f,
+    barWidth: Float
 ) {
     with(axisData) {
         if (axisConfig.isAxisLineRequired) {
             // Draw line only until reqXLabelsQuo -1 else will be a extra line at top with no label
             val axisStepWidth = (axisStepSize.toPx() * (zoomScale * yAxisScale))
 
-            //todo sree_ check the line height
             if (startDrawPadding != 0.dp && dataCategoryOptions.isDataCategoryInYAxis) {
                 drawLine(
                     start = Offset(
                         x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
-                        y = yAxisHeight - startDrawPadding.toPx()
+                        y = if (dataCategoryOptions.isDataCategoryStartFromBottom) yAxisHeight - yStart else yAxisHeight - yStart - barWidth / 2
                     ),
                     end = Offset(
                         x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
@@ -163,13 +177,39 @@ private fun DrawScope.drawAxisLineWithPointers(
                     start = Offset(
                         x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
                         y = if (dataCategoryOptions.isDataCategoryInYAxis) {
-                            if (shouldDrawAxisLineTillEnd) yPos - axisStepWidth / 2 else yPos
+                            if (shouldDrawAxisLineTillEnd) {
+                                if (dataCategoryOptions.isDataCategoryStartFromBottom) yPos else {
+                                    if (zoomScale < 1) yPos else yPos - axisStepWidth / 2
+                                }
+                            } else
+                                yPos
                         } else yAxisHeight - (segmentHeight * index)
                     ),
                     end = Offset(
                         x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
                         y = if (dataCategoryOptions.isDataCategoryInYAxis) {
-                            if (dataCategoryOptions.isDataCategoryStartFromBottom) yPos - axisStepWidth else yPos + axisStepWidth
+                            if (dataCategoryOptions.isDataCategoryStartFromBottom) {
+                                if (shouldDrawAxisLineTillEnd) {
+                                    yPos - axisStepWidth - barWidth / 2
+                                } else {
+                                    yPos - axisStepWidth
+                                }
+                            } else {
+                                if (zoomScale < 1) {
+                                    if (shouldDrawAxisLineTillEnd) {
+                                        yPos - axisStepWidth - barWidth / 2
+                                    } else {
+                                        yPos - axisStepWidth
+                                    }
+
+                                } else {
+                                    if (shouldDrawAxisLineTillEnd) {
+                                        yPos + axisStepWidth + barWidth / 2
+                                    } else {
+                                        yPos + axisStepWidth
+                                    }
+                                }
+                            }
                         } else yAxisHeight - (segmentHeight * (index + 1))
                     ),
                     color = axisLineColor, strokeWidth = axisLineThickness.toPx()
@@ -206,7 +246,9 @@ private fun DrawScope.drawAxisLabel(
     yAxisWidth: Dp,
     isRightAligned: Boolean,
     yAxisHeight: Float,
-    segmentHeight: Float
+    segmentHeight: Float,
+    zoomScale: Float,
+    lastIndex: Int
 ): Dp = with(axisData) {
     var calculatedYAxisWidth = yAxisWidth
     val yAxisTextPaint = TextPaint().apply {
@@ -215,7 +257,11 @@ private fun DrawScope.drawAxisLabel(
         textAlign = if (isRightAligned) Paint.Align.RIGHT else Paint.Align.LEFT
         typeface = axisData.typeface
     }
-    val yAxisLabel = labelData(index)
+    val yAxisLabel = if (dataCategoryOptions.isDataCategoryInYAxis) {
+        if (dataCategoryOptions.isDataCategoryStartFromBottom) labelData(index) else {
+            if (zoomScale < 1) labelData(lastIndex - index) else labelData(index)
+        }
+    } else labelData(index)
     val measuredWidth = yAxisLabel.getTextWidth(yAxisTextPaint)
     val height: Int = yAxisLabel.getTextHeight(yAxisTextPaint)
     if (measuredWidth > calculatedYAxisWidth.toPx()) {
@@ -238,7 +284,9 @@ private fun DrawScope.drawAxisLabel(
             if (isRightAligned) calculatedYAxisWidth.toPx() - labelAndAxisLinePadding.toPx() else {
                 axisStartPadding.toPx()
             },
-            if (dataCategoryOptions.isDataCategoryInYAxis) yPos + height / 2 else yAxisHeight + height / 2 - ((segmentHeight * index)),
+            if (dataCategoryOptions.isDataCategoryInYAxis)
+                yPos + height / 2
+            else yAxisHeight + height / 2 - ((segmentHeight * index)),
             yAxisTextPaint
         )
     }
