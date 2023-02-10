@@ -5,6 +5,7 @@ package co.yml.charts.ui.wavechart
 import android.graphics.Paint
 import android.text.TextPaint
 import android.text.TextUtils
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -43,10 +44,13 @@ import co.yml.charts.ui.linechart.drawHighlightText
 import co.yml.charts.ui.linechart.drawPointOnLine
 import co.yml.charts.ui.linechart.drawStraightOrCubicLine
 import co.yml.charts.ui.linechart.getCubicPoints
+import co.yml.charts.ui.linechart.getDrawStyleForPath
 import co.yml.charts.ui.linechart.getMappingPointsToGraph
 import co.yml.charts.ui.linechart.getMaxScrollDistance
 import co.yml.charts.ui.linechart.getYAxisScale
 import co.yml.charts.ui.linechart.isTapped
+import co.yml.charts.ui.linechart.model.LineStyle
+import co.yml.charts.ui.linechart.model.LineType
 import co.yml.charts.ui.wavechart.model.Wave
 import co.yml.charts.ui.wavechart.model.WaveChartData
 import kotlinx.coroutines.launch
@@ -168,14 +172,20 @@ fun WaveChart(modifier: Modifier, waveChartData: WaveChartData) {
                     }
 
                     // Draw cubic line using the points and form a line graph
-                    val cubicPath = drawStraightOrCubicLine(
-                        pointsData, cubicPoints1, cubicPoints2, wave.waveStyle
+                    val (cubicPath, cubic2) = drawStraightOrCubicLineForWave(
+                        pointsData, cubicPoints1, cubicPoints2, yPointOfOrigin, wave
                     )
 
                     // Draw Lines and Points and AreaUnderLine
                     // Draw area under curve
                     drawShadowUnderLineAndIntersectionPoint(
-                        cubicPath, pointsData, yPointOfOrigin, wave
+                        cubicPath, pointsData, yPointOfOrigin, wave, true
+                    )
+
+                    // Draw Lines and Points and AreaUnderLine
+                    // Draw area under curve
+                    drawShadowUnderLineAndIntersectionPoint(
+                        cubic2, pointsData, yPointOfOrigin, wave, false
                     )
 
                     // Draw the Y-axis
@@ -290,18 +300,157 @@ fun WaveChart(modifier: Modifier, waveChartData: WaveChartData) {
  * @param line : line on which shadow & intersectionPoints has to be drawn.
  */
 private fun DrawScope.drawShadowUnderLineAndIntersectionPoint(
-    cubicPath: Path, pointsData: MutableList<Offset>, yBottom: Float, line: Wave
+    cubicPath: Path, pointsData: MutableList<Offset>, yBottom: Float, line: Wave, isPositiveWave: Boolean
 ) {
     if (line.shadowUnderLine.isNotNull()) {
         cubicPath.lineTo(pointsData.last().x, yBottom)
         cubicPath.lineTo(pointsData.first().x, yBottom)
-        line.shadowUnderLine?.draw?.let { it(this, cubicPath) }
+        line.shadowUnderLine?.draw?.let { it(this, cubicPath, isPositiveWave) }
     }
     if (line.intersectionPoint.isNotNull()) {
         pointsData.forEach { offset ->
             drawPointOnLine(offset, line.intersectionPoint)
         }
     }
+}
+
+/**
+ *
+ * DrawScope.drawStraightOrCubicLine extension method used for drawing a straight/cubic line for a given Point(x,y).
+ * @param pointsData : List of points to be drawn on the canvas
+ * @param cubicPoints1 : List of average left side values for a given Point(x,y).
+ * @param cubicPoints2 : List of average right side values for a given Point(x,y).
+ * @param lineStyle : All styles related to the path are included in [LineStyle].
+ */
+private fun DrawScope.drawStraightOrCubicLineForWave(
+    pointsData: MutableList<Offset>,
+    cubicPoints1: MutableList<Offset>,
+    cubicPoints2: MutableList<Offset>,
+    yOriginPos: Float,
+    wave: Wave
+): Pair<Path, Path> {
+    var path = Path()
+    var changecolor = true
+    var lastChangeAxisIndex = 0
+    var changeAxis: Boolean = false
+    val pathAbove = Path()
+    val pathBelow = Path()
+    path.moveTo(pointsData.first().x, pointsData.first().y)
+    for (i in 1 until pointsData.size) {
+        if (pointsData[i - 1].y < yOriginPos && pointsData[i].y > yOriginPos ||
+            pointsData[i - 1].y > yOriginPos && pointsData[i].y < yOriginPos) {
+            changeAxis = true
+        }
+        when (wave.waveStyle.lineType) {
+            is LineType.Straight -> {
+                if (changeAxis) {
+                    val slope = ((pointsData[i].y - pointsData[i - 1].y)/(pointsData[i].x - pointsData[i - 1].x))
+                    val yIntercept = pointsData[i - 1].y - pointsData[i - 1].x * slope
+                    val absoluteXPosForYAtZero = slope*yOriginPos-yIntercept
+                    path.lineTo(absoluteXPosForYAtZero, yOriginPos)
+                    with(wave.waveStyle) {
+                        drawPath(
+                            path,
+                            color = color,
+                            style = getDrawStyleForPath(lineType, this),
+                            alpha = alpha,
+                            colorFilter = colorFilter,
+                            blendMode = blendMode
+                        )
+                    }
+                    changeAxis = false
+
+                    // Draw Lines and Points and AreaUnderLine
+                    // Draw area under curve
+                    drawShadowUnderLineAndIntersectionPoint(
+                        path, pointsData.subList(lastChangeAxisIndex, i), yOriginPos, wave, pointsData[i - 1].y > yOriginPos
+                    )
+                    lastChangeAxisIndex = i
+                    path = Path()
+                    path.moveTo(pointsData[i - 1].x, pointsData[i - 1].y)
+                }
+                path.lineTo(pointsData[i].x, pointsData[i].y)
+            }
+            is LineType.SmoothCurve -> {
+                val point = pointsData[i]
+                if (point.y >= yOriginPos) {
+                    pathAbove.cubicTo(
+                        cubicPoints1[i - 1].x,
+                        cubicPoints1[i - 1].y,
+                        cubicPoints2[i - 1].x,
+                        cubicPoints2[i - 1].y,
+                        pointsData[i].x,
+                        pointsData[i].y
+                    )
+                } else {
+                    pathBelow.cubicTo(
+                        cubicPoints1[i - 1].x,
+                        cubicPoints1[i - 1].y,
+                        cubicPoints2[i - 1].x,
+                        cubicPoints2[i - 1].y,
+                        pointsData[i].x,
+                        pointsData[i].y
+                    )
+                }
+            }
+//                if (changeAxis) {
+//                    val slope = ((pointsData[i].y - pointsData[i - 1].y)/(pointsData[i].x - pointsData[i - 1].x))
+//                    val yIntercept = pointsData[i - 1].y - pointsData[i - 1].x * slope
+//                    val absoluteXPosForYAtZero = (yOriginPos - yIntercept)/yOriginPos
+//                    Log.d("harshaaa", "absoluteXPosForYAtZero for index $i - ${absoluteXPosForYAtZero}")
+//                    path.cubicTo(
+//                        cubicPoints1[i - 1].x,
+//                        cubicPoints1[i - 1].y,
+//                        cubicPoints2[i - 1].x,
+//                        cubicPoints2[i - 1].y,
+//                        (pointsData[i].x + pointsData[i - 1])/2,
+//                        yOriginPos
+//                    )
+//                    with(wave.waveStyle) {
+//                        drawPath(
+//                            path,
+//                            color = color,
+//                            style = getDrawStyleForPath(lineType, this),
+//                            alpha = alpha,
+//                            colorFilter = colorFilter,
+//                            blendMode = blendMode
+//                        )
+//                    }
+//                    changeAxis = false
+//                    // Draw Lines and Points and AreaUnderLine
+//                    // Draw area under curve
+//                    val newList = pointsData.subList(lastChangeAxisIndex, i-1).toMutableList()
+//                    newList.add(Offset(absoluteXPosForYAtZero, yOriginPos))
+//                    drawShadowUnderLineAndIntersectionPoint(
+//                        path, newList, yOriginPos, wave, pointsData[i - 1].y > yOriginPos
+//                    )
+//                    lastChangeAxisIndex = i
+//                    changecolor = !changecolor
+//                    path.moveTo(absoluteXPosForYAtZero, yOriginPos)
+//                }
+//
+//                path.cubicTo(
+//                    cubicPoints1[i - 1].x,
+//                    cubicPoints1[i - 1].y,
+//                    cubicPoints2[i - 1].x,
+//                    cubicPoints2[i - 1].y,
+//                    pointsData[i].x,
+//                    pointsData[i].y
+//                )
+//            }
+        }
+    }
+    with(wave.waveStyle) {
+        drawPath(
+            path,
+            color = color,
+            style = getDrawStyleForPath(lineType, this),
+            alpha = alpha,
+            colorFilter = colorFilter,
+            blendMode = blendMode
+        )
+    }
+    return Pair(pathAbove, pathBelow)
 }
 
 /**

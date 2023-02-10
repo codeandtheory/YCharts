@@ -214,14 +214,7 @@ private fun WaveGraph3(pointsData: List<Point>) {
                         lineType = LineType.SmoothCurve(isDotted = true),
                         color = Color.Green
                     ),
-                    shadowUnderLine = ShadowUnderLine(
-                        brush = Brush.verticalGradient(
-                            listOf(
-                                Color.Green,
-                                Color.Transparent
-                            )
-                        ), alpha = 0.3f
-                    ),
+                    shadowUnderLine = ShadowUnderLine(),
                     selectionHighlightPoint = SelectionHighlightPoint(
                         color = Color.Green
                     ),

@@ -18,17 +18,23 @@ import androidx.compose.ui.graphics.drawscope.Fill
  * the [Path] of the line
  */
 data class ShadowUnderLine(
+    val positiveColor: Color = Color.Yellow,
+    val negativeColor: Color = Color.Red,
     val color: Color = Color.Black,
     val brush: Brush? = null,
     val alpha: Float = 0.1f,
     val style: DrawStyle = Fill,
     val colorFilter: ColorFilter? = null,
     val blendMode: BlendMode = DrawScope.DefaultBlendMode,
-    val draw: DrawScope.(Path) -> Unit = { path ->
+    val draw: DrawScope.(Path, Boolean?) -> Unit = { path, isPositive ->
         if (brush != null) {
             drawPath(path, brush, alpha, style, colorFilter, blendMode)
         } else {
-            drawPath(path, color, alpha, style, colorFilter, blendMode)
+            var finalColor = color
+            isPositive?.let {
+                finalColor = if (it) positiveColor else negativeColor
+            }
+            drawPath(path, finalColor, alpha, style, colorFilter, blendMode)
         }
     }
 )
