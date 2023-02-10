@@ -116,9 +116,9 @@ fun getYMaxAndMinPoints(
 ): Pair<Float, Float> {
     if (points.isEmpty())
         return Pair(0f, 0f)
-    val xMin = points.minOf { it.y }
-    val xMax = points.maxOf { it.y }
-    return Pair(xMin, xMax)
+    val yMin = points.minOf { it.y }
+    val yMax = points.maxOf { it.y }
+    return Pair(yMin, yMax)
 }
 
 /**

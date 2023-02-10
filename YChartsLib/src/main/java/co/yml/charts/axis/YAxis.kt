@@ -123,8 +123,8 @@ fun getAxisInitValues(
     canvasHeight: Float,
     bottomPadding: Float,
     topPadding: Float,
-    isDataCategoryInYAxis: Boolean,
-    dataCategoryWidth: Float
+    isDataCategoryInYAxis: Boolean = false,
+    dataCategoryWidth: Float = 0f
 ): Pair<Float, Float> = with(axisData) {
     val yAxisHeight = canvasHeight - bottomPadding
 
