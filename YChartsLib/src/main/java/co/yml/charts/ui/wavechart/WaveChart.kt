@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.core.graphics.withRotation
@@ -75,7 +76,7 @@ fun WaveChart(modifier: Modifier, waveChartData: WaveChartData) {
             }
         }
     }
-    Surface(modifier = modifier) {
+    Surface(modifier = modifier.testTag("wave_chart")) {
         with(waveChartData) {
             var columnWidth by remember { mutableStateOf(0f) }
             val rowHeight by remember { mutableStateOf(0f) }
@@ -102,6 +103,7 @@ fun WaveChart(modifier: Modifier, waveChartData: WaveChartData) {
                 .semantics {
                     contentDescription = waveChartData.accessibilityConfig.chartDescription
                 }
+                .testTag("scrollable_container")
                 .clickable {
                     if (isTalkBackEnabled) {
                         scope.launch {
