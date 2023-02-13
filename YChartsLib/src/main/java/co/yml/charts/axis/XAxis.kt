@@ -43,8 +43,7 @@ fun XAxis(
     xStart: Float,
     scrollOffset: Float,
     zoomScale: Float,
-    chartData: List<Point>,
-    dataValueWidth: Float = 0f
+    chartData: List<Point>
 ) {
     with(xAxisData) {
         var xAxisHeight by remember { mutableStateOf(0.dp) }
@@ -56,6 +55,9 @@ fun XAxis(
                     .background(backgroundColor)
             ) {
                 val (_, _, xAxisScale) = getXAxisScale(chartData, steps)
+                //this is used when data category draws in Y axis and value in X axis
+                val xAxisSegmentWidth = (size.width - xStart - axisEndPadding.toPx()) / steps
+
                 var xPos = xStart - scrollOffset
 
                 // used in the case of barchart
@@ -75,7 +77,7 @@ fun XAxis(
                         xAxisScale,
                         xPos,
                         xStart,
-                        dataValueWidth
+                        xAxisSegmentWidth
                     )
                     drawAxisLineWithPointers(
                         xPos,
@@ -85,7 +87,7 @@ fun XAxis(
                         index != steps,
                         xStart,
                         index,
-                        dataValueWidth
+                        xAxisSegmentWidth
                     )
                     xPos += ((axisStepSize.toPx() * (zoomScale * xAxisScale)))
                 }
@@ -155,7 +157,8 @@ private fun DrawScope.drawXAxisLabel(
         textAlign = Paint.Align.LEFT
         typeface = axisData.typeface
     }
-    val xLabel = labelData((index * xAxisScale).toInt())
+    val xLabel =
+        if (axisData.dataCategoryOptions.isDataCategoryInYAxis) labelData(index) else labelData((index * xAxisScale).toInt())
     val labelHeight = xLabel.getTextHeight(xAxisTextPaint)
     val labelWidth = xLabel.getTextWidth(xAxisTextPaint)
     calculatedXAxisHeight =

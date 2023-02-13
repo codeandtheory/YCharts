@@ -310,7 +310,6 @@ fun HorizontalBarChart(
         var columnWidth by remember { mutableStateOf(0f) }
         var horizontalGap by remember { mutableStateOf(0f) }
         var rowHeight by remember { mutableStateOf(0f) }
-        val paddingRight = paddingEnd
         val points = chartData.map { it.point }
         val bgColor = MaterialTheme.colors.surface
 
@@ -318,8 +317,7 @@ fun HorizontalBarChart(
         val (yMin, yMax) = getYMaxAndMinPoints(points)
 
         val xAxisData = xAxisData.copy(
-            dataCategoryOptions = DataCategoryOptions(isDataCategoryInYAxis = true),
-            axisEndPadding = 80.dp
+            dataCategoryOptions = DataCategoryOptions(isDataCategoryInYAxis = true)
         )
         val yAxisData = yAxisData.copy(
             axisStepSize = barStyle.barWidth + barStyle.paddingBetweenBars,
@@ -327,6 +325,7 @@ fun HorizontalBarChart(
             axisBottomPadding = LocalDensity.current.run { rowHeight.toDp() },
             startDrawPadding = LocalDensity.current.run { rowHeight.toDp() })
         val maxElementInXAxis = getMaxElementInXAxis(xMax, xAxisData.steps)
+        var xAxisSegmentWidth = 0f
 
         if (!showXAxis) {
             rowHeight =
@@ -446,8 +445,7 @@ fun HorizontalBarChart(
                         xStart = columnWidth,
                         scrollOffset = 0f,
                         zoomScale = xZoom,
-                        chartData = points,
-                        dataValueWidth = xOffset
+                        chartData = points
                     )
                 }
 

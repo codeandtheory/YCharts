@@ -279,6 +279,11 @@ internal class ColumnClip(
     }
 }
 
+/**
+ * Returns the maximum value of X axis
+ * @param xMax Maximum value in the X axis
+ * @param xStepSize size of one step in the X axis
+ */
 fun getMaxElementInXAxis(xMax: Float, xStepSize: Int): Int {
     var reqYLabelsQuo =
         (xMax / xStepSize)
