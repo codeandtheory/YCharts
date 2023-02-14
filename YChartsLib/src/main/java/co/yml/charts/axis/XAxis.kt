@@ -43,7 +43,8 @@ fun XAxis(
     xStart: Float,
     scrollOffset: Float,
     zoomScale: Float,
-    chartData: List<Point>
+    chartData: List<Point>,
+    axisStart: Float
 ) {
     with(xAxisData) {
         var xAxisHeight by remember { mutableStateOf(0.dp) }
@@ -64,7 +65,7 @@ fun XAxis(
                 if (startDrawPadding != 0.dp) {
                     drawLine(
                         axisLineColor,
-                        Offset(xStart, 0f),
+                        Offset(axisStart, 0f),
                         Offset(xStart + (startDrawPadding.toPx() * zoomScale), 0f),
                         strokeWidth = axisLineThickness.toPx()
                     )
@@ -225,6 +226,7 @@ private fun XAxisPreview() {
         xStart = 0f,
         scrollOffset = 0f,
         zoomScale = 1f,
-        chartData = listOf()
+        chartData = listOf(),
+        axisStart = 0f
     )
 }

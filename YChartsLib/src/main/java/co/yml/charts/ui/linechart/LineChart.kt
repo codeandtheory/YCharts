@@ -29,13 +29,6 @@ import co.yml.charts.axis.XAxis
 import co.yml.charts.axis.YAxis
 import co.yml.charts.axis.getXAxisScale
 import co.yml.charts.chartcontainer.container.ScrollableCanvasContainer
-import co.yml.charts.ui.linechart.model.IntersectionPoint
-import co.yml.charts.ui.linechart.model.Line
-import co.yml.charts.ui.linechart.model.LineChartData
-import co.yml.charts.ui.linechart.model.LineStyle
-import co.yml.charts.ui.linechart.model.LineType
-import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
-import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 import co.yml.charts.common.components.ItemDivider
 import co.yml.charts.common.components.accessibility.AccessibilityBottomSheetDialog
 import co.yml.charts.common.components.accessibility.LinePointInfo
@@ -44,6 +37,7 @@ import co.yml.charts.common.extensions.collectIsTalkbackEnabledAsState
 import co.yml.charts.common.extensions.drawGridLines
 import co.yml.charts.common.extensions.isNotNull
 import co.yml.charts.common.model.Point
+import co.yml.charts.ui.linechart.model.*
 import kotlinx.coroutines.launch
 
 /**
@@ -141,7 +135,8 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                         xStart = columnWidth,
                         scrollOffset = scrollOffset,
                         zoomScale = xZoom,
-                        chartData = line.dataPoints)
+                        chartData = line.dataPoints,
+                        axisStart = columnWidth)
                 },
                 onDraw = { scrollOffset, xZoom ->
                     val yBottom = size.height - rowHeight

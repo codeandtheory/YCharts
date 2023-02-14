@@ -25,6 +25,14 @@ import androidx.compose.ui.unit.dp
 import co.yml.charts.axis.XAxis
 import co.yml.charts.axis.YAxis
 import co.yml.charts.chartcontainer.container.ScrollableCanvasContainer
+import co.yml.charts.common.components.ItemDivider
+import co.yml.charts.common.components.accessibility.AccessibilityBottomSheetDialog
+import co.yml.charts.common.components.accessibility.CombinedChartInfo
+import co.yml.charts.common.extensions.*
+import co.yml.charts.common.extensions.getMaxElementInYAxis
+import co.yml.charts.common.model.PlotData
+import co.yml.charts.common.model.PlotType
+import co.yml.charts.common.model.Point
 import co.yml.charts.ui.barchart.drawUnderScrollMask
 import co.yml.charts.ui.barchart.getGroupBarDrawOffset
 import co.yml.charts.ui.barchart.getMaxScrollDistance
@@ -40,18 +48,6 @@ import co.yml.charts.ui.linechart.drawStraightOrCubicLine
 import co.yml.charts.ui.linechart.getCubicPoints
 import co.yml.charts.ui.linechart.getMappingPointsToGraph
 import co.yml.charts.ui.linechart.model.LinePlotData
-import co.yml.charts.common.components.ItemDivider
-import co.yml.charts.common.components.accessibility.AccessibilityBottomSheetDialog
-import co.yml.charts.common.components.accessibility.CombinedChartInfo
-import co.yml.charts.common.extensions.RowClip
-import co.yml.charts.common.extensions.collectIsTalkbackEnabledAsState
-import co.yml.charts.common.extensions.getMaxElementInYAxis
-import co.yml.charts.common.extensions.isNotNull
-import co.yml.charts.common.extensions.isPointTapped
-import co.yml.charts.common.extensions.isTapped
-import co.yml.charts.common.model.PlotData
-import co.yml.charts.common.model.PlotType
-import co.yml.charts.common.model.Point
 import kotlinx.coroutines.launch
 
 /**
@@ -143,7 +139,7 @@ fun CombinedChart(modifier: Modifier, combinedChartData: CombinedChartData) {
                         ((barPlotData.barStyle.barWidth.toPx() * barPlotData.groupingSize) +
                                 barPlotData.barStyle.paddingBetweenBars.toPx()) * xZoom
                     getMaxScrollDistance(
-                        columnWidth,
+                        columnWidth + (xAxisData.startDrawPadding.toPx() * xZoom),
                         xMax,
                         xMin,
                         xOffset,
@@ -177,7 +173,8 @@ fun CombinedChart(modifier: Modifier, combinedChartData: CombinedChartData) {
                         },
                         scrollOffset = scrollOffset,
                         zoomScale = xZoom,
-                        chartData = if(barPoints.isEmpty()) linePoints else axisPoints
+                        chartData = if (barPoints.isEmpty()) linePoints else axisPoints,
+                        axisStart = columnWidth
                     )
                     YAxis(
                         modifier = Modifier
@@ -198,7 +195,7 @@ fun CombinedChart(modifier: Modifier, combinedChartData: CombinedChartData) {
                         ((barPlotData.barStyle.barWidth.toPx() * barPlotData.groupingSize) +
                                 barPlotData.barStyle.paddingBetweenBars.toPx()) * xZoom
                     val xLeft =
-                        columnWidth + horizontalExtraSpace.toPx()
+                        columnWidth + horizontalExtraSpace.toPx() + (xAxisData.startDrawPadding.toPx() * xZoom)
                     val barTapLocks = mutableMapOf<Int, Pair<BarData, Offset>>()
                     val linePointLocks = mutableMapOf<Int, Pair<Point, Offset>>()
 

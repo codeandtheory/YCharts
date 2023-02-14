@@ -268,7 +268,8 @@ fun VerticalBarChart(
                         xStart = columnWidth,
                         scrollOffset = scrollOffset,
                         zoomScale = xZoom,
-                        chartData = points
+                        chartData = points,
+                        axisStart = columnWidth
                     )
                 }
 
@@ -450,7 +451,8 @@ fun HorizontalBarChart(
                         xStart = columnWidth,
                         scrollOffset = 0f,
                         zoomScale = xZoom,
-                        chartData = points
+                        chartData = points,
+                        axisStart = columnWidth
                     )
                 }
 

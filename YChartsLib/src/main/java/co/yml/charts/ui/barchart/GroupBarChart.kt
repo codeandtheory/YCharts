@@ -243,6 +243,7 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                             scrollOffset = scrollOffset,
                             zoomScale = xZoom,
                             chartData = points,
+                            axisStart = columnWidth
                         )
                     }
 
