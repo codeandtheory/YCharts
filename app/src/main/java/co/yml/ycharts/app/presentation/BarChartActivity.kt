@@ -15,15 +15,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import co.yml.ycharts.app.ui.compositions.AppBarWithBackButton
-import co.yml.ycharts.app.ui.theme.YChartsTheme
 import co.yml.charts.axis.AxisData
+import co.yml.charts.axis.DataCategoryOptions
+import co.yml.charts.common.utils.DataUtils
 import co.yml.charts.ui.barchart.BarChart
 import co.yml.charts.ui.barchart.models.BarChartData
+import co.yml.charts.ui.barchart.models.BarChartType
 import co.yml.charts.ui.barchart.models.BarStyle
 import co.yml.charts.ui.barchart.models.SelectionHighlightData
-import co.yml.charts.common.utils.DataUtils
 import co.yml.ycharts.app.R
+import co.yml.ycharts.app.ui.compositions.AppBarWithBackButton
+import co.yml.ycharts.app.ui.theme.YChartsTheme
 
 class BarChartActivity : ComponentActivity() {
 
@@ -50,8 +52,8 @@ class BarChartActivity : ComponentActivity() {
                         LazyColumn(content = {
                             items(3) { item ->
                                 when (item) {
-                                    0 -> BarChart1()
-                                    1 -> BarChart2()
+                                    0 -> VerticalBarChart()
+                                    1 -> HorizontalBarChart()
                                 }
                             }
                         })
@@ -63,9 +65,10 @@ class BarChartActivity : ComponentActivity() {
 }
 
 @Composable
-private fun BarChart1() {
+private fun VerticalBarChart() {
     val maxRange = 50
-    val barData = DataUtils.getBarChartData(50, maxRange)
+    val barData =
+        DataUtils.getBarChartData(50, maxRange, BarChartType.VERTICAL, DataCategoryOptions())
     val yStepSize = 10
 
     val xAxisData = AxisData.Builder()
@@ -73,6 +76,8 @@ private fun BarChart1() {
         .steps(barData.size - 1)
         .bottomPadding(40.dp)
         .axisLabelAngle(20f)
+        .startDrawPadding(48.dp)
+        .shouldDrawAxisLineTillEnd(false)
         .labelData { index -> barData[index].label }
         .build()
     val yAxisData = AxisData.Builder()
@@ -96,40 +101,98 @@ private fun BarChart1() {
     BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
 }
 
+//Use if you want to Vertical barchart with isGradientEnabled
+//@Composable
+//private fun BarChart2() {
+//    val maxRange = 100
+//    val barData = DataUtils.getGradientBarChartData(50, 100)
+//    val yStepSize = 10
+//    val xAxisData = AxisData.Builder()
+//        .axisStepSize(30.dp)
+//        .steps(barData.size - 1)
+//        .bottomPadding(40.dp)
+//        .axisLabelAngle(20f)
+//        .labelData { index -> barData[index].label }
+//        .build()
+//    val yAxisData = AxisData.Builder()
+//        .steps(yStepSize)
+//        .labelAndAxisLinePadding(20.dp)
+//        .axisOffset(20.dp)
+//        .labelData { index -> (index * (maxRange / yStepSize)).toString() }
+//        .build()
+//    val barChartData = BarChartData(
+//        chartData = barData,
+//        xAxisData = xAxisData,
+//        yAxisData = yAxisData,
+//        barStyle = BarStyle(paddingBetweenBars = 20.dp,
+//            barWidth = 35.dp,
+//            isGradientEnabled = true,
+//            selectionHighlightData = SelectionHighlightData(
+//                highlightBarColor = Color.Red,
+//                highlightTextBackgroundColor = Color.Green,
+//                popUpLabel = { _, y -> " Value : $y " }
+//            )),
+//        showYAxis = true,
+//        showXAxis = true,
+//        horizontalExtraSpace = 20.dp
+//    )
+//    BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
+//}
+
 @Composable
-private fun BarChart2() {
-    val maxRange = 100
-    val barData = DataUtils.getGradientBarChartData(50, 100)
-    val yStepSize = 10
+private fun HorizontalBarChart() {
+    val maxRange = 30
+    val barData =
+        DataUtils.getBarChartData(
+            10,
+            maxRange,
+            BarChartType.HORIZONTAL,
+            DataCategoryOptions(isDataCategoryInYAxis = true)
+        )
+    val xStepSize = 10
+
     val xAxisData = AxisData.Builder()
-        .axisStepSize(30.dp)
-        .steps(barData.size - 1)
+        .steps(xStepSize)
         .bottomPadding(40.dp)
-        .axisLabelAngle(20f)
-        .labelData { index -> barData[index].label }
+        .endPadding(40.dp)
+        .labelData { index -> (index * (maxRange / xStepSize)).toString() }
         .build()
     val yAxisData = AxisData.Builder()
-        .steps(yStepSize)
+        .axisStepSize(30.dp)
+        .steps(barData.size - 1)
         .labelAndAxisLinePadding(20.dp)
         .axisOffset(20.dp)
-        .labelData { index -> (index * (maxRange / yStepSize)).toString() }
+        .setDataCategoryOptions(
+            DataCategoryOptions(
+                isDataCategoryInYAxis = true,
+                isDataCategoryStartFromBottom = false
+            )
+        )
+        .startDrawPadding(48.dp)
+        .labelData { index -> barData[index].label }
         .build()
     val barChartData = BarChartData(
         chartData = barData,
         xAxisData = xAxisData,
         yAxisData = yAxisData,
-        barStyle = BarStyle(paddingBetweenBars = 20.dp,
+        barStyle = BarStyle(
+            isGradientEnabled = false,
+            paddingBetweenBars = 20.dp,
             barWidth = 35.dp,
-            isGradientEnabled = true,
             selectionHighlightData = SelectionHighlightData(
                 highlightBarColor = Color.Red,
                 highlightTextBackgroundColor = Color.Green,
-                popUpLabel = { _, y -> " Value : $y " }
-            )),
+                popUpLabel = { x, _ -> " Value : $x " },
+                barChartType = BarChartType.HORIZONTAL
+            ),
+        ),
         showYAxis = true,
         showXAxis = true,
-        horizontalExtraSpace = 20.dp
+        horizontalExtraSpace = 20.dp,
+        barChartType = BarChartType.HORIZONTAL
     )
-    BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
+    BarChart(
+        modifier = Modifier.height(350.dp),
+        barChartData = barChartData
+    )
 }
-

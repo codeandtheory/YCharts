@@ -1,5 +1,6 @@
 package co.yml.charts.ui.barchart.models
 
+
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -36,7 +37,8 @@ data class BarChartData(
     val tapPadding: Dp = 10.dp,
     val showYAxis: Boolean = true,
     val showXAxis: Boolean = true,
-    val accessibilityConfig: AccessibilityConfig = AccessibilityConfig()
+    val accessibilityConfig: AccessibilityConfig = AccessibilityConfig(),
+    val barChartType: BarChartType = BarChartType.VERTICAL
 )
 
 /**

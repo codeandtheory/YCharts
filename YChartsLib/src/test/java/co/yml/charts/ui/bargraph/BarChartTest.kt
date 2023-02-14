@@ -1,13 +1,15 @@
 package co.yml.charts.ui.bargraph
 
+import co.yml.charts.axis.DataCategoryOptions
+import co.yml.charts.common.model.Point
+import co.yml.charts.ui.barchart.getDrawHorizontalOffset
 import co.yml.charts.ui.barchart.getDrawOffset
 import co.yml.charts.ui.barchart.getMaxScrollDistance
-import co.yml.charts.common.model.Point
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class BarChartTest{
+class BarChartTest {
     @Test
     fun `Given a container with input values valid scroll offset should be returned`() {
         // Given
@@ -90,6 +92,43 @@ class BarChartTest{
             yOffset = 20f,
             yMin = 0f
         )
-        assertEquals(drawOffset.x, xOffset*point.x)
+        assertEquals(drawOffset.x, xOffset * point.x)
+    }
+
+    @Test
+    fun `Given a point horizontal drawOffset should be positive`() {
+        val point = Point(250f, 700f)
+        val drawOffset = getDrawHorizontalOffset(
+            point = point,
+            xLeft = 250f,
+            scrollOffset = 50f,
+            yBottom = 950f,
+            yOffset = 192.5f,
+            yMin = 0f,
+            yMax = 9f,
+            yStart = 150f,
+            dataCategoryOptions = DataCategoryOptions(),
+            zoomScale = 1f
+        )
+        assertTrue(drawOffset.x > 0 && drawOffset.y > 0)
+    }
+
+    @Test
+    fun `Given scroll offset,yStart,ymin are zero drawOffset should be product of yOffset and yValue`() {
+        val point = Point(250f, 700f)
+        val yOffset = 192.5f
+        val drawOffset = getDrawHorizontalOffset(
+            point = point,
+            xLeft = 250f,
+            scrollOffset = 0f,
+            yBottom = 950f,
+            yOffset = 192.5f,
+            yMin = 0f,
+            yMax = 9f,
+            yStart = 0f,
+            dataCategoryOptions = DataCategoryOptions(),
+            zoomScale = 1f
+        )
+        assertEquals(drawOffset.y, yOffset * point.y)
     }
 }

@@ -27,9 +27,6 @@ import androidx.compose.ui.unit.dp
 import co.yml.charts.axis.XAxis
 import co.yml.charts.axis.YAxis
 import co.yml.charts.chartcontainer.container.ScrollableCanvasContainer
-import co.yml.charts.ui.barchart.models.BarData
-import co.yml.charts.ui.barchart.models.GroupBarChartData
-import co.yml.charts.ui.barchart.models.SelectionHighlightData
 import co.yml.charts.common.components.ItemDivider
 import co.yml.charts.common.components.accessibility.AccessibilityBottomSheetDialog
 import co.yml.charts.common.components.accessibility.GroupBarInfo
@@ -39,6 +36,10 @@ import co.yml.charts.common.extensions.getMaxElementInYAxis
 import co.yml.charts.common.extensions.isTapped
 import co.yml.charts.common.model.Point
 import co.yml.charts.common.utils.ChartConstants.DEFAULT_YAXIS_BOTTOM_PADDING
+import co.yml.charts.ui.barchart.models.BarChartType
+import co.yml.charts.ui.barchart.models.BarData
+import co.yml.charts.ui.barchart.models.GroupBarChartData
+import co.yml.charts.ui.barchart.models.SelectionHighlightData
 import kotlinx.coroutines.launch
 
 
@@ -387,7 +388,7 @@ fun DrawScope.highlightGroupBar(
                 if (xPoint >= columnWidth && xPoint <= size.width - paddingRight.toPx()) {
                     val y1 = yBottom - ((barData.point.y - 0) * yOffset)
                     selectionHighlightData.drawHighlightBar(
-                        this, xPoint, yPoint, barWidth.toPx(), yBottom - y1
+                        this, xPoint, yPoint, barWidth.toPx(), yBottom - y1, BarChartType.VERTICAL
                     )
                 }
             }

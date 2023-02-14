@@ -39,6 +39,7 @@ import co.yml.charts.chartcontainer.gestures.detectZoomGesture
  * @param onPointClicked: Callback for tap detected along with offset for tap.
  * @param onScroll: Callback when user starts scrolling the graph.
  * @param onZoomInAndOut: Callback when user starts zoomIn and Out w.r.t to the graph
+ * @param scrollOrientation: Used to define the scroll orientation
  */
 
 @Composable
@@ -52,7 +53,8 @@ fun ScrollableCanvasContainer(
     onPointClicked: (Offset, Float) -> Unit = { _, _ -> },
     isPinchZoomEnabled: Boolean = true,
     onScroll: () -> Unit = {},
-    onZoomInAndOut: () -> Unit = {}
+    onZoomInAndOut: () -> Unit = {},
+    scrollOrientation: Orientation = Orientation.Horizontal
 ) {
     val scrollOffset = remember { mutableStateOf(0f) }
     val maxScrollOffset = remember { mutableStateOf(0f) }
@@ -82,7 +84,7 @@ fun ScrollableCanvasContainer(
                 .fillMaxWidth()
                 .background(containerBackgroundColor)
                 .scrollable(
-                    state = scrollState, Orientation.Horizontal, enabled = true
+                    state = scrollState, scrollOrientation, enabled = true
                 )
                 .pointerInput(Unit) {
                     detectTapGestures(onTap = {
