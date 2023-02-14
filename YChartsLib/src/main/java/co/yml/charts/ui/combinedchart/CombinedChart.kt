@@ -205,7 +205,7 @@ fun CombinedChart(modifier: Modifier, combinedChartData: CombinedChartData) {
                                 // Draw line chart
                                 val xStartPosition =
                                     columnWidth + horizontalExtraSpace.toPx() +
-                                            ((barPlotData.barStyle.barWidth.toPx() * barPlotData.groupingSize) / 2)
+                                            ((barPlotData.barStyle.barWidth.toPx() * barPlotData.groupingSize) / 2) + (xAxisData.startDrawPadding.toPx() * xZoom)
                                 plotData.lines.forEach { line ->
                                     val pointsData = getMappingPointsToGraph(
                                         line.dataPoints,
