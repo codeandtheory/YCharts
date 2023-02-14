@@ -386,7 +386,7 @@ private fun getDrawStyleForPath(
  * DrawScope.drawPointOnLine extension method  used for drawing a circle/mark on a line for a given Point(x,y).
  * @param offset : Point at which circle/mark has to be drawn.
  */
-private fun DrawScope.drawPointOnLine(offset: Offset, intersectionPoint: IntersectionPoint?) {
+fun DrawScope.drawPointOnLine(offset: Offset, intersectionPoint: IntersectionPoint?) {
     intersectionPoint?.draw?.let { it(this, offset) }
 }
 
