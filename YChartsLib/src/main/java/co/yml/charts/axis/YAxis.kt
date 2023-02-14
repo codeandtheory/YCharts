@@ -161,7 +161,7 @@ private fun DrawScope.drawAxisLineWithPointers(
                 drawLine(
                     start = Offset(
                         x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
-                        y = if (dataCategoryOptions.isDataCategoryStartFromBottom) yAxisHeight - yStart else yAxisHeight - yStart - barWidth / 2
+                        y = yAxisHeight - startDrawPadding.toPx() * zoomScale
                     ),
                     end = Offset(
                         x = if (isRightAligned) 0.dp.toPx() else yAxisWidth.toPx(),
@@ -204,9 +204,9 @@ private fun DrawScope.drawAxisLineWithPointers(
 
                                 } else {
                                     if (shouldDrawAxisLineTillEnd) {
-                                        yPos + axisStepWidth + barWidth / 2
+                                        yPos + axisStepWidth + barWidth / 2 + (startDrawPadding.toPx() * zoomScale)
                                     } else {
-                                        yPos + axisStepWidth
+                                        yPos + axisStepWidth + (startDrawPadding.toPx() * zoomScale)
                                     }
                                 }
                             }

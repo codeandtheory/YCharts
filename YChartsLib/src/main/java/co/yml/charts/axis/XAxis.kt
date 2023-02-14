@@ -58,14 +58,14 @@ fun XAxis(
                 //this is used when data category draws in Y axis and value in X axis
                 val xAxisSegmentWidth = (size.width - xStart - axisEndPadding.toPx()) / steps
 
-                var xPos = xStart - scrollOffset
+                var xPos = xStart + (startDrawPadding.toPx() * zoomScale) - scrollOffset
 
                 // used in the case of barchart
                 if (startDrawPadding != 0.dp) {
                     drawLine(
                         axisLineColor,
-                        Offset(startDrawPadding.toPx(), 0f),
-                        Offset(xPos, 0f),
+                        Offset(xStart, 0f),
+                        Offset(xStart + (startDrawPadding.toPx() * zoomScale), 0f),
                         strokeWidth = axisLineThickness.toPx()
                     )
                 }
@@ -87,7 +87,8 @@ fun XAxis(
                         index != steps,
                         xStart,
                         index,
-                        xAxisSegmentWidth
+                        xAxisSegmentWidth,
+                        startDrawPadding.toPx()
                     )
                     xPos += ((axisStepSize.toPx() * (zoomScale * xAxisScale)))
                 }
@@ -104,7 +105,8 @@ private fun DrawScope.drawAxisLineWithPointers(
     canDrawEndLine: Boolean, // Added check to avoid drawing an extra line post the last point
     xStart: Float,
     index: Int,
-    dataValueWidth: Float
+    dataValueWidth: Float,
+    startDrawPadding: Float
 ) {
     with(axisData) {
         if (axisConfig.isAxisLineRequired) {
@@ -115,9 +117,12 @@ private fun DrawScope.drawAxisLineWithPointers(
                     if (axisData.dataCategoryOptions.isDataCategoryInYAxis) Offset(
                         xStart,
                         0f
-                    ) else Offset(xPos, 0f),
+                    ) else Offset(xStart + (startDrawPadding * zoomScale), 0f),
                     if (shouldDrawAxisLineTillEnd) {
-                        Offset((xPos + (axisStepWidth / 2) + axisStepWidth), 0f)
+                        Offset(
+                            (xPos + (axisStepWidth / 2) + axisStepWidth) + (startDrawPadding * zoomScale),
+                            0f
+                        )
                     } else {
                         if (axisData.dataCategoryOptions.isDataCategoryInYAxis) Offset(
                             xStart + (dataValueWidth * (index + 1)),

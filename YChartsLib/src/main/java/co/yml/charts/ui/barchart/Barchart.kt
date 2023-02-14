@@ -153,14 +153,13 @@ fun VerticalBarChart(
         val (_, yMax) = getYMaxAndMinPoints(points)
 
         val xAxisData =
-            xAxisData.copy(axisStepSize = barStyle.barWidth + barStyle.paddingBetweenBars,
-                steps = chartData.size - 1,
-                startDrawPadding = LocalDensity.current.run { columnWidth.toDp() })
+            xAxisData.copy(
+                axisStepSize = barStyle.barWidth + barStyle.paddingBetweenBars,
+                steps = chartData.size - 1
+            )
         val yAxisData =
             yAxisData.copy(
-                axisBottomPadding = LocalDensity.current.run { rowHeight.toDp() },
-                startDrawPadding = LocalDensity.current.run { rowHeight.toDp() },
-                axisTopPadding = 30.dp
+                axisBottomPadding = LocalDensity.current.run { rowHeight.toDp() }
             )
         val maxElementInYAxis = getMaxElementInYAxis(yMax, yAxisData.steps)
 
@@ -184,7 +183,7 @@ fun VerticalBarChart(
             containerBackgroundColor = backgroundColor,
             calculateMaxDistance = { xZoom ->
                 horizontalGap = horizontalExtraSpace.toPx()
-                val xLeft = columnWidth + horizontalGap
+                val xLeft = (xAxisData.startDrawPadding.toPx() * xZoom) + horizontalGap
                 xOffset =
                     (barStyle.barWidth.toPx() + barStyle.paddingBetweenBars.toPx()) * xZoom
                 getMaxScrollDistance(
@@ -196,13 +195,23 @@ fun VerticalBarChart(
                 val yOffset = ((yBottom - yAxisData.axisTopPadding.toPx()) / maxElementInYAxis)
                 xOffset =
                     ((barStyle.barWidth).toPx() + barStyle.paddingBetweenBars.toPx()) * xZoom
-                val xLeft = columnWidth + horizontalGap + barStyle.barWidth.toPx() / 2
+                val xLeft = columnWidth
                 val dragLocks = mutableMapOf<Int, Pair<BarData, Offset>>()
 
                 // Draw bar lines
                 chartData.forEachIndexed { _, barData ->
                     val drawOffset = getDrawOffset(
-                        barData.point, xMin, xOffset, xLeft, scrollOffset, yBottom, yOffset, 0f
+                        barData.point,
+                        xMin,
+                        xOffset,
+                        xLeft,
+                        scrollOffset,
+                        yBottom,
+                        yOffset,
+                        0f,
+                        xAxisData.startDrawPadding.toPx(),
+                        xZoom,
+                        barStyle.barWidth.toPx()
                     )
                     val height = yBottom - drawOffset.y
 
@@ -256,9 +265,7 @@ fun VerticalBarChart(
                             .onGloballyPositioned {
                                 rowHeight = it.size.height.toFloat()
                             },
-                        xStart = columnWidth + horizontalGap + LocalDensity.current.run {
-                            (barStyle.barWidth.toPx())
-                        },
+                        xStart = columnWidth,
                         scrollOffset = scrollOffset,
                         zoomScale = xZoom,
                         chartData = points
@@ -322,10 +329,8 @@ fun HorizontalBarChart(
         val yAxisData = yAxisData.copy(
             axisStepSize = barStyle.barWidth + barStyle.paddingBetweenBars,
             steps = chartData.size - 1,
-            axisBottomPadding = LocalDensity.current.run { rowHeight.toDp() },
-            startDrawPadding = LocalDensity.current.run { rowHeight.toDp() })
+            axisBottomPadding = LocalDensity.current.run { rowHeight.toDp() })
         val maxElementInXAxis = getMaxElementInXAxis(xMax, xAxisData.steps)
-        var xAxisSegmentWidth = 0f
 
         if (!showXAxis) {
             rowHeight =
@@ -349,7 +354,7 @@ fun HorizontalBarChart(
             containerBackgroundColor = backgroundColor,
             calculateMaxDistance = { yZoom ->
                 horizontalGap = horizontalExtraSpace.toPx()
-                val yStart = horizontalGap + barStyle.barWidth.toPx() + barStyle.barWidth.toPx() / 2
+                val yStart = horizontalGap + (yAxisData.startDrawPadding.toPx() * yZoom)
                 yOffset =
                     (barStyle.barWidth.toPx() + barStyle.paddingBetweenBars.toPx()) * yZoom
 
@@ -366,7 +371,7 @@ fun HorizontalBarChart(
             onDraw = { scrollOffset, yZoom ->
                 val xLeft = columnWidth
                 val startPaddingFromBottom =
-                    horizontalGap + barStyle.barWidth.toPx() + barStyle.barWidth.toPx() / 2
+                    (yAxisData.startDrawPadding.toPx() * yZoom) + barStyle.barWidth.toPx() / 2
                 val yStart =
                     if (yAxisData.dataCategoryOptions.isDataCategoryStartFromBottom) startPaddingFromBottom else {
                         if (yZoom < 1) startPaddingFromBottom else yAxisData.axisTopPadding.toPx()
@@ -450,8 +455,8 @@ fun HorizontalBarChart(
                 }
 
                 if (showYAxis) {
-                    val startPaddingFromBottom = horizontalGap + LocalDensity.current.run {
-                        (barStyle.barWidth.toPx())
+                    val startPaddingFromBottom = LocalDensity.current.run {
+                        (yAxisData.startDrawPadding.toPx() * xZoom)
                     }
                     YAxis(
                         modifier = Modifier
@@ -799,11 +804,21 @@ fun DrawScope.drawUnderXAxisScrollMask(columnWidth: Float, paddingTop: Dp, bgCol
  * @param yBottom: Y starting point of bar graph
  */
 fun getDrawOffset(
-    point: Point, xMin: Float, xOffset: Float,
-    xLeft: Float, scrollOffset: Float, yBottom: Float, yOffset: Float, yMin: Float
+    point: Point,
+    xMin: Float,
+    xOffset: Float,
+    xLeft: Float,
+    scrollOffset: Float,
+    yBottom: Float,
+    yOffset: Float,
+    yMin: Float,
+    startDrawPadding: Float,
+    zoomScale: Float,
+    barWidth: Float
 ): Offset {
     val (x, y) = point
-    val x1 = ((x - xMin) * xOffset) + xLeft - scrollOffset
+    val x1 =
+        ((x - xMin) * xOffset) + xLeft + (startDrawPadding * zoomScale) - barWidth / 2 - scrollOffset
     val y1 = yBottom - ((y - yMin) * yOffset)
     return Offset(x1, y1)
 }
