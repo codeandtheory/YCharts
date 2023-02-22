@@ -34,6 +34,35 @@ object DataUtils {
         return list
     }
 
+    fun getWaveChartData(listSize: Int, start: Int = 0, maxRange: Int): List<Point> {
+//        val amplitude = 50 // adjust the amplitude to change the height of the graph
+//        val frequency = 0.009 // adjust the frequency to change the width of the graph
+//        val phase = 0.0 // adjust the phase to change the starting position of the graph
+//
+//        val sineWavePoints = (0..listSize).map { x ->
+//            val y = amplitude * sin(2 * Math.PI * frequency * x + phase)
+//            Point(x.toFloat(), y.toFloat())
+//        }
+        //todo sree_ remove hard coded sample data
+
+        val wavePoints = listOf(
+            Point(0f, -5f),
+            Point(5f, 5f),
+            Point(10f, -5f),
+            Point(15f, 5f),
+            Point(20f, -5f),
+            Point(25f, 5f),
+            Point(30f, -5f),
+            Point(35f, 5f),
+            Point(40f, -5f),
+            Point(45f, 5f),
+            Point(50f, -5f)
+        )
+
+        return wavePoints.toList()
+    }
+
+
     /**
      * Return the sample bar chart data
      * @param listSize Size of the list

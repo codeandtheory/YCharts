@@ -4,11 +4,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -23,16 +19,10 @@ import co.yml.charts.axis.AxisData
 import co.yml.charts.common.extensions.formatToSinglePrecision
 import co.yml.charts.common.model.Point
 import co.yml.charts.common.utils.DataUtils
-import co.yml.charts.ui.linechart.model.GridLines
-import co.yml.charts.ui.linechart.model.IntersectionPoint
-import co.yml.charts.ui.linechart.model.LineStyle
-import co.yml.charts.ui.linechart.model.LineType
-import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
-import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
-import co.yml.charts.ui.linechart.model.ShadowUnderLine
+import co.yml.charts.ui.linechart.model.*
+import co.yml.charts.ui.wavechart.WaveChart
 import co.yml.charts.ui.wavechart.model.Wave
 import co.yml.charts.ui.wavechart.model.WaveChartData
-import co.yml.charts.ui.wavechart.WaveChart
 import co.yml.charts.ui.wavechart.model.WavePlotData
 import co.yml.ycharts.app.R
 import co.yml.ycharts.app.ui.compositions.AppBarWithBackButton
@@ -63,20 +53,20 @@ class WaveChartActivity : ComponentActivity() {
                             items(3) { item ->
                                 when (item) {
                                     0 -> WaveGraph1(
-                                        DataUtils.getLineChartData(
+                                        DataUtils.getWaveChartData(
                                             100,
                                             start = -50,
                                             maxRange = 10
                                         )
                                     )
-                                    1 -> WaveGraph2(DataUtils.getLineChartData(50, start = -10, maxRange = 50))
-                                    2 -> WaveGraph3(
-                                        DataUtils.getLineChartData(
-                                            100,
-                                            start = -10,
-                                            maxRange = 10
-                                        )
-                                    )
+//                                    1 -> WaveGraph2(DataUtils.getLineChartData(50, start = -10, maxRange = 50))
+//                                    2 -> WaveGraph3(
+//                                        DataUtils.getLineChartData(
+//                                            100,
+//                                            start = -10,
+//                                            maxRange = 10
+//                                        )
+//                                    )
                                 }
                             }
                         })
