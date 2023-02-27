@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -36,9 +37,10 @@ import co.yml.charts.ui.barchart.drawUnderScrollMask
 import co.yml.charts.ui.linechart.*
 import co.yml.charts.ui.linechart.model.LineStyle
 import co.yml.charts.ui.linechart.model.LineType
-import co.yml.charts.ui.wavechart.AxisPosition.*
+import co.yml.charts.ui.wavechart.model.AxisPosition
 import co.yml.charts.ui.wavechart.model.Wave
 import co.yml.charts.ui.wavechart.model.WaveChartData
+import co.yml.charts.ui.wavechart.model.WaveFillColor
 import kotlinx.coroutines.launch
 import kotlin.math.*
 import co.yml.charts.ui.linechart.getMaxElementInYAxis as getMaxElementInLineYAxis
@@ -298,7 +300,6 @@ private fun DrawScope.drawShadowUnderLineAndIntersectionPoint(
     cubicPoints1: MutableList<Offset>, cubicPoints2: MutableList<Offset>
 ) {
     //sree_ todo color applied here
-    Log.i("check_points", "yBottom: $yBottom pointsData: $pointsData")
 //    if (line.shadowUnderLine.isNotNull()) {
 //        cubicPath.lineTo(pointsData.last().x, yBottom)
 //        cubicPath.lineTo(pointsData.first().x, yBottom)
@@ -408,6 +409,15 @@ private fun DrawScope.drawXAxisLabel(
 }
 
 
+/**
+ *
+ * DrawScope.drawStraightOrCubicLine extension method used for drawing a straight/cubic line for a given Point(x,y).
+ * @param pointsData : List of points to be drawn on the canvas
+ * @param lineStyle : All styles related to the path are included in [LineStyle].
+ * @param yPointOfOrigin : y position of x Axis
+ * @param xPos :  start position of axis
+ * @param waveColor : fill color
+ */
 fun DrawScope.drawStraightOrCubicLineForWave(
     pointsData: MutableList<Offset>,
     lineStyle: LineStyle,
@@ -416,95 +426,86 @@ fun DrawScope.drawStraightOrCubicLineForWave(
     waveColor: WaveFillColor = WaveFillColor()
 ): Path {
     val path = Path()
-    var startPoint = pointsData[0]
-    var endPoint = pointsData[1]
 
+    when (lineStyle.lineType) {
+        is LineType.Straight -> {
+            for (i in 1 until pointsData.size) {
+                val startPoint = pointsData[i - 1]
+                val endPoint = pointsData[i]
+                path.lineTo(startPoint.x, endPoint.y)
+            }
+        }
+        is LineType.SmoothCurve -> {
+
+            //draw the path using wave points
+            drawWavePath(
+                path,
+                pointsData,
+                lineStyle,
+                waveColor,
+                yPointOfOrigin,
+                xPos
+            )
+        }
+    }
+
+    return path
+}
+
+/**
+ * Used to draw the wave
+ * @param cubicPath : Represent the single cubic bezier curve path using the given points
+ * @param  pointsData : curve points
+ * @param lineStyle : styling for the path drawn in the line graph
+ * @param waveColor: fill color
+ * @param yPointOfOrigin : y position of x Axis
+ * @param xPos : start position of axis
+ */
+fun DrawScope.drawWavePath(
+    cubicPath: Path,
+    pointsData: MutableList<Offset>,
+    lineStyle: LineStyle,
+    waveColor: WaveFillColor,
+    yPointOfOrigin: Float,
+    xPos: Float = 0f
+): Path {
     // slop and y intercept of x axis line
     val (m1, b1) = findSlopeAndYIntercept(
         Offset(xPos, yPointOfOrigin),
         Offset(size.width, yPointOfOrigin)
     )
-    val wavePoints = mutableListOf<Offset>()
-
-    wavePoints.add(startPoint)
 
     for (i in 1 until pointsData.size) {
-        when (lineStyle.lineType) {
-            is LineType.Straight -> {
-                path.lineTo(startPoint.x, endPoint.y)
-            }
-            is LineType.SmoothCurve -> {
-                val wavePointPosition =
-                    findPointPosition(startPoint, endPoint, yPointOfOrigin, i)
+        val (m2, b2) = findSlopeAndYIntercept(pointsData[i - 1], pointsData[i])
 
-                //if both points of the curve intersect on x axis
-                if (wavePointPosition == INTERSECT) {
-                    // slop and y intercept of point 2
-                    val (m2, b2) = findSlopeAndYIntercept(startPoint, endPoint)
+        //assume there is 2 line which start from start and end point of the bezier curve
+        //find intersection points of the line
+        val intersectionPoint =
+            findLineIntersectionWithXAxis(m1, b1, m2, b2) ?: Offset(0f, 0f)
 
-                    //assume there is 2 line which start from start and end point of the bezier curve
-                    //find intersection points of the line
-                    val intersectionPoint =
-                        findLineIntersectionWithXAxis(m1, b1, m2, b2) ?: Offset(0f, 0f)
+        //find control points to draw the cubic curve
+        val (cubicPoints1, cubicPoints2) = findWaveControlPoints(
+            pointsData[i - 1],
+            pointsData[i]
+        )
 
-                    //add intersection point
-                    wavePoints.add(intersectionPoint)
-
-                    //set next start and end point to draw intersection point to next wave point
-                    startPoint = intersectionPoint
-                    endPoint = pointsData[i]
-
-                    //add next wave point
-                    wavePoints.add(endPoint)
-
-                    //set next start and end point
-                    if (i < pointsData.size - 1) {
-                        startPoint = pointsData[i]
-                        endPoint = pointsData[i + 1]
-                    }
-                } else {
-                    // add wave point
-                    wavePoints.add(endPoint)
-
-                    //set next start and end point
-                    if (i < pointsData.size - 1) {
-                        startPoint = pointsData[i]
-                        endPoint = pointsData[i + 1]
-                    }
-                }
-            }
-        }
-    }
-
-    //draw the path using wave points
-    return drawWavePath(path, wavePoints, lineStyle, waveColor, yPointOfOrigin)
-}
-
-fun DrawScope.drawWavePath(
-    path: Path,
-    wavePoints: MutableList<Offset>,
-    lineStyle: LineStyle,
-    waveColor: WaveFillColor,
-    yPointOfOrigin: Float
-): Path {
-
-    for (i in 1 until wavePoints.size) {
-        val (cubicPoints1, cubicPoints2) = findWaveControlPoints(wavePoints[i - 1], wavePoints[i])
-
-        path.moveTo(wavePoints[i - 1].x, wavePoints[i - 1].y)
-
-        path.cubicTo(
+        cubicPath.moveTo(
+            pointsData[i - 1].x,
+            pointsData[i - 1].y
+        )
+        //draw cubic bezier curve
+        cubicPath.cubicTo(
             cubicPoints1.x,
             cubicPoints1.y,
             cubicPoints2.x,
             cubicPoints2.y,
-            wavePoints[i].x,
-            wavePoints[i].y
+            pointsData[i].x,
+            pointsData[i].y
         )
 
         with(lineStyle) {
             drawPath(
-                path,
+                cubicPath,
                 color = color,
                 style = getDrawStyleForPath(lineStyle.lineType, lineStyle),
                 alpha = alpha,
@@ -513,51 +514,173 @@ fun DrawScope.drawWavePath(
             )
         }
 
-        fillWavePath(i, wavePoints, path, yPointOfOrigin, lineStyle, waveColor)
-    }
+        //Color Filling part//
+        val pointPosition = findPointPosition(
+            pointsData[i - 1],
+            pointsData[i],
+            yPointOfOrigin
+        )
 
-    return path
+        val curvePoints =
+            getCurvePoints(pointsData[i - 1], cubicPoints1, cubicPoints2, pointsData[i])
+
+        if (pointPosition == AxisPosition.INTERSECT) {
+            fillWavePath(
+                curvePoints,
+                yPointOfOrigin,
+                intersectionPoint,
+                waveColor
+            )
+        } else {
+            //TODO sree_ not not accurate
+            fillRegularWavePath(
+                curvePoints,
+                yPointOfOrigin,
+                pointsData[i],
+                pointPosition,
+                waveColor
+            )
+        }
+    }
+    return cubicPath
 }
 
-fun DrawScope.fillWavePath(
-    index: Int,
-    wavePoints: MutableList<Offset>,
-    path: Path,
+/**
+ * Used to get the points which helps to construct the bezier curve
+ * @param startPoint : startPoint of the curve
+ * @param cubicPoint1 : cubicPoint1 of the curve
+ * @param cubicPoint2 : cubicPoint2 of the curve
+ * @param endPoint : endPoint of the curve
+ */
+fun getCurvePoints(
+    startPoint: Offset,
+    cubicPoint1: Offset,
+    cubicPoint2: Offset,
+    endPoint: Offset
+): List<Offset> {
+    val start = 0.0
+    val end = 1.0
+    val step = 0.05
+
+    //generate t values for constructing the cubic curve
+    val values = generateSequence(start) { (it + step).roundTwoDecimal() }
+        .takeWhile { it <= end }
+
+    val curvePoints = mutableListOf<Offset>()
+    for (t in values) {
+        val point =
+            findCubicCurvePoints(
+                t,
+                startPoint,
+                cubicPoint1,
+                cubicPoint2,
+                endPoint
+            )
+        curvePoints.add(point)
+    }
+
+    return curvePoints.toList()
+}
+
+//TODO sree_ need to fix the border color issue
+fun DrawScope.fillRegularWavePath(
+    curvePoints: List<Offset>,
     yPointOfOrigin: Float,
-    lineStyle: LineStyle,
+    intersectionPoint: Offset,
+    pointPosition: AxisPosition,
     waveColor: WaveFillColor
 ) {
-    val pointPosition =
-        findPointPosition(wavePoints[index - 1], wavePoints[index], yPointOfOrigin, index)
-    Log.i(
-        "check_top_points",
-        "index: $index pointPosition: $pointPosition $index p1: ${wavePoints[index - 1]} p2 ${wavePoints[index]}"
-    )
+    val curvePath = Path()
+    val startPoint = curvePoints.first()
+    curvePath.moveTo(startPoint.x, startPoint.y)
 
-    path.lineTo(wavePoints[index - 1].x, wavePoints[index - 1].y)
-    path.lineTo(wavePoints[index - 1].x, yPointOfOrigin)
-    path.lineTo(wavePoints[index].x, yPointOfOrigin)
-    path.lineTo(wavePoints[index].x, wavePoints[index].y)
-
-    var fillColor: Color = Color.Transparent
-    if (pointPosition == TOP) {
-        fillColor = waveColor.topColor
-    } else if (pointPosition == BOTTOM) {
-        fillColor = waveColor.bottomColor
+    for (i in 1 until curvePoints.size) {
+        curvePath.lineTo(curvePoints[i - 1].x, curvePoints[i - 1].y)
+        curvePath.lineTo(curvePoints[i].x, curvePoints[i].y)
     }
 
-    with(lineStyle) {
-        drawPath(
-            path,
-            color = fillColor,
-            style = androidx.compose.ui.graphics.drawscope.Fill,
-            alpha = 0.2f,
-            colorFilter = colorFilter,
-            blendMode = blendMode
-        )
+    val fillColor: Color = if (pointPosition == AxisPosition.BOTTOM) {
+        waveColor.bottomColor
+    } else {
+        waveColor.topColor
+    }
+    drawPath(curvePath, color = fillColor, 0.5f, Fill)
+
+
+    curvePath.moveTo(startPoint.x, startPoint.y)
+    curvePath.lineTo(intersectionPoint.x, intersectionPoint.y)
+    curvePath.lineTo(intersectionPoint.x, yPointOfOrigin)
+    curvePath.lineTo(startPoint.x, yPointOfOrigin)
+
+    drawPath(curvePath, color = fillColor, 0.3f, Fill)
+}
+
+/**
+ * Used to fill the wave path using given color
+ * @param curvePoints : points which create the bezier curve
+ * @param yPointOfOrigin : y position of x Axis
+ * @param intersectionPoint: where curve intersect with x axis
+ * @param waveColor :fill color
+ */
+fun DrawScope.fillWavePath(
+    curvePoints: List<Offset>,
+    yPointOfOrigin: Float,
+    intersectionPoint: Offset,
+    waveColor: WaveFillColor
+) {
+    val bottomPath = Path()
+    val topPath = Path()
+    val startPoint = curvePoints.first()
+    val endPoint = curvePoints.last()
+
+    val isStartPointBottom =
+        findPointPosition(startPoint, intersectionPoint, yPointOfOrigin) == AxisPosition.BOTTOM
+
+    if (isStartPointBottom) {
+        bottomPath.moveTo(startPoint.x, startPoint.y)
+        topPath.moveTo(intersectionPoint.x, intersectionPoint.y)
+    } else {
+        bottomPath.moveTo(intersectionPoint.x, intersectionPoint.y)
+        topPath.moveTo(startPoint.x, startPoint.y)
     }
 
-    path.reset()
+    for (i in 1 until curvePoints.size) {
+        if (curvePoints[i - 1].y > yPointOfOrigin) {
+            //BOTTOM
+            bottomPath.lineTo(curvePoints[i - 1].x, curvePoints[i - 1].y)
+            bottomPath.lineTo(curvePoints[i].x, curvePoints[i].y)
+        } else {
+            //TOP
+            topPath.lineTo(curvePoints[i - 1].x, curvePoints[i - 1].y)
+            topPath.lineTo(curvePoints[i].x, curvePoints[i].y)
+        }
+    }
+
+    // Fill rest of the bottom path
+    if (isStartPointBottom) {
+        bottomPath.moveTo(startPoint.x, startPoint.y)
+        bottomPath.lineTo(intersectionPoint.x, intersectionPoint.y)
+        bottomPath.lineTo(startPoint.x, yPointOfOrigin)
+    } else {
+        bottomPath.moveTo(intersectionPoint.x, intersectionPoint.y)
+        bottomPath.lineTo(endPoint.x, endPoint.y)
+        bottomPath.lineTo(endPoint.x, yPointOfOrigin)
+    }
+
+    drawPath(bottomPath, color = waveColor.bottomColor, 0.3f, Fill)
+
+    // Fill rest of the top path
+    if (isStartPointBottom) {
+        topPath.moveTo(intersectionPoint.x, intersectionPoint.y)
+        topPath.lineTo(endPoint.x, endPoint.y)
+        topPath.lineTo(endPoint.x, yPointOfOrigin)
+    } else {
+        topPath.moveTo(startPoint.x, startPoint.y)
+        topPath.lineTo(intersectionPoint.x, intersectionPoint.y)
+        topPath.lineTo(startPoint.x, yPointOfOrigin)
+    }
+
+    drawPath(topPath, color = waveColor.topColor, 0.3f, Fill)
 }
 
 /**
@@ -579,24 +702,7 @@ fun findWaveControlPoints(startPoint: Offset, endPoint: Offset): Pair<Offset, Of
     return Pair(Offset(control1X, control1Y), Offset(control2X, control2Y))
 }
 
-/**
- * Represents the start and end point positions of the bezier curve
- * @property INTERSECT : Means both lines are not in the same region
- */
-enum class AxisPosition {
-    TOP,
-    BOTTOM,
-    INTERSECT
-}
 
-//todo _sree make it configurable
-/**
- * hold the color values
- */
-data class WaveFillColor(
-    val topColor: Color = Color.Green,
-    val bottomColor: Color = Color.Red
-)
 
 /**
  * Used to find the position of the start and end point of the bezier curve
@@ -607,34 +713,26 @@ data class WaveFillColor(
 fun findPointPosition(
     p1: Offset,
     p2: Offset,
-    yPointOfOrigin: Float,
-    index: Int
+    yPointOfOrigin: Float
 ): AxisPosition {
-    return (if (p1.y > yPointOfOrigin && p2.y > yPointOfOrigin) {
-        BOTTOM
+    return if (p1.y > yPointOfOrigin && p2.y > yPointOfOrigin) {
+        AxisPosition.BOTTOM
     } else if (p1.y < yPointOfOrigin && p2.y < yPointOfOrigin) {
-        TOP
-    } else if (p1.y == yPointOfOrigin || p2.y == yPointOfOrigin) {
-        if (p1.y == yPointOfOrigin) {
-            if (p2.y > yPointOfOrigin) {
-                BOTTOM
-            } else {
-                TOP
-            }
+        AxisPosition.TOP
+    } else if (p1.y == yPointOfOrigin) {
+        if (p2.y > yPointOfOrigin) {
+            AxisPosition.BOTTOM
         } else {
-            if (p1.y > yPointOfOrigin) {
-                BOTTOM
-            } else {
-                TOP
-            }
+            AxisPosition.TOP
+        }
+    } else if (p2.y == yPointOfOrigin) {
+        if (p1.y > yPointOfOrigin) {
+            AxisPosition.BOTTOM
+        } else {
+            AxisPosition.TOP
         }
     } else {
-        INTERSECT
-    }).also {
-        Log.i(
-            "check_intersection_points",
-            "index: $index p1: ${p1.y} p2: ${p2.y} yPointOfOrigin: $yPointOfOrigin result: $it"
-        )
+        AxisPosition.INTERSECT
     }
 }
 
@@ -667,4 +765,34 @@ fun findLineIntersectionWithXAxis(m1: Float, b1: Float, m2: Float, b2: Float): O
     return Offset(x, y)
 }
 
+/**
+ * Used to get the cubic points for given t value
+ */
+fun findCubicCurvePoints(
+    t: Double,
+    p0: Offset,
+    p1: Offset,
+    p2: Offset,
+    p3: Offset
+): Offset {
+    // First level of interpolation
+    val p01 = interpolate(t, p0, p1)
+    val p12 = interpolate(t, p1, p2)
+    val p23 = interpolate(t, p2, p3)
+
+    // Second level of interpolation
+    val p012 = interpolate(t, p01, p12)
+    val p123 = interpolate(t, p12, p23)
+
+    // Third level of interpolation
+    val p0123 = interpolate(t, p012, p123)
+
+    return p0123
+}
+
+fun interpolate(t: Double, p0: Offset, p1: Offset): Offset {
+    val x = (1 - t) * p0.x + t * p1.x
+    val y = (1 - t) * p0.y + t * p1.y
+    return Offset(x.toFloat(), y.toFloat())
+}
 

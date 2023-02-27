@@ -23,6 +23,7 @@ import co.yml.charts.ui.linechart.model.*
 import co.yml.charts.ui.wavechart.WaveChart
 import co.yml.charts.ui.wavechart.model.Wave
 import co.yml.charts.ui.wavechart.model.WaveChartData
+import co.yml.charts.ui.wavechart.model.WaveFillColor
 import co.yml.charts.ui.wavechart.model.WavePlotData
 import co.yml.ycharts.app.R
 import co.yml.ycharts.app.ui.compositions.AppBarWithBackButton
@@ -59,14 +60,20 @@ class WaveChartActivity : ComponentActivity() {
                                             maxRange = 10
                                         )
                                     )
-//                                    1 -> WaveGraph2(DataUtils.getLineChartData(50, start = -10, maxRange = 50))
-//                                    2 -> WaveGraph3(
-//                                        DataUtils.getLineChartData(
-//                                            100,
-//                                            start = -10,
-//                                            maxRange = 10
-//                                        )
-//                                    )
+                                    1 -> WaveGraph2(
+                                        DataUtils.getLineChartData(
+                                            50,
+                                            start = -10,
+                                            maxRange = 50
+                                        )
+                                    )
+                                    2 -> WaveGraph3(
+                                        DataUtils.getLineChartData(
+                                            100,
+                                            start = -10,
+                                            maxRange = 10
+                                        )
+                                    )
                                 }
                             }
                         })
@@ -105,7 +112,8 @@ private fun WaveGraph1(pointsData: List<Point>) {
                     IntersectionPoint(),
                     SelectionHighlightPoint(),
                     ShadowUnderLine(),
-                    SelectionHighlightPopUp()
+                    SelectionHighlightPopUp(),
+                    WaveFillColor(topColor = Color.Yellow, bottomColor = Color.Blue)
                 )
             )
         ),

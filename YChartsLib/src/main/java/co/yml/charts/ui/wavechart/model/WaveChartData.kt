@@ -6,12 +6,8 @@ import androidx.compose.ui.unit.dp
 import co.yml.charts.axis.AxisData
 import co.yml.charts.common.model.AccessibilityConfig
 import co.yml.charts.common.model.Point
-import co.yml.charts.ui.linechart.model.GridLines
-import co.yml.charts.ui.linechart.model.IntersectionPoint
-import co.yml.charts.ui.linechart.model.LineStyle
-import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
-import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
-import co.yml.charts.ui.linechart.model.ShadowUnderLine
+import co.yml.charts.ui.linechart.model.*
+import co.yml.charts.ui.wavechart.model.AxisPosition.INTERSECT
 
 
 /**
@@ -61,5 +57,24 @@ data class Wave(
     val intersectionPoint: IntersectionPoint? = null,
     val selectionHighlightPoint: SelectionHighlightPoint? = null,
     val shadowUnderLine: ShadowUnderLine? = null,
-    val selectionHighlightPopUp: SelectionHighlightPopUp? = null
+    val selectionHighlightPopUp: SelectionHighlightPopUp? = null,
+    val waveFillColor: WaveFillColor = WaveFillColor()
 )
+
+/**
+ * hold the color values
+ */
+data class WaveFillColor(
+    val topColor: Color = Color.Green,
+    val bottomColor: Color = Color.Red
+)
+
+/**
+ * Represents the start and end point positions of the bezier curve
+ * @property INTERSECT : Means both lines are not in the same region
+ */
+enum class AxisPosition {
+    TOP,
+    BOTTOM,
+    INTERSECT
+}

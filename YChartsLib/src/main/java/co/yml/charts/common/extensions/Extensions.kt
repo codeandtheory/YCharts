@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import co.yml.charts.common.model.Point
 import co.yml.charts.ui.linechart.model.GridLines
 import java.text.DecimalFormat
+import kotlin.math.roundToInt
 
 
 /**
@@ -310,3 +311,10 @@ fun Offset.isYAxisTapped(
 ) =
     ((tapOffset.y) < y + (yOffset + tapPadding) / 2) && ((tapOffset.y) > y - (yOffset + tapPadding) / 2) &&
             ((tapOffset.plus(Offset(tapPadding, 0f))).x < xAxisWidth) && ((tapOffset.x) > left)
+
+/**
+ * Round double value to 2 decimal point
+ */
+fun Double.roundTwoDecimal(): Double {
+    return (this * 100.0).roundToInt() / 100.0
+}
