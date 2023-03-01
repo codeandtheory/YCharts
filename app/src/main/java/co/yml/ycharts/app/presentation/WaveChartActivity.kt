@@ -54,19 +54,31 @@ class WaveChartActivity : ComponentActivity() {
                             items(3) { item ->
                                 when (item) {
                                     0 -> WaveGraph1(
-                                        DataUtils.getWaveChartData(
+                                        DataUtils.getWaveChartHardCodedData(
                                             100,
                                             start = -50,
                                             maxRange = 10
                                         )
                                     )
                                     1 -> WaveGraph2(
-                                        DataUtils.getLineChartData(
-                                            50,
-                                            start = -10,
-                                            maxRange = 50
+                                        DataUtils.getWaveChartData(
+                                            5.0,
+                                            10
                                         )
                                     )
+//                                    2 -> WaveGraph3(
+//                                        DataUtils.getWaveChartData(
+//                                            4.0,
+//                                            numPoints = 10
+//                                        )
+//                                    )
+//                                    1 -> WaveGraph2(
+//                                        DataUtils.getLineChartData(
+//                                            50,
+//                                            start = -10,
+//                                            maxRange = 50
+//                                        )
+//                                    )
                                     2 -> WaveGraph3(
                                         DataUtils.getLineChartData(
                                             100,
@@ -74,6 +86,7 @@ class WaveChartActivity : ComponentActivity() {
                                             maxRange = 10
                                         )
                                     )
+
                                 }
                             }
                         })

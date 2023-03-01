@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import co.yml.charts.axis.DataCategoryOptions
+import co.yml.charts.common.extensions.roundTwoDecimal
 import co.yml.charts.common.model.LegendLabel
 import co.yml.charts.common.model.LegendsConfig
 import co.yml.charts.common.model.PlotType
@@ -12,6 +13,8 @@ import co.yml.charts.ui.barchart.models.BarChartType
 import co.yml.charts.ui.barchart.models.BarData
 import co.yml.charts.ui.barchart.models.GroupBar
 import co.yml.charts.ui.piechart.models.PieChartData
+import kotlin.math.PI
+import kotlin.math.sin
 import kotlin.random.Random
 
 object DataUtils {
@@ -34,17 +37,7 @@ object DataUtils {
         return list
     }
 
-    fun getWaveChartData(listSize: Int, start: Int = 0, maxRange: Int): List<Point> {
-//        val amplitude = 50 // adjust the amplitude to change the height of the graph
-//        val frequency = 0.009 // adjust the frequency to change the width of the graph
-//        val phase = 0.0 // adjust the phase to change the starting position of the graph
-//
-//        val sineWavePoints = (0..listSize).map { x ->
-//            val y = amplitude * sin(2 * Math.PI * frequency * x + phase)
-//            Point(x.toFloat(), y.toFloat())
-//        }
-        //todo sree_ remove hard coded sample data
-
+    fun getWaveChartHardCodedData(listSize: Int, start: Int = 0, maxRange: Int): List<Point> {
         val wavePoints = listOf(
             Point(0f, -5f),
             Point(5f, 5f),
@@ -62,6 +55,11 @@ object DataUtils {
         return wavePoints.toList()
     }
 
+    fun getWaveChartData(frequency: Double, numPoints: Int): List<Point> {
+        val list = generateWaveData(frequency, numPoints)
+        return list.toList()
+    }
+
 
     /**
      * Return the sample bar chart data
@@ -69,6 +67,23 @@ object DataUtils {
      * @param maxRange Maximum range for the values
      * @param barChartType type of bar chart [Horizontal or Vertical]
      */
+
+    //f - 5 n -10 * 10
+    fun generateWaveData(frequency: Double, numPoints: Int): List<Point> {
+        val amplitude = 2.0 // amplitude of the wave
+        val phase = 1.0 // phase shift of the wave
+
+        val list = mutableListOf<Point>()
+        for (i in 0 until numPoints) {
+            val x =
+                (i * 50).toDouble() / (numPoints - 1)  // generate x-values evenly spaced between 0 and 1
+            val y =
+                amplitude * sin(2 * PI * frequency * x + phase) // generate y-values for each x-value using the sine function
+
+            list.add(Point(x.toFloat(), y.roundTwoDecimal().toFloat()))
+        }
+        return list
+    }
 
     fun getBarChartData(
         listSize: Int,

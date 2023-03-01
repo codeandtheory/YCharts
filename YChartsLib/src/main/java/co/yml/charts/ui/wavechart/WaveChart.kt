@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
 import androidx.core.graphics.withRotation
 import co.yml.charts.axis.AxisData
 import co.yml.charts.axis.YAxis
@@ -536,9 +537,10 @@ fun DrawScope.drawWavePath(
             fillRegularWavePath(
                 curvePoints,
                 yPointOfOrigin,
-                pointsData[i],
                 pointPosition,
-                waveColor
+                waveColor,
+                pointsData[i - 1],
+                pointsData[i]
             )
         }
     }
@@ -586,32 +588,36 @@ fun getCurvePoints(
 fun DrawScope.fillRegularWavePath(
     curvePoints: List<Offset>,
     yPointOfOrigin: Float,
-    intersectionPoint: Offset,
     pointPosition: AxisPosition,
-    waveColor: WaveFillColor
+    waveColor: WaveFillColor,
+    p1: Offset,
+    p2: Offset
 ) {
     val curvePath = Path()
     val startPoint = curvePoints.first()
+    val endPoint = curvePoints.last()
     curvePath.moveTo(startPoint.x, startPoint.y)
+    Log.i("check_regular_path", "startPoint: $startPoint")
 
-    for (i in 1 until curvePoints.size) {
-        curvePath.lineTo(curvePoints[i - 1].x, curvePoints[i - 1].y)
-        curvePath.lineTo(curvePoints[i].x, curvePoints[i].y)
-    }
+    val (cubicPoints1, cubicPoints2) = findWaveControlPoints(p1, p2)
+    curvePath.cubicTo(
+        cubicPoints1.x,
+        cubicPoints1.y,
+        cubicPoints2.x,
+        cubicPoints2.y,
+        p2.x,
+        p2.y
+    )
+
+    curvePath.lineTo(endPoint.x, yPointOfOrigin)
+    curvePath.lineTo(startPoint.x, yPointOfOrigin)
+
 
     val fillColor: Color = if (pointPosition == AxisPosition.BOTTOM) {
         waveColor.bottomColor
     } else {
         waveColor.topColor
     }
-    drawPath(curvePath, color = fillColor, 0.5f, Fill)
-
-
-    curvePath.moveTo(startPoint.x, startPoint.y)
-    curvePath.lineTo(intersectionPoint.x, intersectionPoint.y)
-    curvePath.lineTo(intersectionPoint.x, yPointOfOrigin)
-    curvePath.lineTo(startPoint.x, yPointOfOrigin)
-
     drawPath(curvePath, color = fillColor, 0.3f, Fill)
 }
 
@@ -644,6 +650,17 @@ fun DrawScope.fillWavePath(
         topPath.moveTo(startPoint.x, startPoint.y)
     }
 
+    //TODO sree_ remove once testing is done
+    drawCircle(
+        Color.Black,
+        3.dp.toPx(),
+        intersectionPoint,
+        1.0f,
+        Fill,
+        null,
+        DrawScope.DefaultBlendMode
+    )
+
     for (i in 1 until curvePoints.size) {
         if (curvePoints[i - 1].y > yPointOfOrigin) {
             //BOTTOM
@@ -658,25 +675,21 @@ fun DrawScope.fillWavePath(
 
     // Fill rest of the bottom path
     if (isStartPointBottom) {
-        bottomPath.moveTo(startPoint.x, startPoint.y)
-        bottomPath.lineTo(intersectionPoint.x, intersectionPoint.y)
+        bottomPath.lineTo(intersectionPoint.x, yPointOfOrigin)
         bottomPath.lineTo(startPoint.x, yPointOfOrigin)
     } else {
-        bottomPath.moveTo(intersectionPoint.x, intersectionPoint.y)
-        bottomPath.lineTo(endPoint.x, endPoint.y)
         bottomPath.lineTo(endPoint.x, yPointOfOrigin)
+        bottomPath.moveTo(intersectionPoint.x, yPointOfOrigin)
     }
 
     drawPath(bottomPath, color = waveColor.bottomColor, 0.3f, Fill)
 
     // Fill rest of the top path
     if (isStartPointBottom) {
-        topPath.moveTo(intersectionPoint.x, intersectionPoint.y)
-        topPath.lineTo(endPoint.x, endPoint.y)
         topPath.lineTo(endPoint.x, yPointOfOrigin)
+        topPath.moveTo(intersectionPoint.x, yPointOfOrigin)
     } else {
-        topPath.moveTo(startPoint.x, startPoint.y)
-        topPath.lineTo(intersectionPoint.x, intersectionPoint.y)
+        topPath.lineTo(intersectionPoint.x, yPointOfOrigin)
         topPath.lineTo(startPoint.x, yPointOfOrigin)
     }
 
@@ -701,7 +714,6 @@ fun findWaveControlPoints(startPoint: Offset, endPoint: Offset): Pair<Offset, Of
 
     return Pair(Offset(control1X, control1Y), Offset(control2X, control2Y))
 }
-
 
 
 /**
