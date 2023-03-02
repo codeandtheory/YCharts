@@ -17,5 +17,6 @@ include(
     ":app",
     ":YChartsLib",
     ":experiments:chartcontainer",
-    ":experiments:piechartcontainer"
+    ":experiments:piechartcontainer",
+    ":KMMYCharts"
 )
