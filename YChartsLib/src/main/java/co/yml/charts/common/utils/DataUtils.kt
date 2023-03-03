@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import co.yml.charts.axis.DataCategoryOptions
-import co.yml.charts.common.extensions.roundTwoDecimal
 import co.yml.charts.common.model.LegendLabel
 import co.yml.charts.common.model.LegendsConfig
 import co.yml.charts.common.model.PlotType
@@ -13,7 +12,6 @@ import co.yml.charts.ui.barchart.models.BarChartType
 import co.yml.charts.ui.barchart.models.BarData
 import co.yml.charts.ui.barchart.models.GroupBar
 import co.yml.charts.ui.piechart.models.PieChartData
-import kotlin.math.PI
 import kotlin.math.sin
 import kotlin.random.Random
 
@@ -37,50 +35,23 @@ object DataUtils {
         return list
     }
 
-    fun getWaveChartHardCodedData(listSize: Int, start: Int = 0, maxRange: Int): List<Point> {
-        val wavePoints = listOf(
-            Point(0f, -5f),
-            Point(5f, 5f),
-            Point(10f, -5f),
-            Point(15f, 5f),
-            Point(20f, -5f),
-            Point(25f, 5f),
-            Point(30f, -5f),
-            Point(35f, 5f),
-            Point(40f, -5f),
-            Point(45f, 5f),
-            Point(50f, -5f)
-        )
-
-        return wavePoints.toList()
-    }
-
-    fun getWaveChartData(frequency: Double, numPoints: Int): List<Point> {
-        val list = generateWaveData(frequency, numPoints)
-        return list.toList()
-    }
-
-
     /**
      * Return the sample bar chart data
-     * @param listSize Size of the list
-     * @param maxRange Maximum range for the values
-     * @param barChartType type of bar chart [Horizontal or Vertical]
+     * @param duration : Duration of the wave in seconds
+     * @param sampleRate : Number of samples per second
+     * @param frequency : Frequency of the wave in Hz
      */
-
-    //f - 5 n -10 * 10
-    fun generateWaveData(frequency: Double, numPoints: Int): List<Point> {
-        val amplitude = 2.0 // amplitude of the wave
-        val phase = 1.0 // phase shift of the wave
-
+    fun getWaveChartData(duration: Double, sampleRate: Double, frequency: Double): List<Point> {
         val list = mutableListOf<Point>()
-        for (i in 0 until numPoints) {
-            val x =
-                (i * 50).toDouble() / (numPoints - 1)  // generate x-values evenly spaced between 0 and 1
-            val y =
-                amplitude * sin(2 * PI * frequency * x + phase) // generate y-values for each x-value using the sine function
 
-            list.add(Point(x.toFloat(), y.roundTwoDecimal().toFloat()))
+        val amplitude = 1.0 // Amplitude of the wave
+        val numSamples = (duration * sampleRate).toInt() // Total number of samples
+
+        for (i in 0 until numSamples) {
+            val time = i.toDouble() / sampleRate // Time at the current sample
+            val sample =
+                amplitude * sin(2.0 * Math.PI * frequency * time) // Calculate the sample value
+            list.add(Point(time.toFloat(), sample.toFloat()))
         }
         return list
     }

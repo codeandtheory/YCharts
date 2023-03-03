@@ -16,6 +16,8 @@ import androidx.compose.ui.graphics.drawscope.Fill
  * @param blendMode Blending algorithm to be applied to the path when it is drawn
  * @param draw override this to change the default drawPath implementation. You are provided with
  * the [Path] of the line
+ * @param drawMultiColor override this to change the default drawPath implementation. You are provided with
+ * the [Path] of the line, custom [Color] and [Brush]
  */
 data class ShadowUnderLine(
     val color: Color = Color.Black,
@@ -29,6 +31,13 @@ data class ShadowUnderLine(
             drawPath(path, brush, alpha, style, colorFilter, blendMode)
         } else {
             drawPath(path, color, alpha, style, colorFilter, blendMode)
+        }
+    },
+    val drawMultiColor: DrawScope.(Path, Color, Brush?) -> Unit = { path, multiColor, multiColorBrush ->
+        if (multiColorBrush != null) {
+            drawPath(path, multiColorBrush, alpha, style, colorFilter, blendMode)
+        } else {
+            drawPath(path, multiColor, alpha, style, colorFilter, blendMode)
         }
     }
 )

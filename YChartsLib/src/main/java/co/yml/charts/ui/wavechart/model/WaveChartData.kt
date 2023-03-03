@@ -1,5 +1,6 @@
 package co.yml.charts.ui.wavechart.model
 
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -65,8 +66,10 @@ data class Wave(
  * hold the color values
  */
 data class WaveFillColor(
-    val topColor: Color = Color.Green,
-    val bottomColor: Color = Color.Red
+    val topColor: Color = Color.Black,
+    val bottomColor: Color = Color.Black,
+    val topBrush: Brush? = null,
+    val bottomBrush: Brush? = null
 )
 
 /**
