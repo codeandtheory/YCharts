@@ -34,6 +34,7 @@ import co.yml.charts.ui.linechart.model.LineType
 import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 import co.yml.charts.ui.linechart.model.ShadowUnderLine
+import co.yml.kmm.charts.CommonMainScreen
 import co.yml.ycharts.app.R
 import co.yml.ycharts.app.ui.compositions.AppBarWithBackButton
 import co.yml.ycharts.app.ui.theme.YChartsTheme
@@ -51,37 +52,13 @@ class LineChartActivity : ComponentActivity() {
                             onBackPressed = {
                                 onBackPressed()
                             })
-                    })
-                {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(it),
-                        contentAlignment = Alignment.TopCenter
-                    ) {
-                        LazyColumn(content = {
-                            items(3) { item ->
-                                when (item) {
-                                    0 -> LineGraph1(
-                                        DataUtils.getLineChartData(
-                                            100,
-                                            start = 50,
-                                            maxRange = 100
-                                        )
-                                    )
-                                    1 -> LineGraph2(DataUtils.getLineChartData(50, maxRange = 200))
-                                    2 -> LineGraph3(
-                                        DataUtils.getLineChartData(
-                                            200,
-                                            start = -50,
-                                            maxRange = 50
-                                        )
-                                    )
-                                }
-                            }
-                        })
+                    },
+                    content = {
+                        Box(modifier = Modifier.padding(it)) {
+                            CommonMainScreen()
+                        }
                     }
-                }
+                )
             }
         }
     }

@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-    compileSdk = 32
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "co.yml.ycharts.app"
         minSdk = 26
-        targetSdk = 32
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -48,6 +48,7 @@ android {
 }
 
 dependencies {
+    implementation(project(mapOf("path" to ":KMMYCharts")))
     implementation(project(mapOf("path" to ":YChartsLib")))
     implementation(co.ycharts.dependency.YChartDependency.CORE_KTX)
     implementation(co.ycharts.dependency.YChartDependency.COMPOSE_UI)

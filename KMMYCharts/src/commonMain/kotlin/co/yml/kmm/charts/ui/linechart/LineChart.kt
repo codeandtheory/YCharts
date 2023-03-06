@@ -39,7 +39,6 @@ import co.yml.kmm.charts.common.extensions.drawGridLines
 import co.yml.kmm.charts.common.extensions.isNotNull
 import co.yml.kmm.charts.common.model.Point
 import co.yml.kmm.charts.ui.linechart.model.*
-import com.example.kmmcocoapods.ui.linechart.model.*
 import kotlinx.coroutines.launch
 
 /**

@@ -16,6 +16,7 @@ kotlin {
         homepage = "Link to the Shared Module homepage"
         version = "1.0"
         ios.deploymentTarget = "15.2"
+        podfile = project.file("../iosApp/Podfile")
         framework {
             baseName = "KMMYCharts"
             isStatic = true
