@@ -1,0 +1,8 @@
+framework module KMMYCharts {
+    umbrella header "KMMYCharts.h"
+
+    export *
+    module * { export * }
+
+    use Foundation
+}
