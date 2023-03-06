@@ -1,8 +1,0 @@
-1<?xml version="1.0" encoding="utf-8"?>
-2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-3    package="co.yml.kmm" >
-4
-5    <uses-sdk android:minSdkVersion="24" />
-5-->/Users/admin/StudioProjects/YCharts/KMMYCharts/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest14997580367640112298.xml
-6
-7</manifest>
