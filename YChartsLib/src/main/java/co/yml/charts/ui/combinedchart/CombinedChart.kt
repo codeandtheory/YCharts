@@ -281,7 +281,11 @@ fun CombinedChart(modifier: Modifier, combinedChartData: CombinedChartData) {
                                     groupBarData.barList.forEachIndexed { subIndex, individualBar ->
                                         val drawOffset = getGroupBarDrawOffset(
                                             index, individualBar.point.y, xOffset, xLeft,
-                                            scrollOffset, yBottom, yOffset, 0f
+                                            scrollOffset, yBottom, yOffset, 0f,
+                                            0f,
+                                            xAxisData.startDrawPadding.toPx(),
+                                            xZoom,
+                                            barPlotData.barStyle.barWidth.toPx()
                                         )
                                         val height = yBottom - drawOffset.y
 

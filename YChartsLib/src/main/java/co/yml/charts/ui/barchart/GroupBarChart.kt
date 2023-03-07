@@ -144,7 +144,11 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                                 scrollOffset,
                                 yBottom,
                                 yOffset,
-                                0f
+                                0f,
+                                0f,
+                                xAxisData.startDrawPadding.toPx(),
+                                xZoom,
+                                barStyle.barWidth.toPx()
                             )
                             val height = yBottom - drawOffset.y
 
@@ -183,7 +187,11 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                                 scrollOffset,
                                 yBottom,
                                 yOffset2,
-                                0f
+                                0f,
+                                0f,
+                                xAxisData.startDrawPadding.toPx(),
+                                xZoom,
+                                barStyle.barWidth.toPx()
                             )
                             val xOffset2 =
                                 (drawOffset2.x + insideOffset + (barStyle.paddingBetweenBars.toPx() / 2) - groupBarChartData.groupSeparatorConfig.separatorWidth.toPx() / 2)
@@ -329,7 +337,7 @@ private fun DrawScope.drawGroupHighlightText(
  * @param height : height of the bar graph
  * @param subIndex : Index of the bar
  */
-private fun DrawScope.drawGroupBarGraph(
+fun DrawScope.drawGroupBarGraph(
     barGraphData: GroupBarChartData, drawOffset: Offset, height: Float, subIndex: Int
 ) {
     with(barGraphData.barPlotData) {
@@ -415,10 +423,24 @@ fun DrawScope.highlightGroupBar(
  * @param yBottom: Y starting point of bar graph
  */
 fun getGroupBarDrawOffset(
-    x: Int, y: Float, xOffset: Float,
-    xLeft: Float, scrollOffset: Float, yBottom: Float, yOffset: Float, yMin: Float
+    x: Int,
+    y: Float,
+    xOffset: Float,
+    xLeft: Float,
+    scrollOffset: Float,
+    yBottom: Float,
+    yOffset: Float,
+    yMin: Float,
+    xMin: Float,
+    startDrawPadding: Float,
+    zoomScale: Float,
+    barWidth: Float
 ): Offset {
-    val x1 = (x * xOffset) + xLeft - scrollOffset
+    //todo sree_ check start drawing padding
+//    val x1 = (x * xOffset) + xLeft - scrollOffset
+    val x1 =
+        ((x - xMin) * xOffset) + xLeft + (startDrawPadding * zoomScale) - barWidth / 2 - scrollOffset
+
     val y1 = yBottom - ((y - yMin) * yOffset)
     return Offset(x1, y1)
 }
