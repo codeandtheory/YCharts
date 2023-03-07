@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
@@ -21,6 +22,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
 import androidx.core.graphics.withRotation
 import co.yml.charts.axis.AxisData
 import co.yml.charts.axis.YAxis
@@ -31,6 +33,7 @@ import co.yml.charts.common.components.accessibility.AccessibilityBottomSheetDia
 import co.yml.charts.common.components.accessibility.LinePointInfo
 import co.yml.charts.common.extensions.*
 import co.yml.charts.common.model.Point
+import co.yml.charts.common.utils.ChartConstants
 import co.yml.charts.ui.barchart.drawUnderScrollMask
 import co.yml.charts.ui.linechart.*
 import co.yml.charts.ui.linechart.model.LineStyle
@@ -69,7 +72,7 @@ fun WaveChart(modifier: Modifier, waveChartData: WaveChartData) {
     Surface(modifier = modifier.testTag("wave_chart")) {
         with(waveChartData) {
             var columnWidth by remember { mutableStateOf(0f) }
-            val rowHeight by remember { mutableStateOf(0f) }
+            var rowHeight by remember { mutableStateOf(0f) }
             var xOffset by remember { mutableStateOf(0f) }
             val bgColor = MaterialTheme.colors.surface
             var isTapped by remember { mutableStateOf(false) }
@@ -77,6 +80,8 @@ fun WaveChart(modifier: Modifier, waveChartData: WaveChartData) {
             var selectionTextVisibility by remember { mutableStateOf(false) }
             var identifiedPoint by remember { mutableStateOf(Point(0f, 0f)) }
             val wave = wavePlotData.lines.first()
+            rowHeight =
+                LocalDensity.current.run { ChartConstants.DEFAULT_YAXIS_BOTTOM_PADDING.dp.toPx() }
             // Update must required values
             val xAxisData = xAxisData.copy(
                 axisBottomPadding = bottomPadding,
@@ -120,7 +125,9 @@ fun WaveChart(modifier: Modifier, waveChartData: WaveChartData) {
                 drawXAndYAxis = { _, _ ->
                     YAxis(
                         modifier = Modifier
+                            .align(Alignment.TopStart)
                             .fillMaxHeight()
+                            .wrapContentWidth()
                             .onGloballyPositioned {
                                 columnWidth = it.size.width.toFloat()
                             }, yAxisData = yAxisData
