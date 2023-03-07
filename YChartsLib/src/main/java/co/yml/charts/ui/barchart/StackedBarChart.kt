@@ -2,7 +2,6 @@
 
 package co.yml.charts.ui.barchart
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,6 +23,7 @@ import co.yml.charts.chartcontainer.container.ScrollableCanvasContainer
 import co.yml.charts.common.extensions.RowClip
 import co.yml.charts.common.extensions.collectIsTalkbackEnabledAsState
 import co.yml.charts.common.extensions.getMaxElementInYAxis
+import co.yml.charts.common.extensions.isStackedBarTapped
 import co.yml.charts.common.model.Point
 import co.yml.charts.common.utils.ChartConstants
 import co.yml.charts.ui.barchart.models.BarData
@@ -75,13 +75,14 @@ fun StackedBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
 
             val xMax = groupBarList.size
             val yMax = valueList.maxOrNull() ?: 0f
-            Log.i("check_values_y", "yMax: $yMax yMaxList: $valueList")
             val xAxisData =
                 groupBarChartData.xAxisData.copy(axisStepSize = barStyle.barWidth + barStyle.paddingBetweenBars)
             val yAxisData =
                 groupBarChartData.yAxisData
 
             val maxElementInYAxis = getMaxElementInYAxis(yMax, yAxisData.steps)
+            val paddingBetweenBars =
+                LocalDensity.current.run { groupBarChartData.paddingBetweenStackedBars.toPx() }
 
             if (!groupBarChartData.showXAxis) {
                 rowHeight =
@@ -119,7 +120,9 @@ fun StackedBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                 },
                 onDraw = { scrollOffset, xZoom ->
                     val yBottom = size.height - rowHeight
-                    val yOffset = ((yBottom - yAxisData.axisTopPadding.toPx()) / maxElementInYAxis)
+                    //todo sree_ check group bar list with different bar list size [testing purpose]
+                    val yOffset =
+                        ((yBottom - yAxisData.axisTopPadding.toPx() - ((groupBarList.first().barList.size - 1) * paddingBetweenBars)) / maxElementInYAxis)
                     xOffset =
                         (barStyle.barWidth.toPx() + barStyle.paddingBetweenBars.toPx()) * xZoom
                     val xLeft = columnWidth
@@ -154,9 +157,41 @@ fun StackedBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                                 groupBarChartData, individualOffset, height, subIndex
                             )
 
-                            insideOffset += height
+                            insideOffset += height + paddingBetweenBars
+
+                            val middleOffset =
+                                Offset(
+                                    drawOffset.x + barStyle.barWidth.toPx() / 2,
+                                    individualOffset.y
+                                )
+
+                            if (isTapped && middleOffset.isStackedBarTapped(
+                                    tapOffset,
+                                    barStyle.barWidth.toPx(),
+                                    individualOffset.y + height,
+                                    groupBarChartData.tapPadding.toPx()
+                                )
+                            ) {
+                                dragLocks[0] = individualBar to individualOffset
+                            }
 
                             drawUnderScrollMask(columnWidth, paddingRight, bgColor)
+
+                            if (barStyle.selectionHighlightData != null) {
+                                // highlighting the selected bar and showing the data points
+                                identifiedPoint = highlightGroupBar(
+                                    dragLocks,
+                                    visibility,
+                                    identifiedPoint,
+                                    barStyle.selectionHighlightData,
+                                    isTapped,
+                                    columnWidth,
+                                    yBottom,
+                                    paddingRight,
+                                    yOffset,
+                                    barStyle.barWidth
+                                )
+                            }
                         }
                     }
                 },

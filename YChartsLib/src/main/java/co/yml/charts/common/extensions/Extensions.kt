@@ -310,3 +310,8 @@ fun Offset.isYAxisTapped(
 ) =
     ((tapOffset.y) < y + (yOffset + tapPadding) / 2) && ((tapOffset.y) > y - (yOffset + tapPadding) / 2) &&
             ((tapOffset.plus(Offset(tapPadding, 0f))).x < xAxisWidth) && ((tapOffset.x) > left)
+
+//todo sree_ check plus tapPadding reqyired for y check
+fun Offset.isStackedBarTapped(tapOffset: Offset, xOffset: Float, bottom: Float, tapPadding: Float) =
+    ((tapOffset.x) > x - (xOffset + tapPadding) / 2) && ((tapOffset.x) < x + (xOffset + tapPadding) / 2) &&
+            (tapOffset.y > y) && ((tapOffset.y) < bottom)

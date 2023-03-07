@@ -34,5 +34,6 @@ data class GroupBarChartData(
     val showXAxis: Boolean = true,
     val tapPadding: Dp = 10.dp,
     val groupSeparatorConfig: GroupSeparatorConfig = GroupSeparatorConfig(),
-    val accessibilityConfig: AccessibilityConfig = AccessibilityConfig()
+    val accessibilityConfig: AccessibilityConfig = AccessibilityConfig(),
+    val paddingBetweenStackedBars: Dp = 0.dp
 )
