@@ -1,4 +1,4 @@
-package com.example.kmmcocoapods.axis
+package co.yml.kmm.charts.axis
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background

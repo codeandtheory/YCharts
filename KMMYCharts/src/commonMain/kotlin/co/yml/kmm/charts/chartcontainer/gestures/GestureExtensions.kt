@@ -1,4 +1,4 @@
-package com.example.kmmcocoapods.chartcontainer.gestures
+package co.yml.kmm.charts.chartcontainer.gestures
 
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.calculateCentroidSize

@@ -1,4 +1,4 @@
-package com.example.kmmcocoapods.axis
+package co.yml.kmm.charts.axis
 
 /**
  * To specify gravity positions

@@ -17,7 +17,7 @@ import co.yml.kmm.charts.ui.wavechart.WaveChart
 import co.yml.kmm.charts.ui.wavechart.model.Wave
 import co.yml.kmm.charts.ui.wavechart.model.WaveChartData
 import co.yml.kmm.charts.ui.wavechart.model.WavePlotData
-import com.example.kmmcocoapods.axis.AxisData
+import co.yml.kmm.charts.axis.AxisData
 
 @Composable
 internal fun ChartScreen() {

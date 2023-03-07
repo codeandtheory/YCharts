@@ -20,11 +20,11 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.*
 import androidx.compose.ui.unit.IntSize
-import com.example.kmmcocoapods.axis.AxisData
-import com.example.kmmcocoapods.axis.YAxis
-import com.example.kmmcocoapods.axis.getXAxisScale
-import com.example.kmmcocoapods.axis.getYAxisScale
-import com.example.kmmcocoapods.chartcontainer.container.ScrollableCanvasContainer
+import co.yml.kmm.charts.axis.AxisData
+import co.yml.kmm.charts.axis.YAxis
+import co.yml.kmm.charts.axis.getXAxisScale
+import co.yml.kmm.charts.axis.getYAxisScale
+import co.yml.kmm.charts.chartcontainer.container.ScrollableCanvasContainer
 import co.yml.kmm.charts.common.components.ItemDivider
 import co.yml.kmm.charts.common.components.accessibility.AccessibilityBottomSheetDialog
 import co.yml.kmm.charts.common.components.accessibility.LinePointInfo

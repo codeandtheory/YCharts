@@ -1,4 +1,4 @@
-package com.example.kmmcocoapods.chartcontainer.container
+package co.yml.kmm.charts.chartcontainer.container
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -23,7 +23,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
-import com.example.kmmcocoapods.chartcontainer.gestures.detectZoomGesture
+import co.yml.kmm.charts.chartcontainer.gestures.detectZoomGesture
 
 /**
  *

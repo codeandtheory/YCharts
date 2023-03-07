@@ -1,4 +1,4 @@
-package com.example.kmmcocoapods.axis
+package co.yml.kmm.charts.axis
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp

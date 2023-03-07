@@ -14,7 +14,7 @@ dependencyResolutionManagement {
 }
 rootProject.name = "YCharts"
 include(
-    ":app",
+    ":androidApp",
     ":YChartsLib",
     ":experiments:chartcontainer",
     ":experiments:piechartcontainer",

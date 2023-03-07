@@ -3,7 +3,7 @@ package co.yml.kmm.charts.ui.wavechart.model
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.kmmcocoapods.axis.AxisData
+import co.yml.kmm.charts.axis.AxisData
 import co.yml.kmm.charts.common.model.AccessibilityConfig
 import co.yml.kmm.charts.common.model.Point
 import co.yml.kmm.charts.ui.linechart.model.GridLines
