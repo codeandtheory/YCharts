@@ -72,7 +72,10 @@ class BarChartTest {
             scrollOffset = 50f,
             yBottom = 1500f,
             yOffset = 20f,
-            yMin = 0f
+            yMin = 0f,
+            startDrawPadding = 20f,
+            barWidth = 40f,
+            zoomScale = 1f
         )
         assertTrue(drawOffset.x > 0 && drawOffset.y > 0)
     }
@@ -90,7 +93,10 @@ class BarChartTest {
             scrollOffset = 0f,
             yBottom = 1500f,
             yOffset = 20f,
-            yMin = 0f
+            yMin = 0f,
+            startDrawPadding = 20f,
+            barWidth = 40f,
+            zoomScale = 1f
         )
         assertEquals(drawOffset.x, xOffset * point.x)
     }

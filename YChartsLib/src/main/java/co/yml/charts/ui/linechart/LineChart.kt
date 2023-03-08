@@ -369,7 +369,7 @@ fun DrawScope.drawStraightOrCubicLine(
  * @param lineType : Type of the line [LineType]
  * @param lineStyle : The style for the path [lineStyle]
  */
-private fun getDrawStyleForPath(
+fun getDrawStyleForPath(
     lineType: LineType, lineStyle: LineStyle
 ): DrawStyle = if (lineType.isDotted) Stroke(
     width = lineStyle.width, pathEffect = PathEffect.dashPathEffect(lineType.intervals)

@@ -12,6 +12,7 @@ import co.yml.charts.ui.barchart.models.BarChartType
 import co.yml.charts.ui.barchart.models.BarData
 import co.yml.charts.ui.barchart.models.GroupBar
 import co.yml.charts.ui.piechart.models.PieChartData
+import kotlin.math.sin
 import kotlin.random.Random
 
 object DataUtils {
@@ -36,10 +37,24 @@ object DataUtils {
 
     /**
      * Return the sample bar chart data
-     * @param listSize Size of the list
-     * @param maxRange Maximum range for the values
-     * @param barChartType type of bar chart [Horizontal or Vertical]
+     * @param duration : Duration of the wave in seconds
+     * @param sampleRate : Number of samples per second
+     * @param frequency : Frequency of the wave in Hz
      */
+    fun getWaveChartData(duration: Double, sampleRate: Double, frequency: Double): List<Point> {
+        val list = mutableListOf<Point>()
+
+        val amplitude = 1.0 // Amplitude of the wave
+        val numSamples = (duration * sampleRate).toInt() // Total number of samples
+
+        for (i in 0 until numSamples) {
+            val time = i.toDouble() / sampleRate // Time at the current sample
+            val sample =
+                amplitude * sin(2.0 * Math.PI * frequency * time) // Calculate the sample value
+            list.add(Point(time.toFloat(), sample.toFloat()))
+        }
+        return list
+    }
 
     fun getBarChartData(
         listSize: Int,
