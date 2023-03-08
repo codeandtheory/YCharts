@@ -5,12 +5,14 @@ package co.yml.charts.ui.barchart
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -20,6 +22,9 @@ import androidx.compose.ui.unit.dp
 import co.yml.charts.axis.XAxis
 import co.yml.charts.axis.YAxis
 import co.yml.charts.chartcontainer.container.ScrollableCanvasContainer
+import co.yml.charts.common.components.ItemDivider
+import co.yml.charts.common.components.accessibility.AccessibilityBottomSheetDialog
+import co.yml.charts.common.components.accessibility.GroupBarInfo
 import co.yml.charts.common.extensions.RowClip
 import co.yml.charts.common.extensions.collectIsTalkbackEnabledAsState
 import co.yml.charts.common.extensions.getMaxElementInYAxis
@@ -78,7 +83,7 @@ fun StackedBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
             val xAxisData =
                 groupBarChartData.xAxisData.copy(axisStepSize = barStyle.barWidth + barStyle.paddingBetweenBars)
             val yAxisData =
-                groupBarChartData.yAxisData
+                groupBarChartData.yAxisData.copy(axisBottomPadding = LocalDensity.current.run { rowHeight.toDp() })
 
             val maxElementInYAxis = getMaxElementInYAxis(yMax, yAxisData.steps)
             val paddingBetweenBars =
@@ -121,8 +126,10 @@ fun StackedBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                 onDraw = { scrollOffset, xZoom ->
                     val yBottom = size.height - rowHeight
                     //todo sree_ check group bar list with different bar list size [testing purpose]
+                    val totalPaddingBtwBars =
+                        (groupBarList.first().barList.size - 1) * paddingBetweenBars
                     val yOffset =
-                        ((yBottom - yAxisData.axisTopPadding.toPx() - ((groupBarList.first().barList.size - 1) * paddingBetweenBars)) / maxElementInYAxis)
+                        (yBottom - yAxisData.axisTopPadding.toPx() - totalPaddingBtwBars) / maxElementInYAxis
                     xOffset =
                         (barStyle.barWidth.toPx() + barStyle.paddingBetweenBars.toPx()) * xZoom
                     val xLeft = columnWidth
@@ -153,8 +160,15 @@ fun StackedBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                             val individualOffset = Offset(drawOffset.x, drawOffset.y - insideOffset)
 
                             // drawing each individual bars
-                            drawGroupBarGraph(
-                                groupBarChartData, individualOffset, height, subIndex
+                            val barColor = barColorPaletteList[subIndex]
+                            groupBarChartData.drawBar(
+                                this,
+                                groupBarChartData,
+                                barStyle,
+                                individualOffset,
+                                height,
+                                barColor,
+                                subIndex
                             )
 
                             insideOffset += height + paddingBetweenBars
@@ -246,6 +260,34 @@ fun StackedBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                     visibility = false
                 }
             )
+        }
+        if (isTalkBackEnabled) {
+            with(groupBarChartData) {
+                AccessibilityBottomSheetDialog(
+                    modifier = Modifier.fillMaxSize(), backgroundColor = Color.White, content = {
+                        LazyColumn {
+                            items(barPlotData.groupBarList.size) { index ->
+                                Column {
+                                    GroupBarInfo(
+                                        barPlotData.groupBarList[index],
+                                        xAxisData.axisLabelDescription(
+                                            xAxisData.labelData(index)
+                                        ),
+                                        barPlotData.barColorPaletteList
+                                    )
+                                    ItemDivider(
+                                        thickness = accessibilityConfig.dividerThickness,
+                                        dividerColor = accessibilityConfig.dividerColor
+                                    )
+                                }
+                            }
+                        }
+                    },
+                    popUpTopRightButtonTitle = accessibilityConfig.popUpTopRightButtonTitle,
+                    popUpTopRightButtonDescription = accessibilityConfig.popUpTopRightButtonDescription,
+                    sheetState = accessibilitySheetState
+                )
+            }
         }
     }
 }

@@ -12,7 +12,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -155,9 +154,17 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                             val individualOffset = Offset(drawOffset.x + insideOffset, drawOffset.y)
 
                             // drawing each individual bars
-                            drawGroupBarGraph(
-                                groupBarChartData, individualOffset, height, subIndex
+                            val barColor = barColorPaletteList[subIndex]
+                            groupBarChartData.drawBar(
+                                this,
+                                groupBarChartData,
+                                barStyle,
+                                individualOffset,
+                                height,
+                                barColor,
+                                subIndex
                             )
+
                             insideOffset += barStyle.barWidth.toPx()
 
                             val middleOffset = Offset(
@@ -327,34 +334,6 @@ private fun DrawScope.drawGroupHighlightText(
     // Drawing the highlighted background and text
     highlightData.drawGroupBarPopUp(this, selectedOffset, identifiedPoint, centerPointOfBar)
 }
-
-
-/**
- *
- * Used to draw the individual bars
- * @param barGraphData : all meta data related to the bar graph
- * @param drawOffset: topLeft offset for the drawing the bar
- * @param height : height of the bar graph
- * @param subIndex : Index of the bar
- */
-fun DrawScope.drawGroupBarGraph(
-    barGraphData: GroupBarChartData, drawOffset: Offset, height: Float, subIndex: Int
-) {
-    with(barGraphData.barPlotData) {
-        val color = barColorPaletteList[subIndex]
-        drawRoundRect(
-            color = color,
-            topLeft = drawOffset,
-            size = Size(barGraphData.barPlotData.barStyle.barWidth.toPx(), height),
-            cornerRadius = CornerRadius(
-                barStyle.cornerRadius.toPx(), barStyle.cornerRadius.toPx()
-            ),
-            style = barStyle.barDrawStyle,
-            blendMode = barStyle.barBlendMode
-        )
-    }
-}
-
 
 /**
  *
