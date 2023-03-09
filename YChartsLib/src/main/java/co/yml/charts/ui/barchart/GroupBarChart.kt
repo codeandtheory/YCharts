@@ -414,8 +414,6 @@ fun getGroupBarDrawOffset(
     zoomScale: Float,
     barWidth: Float
 ): Offset {
-    //todo sree_ check start drawing padding
-//    val x1 = (x * xOffset) + xLeft - scrollOffset
     val x1 =
         ((x - xMin) * xOffset) + xLeft + (startDrawPadding * zoomScale) - barWidth / 2 - scrollOffset
 

@@ -125,7 +125,7 @@ fun StackedBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                 },
                 onDraw = { scrollOffset, xZoom ->
                     val yBottom = size.height - rowHeight
-                    //todo sree_ check group bar list with different bar list size [testing purpose]
+
                     val totalPaddingBtwBars =
                         (groupBarList.first().barList.size - 1) * paddingBetweenBars
                     val yOffset =
