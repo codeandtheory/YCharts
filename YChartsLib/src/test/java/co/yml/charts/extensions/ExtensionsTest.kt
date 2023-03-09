@@ -124,4 +124,30 @@ class ExtensionsTest{
 
         assertEquals(isTapped, false)
     }
+
+    @Test
+    fun `Return true when tapped point within the selected stacked bar bound`() {
+        val middleOffset = Offset(250f, 500f)
+        val tapOffset = Offset(260f, 550f)
+        val barWidth = 25f
+        val barHeight = 600f
+        val tapPadding = 35f
+
+        val isTapped = middleOffset.isStackedBarTapped(tapOffset, barWidth, barHeight, tapPadding)
+
+        assertEquals(isTapped, true)
+    }
+
+    @Test
+    fun `Return true when tapped point outside the the selected stacked bar bound`() {
+        val middleOffset = Offset(250f, 500f)
+        val tapOffset = Offset(260f, 770f)
+        val barWidth = 25f
+        val barHeight = 600f
+        val tapPadding = 35f
+
+        val isTapped = middleOffset.isStackedBarTapped(tapOffset, barWidth, barHeight, tapPadding)
+
+        assertEquals(isTapped, false)
+    }
 }

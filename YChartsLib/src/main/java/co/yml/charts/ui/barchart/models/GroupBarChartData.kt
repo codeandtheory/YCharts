@@ -40,9 +40,17 @@ data class GroupBarChartData(
     val groupSeparatorConfig: GroupSeparatorConfig = GroupSeparatorConfig(),
     val accessibilityConfig: AccessibilityConfig = AccessibilityConfig(),
     val paddingBetweenStackedBars: Dp = 0.dp,
-    val drawBar: (DrawScope, GroupBarChartData, BarStyle, Offset, Float, Color, Int) -> Unit = { drawScope, barChartData, barStyle, drawOffset, height, barColor, barIndex ->
+    val drawBar: (DrawScope, GroupBarChartData, BarStyle, Offset, Float, Int) -> Unit = { drawScope, barChartData, barStyle, drawOffset, height, barIndex ->
         //default implementation
-        drawGroupBarGraph(drawScope, barChartData, barStyle, drawOffset, height, barColor, barIndex)
+        drawGroupBarGraph(
+            drawScope,
+            barChartData,
+            barStyle,
+            drawOffset,
+            height,
+            barPlotData.barColorPaletteList[barIndex],
+            barIndex
+        )
     }
 )
 

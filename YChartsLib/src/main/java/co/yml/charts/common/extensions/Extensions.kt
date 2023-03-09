@@ -300,6 +300,7 @@ fun getMaxElementInXAxis(xMax: Float, xStepSize: Int): Int {
  * @param tapOffset Tapped offset
  * @param yOffset in the Y axis
  * @param left left Value
+ * @param tapPadding plus or minus padding from the point or clickable padding
  * @param xAxisWidth width of horizontal bar
  */
 fun Offset.isYAxisTapped(
@@ -319,7 +320,18 @@ fun Double.roundTwoDecimal(): Double {
     return (this * 100.0).roundToInt() / 100.0
 }
 
-//todo sree_ check plus tapPadding reqyired for y check
-fun Offset.isStackedBarTapped(tapOffset: Offset, xOffset: Float, bottom: Float, tapPadding: Float) =
-    ((tapOffset.x) > x - (xOffset + tapPadding) / 2) && ((tapOffset.x) < x + (xOffset + tapPadding) / 2) &&
-            (tapOffset.y > y) && ((tapOffset.y) < bottom)
+/**
+ * Return true if the point is selected
+ * @param tapOffset Tapped offset
+ * @param barWidth width of the bar
+ * @param barHeight height of the bar
+ * @param tapPadding plus or minus padding from the point or clickable padding
+ */
+fun Offset.isStackedBarTapped(
+    tapOffset: Offset,
+    barWidth: Float,
+    barHeight: Float,
+    tapPadding: Float
+) =
+    ((tapOffset.x) > x - (barWidth + tapPadding) / 2) && ((tapOffset.x) < x + (barWidth + tapPadding) / 2) &&
+            (tapOffset.y > y) && ((tapOffset.y) < barHeight)

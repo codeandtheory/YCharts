@@ -81,10 +81,11 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
             val xMax = groupBarList.size
             val yMax = valueList.maxOrNull() ?: 0f
             val xAxisData =
-                groupBarChartData.xAxisData.copy(axisStepSize = ((barStyle.barWidth * groupingSize) + barStyle.paddingBetweenBars),
+                groupBarChartData.xAxisData.copy(
+                    axisStepSize = ((barStyle.barWidth * groupingSize) + barStyle.paddingBetweenBars),
                     shouldDrawAxisLineTillEnd = true,
-                    steps = groupBarList.size - 1,
-                    startDrawPadding = LocalDensity.current.run { columnWidth.toDp() })
+                    steps = groupBarList.size - 1
+                )
             val yAxisData =
                 groupBarChartData.yAxisData.copy(axisBottomPadding = LocalDensity.current.run { rowHeight.toDp() })
 
@@ -136,32 +137,30 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
 
                         groupBarData.barList.forEachIndexed { subIndex, individualBar ->
                             val drawOffset = getGroupBarDrawOffset(
-                                index,
-                                individualBar.point.y,
-                                xOffset,
-                                xLeft,
-                                scrollOffset,
-                                yBottom,
-                                yOffset,
-                                0f,
-                                0f,
-                                xAxisData.startDrawPadding.toPx(),
-                                xZoom,
-                                barStyle.barWidth.toPx()
+                                x = index,
+                                y = individualBar.point.y,
+                                xOffset = xOffset,
+                                xLeft = xLeft,
+                                scrollOffset = scrollOffset,
+                                yBottom = yBottom,
+                                yOffset = yOffset,
+                                yMin = 0f,
+                                xMin = 0f,
+                                startDrawPadding = xAxisData.startDrawPadding.toPx(),
+                                zoomScale = xZoom,
+                                barWidth = barStyle.barWidth.toPx()
                             )
                             val height = yBottom - drawOffset.y
 
                             val individualOffset = Offset(drawOffset.x + insideOffset, drawOffset.y)
 
                             // drawing each individual bars
-                            val barColor = barColorPaletteList[subIndex]
                             groupBarChartData.drawBar(
                                 this,
                                 groupBarChartData,
                                 barStyle,
                                 individualOffset,
                                 height,
-                                barColor,
                                 subIndex
                             )
 
@@ -187,17 +186,17 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                             val yOffset2 = (yBottom - yAxisData.axisTopPadding.toPx())
                             val height = yBottom - yAxisData.axisTopPadding.toPx()
                             val drawOffset2 = getGroupBarDrawOffset(
-                                index,
-                                rowHeight,
-                                xOffset,
-                                xLeft,
-                                scrollOffset,
-                                yBottom,
-                                yOffset2,
-                                0f,
-                                0f,
-                                xAxisData.startDrawPadding.toPx(),
-                                xZoom,
+                                x = index,
+                                y = rowHeight,
+                                xOffset = xOffset,
+                                xLeft = xLeft,
+                                scrollOffset = scrollOffset,
+                                yBottom = yBottom,
+                                yOffset = yOffset2,
+                                yMin = 0f,
+                                xMin = 0f,
+                                startDrawPadding = xAxisData.startDrawPadding.toPx(),
+                                zoomScale = xZoom,
                                 barStyle.barWidth.toPx()
                             )
                             val xOffset2 =

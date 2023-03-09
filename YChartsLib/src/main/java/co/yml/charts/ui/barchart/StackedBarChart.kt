@@ -114,13 +114,13 @@ fun StackedBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                     xOffset =
                         (barStyle.barWidth.toPx() + barStyle.paddingBetweenBars.toPx()) * xZoom
                     getMaxScrollDistance(
-                        columnWidth,
-                        xMax.toFloat(),
-                        0f,
-                        xOffset,
-                        xLeft,
-                        paddingRight.toPx(),
-                        size.width
+                        columnWidth = columnWidth,
+                        xMax = xMax.toFloat(),
+                        xMin = 0f,
+                        xOffset = xOffset,
+                        xLeft = xLeft,
+                        paddingRight = paddingRight.toPx(),
+                        canvasWidth = size.width
                     )
                 },
                 onDraw = { scrollOffset, xZoom ->
@@ -141,18 +141,18 @@ fun StackedBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
 
                         groupBarData.barList.forEachIndexed { subIndex, individualBar ->
                             val drawOffset = getGroupBarDrawOffset(
-                                index,
-                                individualBar.point.y,
-                                xOffset,
-                                xLeft,
-                                scrollOffset,
-                                yBottom,
-                                yOffset,
-                                0f,
-                                0f,
-                                xAxisData.startDrawPadding.toPx(),
-                                xZoom,
-                                barStyle.barWidth.toPx()
+                                x = index,
+                                y = individualBar.point.y,
+                                xOffset = xOffset,
+                                xLeft = xLeft,
+                                scrollOffset = scrollOffset,
+                                yBottom = yBottom,
+                                yOffset = yOffset,
+                                yMin = 0f,
+                                xMin = 0f,
+                                startDrawPadding = xAxisData.startDrawPadding.toPx(),
+                                zoomScale = xZoom,
+                                barWidth = barStyle.barWidth.toPx()
                             )
 
                             val height = yBottom - drawOffset.y
@@ -160,14 +160,12 @@ fun StackedBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                             val individualOffset = Offset(drawOffset.x, drawOffset.y - insideOffset)
 
                             // drawing each individual bars
-                            val barColor = barColorPaletteList[subIndex]
                             groupBarChartData.drawBar(
                                 this,
                                 groupBarChartData,
                                 barStyle,
                                 individualOffset,
                                 height,
-                                barColor,
                                 subIndex
                             )
 
@@ -180,10 +178,10 @@ fun StackedBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                                 )
 
                             if (isTapped && middleOffset.isStackedBarTapped(
-                                    tapOffset,
-                                    barStyle.barWidth.toPx(),
-                                    individualOffset.y + height,
-                                    groupBarChartData.tapPadding.toPx()
+                                    tapOffset = tapOffset,
+                                    barWidth = barStyle.barWidth.toPx(),
+                                    barHeight = individualOffset.y + height,
+                                    tapPadding = groupBarChartData.tapPadding.toPx()
                                 )
                             ) {
                                 dragLocks[0] = individualBar to individualOffset
@@ -194,16 +192,16 @@ fun StackedBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                             if (barStyle.selectionHighlightData != null) {
                                 // highlighting the selected bar and showing the data points
                                 identifiedPoint = highlightGroupBar(
-                                    dragLocks,
-                                    visibility,
-                                    identifiedPoint,
-                                    barStyle.selectionHighlightData,
-                                    isTapped,
-                                    columnWidth,
-                                    yBottom,
-                                    paddingRight,
-                                    yOffset,
-                                    barStyle.barWidth
+                                    dragLocks = dragLocks,
+                                    visibility = visibility,
+                                    identifiedPoint = identifiedPoint,
+                                    selectionHighlightData = barStyle.selectionHighlightData,
+                                    isDragging = isTapped,
+                                    columnWidth = columnWidth,
+                                    yBottom = yBottom,
+                                    paddingRight = paddingRight,
+                                    yOffset = yOffset,
+                                    barWidth = barStyle.barWidth
                                 )
                             }
                         }

@@ -212,7 +212,7 @@ fun VerticalGroupBarChart() {
     )
     Column(
         Modifier
-            .height(500.dp)
+            .height(450.dp)
     ) {
         GroupBarChart(
             modifier = Modifier
@@ -235,7 +235,7 @@ fun VerticalStackedBarChart() {
         .axisStepSize(30.dp)
         .steps(listSize - 1)
         .startDrawPadding(48.dp)
-        .labelData { index -> index.toString() }
+        .labelData { index -> "C $index" }
         .build()
     val yAxisData = AxisData.Builder()
         .steps(yStepSize)
@@ -272,15 +272,13 @@ fun VerticalStackedBarChart() {
         barPlotData = groupBarPlotData,
         xAxisData = xAxisData,
         yAxisData = yAxisData,
-        drawBar = { drawScope, barGraphData, barStyle, drawOffset, height, barColor, barIndex ->
+        paddingBetweenStackedBars = 4.dp,
+        drawBar = { drawScope, barChartData, barStyle, drawOffset, height, barIndex ->
             with(drawScope) {
                 drawRect(
-                    color = barColor,
+                    color = colorPaletteList[barIndex],
                     topLeft = drawOffset,
-                    size = Size(
-                        barGraphData.barPlotData.barStyle.barWidth.toPx(),
-                        height
-                    ),
+                    size = Size(barStyle.barWidth.toPx(), height),
                     style = barStyle.barDrawStyle,
                     blendMode = barStyle.barBlendMode
                 )
