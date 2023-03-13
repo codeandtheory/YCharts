@@ -62,6 +62,7 @@ data class SelectionHighlightData(
     val backgroundStyle: DrawStyle = Fill,
     val highlightLabelAlignment: Paint.Align = Paint.Align.CENTER,
     val isHighlightBarRequired: Boolean = true,
+    val isHighlightFullBar: Boolean = false,
     val popUpLabel: (Float, Float) -> (String) = { x, y ->
         val xLabel = "x : ${x.toInt()} "
         val yLabel = "y : ${String.format("%.2f", y)}"
@@ -142,7 +143,7 @@ data class SelectionHighlightData(
             textAlign = highlightLabelAlignment
             typeface = highlightTextTypeface
         }
-        val xLabel = "B${identifiedPoint.point.x.toInt()}"
+        val xLabel = "${identifiedPoint.point.x.toInt()}"
         val label = groupBarPopUpLabel(xLabel, identifiedPoint.point.y)
         drawContext.canvas.nativeCanvas.apply {
             val background = getTextBackgroundRect(

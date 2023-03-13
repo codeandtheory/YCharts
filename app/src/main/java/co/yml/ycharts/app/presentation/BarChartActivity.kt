@@ -186,6 +186,7 @@ fun VerticalGroupBarChart() {
     val xAxisData = AxisData.Builder()
         .axisStepSize(30.dp)
         .bottomPadding(5.dp)
+        .startDrawPadding(48.dp)
         .labelData { index -> index.toString() }
         .build()
     val yAxisData = AxisData.Builder()
@@ -264,7 +265,13 @@ fun VerticalStackedBarChart() {
     val groupBarPlotData = BarPlotData(
         groupBarList = groupBarData,
         barStyle = BarStyle(
-            barWidth = 35.dp
+            barWidth = 35.dp,
+            selectionHighlightData = SelectionHighlightData(
+                isHighlightFullBar = true,
+                groupBarPopUpLabel = { name, value ->
+                    "Name : C$name Value : ${String.format("%.2f", value)}"
+                }
+            )
         ),
         barColorPaletteList = colorPaletteList
     )

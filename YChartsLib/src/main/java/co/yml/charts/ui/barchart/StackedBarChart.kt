@@ -124,6 +124,8 @@ fun StackedBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                     )
                 },
                 onDraw = { scrollOffset, xZoom ->
+                    val isHighlightFullBar =
+                        barStyle.selectionHighlightData?.isHighlightFullBar ?: false
                     val yBottom = size.height - rowHeight
 
                     val totalPaddingBtwBars =
@@ -138,6 +140,15 @@ fun StackedBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                     // Draw bar lines
                     groupBarList.forEachIndexed { index, groupBarData ->
                         var insideOffset = 0f
+                        val xPointOffset =
+                            groupBarData.barList.first().point.x * xOffset + xLeft + (xAxisData.startDrawPadding.toPx() * xZoom) - barStyle.barWidth.toPx() / 2 - scrollOffset
+                        val fullBarDetails = getFullBarDetails(
+                            groupBarData.barList,
+                            totalPaddingBtwBars,
+                            yOffset,
+                            yBottom,
+                            xPointOffset
+                        )
 
                         groupBarData.barList.forEachIndexed { subIndex, individualBar ->
                             val drawOffset = getGroupBarDrawOffset(
@@ -180,11 +191,15 @@ fun StackedBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                             if (isTapped && middleOffset.isStackedBarTapped(
                                     tapOffset = tapOffset,
                                     barWidth = barStyle.barWidth.toPx(),
-                                    barHeight = individualOffset.y + height,
+                                    barHeight = if (isHighlightFullBar) yBottom else individualOffset.y + height,
                                     tapPadding = groupBarChartData.tapPadding.toPx()
                                 )
                             ) {
-                                dragLocks[0] = individualBar to individualOffset
+                                if (isHighlightFullBar) {
+                                    dragLocks[0] = fullBarDetails.first to fullBarDetails.second
+                                } else {
+                                    dragLocks[0] = individualBar to individualOffset
+                                }
                             }
 
                             drawUnderScrollMask(columnWidth, paddingRight, bgColor)
@@ -201,7 +216,9 @@ fun StackedBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                                     yBottom = yBottom,
                                     paddingRight = paddingRight,
                                     yOffset = yOffset,
-                                    barWidth = barStyle.barWidth
+                                    barWidth = barStyle.barWidth,
+                                    totalPaddingBtwBars,
+                                    isHighlightFullBar
                                 )
                             }
                         }
@@ -288,4 +305,30 @@ fun StackedBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
             }
         }
     }
+}
+
+/**
+ * @param barDataList : List of bar details for selected stacked bar
+ * @param totalPaddingBtwBars : Total padding stacked bars
+ * @param yOffset : Offset of Y axis point
+ * @param yBottom : starting y offset  of y Axis
+ * @param xPointOffset :  Offset of X axis point
+ */
+fun getFullBarDetails(
+    barDataList: List<BarData>,
+    totalPaddingBtwBars: Float,
+    yOffset: Float,
+    yBottom: Float,
+    xPointOffset: Float
+): Pair<BarData, Offset> {
+    var yPoint = 0f
+
+    barDataList.forEach {
+        yPoint += it.point.y
+    }
+    val fullBarYOffset = yBottom - totalPaddingBtwBars - (yPoint * yOffset)
+    val fullBarOffset = Offset(xPointOffset, fullBarYOffset)
+    val fullBarData = BarData(Point(barDataList.first().point.x, yPoint))
+
+    return Pair(fullBarData, fullBarOffset)
 }

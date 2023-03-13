@@ -347,6 +347,8 @@ private fun DrawScope.drawGroupHighlightText(
  * @param paddingRight : Right padding.
  * @param yOffset : Distance between two y points.
  * @param barWidth : Width of each bar.
+ * @param totalPaddingBtwBars : total padding between stacked bars. For group chart it will be 0.
+ * @param isHighlightFullBar : User configured value for highlighting the entire bar in case of stacked bar chart
  */
 fun DrawScope.highlightGroupBar(
     dragLocks: MutableMap<Int, Pair<BarData, Offset>>,
@@ -359,6 +361,8 @@ fun DrawScope.highlightGroupBar(
     paddingRight: Dp,
     yOffset: Float,
     barWidth: Dp,
+    totalPaddingBtwBars: Float = 0f,
+    isHighlightFullBar: Boolean = false
 ): BarData {
     var mutableIdentifiedPoint: BarData = identifiedPoint
     // Handle the show the selected bar
@@ -373,7 +377,8 @@ fun DrawScope.highlightGroupBar(
             dragLocks.values.firstOrNull()?.let { (barData, location) ->
                 val (xPoint, yPoint) = location
                 if (xPoint >= columnWidth && xPoint <= size.width - paddingRight.toPx()) {
-                    val y1 = yBottom - ((barData.point.y - 0) * yOffset)
+                    val y1 =
+                        yBottom - ((barData.point.y - 0) * yOffset) - if (isHighlightFullBar) totalPaddingBtwBars else 0f
                     selectionHighlightData.drawHighlightBar(
                         this, xPoint, yPoint, barWidth.toPx(), yBottom - y1, BarChartType.VERTICAL
                     )
