@@ -23,6 +23,7 @@ import co.yml.charts.ui.barchart.models.BarChartData
 import co.yml.charts.ui.barchart.models.BarStyle
 import co.yml.charts.ui.barchart.models.SelectionHighlightData
 import co.yml.charts.common.utils.DataUtils
+import co.yml.kmm.charts.CommonMainScreen
 import co.yml.ycharts.app.R
 
 class BarChartActivity : ComponentActivity() {
@@ -47,14 +48,15 @@ class BarChartActivity : ComponentActivity() {
                             .padding(it),
                         contentAlignment = Alignment.TopCenter
                     ) {
-                        LazyColumn(content = {
-                            items(3) { item ->
-                                when (item) {
-                                    0 -> BarChart1()
-                                    1 -> BarChart2()
-                                }
-                            }
-                        })
+//                        LazyColumn(content = {
+//                            items(3) { item ->
+//                                when (item) {
+//                                    0 -> BarChart1()
+//                                    1 -> BarChart2()
+//                                }
+//                            }
+//                        })
+                        CommonMainScreen()
                     }
                 }
             }
