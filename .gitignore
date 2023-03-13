@@ -16,3 +16,4 @@ local.properties
 .idea
 /buildSrc/build
 /YChartsLib/build
+/KMMYCharts/build

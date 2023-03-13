@@ -1,0 +1,5 @@
+target 'iosApp' do
+  use_frameworks!
+  platform :ios, '15.2'
+  pod 'KMMYCharts', :path => '../KMMYCharts'
+end
