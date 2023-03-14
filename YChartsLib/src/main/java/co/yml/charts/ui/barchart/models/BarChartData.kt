@@ -1,7 +1,11 @@
 package co.yml.charts.ui.barchart.models
 
 
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.DrawStyle
@@ -38,7 +42,11 @@ data class BarChartData(
     val showYAxis: Boolean = true,
     val showXAxis: Boolean = true,
     val accessibilityConfig: AccessibilityConfig = AccessibilityConfig(),
-    val barChartType: BarChartType = BarChartType.VERTICAL
+    val barChartType: BarChartType = BarChartType.VERTICAL,
+    val drawBar: (DrawScope, BarData, Offset, Float, BarChartType, BarStyle) -> Unit = { drawScope, barChartData, drawOffset, height, barChartType, barStyle ->
+        //default implementation
+        drawBarGraph(drawScope, barChartData, drawOffset, height, barChartType, barStyle)
+    }
 )
 
 /**
@@ -49,6 +57,7 @@ data class BarChartData(
  * @param isGradientEnabled: Boolean Flag to enable/disable gradient bars
  * @param barBlendMode: Blend mode for the bars
  * @param barDrawStyle: Draw style for the bars
+ * @param drawBar : Draw an individual bar
  */
 data class BarStyle(
     val barWidth: Dp = 30.dp,
@@ -59,3 +68,60 @@ data class BarStyle(
     val barDrawStyle: DrawStyle = Fill,
     val selectionHighlightData: SelectionHighlightData? = SelectionHighlightData()
 )
+
+/**
+ *
+ * Used to draw the individual bars
+ * @param drawScope : Creates a scoped drawing environment
+ * @param barStyle : all meta data related to the bar styling
+ * @param barData : data related to a single bar
+ * @param drawOffset: top left offset for the drawing the bar
+ * @param height : height of the bar graph
+ * @param barChartType : type of bar chart
+ */
+fun drawBarGraph(
+    drawScope: DrawScope,
+    barData: BarData,
+    drawOffset: Offset,
+    height: Float,
+    barChartType: BarChartType,
+    barStyle: BarStyle
+) {
+    with(drawScope) {
+        with(barStyle) {
+            // Draw bar lines
+            if (isGradientEnabled) {
+                val brush = Brush.verticalGradient(
+                    colors = barData.gradientColorList
+                )
+                drawRoundRect(
+                    brush = brush,
+                    topLeft = drawOffset,
+                    size = if (barChartType == BarChartType.VERTICAL) Size(
+                        barWidth.toPx(),
+                        height
+                    ) else Size(height, barWidth.toPx()),
+                    cornerRadius = CornerRadius(
+                        cornerRadius.toPx(), cornerRadius.toPx()
+                    ),
+                    style = barDrawStyle,
+                    blendMode = barBlendMode
+                )
+            } else {
+                drawRoundRect(
+                    color = barData.color,
+                    topLeft = drawOffset,
+                    size = if (barChartType == BarChartType.VERTICAL) Size(
+                        barWidth.toPx(),
+                        height
+                    ) else Size(height, barWidth.toPx()),
+                    cornerRadius = CornerRadius(
+                        cornerRadius.toPx(), cornerRadius.toPx()
+                    ),
+                    style = barDrawStyle,
+                    blendMode = barBlendMode
+                )
+            }
+        }
+    }
+}

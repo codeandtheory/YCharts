@@ -13,10 +13,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -216,7 +214,7 @@ fun VerticalBarChart(
                     val height = yBottom - drawOffset.y
 
                     // drawing each individual bars
-                    drawBarGraph(barChartData.barStyle, barData, drawOffset, height, barChartType)
+                    barChartData.drawBar(this, barData, drawOffset, height, barChartType, barStyle)
 
                     val middleOffset =
                         Offset(drawOffset.x + barStyle.barWidth.toPx() / 2, drawOffset.y)
@@ -400,7 +398,7 @@ fun HorizontalBarChart(
                     val width = (barData.point.x) * xOffset
 
                     // drawing each individual bars
-                    drawBarGraph(barChartData.barStyle, barData, drawOffset, width, barChartType)
+                    barChartData.drawBar(this, barData, drawOffset, width, barChartType, barStyle)
 
                     val middleOffset =
                         Offset(drawOffset.x, drawOffset.y + barStyle.barWidth.toPx() / 2)
@@ -535,56 +533,6 @@ private fun DrawScope.drawHighlightText(
         selectedXAxisWidth,
         barChartType
     )
-}
-
-/**
- *
- * Used to draw the individual bars
- * @param barStyle : all meta data related to the bar styling
- * @param barData : data related to a single bar
- * @param drawOffset: top left offset for the drawing the bar
- * @param height : height of the bar graph
- */
-fun DrawScope.drawBarGraph(
-    barStyle: BarStyle,
-    barData: BarData,
-    drawOffset: Offset,
-    height: Float,
-    barChartType: BarChartType
-) = with(barStyle) {
-    // Draw bar lines
-    if (isGradientEnabled) {
-        val brush = Brush.verticalGradient(
-            colors = barData.gradientColorList
-        )
-        drawRoundRect(
-            brush = brush,
-            topLeft = drawOffset,
-            size = if (barChartType == BarChartType.VERTICAL) Size(
-                barWidth.toPx(),
-                height
-            ) else Size(height, barWidth.toPx()),
-            cornerRadius = CornerRadius(
-                cornerRadius.toPx(), cornerRadius.toPx()
-            ),
-            style = barDrawStyle,
-            blendMode = barBlendMode
-        )
-    } else {
-        drawRoundRect(
-            color = barData.color,
-            topLeft = drawOffset,
-            size = if (barChartType == BarChartType.VERTICAL) Size(
-                barWidth.toPx(),
-                height
-            ) else Size(height, barWidth.toPx()),
-            cornerRadius = CornerRadius(
-                cornerRadius.toPx(), cornerRadius.toPx()
-            ),
-            style = barDrawStyle,
-            blendMode = barBlendMode
-        )
-    }
 }
 
 /**

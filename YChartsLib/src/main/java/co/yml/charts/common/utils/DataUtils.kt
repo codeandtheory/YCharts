@@ -194,11 +194,11 @@ object DataUtils {
                 barList.add(
                     BarData(
                         Point(
-                            i.toFloat(),
+                            index.toFloat(),
                             barValue
                         ),
                         label = "B$i",
-                        description = "Bar at $i with label B$i has value ${
+                        description = "Bar at $index with label B$i has value ${
                             String.format(
                                 "%.2f", barValue
                             )
