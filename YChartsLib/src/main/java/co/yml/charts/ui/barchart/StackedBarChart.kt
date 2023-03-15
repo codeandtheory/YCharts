@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -57,7 +58,10 @@ fun StackedBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
             }
         }
     }
-    Surface(modifier.fillMaxSize()) {
+    Surface(
+        modifier
+            .fillMaxSize()
+            .testTag("stacked_bar_chart")) {
         with(groupBarChartData.barPlotData) {
             var visibility by remember { mutableStateOf(false) }
             var identifiedPoint by remember { mutableStateOf(BarData(Point(0f, 0f))) }
@@ -98,6 +102,7 @@ fun StackedBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                     .semantics {
                         contentDescription = groupBarChartData.accessibilityConfig.chartDescription
                     }
+                    .testTag("scrollable_container")
                     .clickable {
                         if (isTalkBackEnabled) {
                             scope.launch {
