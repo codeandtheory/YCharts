@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.text.*
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.yml.kmm.charts.common.model.Point
@@ -54,14 +55,14 @@ internal fun XAxis(
                 //this is used when data category draws in Y axis and value in X axis
                 val xAxisSegmentWidth = (size.width - xStart - axisEndPadding.toPx()) / steps
 
-                var xPos = xStart + (startDrawPadding.toPx() * zoomScale) - scrollOffset
+                var xPos = xStart - scrollOffset
 
                 // used in the case of barchart
                 if (startDrawPadding != 0.dp) {
                     drawLine(
                         axisLineColor,
-                        Offset(axisStart, 0f),
-                        Offset(xStart + (startDrawPadding.toPx() * zoomScale), 0f),
+                        Offset(startDrawPadding.toPx(), 0f),
+                        Offset(xPos, 0f),
                         strokeWidth = axisLineThickness.toPx()
                     )
                 }
@@ -81,11 +82,7 @@ internal fun XAxis(
                         xAxisData,
                         zoomScale,
                         xAxisScale,
-                        index != steps,
-                        xStart,
-                        index,
-                        xAxisSegmentWidth,
-                        startDrawPadding.toPx()
+                        index != steps
                     )
                     xPos += ((axisStepSize.toPx() * (zoomScale * xAxisScale)))
                 }
@@ -99,11 +96,7 @@ private fun DrawScope.drawAxisLineWithPointers(
     axisData: AxisData,
     zoomScale: Float,
     xAxisScale: Float,
-    canDrawEndLine: Boolean, // Added check to avoid drawing an extra line post the last point
-    xStart: Float,
-    index: Int,
-    dataValueWidth: Float,
-    startDrawPadding: Float
+    canDrawEndLine: Boolean // Added check to avoid drawing an extra line post the last point
 ) {
     with(axisData) {
         if (axisConfig.isAxisLineRequired) {
@@ -111,33 +104,18 @@ private fun DrawScope.drawAxisLineWithPointers(
                 val axisStepWidth = (axisStepSize.toPx() * (zoomScale * xAxisScale))
                 drawLine(
                     axisLineColor,
-                    if (axisData.dataCategoryOptions.isDataCategoryInYAxis) Offset(
-                        xStart,
-                        0f
-                    ) else Offset(xStart + (startDrawPadding * zoomScale), 0f),
+                    Offset(xPos, 0f),
                     if (shouldDrawAxisLineTillEnd) {
-                        Offset(
-                            (xPos + (axisStepWidth / 2) + axisStepWidth) + (startDrawPadding * zoomScale),
-                            0f
-                        )
+                        Offset((xPos + (axisStepWidth / 2) + axisStepWidth), 0f)
                     } else {
-                        if (axisData.dataCategoryOptions.isDataCategoryInYAxis) Offset(
-                            xStart + (dataValueWidth * (index + 1)),
-                            0f
-                        ) else Offset(xPos + axisStepWidth, 0f)
-                    }, strokeWidth = axisLineThickness.toPx()
+                        Offset(xPos + axisStepWidth, 0f)
+                    },                    strokeWidth = axisLineThickness.toPx()
                 )
             }
             drawLine(
                 axisLineColor,
-                if (axisData.dataCategoryOptions.isDataCategoryInYAxis) Offset(
-                    xStart + (dataValueWidth * index),
-                    0f
-                ) else Offset(xPos, 0f),
-                if (axisData.dataCategoryOptions.isDataCategoryInYAxis) Offset(
-                    xStart + (dataValueWidth * index),
-                    indicatorLineWidth.toPx()
-                ) else Offset(xPos, indicatorLineWidth.toPx()),
+                Offset(xPos, 0f),
+                Offset(xPos, indicatorLineWidth.toPx()),
                 strokeWidth = axisLineThickness.toPx()
             )
         }
@@ -171,10 +149,9 @@ private fun DrawScope.drawXAxisLabel(
         drawText(
             textMeasurer = textMeasurer,
             text = xLabel,
-            topLeft = Offset(x, y)
+            topLeft = Offset(x, y),
+            maxSize = IntSize(1440, 1050)
         )
-        rotate(axisLabelAngle, x, y)
-
     }
     calculatedXAxisHeight
 }
