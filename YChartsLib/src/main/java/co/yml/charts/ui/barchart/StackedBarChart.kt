@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.dp
 import co.yml.charts.axis.XAxis
 import co.yml.charts.axis.YAxis
@@ -44,11 +45,14 @@ import kotlinx.coroutines.launch
  * @see [GroupBarChartData] Data class to save all params related to stacked bar chart
  */
 @Composable
-fun StackedBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
+fun StackedBarChart(
+    modifier: Modifier,
+    groupBarChartData: GroupBarChartData,
+    isTalkBackEnabled: Boolean = LocalContext.current.collectIsTalkbackEnabledAsState().value
+) {
     val accessibilitySheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
-    val isTalkBackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
     if (accessibilitySheetState.isVisible && isTalkBackEnabled
         && groupBarChartData.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
     ) {
@@ -102,7 +106,6 @@ fun StackedBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                     .semantics {
                         contentDescription = groupBarChartData.accessibilityConfig.chartDescription
                     }
-                    .testTag("scrollable_container")
                     .clickable {
                         if (isTalkBackEnabled) {
                             scope.launch {
@@ -285,7 +288,9 @@ fun StackedBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
             with(groupBarChartData) {
                 AccessibilityBottomSheetDialog(
                     modifier = Modifier.fillMaxSize(), backgroundColor = Color.White, content = {
-                        LazyColumn {
+                        LazyColumn(modifier = Modifier.semantics {
+                            this.testTag = "AccessibilityBottomSheet List"
+                        }) {
                             items(barPlotData.groupBarList.size) { index ->
                                 Column {
                                     GroupBarInfo(

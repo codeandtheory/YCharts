@@ -7,9 +7,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.unit.dp
 import co.yml.charts.axis.AxisData
 import co.yml.charts.common.extensions.getMaxElementInYAxis
-import co.yml.charts.common.model.LegendsConfig
 import co.yml.charts.common.model.Point
-import co.yml.charts.common.utils.DataUtils
 import co.yml.charts.ui.barchart.StackedBarChart
 import co.yml.charts.ui.barchart.models.*
 import org.junit.Rule
@@ -52,10 +50,6 @@ class StackedBarChartTest {
         .build()
 
     private val colorPaletteList = listOf(Color.Black, Color.Yellow, Color.Blue)
-    val legendsConfig = LegendsConfig(
-        legendLabelList = DataUtils.getLegendsLabelData(colorPaletteList),
-        gridColumnCount = 3
-    )
     private val groupBarPlotData = BarPlotData(
         groupBarList = groupBarData,
         barStyle = BarStyle(
@@ -76,19 +70,22 @@ class StackedBarChartTest {
         paddingBetweenStackedBars = 4.dp
     )
 
+    private fun startStackedBarChart(isTalkBackEnabled: Boolean = false) {
+        composeTestRule.setContent {
+            StackedBarChart(
+                modifier = Modifier,
+                groupBarChartData = groupBarChartData,
+                isTalkBackEnabled
+            )
+        }
+    }
+
     @Test
     fun assertIfStackedBarChartIsDisplayed() {
 
         startStackedBarChart()
         composeTestRule.onNodeWithTag("stacked_bar_chart", useUnmergedTree = true)
             .assertIsDisplayed()
-    }
-
-    @Test
-    fun assertIfScrollableContainerIsDisplayed() {
-        startStackedBarChart()
-
-        composeTestRule.onNodeWithTag("scrollable_container").assertIsDisplayed()
     }
 
     @Test
@@ -126,11 +123,40 @@ class StackedBarChartTest {
             .performClick()
     }
 
+    @Test
+    fun assertIfStackedBarChartHasCorrectBarData() {
+        startStackedBarChart(isTalkBackEnabled = true)
 
-    private fun startStackedBarChart() {
-        composeTestRule.setContent {
-            StackedBarChart(modifier = Modifier, groupBarChartData = groupBarChartData)
-        }
+        composeTestRule.onNodeWithText("Bar at 0 with label B0 has value 20.00")
+            .assertExists()
+    }
+
+
+    @Test
+    fun assertIfStackedBarHasChartHasCorrectXAxisLabel() {
+        startStackedBarChart(isTalkBackEnabled = true)
+
+        composeTestRule.onNodeWithText("X Axis label C 0")
+            .assertExists()
+    }
+
+    @Test
+    fun assertIfStackedBarHasChartHasCorrectPrimaryCategoryData() {
+        startStackedBarChart(isTalkBackEnabled = true)
+
+        composeTestRule.onNodeWithTag("AccessibilityBottomSheet List")
+            .onChildren()
+            .assertCountEquals(5)
+    }
+
+    @Test
+    fun assertIfPrimaryCategoryHasCorrectSecondaryVariableData() {
+        startStackedBarChart(isTalkBackEnabled = true)
+
+        composeTestRule.onNodeWithText("X Axis label C 0")
+            .onSiblings()
+            .assertCountEquals(4)
+
     }
 }
 
