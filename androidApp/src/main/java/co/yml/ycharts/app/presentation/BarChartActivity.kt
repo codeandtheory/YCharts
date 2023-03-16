@@ -56,7 +56,7 @@ class BarChartActivity : ComponentActivity() {
 //                                }
 //                            }
 //                        })
-                        CommonMainScreen()
+                        CommonMainScreen(1)
                     }
                 }
             }

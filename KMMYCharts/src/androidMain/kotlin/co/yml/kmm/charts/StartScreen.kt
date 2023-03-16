@@ -3,6 +3,9 @@ package co.yml.kmm.charts
 import androidx.compose.runtime.Composable
 
 @Composable
-fun CommonMainScreen() {
-    BarChartScreen()
+fun CommonMainScreen(chartType: Int) {
+    when (chartType) {
+        1 -> BarChartScreen()
+        2 -> ChartScreen()
+    }
 }
