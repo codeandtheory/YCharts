@@ -60,32 +60,10 @@ class LineChartActivity : ComponentActivity() {
                             .padding(it),
                         contentAlignment = Alignment.TopCenter
                     ) {
-//                        LazyColumn(content = {
-//                            items(3) { item ->
-//                                when (item) {
-//                                    0 -> LineGraph1(
-//                                        DataUtils.getLineChartData(
-//                                            100,
-//                                            start = 50,
-//                                            maxRange = 100
-//                                        )
-//                                    )
-//                                    1 -> LineGraph2(DataUtils.getLineChartData(50, maxRange = 200))
-//                                    2 -> LineGraph3(
-//                                        DataUtils.getLineChartData(
-//                                            200,
-//                                            start = -50,
-//                                            maxRange = 50
-//                                        )
-//                                    )
-//                                }
-//                            }
-//                        })
                         Box(modifier = Modifier.padding(it)) {
                             CommonMainScreen(2)
                         }
                     }
-//
                 }
             }
         }
