@@ -54,15 +54,8 @@ class LineChartActivity : ComponentActivity() {
                             })
                     })
                 {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(it),
-                        contentAlignment = Alignment.TopCenter
-                    ) {
-                        Box(modifier = Modifier.padding(it)) {
-                            CommonMainScreen(2)
-                        }
+                    Box(modifier = Modifier.padding(it)) {
+                        CommonMainScreen(2)
                     }
                 }
             }
