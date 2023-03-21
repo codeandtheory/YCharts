@@ -15,6 +15,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -57,6 +59,9 @@ fun YAxis(
                 modifier = modifier
                     .clipToBounds()
                     .width(yAxisWidth)
+                    .semantics {
+                        this.testTag = "y_axis"
+                    }
                     .background(backgroundColor)
             ) {
                 val (yAxisHeight, segmentHeight) = getAxisInitValues(

@@ -22,6 +22,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.LayoutDirection
 import co.yml.charts.chartcontainer.gestures.detectZoomGesture
 
@@ -73,15 +75,18 @@ fun ScrollableCanvasContainer(
     }
 
     CompositionLocalProvider(
-        LocalLayoutDirection provides layoutDirection,
+        LocalLayoutDirection provides layoutDirection
     ) {
         Box(
-            modifier = modifier.clipToBounds(),
+            modifier = modifier.clipToBounds()
         ) {
-            Canvas(modifier = Modifier
+            Canvas(modifier = modifier
                 .align(Alignment.Center)
                 .fillMaxHeight()
                 .fillMaxWidth()
+                .semantics {
+                    this.testTag = "chart_canvas"
+                }
                 .background(containerBackgroundColor)
                 .scrollable(
                     state = scrollState, scrollOrientation, enabled = true
