@@ -306,7 +306,7 @@ private fun DrawScope.drawShadowUnderLineAndIntersectionPoint(
  * @param yPos : Y coordinate of the axis line
  * @param canDrawEndLine : Boolean letting us know if it is the end point.
  */
-fun DrawScope.drawAxisLineWithPointers(
+private fun DrawScope.drawAxisLineWithPointers(
     xPos: Float,
     axisData: AxisData,
     zoomScale: Float,
@@ -347,7 +347,7 @@ fun DrawScope.drawAxisLineWithPointers(
  * @param yPos : Y coordinate of the axis line
  */
 @OptIn(ExperimentalTextApi::class)
-fun DrawScope.drawXAxisLabel(
+private fun DrawScope.drawXAxisLabel(
     axisData: AxisData,
     index: Int,
     xAxisScale: Float,

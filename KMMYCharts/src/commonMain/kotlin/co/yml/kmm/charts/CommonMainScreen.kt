@@ -36,7 +36,7 @@ internal fun ChartScreen() {
                 .padding(it),
             contentAlignment = Alignment.TopCenter
         ) {
-            val pointsData =  getLineChartData(100, start = 50, maxRange = 200)
+            val pointsData = getLineChartData(100, -20, 80)
             val xAxisData = AxisData.Builder()
                 .axisStepSize(40.dp)
                 .steps(pointsData.size - 1)
