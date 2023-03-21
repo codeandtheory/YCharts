@@ -71,7 +71,7 @@ data class SelectionHighlightPopUp @OptIn(ExperimentalTextApi::class) constructo
                     background.left.toFloat(),
                     background.top.toFloat() - paddingBetweenPopUpAndPoint.toPx()
                 ),
-                size = Size(labelWidth.toFloat(), labelHeight.toFloat()+ 12.dp.toPx()),
+                size = Size(labelWidth.toFloat(), labelHeight.toFloat()),
                 alpha = backgroundAlpha,
                 cornerRadius = backgroundCornerRadius,
                 colorFilter = backgroundColorFilter,
