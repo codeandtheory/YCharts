@@ -55,7 +55,7 @@ class LineChartActivity : ComponentActivity() {
                     })
                 {
                     Box(modifier = Modifier.padding(it)) {
-                        CommonMainScreen(2)
+                        CommonMainScreen(3)
                     }
                 }
             }

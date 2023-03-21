@@ -31,17 +31,18 @@ struct ContentView: View {
                         .navigationTitle("Bar Chart")
                 }.frame(maxWidth: .infinity)
                 
-//                Button(action: {
-//                    self.isLineChartPresented.toggle()
-//                }) {
-//                    Text("Line Chart")
-//                        .padding()
-//                        .font(.body)
-//                        .foregroundColor(.white)
-//                        .background(Color.black)
-//                }.navigationDestination(isPresented: $isLineChartPresented) {
-//                    MainView(chartType: 2)
-//                }.navigationTitle("Line Chart")
+                Button(action: {
+                    self.isLineChartPresented.toggle()
+                }) {
+                    Text("Line Chart")
+                        .padding()
+                        .font(.body)
+                        .foregroundColor(.white)
+                        .background(Color.black)
+                }.navigationDestination(isPresented: $isLineChartPresented) {
+                    MainView(chartType: 3)
+                        .navigationTitle("Line Chart")
+                }
                 
                 Button(action: {
                     self.isWaveChartPresented = true

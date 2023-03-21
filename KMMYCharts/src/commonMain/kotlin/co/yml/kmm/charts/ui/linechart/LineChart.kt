@@ -75,13 +75,11 @@ internal fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
             val xAxisData = xAxisData.copy(axisBottomPadding = bottomPadding)
             val yAxisData = yAxisData.copy(
                 axisBottomPadding = LocalDensity.current.run { rowHeight.toDp() },
-                axisTopPadding = paddingTop
             )
             val textMeasure = rememberTextMeasurer()
 
             val (xMin, xMax, xAxisScale) = getXAxisScale(line.dataPoints, xAxisData.steps)
-            val (yMin, _, yAxisScale) = getYAxisScale(line.dataPoints, yAxisData.steps)
-            val maxElementInYAxis = getMaxElementInYAxis(yAxisScale, yAxisData.steps)
+            val (yMin, yMax, yAxisScale) = getYAxisScale(line.dataPoints, yAxisData.steps)
 
             ScrollableCanvasContainer(modifier = modifier
                 .semantics {
@@ -114,9 +112,12 @@ internal fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                     YAxis(
                         modifier = Modifier
                             .fillMaxHeight()
+                            .align(Alignment.TopStart)
+                            .wrapContentWidth()
                             .onGloballyPositioned {
                                 columnWidth = it.size.width.toFloat()
-                            }, yAxisData = yAxisData
+                            }, yAxisData = yAxisData,
+                        yStart = rowHeight
                     )
                     XAxis(xAxisData = xAxisData,
                         modifier = Modifier
@@ -139,7 +140,7 @@ internal fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                 },
                 onDraw = { scrollOffset, xZoom ->
                     val yBottom = size.height - rowHeight
-                    val yOffset = ((yBottom - paddingTop.toPx()) / maxElementInYAxis)
+                    val yOffset = ((yBottom - yAxisData.axisTopPadding.toPx()).div(yMax - yMin))
                     xOffset = xAxisData.axisStepSize.toPx() * xZoom
                     val xLeft = columnWidth // To add extra space if needed
                     val pointsData = getMappingPointsToGraph(

@@ -7,5 +7,6 @@ fun CommonMainScreen(chartType: Int) {
     when (chartType) {
         1 -> BarChartScreen()
         2 -> ChartScreen()
+        3 -> LineChartScreen()
     }
 }
