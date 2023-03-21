@@ -136,7 +136,7 @@ internal fun BarChartScreen() {
 
 @Composable
 internal fun LineChartScreen() {
-    val pointsData =  getLineChartData(100, start = 50, maxRange = 200)
+    val pointsData =  getLineChartData(100, start = 0, maxRange = 100)
     Scaffold(modifier = Modifier.fillMaxSize(),
         backgroundColor = Color.White,
         topBar = {
@@ -157,7 +157,7 @@ internal fun LineChartScreen() {
                 .build()
             val yAxisData = AxisData.Builder()
                 .steps(steps)
-                .labelAndAxisLinePadding(20.dp)
+                .labelAndAxisLinePadding(30.dp)
                 .labelData { i ->
                     // Add yMin to get the negative axis values to the scale
                     val yMin = pointsData.minOf { it.y }
@@ -170,7 +170,7 @@ internal fun LineChartScreen() {
                     lines = listOf(
                         Line(
                             dataPoints = pointsData,
-                            LineStyle(),
+                            LineStyle(lineType = LineType.Straight()),
                             IntersectionPoint(),
                             SelectionHighlightPoint(),
                             ShadowUnderLine(),

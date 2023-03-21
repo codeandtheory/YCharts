@@ -116,8 +116,7 @@ internal fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                             .wrapContentWidth()
                             .onGloballyPositioned {
                                 columnWidth = it.size.width.toFloat()
-                            }, yAxisData = yAxisData,
-                        yStart = rowHeight
+                            }, yAxisData = yAxisData
                     )
                     XAxis(xAxisData = xAxisData,
                         modifier = Modifier
