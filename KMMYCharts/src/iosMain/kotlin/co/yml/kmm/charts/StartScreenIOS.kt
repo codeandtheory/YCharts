@@ -8,5 +8,7 @@ internal fun StartScreenIOS(chartType: Int) {
         1 -> BarChartScreen()
         2 -> ChartScreen()
         3 -> LineChartScreen()
+        4 -> PieChartScreen()
+        5 -> DonutPieChartScreen()
     }
 }

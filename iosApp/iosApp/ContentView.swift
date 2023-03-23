@@ -13,6 +13,8 @@ struct ContentView: View {
     @State private var isBarChartPresented = false
     @State private var isWaveChartPresented = false
     @State private var isLineChartPresented = false
+    @State private var isPieChartPresented = false
+    @State private var isDonutChartPresented = false
 
 
     var body: some View {
@@ -56,6 +58,34 @@ struct ContentView: View {
                 }.navigationDestination(isPresented: $isWaveChartPresented) {
                     MainView(chartType: 2)
                         .navigationTitle("Wave Chart")
+                }.frame(maxWidth: .infinity)
+                
+                Button(action: {
+                    self.isPieChartPresented = true
+                }) {
+                    Text("Pie Chart")
+                        .padding()
+                        .font(.body)
+                        .foregroundColor(.white)
+                        .background(Color.black)
+                        
+                }.navigationDestination(isPresented: $isPieChartPresented) {
+                    MainView(chartType: 4)
+                        .navigationTitle("Pie Chart")
+                }.frame(maxWidth: .infinity)
+                
+                Button(action: {
+                    self.isDonutChartPresented = true
+                }) {
+                    Text("Donut Pie Chart")
+                        .padding()
+                        .font(.body)
+                        .foregroundColor(.white)
+                        .background(Color.black)
+            
+                }.navigationDestination(isPresented: $isDonutChartPresented) {
+                    MainView(chartType: 5)
+                        .navigationTitle("Donut Pie Chart")
                 }.frame(maxWidth: .infinity)
             }
         }
