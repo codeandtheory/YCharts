@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.drawText
@@ -55,6 +56,8 @@ data class SelectionHighlightPopUp @OptIn(ExperimentalTextApi::class) constructo
     },
     val draw: DrawScope.(Offset, Point, TextMeasurer) -> Unit = { selectedOffset, identifiedPoint, textMeasure ->
         val label = popUpLabel(identifiedPoint.x, identifiedPoint.y)
+        val labelHeight = textMeasure.measure(text = AnnotatedString(label)).size.height
+        val labelWidth = textMeasure.measure(text = AnnotatedString(label)).size.width
         drawContext.canvas.nativeCanvas.apply {
             val background = getTextBackgroundRect(
                 selectedOffset.x,
@@ -68,7 +71,7 @@ data class SelectionHighlightPopUp @OptIn(ExperimentalTextApi::class) constructo
                     background.left.toFloat(),
                     background.top.toFloat() - paddingBetweenPopUpAndPoint.toPx()
                 ),
-                size = Size(background.width, background.height),
+                size = Size(labelWidth.toFloat(), labelHeight.toFloat()),
                 alpha = backgroundAlpha,
                 cornerRadius = backgroundCornerRadius,
                 colorFilter = backgroundColorFilter,

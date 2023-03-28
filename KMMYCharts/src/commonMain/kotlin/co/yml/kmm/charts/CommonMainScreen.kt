@@ -7,6 +7,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import co.yml.kmm.charts.axis.AxisData
 import co.yml.kmm.charts.common.extensions.formatToSinglePrecision
 import co.yml.kmm.charts.common.extensions.getLineChartData
 import co.yml.kmm.charts.common.model.Point
@@ -14,15 +15,12 @@ import co.yml.kmm.charts.ui.barchart.BarChart
 import co.yml.kmm.charts.ui.barchart.models.BarChartData
 import co.yml.kmm.charts.ui.barchart.models.BarData
 import co.yml.kmm.charts.ui.barchart.models.BarStyle
-import co.yml.kmm.charts.ui.linechart.model.IntersectionPoint
-import co.yml.kmm.charts.ui.linechart.model.LineStyle
-import co.yml.kmm.charts.ui.linechart.model.LineType
-import co.yml.kmm.charts.ui.linechart.model.SelectionHighlightPopUp
+import co.yml.kmm.charts.ui.linechart.LineChart
+import co.yml.kmm.charts.ui.linechart.model.*
 import co.yml.kmm.charts.ui.wavechart.WaveChart
 import co.yml.kmm.charts.ui.wavechart.model.Wave
 import co.yml.kmm.charts.ui.wavechart.model.WaveChartData
 import co.yml.kmm.charts.ui.wavechart.model.WavePlotData
-import co.yml.kmm.charts.axis.AxisData
 import kotlin.random.Random
 
 @Composable
@@ -135,6 +133,65 @@ internal fun BarChartScreen() {
         }
     }
 }
+
+@Composable
+internal fun LineChartScreen() {
+    val pointsData =  getLineChartData(100, start = 0, maxRange = 100)
+    Scaffold(modifier = Modifier.fillMaxSize(),
+        backgroundColor = Color.White,
+        topBar = {
+        })
+    {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            val steps = 5
+            val xAxisData = AxisData.Builder()
+                .axisStepSize(30.dp)
+                .steps(pointsData.size - 1)
+                .labelData { i -> i.toString() }
+                .labelAndAxisLinePadding(15.dp)
+                .build()
+            val yAxisData = AxisData.Builder()
+                .steps(steps)
+                .labelAndAxisLinePadding(30.dp)
+                .labelData { i ->
+                    // Add yMin to get the negative axis values to the scale
+                    val yMin = pointsData.minOf { it.y }
+                    val yMax = pointsData.maxOf { it.y }
+                    val yScale = (yMax - yMin) / steps
+                    ((i * yScale) + yMin).formatToSinglePrecision()
+                }.build()
+            val data = LineChartData(
+                linePlotData = LinePlotData(
+                    lines = listOf(
+                        Line(
+                            dataPoints = pointsData,
+                            LineStyle(lineType = LineType.Straight()),
+                            IntersectionPoint(),
+                            SelectionHighlightPoint(),
+                            ShadowUnderLine(),
+                            SelectionHighlightPopUp()
+                        )
+                    )
+                ),
+                xAxisData = xAxisData,
+                yAxisData = yAxisData,
+                gridLines = GridLines()
+            )
+            LineChart(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                lineChartData = data
+            )
+        }
+    }
+}
+
 
 /**
  * Return the sample bar chart data

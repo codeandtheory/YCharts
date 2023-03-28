@@ -78,7 +78,7 @@ internal fun WaveChart(modifier: Modifier, waveChartData: WaveChartData) {
 
 
             val (xMin, xMax, xAxisScale) = getXAxisScale(wave.dataPoints, xAxisData.steps)
-            val (yMin, _, yAxisScale) = getYAxisScale(wave.dataPoints, yAxisData.steps)
+            val (yMin, yMax, yAxisScale) = getYAxisScale(wave.dataPoints, yAxisData.steps)
             val maxElementInYAxis = getMaxElementInLineYAxis(yAxisScale, yAxisData.steps)
 
             ScrollableCanvasContainer(modifier = modifier
@@ -122,7 +122,7 @@ internal fun WaveChart(modifier: Modifier, waveChartData: WaveChartData) {
                 },
                 onDraw = { scrollOffset, xZoom ->
                     val yBottom = size.height - rowHeight
-                    val yOffset = ((yBottom - paddingTop.toPx() - bottomPadding.toPx() - yAxisData.axisLineThickness.toPx() - yAxisData.indicatorLineWidth.toPx()).div(maxElementInYAxis))
+                    val yOffset = ((yBottom - yAxisData.axisTopPadding.toPx()).div(yMax - yMin))
                     xOffset = xAxisData.axisStepSize.toPx() * xZoom
                     val xLeft = columnWidth // To add extra space if needed
                     val pointsData = getMappingPointsToGraph(
@@ -131,7 +131,11 @@ internal fun WaveChart(modifier: Modifier, waveChartData: WaveChartData) {
                     val (cubicPoints1, cubicPoints2) = getCubicPoints(
                         pointsData
                     )
-                    val yPointOfOrigin = yBottom - ((0.minus(yMin)) * yOffset)
+                    val yPointOfOrigin = if (yMin > 0) {
+                        yBottom
+                    } else {
+                        yBottom - ((0.minus(yMin)) * yOffset)
+                    }
                     val tapPointLocks = mutableMapOf<Int, Pair<Point, Offset>>()
 
                     var xPos = xLeft - scrollOffset
@@ -164,7 +168,7 @@ internal fun WaveChart(modifier: Modifier, waveChartData: WaveChartData) {
                         cubicPath, pointsData, yPointOfOrigin, wave
                     )
 
-                    // Draw the Y-axis
+                    // Draw the X-axis
                     for (index in 0..xAxisData.steps) {
                         drawXAxisLabel(
                             xAxisData,
