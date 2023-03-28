@@ -1,6 +1,8 @@
 package co.yml.kmm.charts.ui.piechart
 
-
+/**
+ * Constants required for Pie chart
+ */
 object PieChartConstants {
     const val DEFAULT_PADDING = 10
     const val DEFAULT_START_ANGLE = 270f

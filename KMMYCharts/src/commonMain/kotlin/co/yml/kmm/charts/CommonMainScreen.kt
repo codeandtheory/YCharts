@@ -36,7 +36,7 @@ import co.yml.kmm.charts.ui.wavechart.model.WavePlotData
 import kotlin.random.Random
 
 @Composable
-internal fun ChartScreen() {
+internal fun WaveChartScreen() {
     Scaffold(modifier = Modifier.fillMaxSize(),
         backgroundColor = Color.White,
         topBar = {

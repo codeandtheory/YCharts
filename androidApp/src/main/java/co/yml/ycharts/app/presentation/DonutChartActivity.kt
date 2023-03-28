@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import co.yml.kmm.charts.CommonMainScreen
+import co.yml.kmm.charts.ChartScreen
 import co.yml.ycharts.app.R
 import co.yml.ycharts.app.ui.compositions.AppBarWithBackButton
 import co.yml.ycharts.app.ui.theme.YChartsTheme
@@ -38,7 +38,7 @@ class DonutChartActivity : ComponentActivity() {
                             .fillMaxSize()
                     ) {
                         Spacer(modifier = Modifier.height(20.dp))
-                        CommonMainScreen(chartType = 5)
+                        ChartScreen(chartType = 5)
                     }
                 }
             }

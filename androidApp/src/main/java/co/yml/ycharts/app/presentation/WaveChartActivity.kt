@@ -10,7 +10,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import co.yml.kmm.charts.CommonMainScreen
+import co.yml.kmm.charts.ChartScreen
 import co.yml.ycharts.app.R
 import co.yml.ycharts.app.ui.compositions.AppBarWithBackButton
 import co.yml.ycharts.app.ui.theme.YChartsTheme
@@ -36,7 +36,7 @@ class WaveChartActivity : ComponentActivity() {
                             .padding(it),
                         contentAlignment = Alignment.TopCenter
                     ) {
-                        CommonMainScreen(chartType = 2)
+                        ChartScreen(chartType = 2)
                     }
                 }
             }
