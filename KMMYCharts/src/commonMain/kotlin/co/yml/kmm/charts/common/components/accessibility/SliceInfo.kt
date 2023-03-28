@@ -21,7 +21,6 @@ import co.yml.kmm.charts.ui.piechart.models.PieChartData
 internal fun SliceInfo(slice: PieChartData.Slice, slicePercentage: Int) {
     // Merge elements below for accessibility purposes
     Row(modifier = Modifier
-        .clickable { }
         .semantics(mergeDescendants = true) {},
         verticalAlignment = Alignment.CenterVertically
     ) {
