@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,7 +22,7 @@ import co.yml.charts.ui.barchart.models.BarChartData
 import co.yml.charts.ui.barchart.models.BarStyle
 import co.yml.charts.ui.barchart.models.SelectionHighlightData
 import co.yml.charts.common.utils.DataUtils
-import co.yml.kmm.charts.CommonMainScreen
+import co.yml.kmm.charts.ChartScreen
 import co.yml.ycharts.app.R
 
 class BarChartActivity : ComponentActivity() {
@@ -56,7 +55,7 @@ class BarChartActivity : ComponentActivity() {
 //                                }
 //                            }
 //                        })
-                        CommonMainScreen(1)
+                        ChartScreen(1)
                     }
                 }
             }

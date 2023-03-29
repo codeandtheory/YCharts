@@ -1,15 +1,22 @@
 package co.yml.kmm.charts
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import co.yml.kmm.charts.axis.AxisData
+import co.yml.kmm.charts.common.components.Legends
 import co.yml.kmm.charts.common.extensions.formatToSinglePrecision
 import co.yml.kmm.charts.common.extensions.getLineChartData
+import co.yml.kmm.charts.common.model.LegendLabel
+import co.yml.kmm.charts.common.model.LegendsConfig
+import co.yml.kmm.charts.common.model.PlotType
 import co.yml.kmm.charts.common.model.Point
 import co.yml.kmm.charts.ui.barchart.BarChart
 import co.yml.kmm.charts.ui.barchart.models.BarChartData
@@ -17,6 +24,11 @@ import co.yml.kmm.charts.ui.barchart.models.BarData
 import co.yml.kmm.charts.ui.barchart.models.BarStyle
 import co.yml.kmm.charts.ui.linechart.LineChart
 import co.yml.kmm.charts.ui.linechart.model.*
+import co.yml.kmm.charts.ui.piechart.charts.DonutPieChart
+import co.yml.kmm.charts.ui.piechart.charts.PieChart
+import co.yml.kmm.charts.ui.piechart.models.PieChartConfig
+import co.yml.kmm.charts.ui.piechart.models.PieChartData
+import co.yml.kmm.charts.ui.piechart.utils.proportion
 import co.yml.kmm.charts.ui.wavechart.WaveChart
 import co.yml.kmm.charts.ui.wavechart.model.Wave
 import co.yml.kmm.charts.ui.wavechart.model.WaveChartData
@@ -24,7 +36,7 @@ import co.yml.kmm.charts.ui.wavechart.model.WavePlotData
 import kotlin.random.Random
 
 @Composable
-internal fun ChartScreen() {
+internal fun WaveChartScreen() {
     Scaffold(modifier = Modifier.fillMaxSize(),
         backgroundColor = Color.White,
         topBar = {
@@ -215,4 +227,131 @@ fun getBarChartData(listSize: Int, maxRange: Int): List<BarData> {
         )
     }
     return list
+}
+
+/**
+ * Returns sample pie chart data
+ */
+fun getPieChartData(): PieChartData {
+    return PieChartData(
+        slices = listOf(
+            PieChartData.Slice("Android", 30f, Color(0xFF002B5B)),
+            PieChartData.Slice("iOS", 30f, Color(0xFF2B4865)),
+            PieChartData.Slice("Windows", 15f, Color(0xFF256D85)),
+            PieChartData.Slice("Other", 25f, Color(0xFF806D85)),
+        ),
+        plotType = PlotType.Pie
+    )
+}
+
+/**
+ * Returns the legends config for given pie chart data
+ * @param pieChartData:  Pie chart details.
+ * @param gridSize: Legends grid size.
+ */
+fun getLegendsConfigFromPieChartData(pieChartData: PieChartData, gridSize: Int): LegendsConfig {
+    val legendsList = mutableListOf<LegendLabel>()
+    pieChartData.slices.forEach { slice ->
+        legendsList.add(LegendLabel(slice.color, slice.label))
+    }
+    return LegendsConfig(
+        legendLabelList = legendsList,
+        gridColumnCount = gridSize,
+        legendsArrangement = Arrangement.Start,
+        textStyle = TextStyle()
+    )
+}
+
+/**
+ * Returns sample donut chart data
+ */
+fun getDonutChartData(): PieChartData {
+    return PieChartData(
+        slices = listOf(
+            PieChartData.Slice("HP", 15f, Color(0xFF5F0A87)),
+            PieChartData.Slice("Dell", 30f, Color(0xFF20BF55)),
+            PieChartData.Slice("Lenovo", 10f, Color(0xFFA40606)),
+            PieChartData.Slice("Asus", 15f, Color(0xFFF53844)),
+            PieChartData.Slice("Acer", 10f, Color(0xFFEC9F05)),
+            PieChartData.Slice("Apple", 30f, Color(0xFF009FFD)),
+        ),
+        plotType = PlotType.Donut
+    )
+}
+
+
+@Composable
+internal fun PieChartScreen()  {
+    Scaffold(modifier = Modifier.fillMaxSize(),
+        backgroundColor = Color.White,
+        topBar = {
+        })
+    {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it),
+            contentAlignment = Alignment.TopCenter
+        ) {
+
+                val pieChartData = getPieChartData()
+
+                val pieChartConfig =
+                    PieChartConfig(
+                        activeSliceAlpha = .9f,
+                        isEllipsizeEnabled = true,
+                        isAnimationEnable = true,
+                        chartPadding = 20,
+                        showSliceLabels = true,
+                        percentVisible = true
+                    )
+                Column(modifier = Modifier.height(500.dp)) {
+                    Legends(legendsConfig = getLegendsConfigFromPieChartData(pieChartData, 3))
+                    PieChart(
+                        modifier = Modifier
+                            .width(400.dp)
+                            .height(400.dp),
+                        pieChartData,
+                        pieChartConfig
+                    ) { slice ->
+                    }
+                }
+            }
+
+        }
+}
+
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+internal fun DonutPieChartScreen()  {
+    val data = getDonutChartData()
+    // Sum of all the values
+    val sumOfValues = data.totalLength
+
+    // Calculate each proportion value
+    val proportions = data.slices.proportion(sumOfValues)
+    val pieChartConfig =
+        PieChartConfig(
+            percentVisible = true,
+            strokeWidth = 120f,
+            percentColor = Color.Black,
+            activeSliceAlpha = .9f,
+            isEllipsizeEnabled = true,
+            isAnimationEnable = true,
+            chartPadding = 25,
+            percentageFontSize = 42.sp
+        )
+    Column {
+        Legends(legendsConfig = getLegendsConfigFromPieChartData(pieChartData = data, 3))
+        DonutPieChart(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(500.dp),
+            data,
+            pieChartConfig
+        ) { slice ->
+
+        }
+    }
 }

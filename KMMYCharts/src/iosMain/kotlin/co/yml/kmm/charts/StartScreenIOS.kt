@@ -6,7 +6,9 @@ import androidx.compose.runtime.Composable
 internal fun StartScreenIOS(chartType: Int) {
     when (chartType) {
         1 -> BarChartScreen()
-        2 -> ChartScreen()
+        2 -> WaveChartScreen()
         3 -> LineChartScreen()
+        4 -> PieChartScreen()
+        5 -> DonutPieChartScreen()
     }
 }
