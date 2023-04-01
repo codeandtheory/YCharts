@@ -130,9 +130,7 @@ fun CombinedChart(modifier: Modifier, combinedChartData: CombinedChartData) {
                     .clickable {
                         if (isTalkBackEnabled) {
                             scope.launch {
-                                accessibilitySheetState.animateTo(
-                                    ModalBottomSheetValue.Expanded
-                                )
+                                accessibilitySheetState.show()
                             }
                         }
                     },
