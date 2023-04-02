@@ -13,5 +13,5 @@ object Version {
     const val COMPOSE_ACTIVITY = "1.7.0"
     const val RUNTIME_KTX = "2.6.1'"
     const val KOTLIN_COMPILER_EXT = "1.4.4"
-    const val MOCKK = "1.4.1"
+    const val MOCKK = "1.13.4"
 }
