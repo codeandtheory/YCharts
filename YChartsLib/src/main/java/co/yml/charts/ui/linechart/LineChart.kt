@@ -97,9 +97,7 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                 .clickable {
                     if (isTalkBackEnabled) {
                         scope.launch {
-                            accessibilitySheetState.animateTo(
-                                ModalBottomSheetValue.Expanded
-                            )
+                            accessibilitySheetState.show()
                         }
                     }
                 },
