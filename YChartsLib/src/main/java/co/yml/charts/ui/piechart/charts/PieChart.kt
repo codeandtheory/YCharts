@@ -31,6 +31,11 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.withRotation
+import co.yml.charts.common.components.accessibility.AccessibilityBottomSheetDialog
+import co.yml.charts.common.components.accessibility.SliceInfo
+import co.yml.charts.common.extensions.collectIsTalkbackEnabledAsState
+import co.yml.charts.common.extensions.getTextHeight
+import co.yml.charts.common.model.PlotType
 import co.yml.charts.ui.piechart.PieChartConstants.MINIMUM_PERCENTAGE_FOR_SLICE_LABELS
 import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
@@ -38,11 +43,6 @@ import co.yml.charts.ui.piechart.utils.convertTouchEventPointToAngle
 import co.yml.charts.ui.piechart.utils.getSliceCenterPoints
 import co.yml.charts.ui.piechart.utils.proportion
 import co.yml.charts.ui.piechart.utils.sweepAngles
-import co.yml.charts.common.components.accessibility.AccessibilityBottomSheetDialog
-import co.yml.charts.common.components.accessibility.SliceInfo
-import co.yml.charts.common.extensions.collectIsTalkbackEnabledAsState
-import co.yml.charts.common.extensions.getTextHeight
-import co.yml.charts.common.model.PlotType
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -95,8 +95,8 @@ fun PieChart(
     Surface(
         modifier = modifier.fillMaxWidth()
     ) {
-        BoxWithConstraints(
-            modifier = modifier
+        val boxModifier = if (pieChartConfig.isClickOnSliceEnabled) {
+            modifier
                 .aspectRatio(1f)
                 .semantics {
                     contentDescription = pieChartConfig.accessibilityConfig.chartDescription
@@ -107,7 +107,16 @@ fun PieChart(
                             accessibilitySheetState.show()
                         }
                     }
-                },
+                }
+        } else {
+            modifier
+                .aspectRatio(1f)
+                .semantics {
+                    contentDescription = pieChartConfig.accessibilityConfig.chartDescription
+                }
+        }
+        BoxWithConstraints(
+            modifier = boxModifier
         ) {
 
             val sideSize = Integer.min(constraints.maxWidth, constraints.maxHeight)
@@ -124,24 +133,36 @@ fun PieChart(
                     )
                 }
             }
-            Canvas(modifier = Modifier
-                .width(sideSize.dp)
-                .height(sideSize.dp)
-                .pointerInput(true) {
-
-                    detectTapGestures {
-                        val clickedAngle = convertTouchEventPointToAngle(
-                            sideSize.toFloat(), sideSize.toFloat(), it.x, it.y
-                        )
-                        progressSize.forEachIndexed { index, item ->
-                            if (clickedAngle <= item) {
-                                if (activePie != index) activePie = index
-                                onSliceClick(pieChartData.slices[index])
-                                return@detectTapGestures
+            val canvasModifier = if (pieChartConfig.isClickOnSliceEnabled) {
+                Modifier
+                    .width(sideSize.dp)
+                    .height(sideSize.dp)
+                    .pointerInput(true) {
+                        detectTapGestures {
+                            val clickedAngle = convertTouchEventPointToAngle(
+                                sideSize.toFloat(),
+                                sideSize.toFloat(),
+                                it.x,
+                                it.y
+                            )
+                            progressSize.forEachIndexed { index, item ->
+                                if (clickedAngle <= item) {
+                                    activePie = if (activePie != index)
+                                        index
+                                    else
+                                        -1
+                                    onSliceClick(pieChartData.slices[index])
+                                    return@detectTapGestures
+                                }
                             }
                         }
                     }
-                }) {
+            } else {
+                Modifier
+                    .width(sideSize.dp)
+                    .height(sideSize.dp)
+            }
+            Canvas(modifier = canvasModifier) {
 
                 var sAngle = pieChartConfig.startAngle
 
