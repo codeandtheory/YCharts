@@ -8,12 +8,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import co.yml.charts.common.model.AccessibilityConfig
 import co.yml.charts.ui.piechart.PieChartConstants
 import co.yml.charts.ui.piechart.PieChartConstants.DEFAULT_PADDING
 import co.yml.charts.ui.piechart.PieChartConstants.DEFAULT_SLICE_LABEL_TEXT_SIZE
 import co.yml.charts.ui.piechart.PieChartConstants.DEFAULT_START_ANGLE
 import co.yml.charts.ui.piechart.PieChartConstants.DEFAULT_STROKE_WIDTH
-import co.yml.charts.common.model.AccessibilityConfig
 
 /**
  * PieChartConfig data class used to mention all config related param required to draw PieChart.
@@ -36,6 +36,9 @@ import co.yml.charts.common.model.AccessibilityConfig
  * @param sliceLabelEllipsizeAt: Position at which the label will be truncated or ellipsized
  * @param chartPadding: Padding for the Pie chart/Donut Chart
  * @param accessibilityConfig: Configs related to accessibility service defined here in [AccessibilityConfig]
+ * @param isSumVisible: When no slice is selected show the sum of values
+ * @param isClickOnSliceEnabled: Enable/Disable the click on slice
+ * @param sumUnit: The unit of the sum of values
  */
 data class PieChartConfig(
     val startAngle: Float = DEFAULT_START_ANGLE,
@@ -58,5 +61,8 @@ data class PieChartConfig(
     val chartPadding: Int = DEFAULT_PADDING,
     val accessibilityConfig: AccessibilityConfig = AccessibilityConfig(
         chartDescription = PieChartConstants.DESCRIPTION
-    )
+    ),
+    val isSumVisible: Boolean = false,
+    val sumUnit: String = "",
+    val isClickOnSliceEnabled: Boolean = true
 )

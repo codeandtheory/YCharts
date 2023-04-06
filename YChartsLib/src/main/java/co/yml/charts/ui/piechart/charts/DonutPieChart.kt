@@ -25,15 +25,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import co.yml.charts.common.components.accessibility.AccessibilityBottomSheetDialog
+import co.yml.charts.common.components.accessibility.SliceInfo
+import co.yml.charts.common.extensions.collectIsTalkbackEnabledAsState
+import co.yml.charts.common.model.PlotType
 import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
 import co.yml.charts.ui.piechart.utils.convertTouchEventPointToAngle
 import co.yml.charts.ui.piechart.utils.proportion
 import co.yml.charts.ui.piechart.utils.sweepAngles
-import co.yml.charts.common.components.accessibility.AccessibilityBottomSheetDialog
-import co.yml.charts.common.components.accessibility.SliceInfo
-import co.yml.charts.common.extensions.collectIsTalkbackEnabledAsState
-import co.yml.charts.common.model.PlotType
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -88,8 +88,8 @@ fun DonutPieChart(
     Surface(
         modifier = modifier
     ) {
-        BoxWithConstraints(
-            modifier = modifier
+        val boxModifier = if (pieChartConfig.isClickOnSliceEnabled) {
+            modifier
                 .aspectRatio(1f)
                 .semantics {
                     contentDescription = pieChartConfig.accessibilityConfig.chartDescription
@@ -100,7 +100,17 @@ fun DonutPieChart(
                             accessibilitySheetState.show()
                         }
                     }
-                }) {
+                }
+        } else {
+            modifier
+                .aspectRatio(1f)
+                .semantics {
+                    contentDescription = pieChartConfig.accessibilityConfig.chartDescription
+                }
+        }
+        BoxWithConstraints(
+            modifier = boxModifier
+        ) {
 
             val sideSize = Integer.min(constraints.maxWidth, constraints.maxHeight)
             val padding = (sideSize * pieChartConfig.chartPadding) / 100f
@@ -118,12 +128,11 @@ fun DonutPieChart(
                 }
             }
 
-            Canvas(
-                modifier = Modifier
+            val canvasModifier = if (pieChartConfig.isClickOnSliceEnabled) {
+                Modifier
                     .width(sideSize.dp)
                     .height(sideSize.dp)
                     .pointerInput(true) {
-
                         detectTapGestures {
                             val clickedAngle = convertTouchEventPointToAngle(
                                 sideSize.toFloat(),
@@ -133,14 +142,23 @@ fun DonutPieChart(
                             )
                             progressSize.forEachIndexed { index, item ->
                                 if (clickedAngle <= item) {
-                                    if (activePie != index)
-                                        activePie = index
+                                    activePie = if (activePie != index)
+                                        index
+                                    else
+                                        -1
                                     onSliceClick(pieChartData.slices[index])
                                     return@detectTapGestures
                                 }
                             }
                         }
                     }
+            } else {
+                Modifier
+                    .width(sideSize.dp)
+                    .height(sideSize.dp)
+            }
+            Canvas(
+                modifier = canvasModifier
 
             ) {
 
@@ -177,6 +195,54 @@ fun DonutPieChart(
                             }
                         )
                     }
+
+                when {
+                    activePie != -1 && pieChartConfig.percentVisible -> {
+                        drawContext.canvas.nativeCanvas.apply {
+                            val fontSize = pieChartConfig.percentageFontSize.toPx()
+                            this.drawText(
+                                "${proportions[activePie].roundToInt()}%",
+                                (sideSize / 2) + fontSize / 4, (sideSize / 2) + fontSize / 3,
+                                Paint().apply {
+                                    color = pieChartConfig.percentColor.toArgb()
+                                    textSize = fontSize
+                                    textAlign = Paint.Align.CENTER
+                                    typeface = pieChartConfig.percentageTypeface
+                                }
+                            )
+                        }
+                    }
+                    activePie == -1 && pieChartConfig.isSumVisible -> {
+                        drawContext.canvas.nativeCanvas.apply {
+                            val fontSize = pieChartConfig.percentageFontSize.toPx()
+                            val paint = Paint().apply {
+                                color = pieChartConfig.percentColor.toArgb()
+                                textSize = fontSize
+                                textAlign = Paint.Align.CENTER
+                                typeface = pieChartConfig.percentageTypeface
+                            }
+                            val x: Float = (sideSize / 2).toFloat()
+                            var y: Float = (sideSize / 2).toFloat() + fontSize / 3
+                            if (pieChartConfig.sumUnit.isNotEmpty()){
+                                y -= (paint.fontSpacing / 4)
+                            }
+                            this.drawText(
+                                "$sumOfValues",
+                                x,
+                                y,
+                                paint
+                            )
+                            y += paint.fontSpacing
+                            this.drawText(
+                                pieChartConfig.sumUnit,
+                                x,
+                                y,
+                                paint
+                            )
+                        }
+                    }
+
+                }
             }
         }
         if (isTalkBackEnabled) {
