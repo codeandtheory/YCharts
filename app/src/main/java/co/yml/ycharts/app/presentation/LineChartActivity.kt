@@ -40,6 +40,11 @@ import co.yml.ycharts.app.R
 import co.yml.ycharts.app.ui.compositions.AppBarWithBackButton
 import co.yml.ycharts.app.ui.theme.YChartsTheme
 
+/**
+ * Line chart activity
+ *
+ * @constructor Create empty Line chart activity
+ */
 class LineChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -157,10 +162,6 @@ class LineChartActivity : ComponentActivity() {
                                             start = -50,
                                             maxRange = 50
                                         ))
-                                Spacer(modifier = Modifier.height(12.dp))
-                                Divider(modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(1.dp))
                             }
                         })
                     }
@@ -170,6 +171,11 @@ class LineChartActivity : ComponentActivity() {
     }
 }
 
+/**
+ * Single line chart with grid lines
+ *
+ * @param pointsData
+ */
 @Composable
 private fun SingleLineChartWithGridLines(pointsData: List<Point>) {
     val steps = 5
@@ -219,7 +225,11 @@ private fun SingleLineChartWithGridLines(pointsData: List<Point>) {
 }
 
 
-
+/**
+ * Straight linechart
+ *
+ * @param pointsData
+ */
 @Composable
 private fun StraightLinechart(pointsData: List<Point>) {
     val xAxisData = AxisData.Builder()
@@ -266,6 +276,11 @@ private fun StraightLinechart(pointsData: List<Point>) {
     )
 }
 
+/**
+ * Multiple tone linechart
+ *
+ * @param pointsData
+ */
 @Composable
 private fun MultipleToneLinechart(pointsData: List<Point>) {
     val xAxisData = AxisData.Builder()
@@ -330,6 +345,11 @@ private fun MultipleToneLinechart(pointsData: List<Point>) {
     )
 }
 
+/**
+ * Dotted linechart
+ *
+ * @param pointsData
+ */
 @Composable
 private fun DottedLinechart(pointsData: List<Point>) {
     val steps = 10
@@ -391,6 +411,11 @@ private fun DottedLinechart(pointsData: List<Point>) {
     )
 }
 
+/**
+ * Combined linechart
+ *
+ * @param pointsData
+ */
 @Composable
 private fun CombinedLinechart(pointsData: List<Point>) {
     val steps = 5
@@ -486,10 +511,7 @@ private fun CombinedLinechart(pointsData: List<Point>) {
         gridLines = GridLines()
     )
 
-    Column(
-        modifier = Modifier
-            .height(500.dp)
-    ) {
+    Column(modifier = Modifier.height(400.dp)) {
         LineChart(
             modifier = Modifier
                 .fillMaxWidth()
@@ -501,6 +523,12 @@ private fun CombinedLinechart(pointsData: List<Point>) {
         )
     }
 }
+
+/**
+ * Combined linechart with background
+ *
+ * @param pointsData
+ */
 @Composable
 private fun CombinedLinechartWithBackground(pointsData: List<Point>) {
     val steps = 5
@@ -601,7 +629,7 @@ private fun CombinedLinechartWithBackground(pointsData: List<Point>) {
 
     Column(
         modifier = Modifier
-            .height(500.dp)
+            .height(400.dp)
     ) {
         LineChart(
             modifier = Modifier

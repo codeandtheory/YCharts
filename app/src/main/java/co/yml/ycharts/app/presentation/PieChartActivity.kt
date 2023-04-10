@@ -9,13 +9,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import co.yml.charts.ui.piechart.charts.PieChart
 import co.yml.charts.ui.piechart.models.PieChartConfig
@@ -25,6 +28,11 @@ import co.yml.ycharts.app.R
 import co.yml.ycharts.app.ui.compositions.AppBarWithBackButton
 import co.yml.ycharts.app.ui.theme.YChartsTheme
 
+/**
+ * Pie chart activity
+ *
+ * @constructor Create empty Pie chart activity
+ */
 class PieChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,8 +57,24 @@ class PieChartActivity : ComponentActivity() {
                         LazyColumn(content = {
                             items(3) { item ->
                                 when (item) {
-                                    0 -> PieChart1(LocalContext.current)
-                                    1 -> PieChart2(LocalContext.current)
+                                    0 -> {
+                                        Text(
+                                            modifier=Modifier.padding(12.dp),
+                                            text = getString(R.string.simple_piechart),
+                                            style = MaterialTheme.typography.subtitle1,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        SimplePiechart(LocalContext.current)
+                                    }
+                                    1 -> {
+                                        Text(
+                                            modifier=Modifier.padding(12.dp),
+                                            text = getString(R.string.piechart_with_lables),
+                                            style = MaterialTheme.typography.subtitle1,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        PiechartWithSliceLables(LocalContext.current)
+                                    }
                                 }
                             }
                         })
@@ -61,8 +85,13 @@ class PieChartActivity : ComponentActivity() {
     }
 }
 
+/**
+ * Simple piechart
+ *
+ * @param context
+ */
 @Composable
-private fun PieChart1(context: Context) {
+private fun SimplePiechart(context: Context) {
     val pieChartData = DataUtils.getPieChartData()
     val pieChartConfig =
         PieChartConfig(
@@ -72,7 +101,7 @@ private fun PieChart1(context: Context) {
             sliceLabelEllipsizeAt = TextUtils.TruncateAt.MIDDLE,
             isAnimationEnable = true,
             chartPadding = 30,
-            backgroundColor = Color.Yellow,
+            backgroundColor = Color.Black,
             showSliceLabels = false,
             animationDuration = 1500
         )
@@ -92,8 +121,13 @@ private fun PieChart1(context: Context) {
 }
 
 
+/**
+ * Piechart with slice lables
+ *
+ * @param context
+ */
 @Composable
-private fun PieChart2(context: Context) {
+private fun PiechartWithSliceLables(context: Context) {
     val pieChartData = DataUtils.getPieChartData2()
 
     val pieChartConfig =

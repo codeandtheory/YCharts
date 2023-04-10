@@ -8,12 +8,15 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import co.yml.charts.axis.AxisData
 import co.yml.ycharts.app.ui.compositions.AppBarWithBackButton
@@ -33,6 +36,11 @@ import co.yml.charts.common.model.LegendsConfig
 import co.yml.charts.common.utils.DataUtils
 import co.yml.ycharts.app.R
 
+/**
+ * Combined line and bar chart activity
+ *
+ * @constructor Create empty Combined line and bar chart activity
+ */
 class CombinedLineAndBarChartActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,8 +66,24 @@ class CombinedLineAndBarChartActivity : ComponentActivity() {
                         LazyColumn(content = {
                             items(2) { item ->
                                 when (item) {
-                                    0 -> BarWithLineChart()
-                                    1->BarWithLineChartAndBackground()
+                                    0 ->{
+                                        Text(
+                                        modifier=Modifier.padding(12.dp),
+                                        text = getString(R.string.combined_bar_line_chart),
+                                        style = MaterialTheme.typography.subtitle1,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                     BarWithLineChart()
+                                    }
+                                    1->{
+                                        Text(
+                                            modifier=Modifier.padding(12.dp),
+                                            text = getString(R.string.combined_chart_with_background),
+                                            style = MaterialTheme.typography.subtitle1,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        BarWithLineChartAndBackground()
+                                    }
                                 }
                             }
                         })
@@ -70,6 +94,10 @@ class CombinedLineAndBarChartActivity : ComponentActivity() {
     }
 }
 
+/**
+ * Bar with line chart
+ *
+ */
 @Composable
 fun BarWithLineChart() {
     val maxRange = 100
@@ -135,6 +163,10 @@ fun BarWithLineChart() {
 }
 
 
+/**
+ * Bar with line chart and background
+ *
+ */
 @Composable
 fun BarWithLineChartAndBackground() {
     val maxRange = 100
