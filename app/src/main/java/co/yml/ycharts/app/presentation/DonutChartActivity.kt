@@ -166,7 +166,7 @@ private fun MultipleSmallDonutCharts(context: Context) {
             percentageTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
             isAnimationEnable = true,
             chartPadding = 25,
-            percentageFontSize = 42.sp
+            percentageFontSize = 16.sp
         )
     val secondPieChartConfig =
         PieChartConfig(
@@ -179,7 +179,7 @@ private fun MultipleSmallDonutCharts(context: Context) {
             percentageTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
             isAnimationEnable = true,
             chartPadding = 25,
-            percentageFontSize = 42.sp
+            percentageFontSize = 16.sp
         )
     val thirdPieChartConfig =
         PieChartConfig(
@@ -192,7 +192,7 @@ private fun MultipleSmallDonutCharts(context: Context) {
             percentageTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
             isAnimationEnable = true,
             chartPadding = 25,
-            percentageFontSize = 42.sp
+            percentageFontSize = 16.sp
         )
     Column(
         modifier = Modifier
