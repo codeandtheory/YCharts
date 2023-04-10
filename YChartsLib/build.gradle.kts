@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    compileSdk = 32
+    compileSdk = 33
 
     defaultConfig {
         minSdk = 26
-        targetSdk = 32
+        targetSdk = 33
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -83,8 +83,8 @@ publishing {
             name = "YCharts"
             setUrl("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2")
             credentials {
-                username = project.findProperty("mavenCentralUsername").toString()
-                password = project.findProperty("mavenCentralPassword").toString()
+                username = project.findProperty("mavenCentralUsername")?.toString() ?: System.getenv("MAVEN_USERNAME")
+                password = project.findProperty("mavenCentralPassword")?.toString() ?: System.getenv("MAVEN_PASSWORD")
             }
         }
     }
@@ -92,7 +92,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "co.yml"
             artifactId = "ycharts"
-            version = "1.0.0"
+            version = "1.0.1"
             afterEvaluate {
                 from(components["release"])
             }
@@ -138,9 +138,9 @@ publishing {
 
 signing {
     useInMemoryPgpKeys(
-        project.findProperty("signing.keyId").toString(),
-        project.findProperty("signing.InMemoryKey").toString(),
-        project.findProperty("signing.password").toString()
+        project.findProperty("signing.keyId")?.toString() ?: System.getenv("SIGNINGKEY"),
+        project.findProperty("signing.InMemoryKey")?.toString() ?: System.getenv("MEMORY_KEY"),
+        project.findProperty("signing.password")?.toString()?:System.getenv("SIGNINGPASSWORD")
     )
     sign(publishing.publications)
 }

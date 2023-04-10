@@ -99,9 +99,7 @@ fun DonutPieChart(
                 .clickable {
                     if (isTalkBackEnabled) {
                         scope.launch {
-                            accessibilitySheetState.animateTo(
-                                ModalBottomSheetValue.Expanded
-                            )
+                            accessibilitySheetState.show()
                         }
                     }
                 }) {

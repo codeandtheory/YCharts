@@ -78,17 +78,17 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
             var tapOffset by remember { mutableStateOf(Offset(0f, 0f)) }
             var selectionTextVisibility by remember { mutableStateOf(false) }
             var identifiedPoint by remember { mutableStateOf(Point(0f, 0f)) }
-            val line = linePlotData.lines.first()
             // Update must required values
-            val xAxisData = xAxisData.copy(axisBottomPadding = bottomPadding)
+            val linePoints: List<Point> = linePlotData.lines.flatMap { line -> line.dataPoints.map { it } }
+
+            val (xMin, xMax, xAxisScale) = getXAxisScale(linePoints, xAxisData.steps)
+                val (yMin, _, yAxisScale) = getYAxisScale(linePoints, yAxisData.steps)
+                val maxElementInYAxis = getMaxElementInYAxis(yAxisScale, yAxisData.steps)
+                val xAxisData = xAxisData.copy(axisBottomPadding = bottomPadding)
             val yAxisData = yAxisData.copy(
                 axisBottomPadding = LocalDensity.current.run { rowHeight.toDp() },
                 axisTopPadding = paddingTop
             )
-
-            val (xMin, xMax, xAxisScale) = getXAxisScale(line.dataPoints, xAxisData.steps)
-            val (yMin, _, yAxisScale) = getYAxisScale(line.dataPoints, yAxisData.steps)
-            val maxElementInYAxis = getMaxElementInYAxis(yAxisScale, yAxisData.steps)
 
             ScrollableCanvasContainer(modifier = modifier
                 .semantics {
@@ -97,9 +97,7 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                 .clickable {
                     if (isTalkBackEnabled) {
                         scope.launch {
-                            accessibilitySheetState.animateTo(
-                                ModalBottomSheetValue.Expanded
-                            )
+                            accessibilitySheetState.show()
                         }
                     }
                 },
@@ -141,9 +139,10 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                         xStart = columnWidth,
                         scrollOffset = scrollOffset,
                         zoomScale = xZoom,
-                        chartData = line.dataPoints)
+                        chartData = linePoints)
                 },
                 onDraw = { scrollOffset, xZoom ->
+                    linePlotData.lines.forEach {  line->
                     val yBottom = size.height - rowHeight
                     val yOffset = ((yBottom - paddingTop.toPx()) / maxElementInYAxis)
                     xOffset = xAxisData.axisStepSize.toPx() * xZoom
@@ -212,6 +211,7 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                             line.selectionHighlightPoint
                         )
                     }
+                }
                 },
                 onPointClicked = { offset: Offset, _: Float ->
                     isTapped = true
@@ -226,6 +226,7 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                     isTapped = false
                     selectionTextVisibility = false
                 })
+
         }
         if (isTalkBackEnabled) {
             with(lineChartData) {

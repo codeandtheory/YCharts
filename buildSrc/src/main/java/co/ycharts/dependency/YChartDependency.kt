@@ -17,4 +17,5 @@ object YChartDependency {
     val COMPOSE_UI_TEST_MANIFEST by lazy { "androidx.compose.ui:ui-test-manifest:${Version.COMPOSE_UI}" }
     val RUNTIME_KTX by lazy { "androidx.lifecycle:lifecycle-runtime-ktx:${Version.RUNTIME_KTX}" }
     val MOCKK by lazy { "io.mockk:mockk:${Version.MOCKK}" }
+    val YCHART by lazy { "co.yml:ycharts:1.0.0" }
 }

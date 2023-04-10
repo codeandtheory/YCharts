@@ -10,5 +10,10 @@
     <string name="title_pie_chart">Pie Chart</string>
     <string name="title_donut_chart">Donut Chart</string>
     <string name="title_bar_with_line_chart">Combined Chart</string>
+    <string name="linechart_default_style">Single Line chart with default style and grid</string>
+    <string name="linechart_straight_line_style">Single Linechart with Straight-Line style</string>
+    <string name="linechart_dotted_style"> Dotted Single Linechart with gradient background</string>
+    <string name="linechart_multiple_tones">Multicolor line-chart</string>
+    <string name="combined_line_chart">Linechart with combination Multiple lines with different styles</string>
 
 </resources>
