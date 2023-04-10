@@ -13,6 +13,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -71,6 +72,7 @@ private fun PieChart1(context: Context) {
             sliceLabelEllipsizeAt = TextUtils.TruncateAt.MIDDLE,
             isAnimationEnable = true,
             chartPadding = 30,
+            backgroundColor = Color.Yellow,
             showSliceLabels = false,
             animationDuration = 1500
         )

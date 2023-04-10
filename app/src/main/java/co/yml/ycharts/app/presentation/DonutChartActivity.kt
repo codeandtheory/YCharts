@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -49,7 +50,15 @@ class DonutChartActivity : ComponentActivity() {
                             .fillMaxSize()
                     ) {
                         Spacer(modifier = Modifier.height(20.dp))
-                        DonutChart1(context)
+                        LazyColumn(content = {
+                            items(3) { item ->
+                                when (item) {
+                                    0 ->SimpleDonutChart(context)
+                                    1 -> DonutChartWithBackground(context)
+                                }
+                            }
+                        })
+
                     }
                 }
             }
@@ -59,7 +68,7 @@ class DonutChartActivity : ComponentActivity() {
 
 @ExperimentalMaterialApi
 @Composable
-private fun DonutChart1(context: Context) {
+private fun SimpleDonutChart(context: Context) {
     val accessibilitySheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
@@ -75,6 +84,45 @@ private fun DonutChart1(context: Context) {
             strokeWidth = 120f,
             percentColor = Color.Black,
             activeSliceAlpha = .9f,
+            isEllipsizeEnabled = true,
+            percentageTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
+            isAnimationEnable = true,
+            chartPadding = 25,
+            percentageFontSize = 42.sp
+        )
+    Column {
+        Legends(legendsConfig = DataUtils.getLegendsConfigFromPieChartData(pieChartData = data, 3))
+        DonutPieChart(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(500.dp),
+            data,
+            pieChartConfig
+        ) { slice ->
+            Toast.makeText(context, slice.label, Toast.LENGTH_SHORT).show()
+        }
+    }
+}
+
+@ExperimentalMaterialApi
+@Composable
+private fun DonutChartWithBackground(context: Context) {
+    val accessibilitySheetState =
+        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val scope = rememberCoroutineScope()
+    val data = DataUtils.getDonutChartData()
+    // Sum of all the values
+    val sumOfValues = data.totalLength
+
+    // Calculate each proportion value
+    val proportions = data.slices.proportion(sumOfValues)
+    val pieChartConfig =
+        PieChartConfig(
+            percentVisible = true,
+            strokeWidth = 120f,
+            percentColor = Color.Black,
+            activeSliceAlpha = .9f,
+            backgroundColor = Color.Yellow,
             isEllipsizeEnabled = true,
             percentageTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
             isAnimationEnable = true,

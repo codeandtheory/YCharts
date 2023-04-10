@@ -50,6 +50,7 @@ data class PieChartConfig(
     val percentageTypeface: Typeface = Typeface.DEFAULT,
     val percentVisible: Boolean = false,
     val percentColor: Color = Color.White,
+    val backgroundColor: Color = Color.White,
     val activeSliceAlpha: Float = .8f,
     val inActiveSliceAlpha: Float = 1f,
     val isEllipsizeEnabled: Boolean = false,

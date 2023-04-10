@@ -56,9 +56,10 @@ class CombinedLineAndBarChartActivity : ComponentActivity() {
                         contentAlignment = Alignment.TopCenter
                     ) {
                         LazyColumn(content = {
-                            items(1) { item ->
+                            items(2) { item ->
                                 when (item) {
                                     0 -> BarWithLineChart()
+                                    1->BarWithLineChartAndBackground()
                                 }
                             }
                         })
@@ -117,6 +118,74 @@ fun BarWithLineChart() {
         combinedPlotDataList = listOf(barPlotData, linePlotData),
         xAxisData = xAxisData,
         yAxisData = yAxisData
+    )
+    Column(
+        Modifier
+            .height(500.dp)
+    ) {
+        CombinedChart(
+            modifier = Modifier
+                .height(400.dp),
+            combinedChartData = combinedChartData
+        )
+        Legends(
+            legendsConfig = legendsConfig
+        )
+    }
+}
+
+
+@Composable
+fun BarWithLineChartAndBackground() {
+    val maxRange = 100
+    val groupBarData = DataUtils.getGroupBarChartData(50, 100, 3)
+    val yStepSize = 10
+    val xAxisData = AxisData.Builder()
+        .axisStepSize(30.dp)
+        .bottomPadding(5.dp)
+        .backgroundColor(Color.Yellow)
+        .labelData { index -> index.toString() }
+        .build()
+    val yAxisData = AxisData.Builder()
+        .steps(yStepSize)
+        .backgroundColor(Color.Yellow)
+        .labelAndAxisLinePadding(20.dp)
+        .axisOffset(20.dp)
+        .labelData { index -> (index * (maxRange / yStepSize)).toString() }
+        .build()
+    val linePlotData = LinePlotData(
+        lines = listOf(
+            Line(
+                DataUtils.getLineChartData(50, maxRange = 100),
+                lineStyle = LineStyle(color = Color.Blue),
+                intersectionPoint = IntersectionPoint(),
+                selectionHighlightPoint = SelectionHighlightPoint(),
+                selectionHighlightPopUp = SelectionHighlightPopUp()
+            ),
+            Line(
+                DataUtils.getLineChartData(50, maxRange = 100),
+                lineStyle = LineStyle(color = Color.Black),
+                intersectionPoint = IntersectionPoint(),
+                selectionHighlightPoint = SelectionHighlightPoint(),
+                selectionHighlightPopUp = SelectionHighlightPopUp()
+            )
+        )
+    )
+    val colorPaletteList = DataUtils.getColorPaletteList(3)
+    val legendsConfig = LegendsConfig(
+        legendLabelList = DataUtils.getLegendsLabelData(colorPaletteList),
+        gridColumnCount = 3
+    )
+    val barPlotData = BarPlotData(
+        groupBarList = groupBarData,
+        barStyle = BarStyle(barWidth = 35.dp),
+        barColorPaletteList = colorPaletteList
+    )
+    val combinedChartData = CombinedChartData(
+        combinedPlotDataList = listOf(barPlotData, linePlotData),
+        xAxisData = xAxisData,
+        yAxisData = yAxisData,
+        backgroundColor = Color.Yellow
     )
     Column(
         Modifier

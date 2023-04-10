@@ -56,16 +56,16 @@ class LineChartActivity : ComponentActivity() {
                         contentAlignment = Alignment.TopCenter
                     ) {
                         LazyColumn(content = {
-                            items(3) { item ->
+                            items(4) { item ->
                                 when (item) {
-                                    0 -> LineGraph1(
+                                    0 -> CurvedLineGraph(
                                         DataUtils.getLineChartData(
                                             100,
                                             start = 50,
                                             maxRange = 100
                                         )
                                     )
-                                    1 -> LineGraph2(DataUtils.getLineChartData(50, maxRange = 200))
+                                    1 -> StraightLineGraph(DataUtils.getLineChartData(50, maxRange = 200))
                                     2 -> LineGraph3(
                                         DataUtils.getLineChartData(
                                             200,
@@ -84,7 +84,7 @@ class LineChartActivity : ComponentActivity() {
 }
 
 @Composable
-private fun LineGraph1(pointsData: List<Point>) {
+private fun CurvedLineGraph(pointsData: List<Point>) {
     val steps = 5
     val xAxisData = AxisData.Builder()
         .axisStepSize(30.dp)
@@ -127,7 +127,7 @@ private fun LineGraph1(pointsData: List<Point>) {
 }
 
 @Composable
-private fun LineGraph2(pointsData: List<Point>) {
+private fun StraightLineGraph(pointsData: List<Point>) {
     val xAxisData = AxisData.Builder()
         .axisStepSize(40.dp)
         .steps(pointsData.size - 1)

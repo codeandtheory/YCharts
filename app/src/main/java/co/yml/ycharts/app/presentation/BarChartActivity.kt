@@ -52,6 +52,7 @@ class BarChartActivity : ComponentActivity() {
                                 when (item) {
                                     0 -> BarChart1()
                                     1 -> BarChart2()
+                                    2 -> BarChart3()
                                 }
                             }
                         })
@@ -129,6 +130,46 @@ private fun BarChart2() {
         showYAxis = true,
         showXAxis = true,
         horizontalExtraSpace = 20.dp
+    )
+    BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
+}
+
+@Composable
+private fun BarChart3() {
+    val maxRange = 100
+    val barData = DataUtils.getBarChartData(50, 100)
+    val yStepSize = 10
+    val xAxisData = AxisData.Builder()
+        .axisStepSize(30.dp)
+        .steps(barData.size - 1)
+        .bottomPadding(40.dp)
+        .axisLabelAngle(20f)
+        .labelData { index -> barData[index].label }
+        .backgroundColor(Color.Yellow)
+        .build()
+    val yAxisData = AxisData.Builder()
+        .steps(yStepSize)
+        .labelAndAxisLinePadding(20.dp)
+        .axisOffset(20.dp)
+        .backgroundColor(Color.Yellow)
+        .labelData { index -> (index * (maxRange / yStepSize)).toString() }
+        .build()
+    val barChartData = BarChartData(
+        chartData = barData,
+        xAxisData = xAxisData,
+        yAxisData = yAxisData,
+        barStyle = BarStyle(paddingBetweenBars = 20.dp,
+            barWidth = 35.dp,
+            isGradientEnabled = true,
+            selectionHighlightData = SelectionHighlightData(
+                highlightBarColor = Color.Red,
+                highlightTextBackgroundColor = Color.Green,
+                popUpLabel = { _, y -> " Value : $y " }
+            )),
+        showYAxis = true,
+        showXAxis = true,
+        horizontalExtraSpace = 20.dp,
+        backgroundColor = Color.Yellow
     )
     BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
 }
