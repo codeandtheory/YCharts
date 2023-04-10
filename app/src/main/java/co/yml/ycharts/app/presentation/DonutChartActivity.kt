@@ -8,9 +8,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -44,22 +47,28 @@ class DonutChartActivity : ComponentActivity() {
                     })
                 {
                     val context = LocalContext.current
-                    Box(
-                        modifier = Modifier
-                            .padding(it)
-                            .fillMaxSize()
-                    ) {
-                        Spacer(modifier = Modifier.height(20.dp))
-                        LazyColumn(content = {
-                            items(3) { item ->
-                                when (item) {
-                                    0 ->SimpleDonutChart(context)
-                                    1 -> DonutChartWithBackground(context)
+                    LazyColumn(content = {
+                        items(2) { item ->
+                            when (item) {
+                                0 -> Box(
+                                    modifier = Modifier
+                                        .padding(it)
+                                        .fillMaxWidth()
+                                ) {
+                                    Spacer(modifier = Modifier.height(20.dp))
+                                    SimpleDonutChart(context)
+                                }
+                                1 -> Box(
+                                    modifier = Modifier
+                                        .padding(it)
+                                        .fillMaxWidth()
+                                ) {
+                                    Spacer(modifier = Modifier.height(20.dp))
+                                    DonutChartWithBackground(context)
                                 }
                             }
-                        })
-
-                    }
+                        }
+                    })
                 }
             }
         }
@@ -90,7 +99,11 @@ private fun SimpleDonutChart(context: Context) {
             chartPadding = 25,
             percentageFontSize = 42.sp
         )
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(500.dp)
+    ) {
         Legends(legendsConfig = DataUtils.getLegendsConfigFromPieChartData(pieChartData = data, 3))
         DonutPieChart(
             modifier = Modifier
@@ -129,7 +142,11 @@ private fun DonutChartWithBackground(context: Context) {
             chartPadding = 25,
             percentageFontSize = 42.sp
         )
-    Column {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(500.dp)
+    ) {
         Legends(legendsConfig = DataUtils.getLegendsConfigFromPieChartData(pieChartData = data, 3))
         DonutPieChart(
             modifier = Modifier
