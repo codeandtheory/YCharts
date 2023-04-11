@@ -7,10 +7,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import co.yml.charts.common.model.PlotType
 import co.yml.charts.ui.piechart.ChartWrapper.DrawChart
 import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
-import co.yml.charts.common.model.PlotType
 
 @Composable
 fun ChartContainer() {
@@ -27,9 +27,9 @@ fun ChartContainer() {
 
         val pieChartConfig =
             PieChartConfig(
-                percentVisible = true,
+                labelVisible = true,
                 strokeWidth = 120f,
-                percentColor = Color.Black
+                labelColor = Color.Black
             )
 
 

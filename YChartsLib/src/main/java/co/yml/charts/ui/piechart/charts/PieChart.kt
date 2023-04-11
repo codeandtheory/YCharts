@@ -209,7 +209,7 @@ fun PieChart(
                             it.nativeCanvas.withRotation(
                                 arcCenter, x, y
                             ) {
-                                if (pieChartConfig.percentVisible) {
+                                if (pieChartConfig.labelVisible) {
                                     label = "$label ${proportions[index].roundToInt()}%"
                                 }
                                 it.nativeCanvas.drawText(

@@ -18,6 +18,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.NativeCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
@@ -69,8 +70,8 @@ fun DonutPieChart(
         progressSize.add(sweepAngles[x] + progressSize[x - 1])
     }
 
-    var activePie by rememberSaveable {
-        mutableStateOf(-1)
+    var activePie: PieChartData.Slice? by rememberSaveable {
+        mutableStateOf(null)
     }
     val accessibilitySheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
@@ -142,11 +143,12 @@ fun DonutPieChart(
                             )
                             progressSize.forEachIndexed { index, item ->
                                 if (clickedAngle <= item) {
-                                    activePie = if (activePie != index)
-                                        index
+                                    val selectedSlice = pieChartData.slices[index]
+                                    activePie = if (activePie != selectedSlice)
+                                        selectedSlice
                                     else
-                                        -1
-                                    onSliceClick(pieChartData.slices[index])
+                                        null
+                                    onSliceClick(selectedSlice)
                                     return@detectTapGestures
                                 }
                             }
@@ -174,70 +176,56 @@ fun DonutPieChart(
                         padding = padding,
                         isDonut = pieChartData.plotType == PlotType.Donut,
                         strokeWidth = pieChartConfig.strokeWidth,
-                        isActive = activePie == index,
+                        isActive = activePie == pieChartData.slices[index],
                         pieChartConfig = pieChartConfig
                     )
                     sAngle += arcProgress
                 }
-
-                if (activePie != -1 && pieChartConfig.percentVisible)
-                    drawContext.canvas.nativeCanvas.apply {
-                        val fontSize = pieChartConfig.percentageFontSize.toPx()
-                        drawText(
-                            "${proportions[activePie].roundToInt()}%",
-                            (sideSize / 2) + fontSize / 4, (sideSize / 2) + fontSize / 3,
-                            Paint().apply {
-                                color = pieChartConfig.percentColor.toArgb()
-                                textSize = fontSize
-                                textAlign = Paint.Align.CENTER
-                                typeface = pieChartConfig.percentageTypeface
-
-                            }
-                        )
-                    }
-
                 when {
-                    activePie != -1 && pieChartConfig.percentVisible -> {
+                    activePie != null && pieChartConfig.labelVisible -> {
                         drawContext.canvas.nativeCanvas.apply {
-                            val fontSize = pieChartConfig.percentageFontSize.toPx()
-                            this.drawText(
-                                "${proportions[activePie].roundToInt()}%",
-                                (sideSize / 2) + fontSize / 4, (sideSize / 2) + fontSize / 3,
-                                Paint().apply {
-                                    color = pieChartConfig.percentColor.toArgb()
-                                    textSize = fontSize
-                                    textAlign = Paint.Align.CENTER
-                                    typeface = pieChartConfig.percentageTypeface
+                            val fontSize = pieChartConfig.labelFontSize.toPx()
+                            var isValue = false
+                            val textToDraw = when (pieChartConfig.labelType) {
+                                PieChartConfig.LabelType.PERCENTAGE -> "${
+                                    proportions[pieChartData.slices.indexOf(
+                                        activePie
+                                    )].roundToInt()
+                                }%"
+                                PieChartConfig.LabelType.VALUE -> {
+                                    isValue = true
+                                    // We have already checked that activePie is not null so !! is safe here
+                                    activePie!!.value.toString()
                                 }
+                            }
+                            val labelColor = when (pieChartConfig.labelColorType) {
+                                PieChartConfig.LabelColorType.SPECIFIED_COLOR -> pieChartConfig.labelColor
+                                PieChartConfig.LabelColorType.SLICE_COLOR -> activePie!!.color
+                            }
+                            val shouldShowUnit = isValue && pieChartConfig.sumUnit.isNotEmpty()
+                            drawLabel(
+                                canvas = this,
+                                pieChartConfig = pieChartConfig,
+                                labelColor = labelColor,
+                                shouldShowUnit = shouldShowUnit,
+                                fontSize = fontSize,
+                                textToDraw = textToDraw,
+                                sideSize = sideSize
                             )
                         }
                     }
-                    activePie == -1 && pieChartConfig.isSumVisible -> {
+                    activePie == null && pieChartConfig.isSumVisible -> {
                         drawContext.canvas.nativeCanvas.apply {
-                            val fontSize = pieChartConfig.percentageFontSize.toPx()
-                            val paint = Paint().apply {
-                                color = pieChartConfig.percentColor.toArgb()
-                                textSize = fontSize
-                                textAlign = Paint.Align.CENTER
-                                typeface = pieChartConfig.percentageTypeface
-                            }
-                            val x: Float = (sideSize / 2).toFloat()
-                            var y: Float = (sideSize / 2).toFloat() + fontSize / 3
-                            if (pieChartConfig.sumUnit.isNotEmpty()){
-                                y -= (paint.fontSpacing / 4)
-                            }
-                            this.drawText(
-                                "$sumOfValues",
-                                x,
-                                y,
-                                paint
-                            )
-                            y += paint.fontSpacing
-                            this.drawText(
-                                pieChartConfig.sumUnit,
-                                x,
-                                y,
-                                paint
+                            val fontSize = pieChartConfig.labelFontSize.toPx()
+                            val textToDraw = "$sumOfValues"
+                            drawLabel(
+                                canvas = this,
+                                pieChartConfig = pieChartConfig,
+                                labelColor = pieChartConfig.labelColor,
+                                shouldShowUnit = pieChartConfig.sumUnit.isNotEmpty(),
+                                fontSize = fontSize,
+                                textToDraw = textToDraw,
+                                sideSize = sideSize
                             )
                         }
                     }
@@ -267,4 +255,37 @@ fun DonutPieChart(
             }
         }
     }
+}
+
+private fun drawLabel(
+    canvas: NativeCanvas,
+    pieChartConfig: PieChartConfig,
+    labelColor: Color,
+    shouldShowUnit: Boolean,
+    fontSize: Float,
+    textToDraw: String,
+    sideSize: Int
+) {
+    val paint = Paint().apply {
+        color = labelColor.toArgb()
+        textSize = fontSize
+        textAlign = Paint.Align.CENTER
+        typeface = pieChartConfig.labelTypeface
+    }
+    val x = (sideSize / 2).toFloat()
+    var y: Float = (sideSize / 2).toFloat() + fontSize / 3
+    if (shouldShowUnit)
+        y -= (paint.fontSpacing / 4)
+    canvas.drawText(
+        textToDraw,
+        x, y,
+        paint
+    )
+    y += paint.fontSpacing
+    canvas.drawText(
+        pieChartConfig.sumUnit,
+        x,
+        y,
+        paint
+    )
 }
