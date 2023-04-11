@@ -29,6 +29,7 @@ import co.yml.charts.common.model.AccessibilityConfig
  * @param percentageTypeface: Percentage text typeface
  * @param percentVisible: Percentage text visibility
  * @param percentColor: Percentage text color
+ * @param backgroundColor: Background color
  * @param activeSliceAlpha: Opacity of the active slice
  * @param inActiveSliceAlpha: Opacity of the inactive slice
  * @param isEllipsizeEnabled: Boolean flag for enabling ellipsize
@@ -50,6 +51,7 @@ data class PieChartConfig(
     val percentageTypeface: Typeface = Typeface.DEFAULT,
     val percentVisible: Boolean = false,
     val percentColor: Color = Color.White,
+    val backgroundColor: Color = Color.White,
     val activeSliceAlpha: Float = .8f,
     val inActiveSliceAlpha: Float = 1f,
     val isEllipsizeEnabled: Boolean = false,

@@ -15,5 +15,15 @@
     <string name="linechart_dotted_style"> Dotted Single Linechart with gradient background</string>
     <string name="linechart_multiple_tones">Multicolor line-chart</string>
     <string name="combined_line_chart">Linechart with combination Multiple lines with different styles</string>
+    <string name="barchart_solid_colors">Simple Barchart with solid bars</string>
+    <string name="barchart_gradient_colors">Barchart with gradient bars</string>
+    <string name="barchart_background_color">Barchart with background color</string>
+    <string name="combined_bar_line_chart">A Combined chart with Barchart and Linechart</string>
+    <string name="combined_chart_with_background">A Combined-chart with background</string>
+    <string name="simple_donut_chart">A Simple Donutchart</string>
+    <string name="donut_chart_with_background">A Donutchart with a background color</string>
+    <string name="multiple_donuts">Multiple Donutcharts</string>
+    <string name="simple_piechart">Simple Piechart</string>
+    <string name="piechart_with_lables">"Piechart with slice-labels "</string>
 
 </resources>
