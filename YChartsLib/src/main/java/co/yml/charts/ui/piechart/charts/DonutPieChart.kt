@@ -5,6 +5,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
@@ -92,6 +93,7 @@ fun DonutPieChart(
         val boxModifier = if (pieChartConfig.isClickOnSliceEnabled) {
             modifier
                 .aspectRatio(1f)
+                .background(pieChartConfig.backgroundColor)
                 .semantics {
                     contentDescription = pieChartConfig.accessibilityConfig.chartDescription
                 }

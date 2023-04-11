@@ -57,6 +57,7 @@ data class PieChartConfig(
     val labelType: LabelType = LabelType.PERCENTAGE,
     val labelColor: Color = Color.White,
     val labelColorType: LabelColorType = LabelColorType.SPECIFIED_COLOR,
+    val backgroundColor: Color = Color.White,
     val activeSliceAlpha: Float = .8f,
     val inActiveSliceAlpha: Float = 1f,
     val isEllipsizeEnabled: Boolean = false,

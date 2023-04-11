@@ -157,42 +157,46 @@ private fun MultipleSmallDonutCharts(context: Context) {
     val proportions = data.slices.proportion(sumOfValues)
     val firstPieChartConfig =
         PieChartConfig(
-            percentVisible = true,
+            labelVisible = true,
             strokeWidth = 50f,
-            percentColor = Color.Black,
+            labelColor = Color.Black,
             backgroundColor = Color.Yellow,
             activeSliceAlpha = .9f,
             isEllipsizeEnabled = true,
-            percentageTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
+            labelTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
             isAnimationEnable = true,
             chartPadding = 25,
-            percentageFontSize = 16.sp
+            labelFontSize = 16.sp
         )
     val secondPieChartConfig =
         PieChartConfig(
-            percentVisible = true,
+            labelVisible = true,
             strokeWidth = 50f,
-            percentColor = Color.White,
-            backgroundColor = Color.Black,
+            labelColor = Color.Black,
             activeSliceAlpha = .9f,
             isEllipsizeEnabled = true,
-            percentageTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
+            backgroundColor = Color.Black,
+            labelTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
             isAnimationEnable = true,
             chartPadding = 25,
-            percentageFontSize = 16.sp
+            labelFontSize = 16.sp,
+            isSumVisible = true,
+            sumUnit = "unit",
+            labelColorType = PieChartConfig.LabelColorType.SLICE_COLOR,
+            labelType = PieChartConfig.LabelType.VALUE
         )
     val thirdPieChartConfig =
         PieChartConfig(
-            percentVisible = true,
+            labelVisible = true,
             strokeWidth = 50f,
-            percentColor = Color.Black,
+            labelColor = Color.Black,
             activeSliceAlpha = .9f,
             backgroundColor = Color.LightGray,
             isEllipsizeEnabled = true,
-            percentageTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
+            labelTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
             isAnimationEnable = true,
             chartPadding = 25,
-            percentageFontSize = 16.sp
+            labelFontSize = 16.sp
         )
     Column(
         modifier = Modifier
