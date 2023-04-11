@@ -8,13 +8,18 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.yml.charts.common.components.Legends
@@ -26,6 +31,11 @@ import co.yml.ycharts.app.R
 import co.yml.ycharts.app.ui.compositions.AppBarWithBackButton
 import co.yml.ycharts.app.ui.theme.YChartsTheme
 
+/**
+ * Donut chart activity
+ *
+ * @constructor Create empty Donut chart activity
+ */
 @OptIn(ExperimentalMaterialApi::class)
 class DonutChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,29 +54,51 @@ class DonutChartActivity : ComponentActivity() {
                     })
                 {
                     val context = LocalContext.current
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(it)
-                    ) {
-                        LazyColumn{
-                            items(count = 3){ item ->
-                                when (item){
-                                    0 -> DonutChart1(context)
-                                    1 -> DonutChart2(context)
+                    LazyColumn(content = {
+                        items(2) { item ->
+                            when (item) {
+                                0 -> {
+                                    Text(
+                                        modifier = Modifier.padding(12.dp),
+                                        text = getString(R.string.simple_donut_chart),
+                                        style = MaterialTheme.typography.subtitle1,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Box(
+                                        modifier = Modifier
+                                            .padding(it)
+                                            .fillMaxWidth()
+                                    ) {
+                                        Spacer(modifier = Modifier.height(20.dp))
+                                        SimpleDonutChart(context)
+                                    }
+                                }
+                                1 -> {
+                                    Text(
+                                        modifier = Modifier.padding(12.dp),
+                                        text = getString(R.string.multiple_donuts),
+                                        style = MaterialTheme.typography.subtitle1,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    MultipleSmallDonutCharts(context)
                                 }
                             }
                         }
-                    }
+                    })
                 }
             }
         }
     }
 }
 
+/**
+ * Simple donut chart
+ *
+ * @param context
+ */
 @ExperimentalMaterialApi
 @Composable
-private fun DonutChart1(context: Context) {
+private fun SimpleDonutChart(context: Context) {
     val accessibilitySheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
@@ -88,7 +120,11 @@ private fun DonutChart1(context: Context) {
             chartPadding = 25,
             labelFontSize = 42.sp,
         )
-    Column(modifier = Modifier.height(500.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(500.dp)
+    ) {
         Legends(legendsConfig = DataUtils.getLegendsConfigFromPieChartData(pieChartData = data, 3))
         DonutPieChart(
             modifier = Modifier
@@ -102,9 +138,14 @@ private fun DonutChart1(context: Context) {
     }
 }
 
+/**
+ * Multiple small donut charts
+ *
+ * @param context
+ */
 @ExperimentalMaterialApi
 @Composable
-private fun DonutChart2(context: Context) {
+private fun MultipleSmallDonutCharts(context: Context) {
     val accessibilitySheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
@@ -114,32 +155,92 @@ private fun DonutChart2(context: Context) {
 
     // Calculate each proportion value
     val proportions = data.slices.proportion(sumOfValues)
-    val pieChartConfig =
+    val firstPieChartConfig =
         PieChartConfig(
-            labelVisible = true,
-            strokeWidth = 120f,
-            labelColor = Color.Black,
+            percentVisible = true,
+            strokeWidth = 50f,
+            percentColor = Color.Black,
+            backgroundColor = Color.Yellow,
             activeSliceAlpha = .9f,
             isEllipsizeEnabled = true,
-            labelTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
+            percentageTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
             isAnimationEnable = true,
             chartPadding = 25,
-            labelFontSize = 42.sp,
-            isSumVisible = true,
-            sumUnit = "",
-            labelColorType = PieChartConfig.LabelColorType.SLICE_COLOR,
-            labelType = PieChartConfig.LabelType.VALUE
+            percentageFontSize = 16.sp
         )
-    Column(modifier = Modifier.height(500.dp)) {
+    val secondPieChartConfig =
+        PieChartConfig(
+            percentVisible = true,
+            strokeWidth = 50f,
+            percentColor = Color.White,
+            backgroundColor = Color.Black,
+            activeSliceAlpha = .9f,
+            isEllipsizeEnabled = true,
+            percentageTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
+            isAnimationEnable = true,
+            chartPadding = 25,
+            percentageFontSize = 16.sp
+        )
+    val thirdPieChartConfig =
+        PieChartConfig(
+            percentVisible = true,
+            strokeWidth = 50f,
+            percentColor = Color.Black,
+            activeSliceAlpha = .9f,
+            backgroundColor = Color.LightGray,
+            isEllipsizeEnabled = true,
+            percentageTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
+            isAnimationEnable = true,
+            chartPadding = 25,
+            percentageFontSize = 16.sp
+        )
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp)
+    ) {
         Legends(legendsConfig = DataUtils.getLegendsConfigFromPieChartData(pieChartData = data, 3))
-        DonutPieChart(
+        Spacer(modifier = Modifier.height(20.dp))
+        LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(400.dp),
-            data,
-            pieChartConfig
-        ) { slice ->
-            Toast.makeText(context, slice.label, Toast.LENGTH_SHORT).show()
+        ) {
+            item {
+                DonutPieChart(
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(100.dp),
+                    data,
+                    firstPieChartConfig
+                ) { slice ->
+                    Toast.makeText(context, slice.label, Toast.LENGTH_SHORT).show()
+                }
+                Spacer(modifier = Modifier.width(30.dp))
+            }
+            item {
+                DonutPieChart(
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(100.dp),
+                    data,
+                    secondPieChartConfig
+                ) { slice ->
+                    Toast.makeText(context, slice.label, Toast.LENGTH_SHORT).show()
+                }
+                Spacer(modifier = Modifier.width(30.dp))
+            }
+            item {
+                DonutPieChart(
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(100.dp),
+                    data,
+                    thirdPieChartConfig
+                ) { slice ->
+                    Toast.makeText(context, slice.label, Toast.LENGTH_SHORT).show()
+                }
+                Spacer(modifier = Modifier.width(30.dp))
+            }
         }
     }
 }

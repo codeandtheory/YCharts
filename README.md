@@ -7,11 +7,11 @@ YCharts is a light and extensible chart library for Jetpack Compose system. It c
 
 ## Adding YCharts to your project:
 
-You can add automatically the library via Maven:
+You can add the library via Maven:
 
 Gradle:
 ```groovy
-implementation 'co.yml:ycharts:1.0.0'
+implementation 'co.yml:ycharts:2.0.0'
 ```
 
 ## Modules
@@ -43,6 +43,7 @@ Let's see how we can use the chart components and style them with available cust
    ```
       val xAxisData = AxisData.Builder()
         .axisStepSize(100.dp)
+        .backgroundColor(Color.Blue)
         .steps(pointsData.size - 1)
         .labelData { i -> i.toString() }
         .labelAndAxisLinePadding(15.dp)
@@ -50,6 +51,7 @@ Let's see how we can use the chart components and style them with available cust
       
      val yAxisData = AxisData.Builder()
         .steps(steps)
+        .backgroundColor(Color.Red)
         .labelAndAxisLinePadding(20.dp)
         .labelData { i ->
             val yScale = 100 / steps
@@ -73,7 +75,8 @@ Let's see how we can use the chart components and style them with available cust
         ),
         xAxisData = xAxisData,
         yAxisData = yAxisData,
-        gridLines = GridLines()
+        gridLines = GridLines(),
+        backgroundColor = Color.White
     )
    ```
    * Finally use the _**`LineChart`**_ Component to render the line chart with the above input
@@ -349,7 +352,6 @@ Let's see how we can use the chart components and style them with available cust
 To interact with your device with touch and spoken feedback, you can turn on the TalkBack screen reader. TalkBack describes the graphs/charts when tapped on the graph container.
 Compose views by deafult supports accessibility services, but for views drawn using canvas has no straight forward approach as of now, hence all our graph components supports an accessibility popup out of the box that will be shown over the graph with tapped on the container, with all the values described in an order to support accessibility services. User will be able to scroll the popup and find all the points, bars, slices or combined values in a descriptive manner, where user can tap and talkback would read it out loud.
 
-
 <figure>
 <div align = "center">
    <span align = "center" style  = "display:inline-block">
@@ -364,6 +366,17 @@ Compose views by deafult supports accessibility services, but for views drawn us
 </figure>
 Here fig(a) represents the line graph with the container being highlighted & fig(b) represents the accessibility sheet with all values laid out in detail so that talkback can describe the graph values.<br><br>
 *Note*: All the descriptions that are visible in the accessibility popup can be customized to the required string.
+
+## KMM Support.
+   * For the ongoing effort to provide multiplatform solution, Ycharts now being written in Compose Multiplatform, adopting KMM has been a game-changer, we hope to achieve good results in this effort with community contribution.
+     Currently KMM compatible code can be found at _**`kmm-main`**_ branch
+
+
+## Changes in version 2.0
+   * Fix for multiple line graph/chart has been added, now it can be used to plot multiple line graphs/line charts on a single canvas or a single line with multiple colors.
+   * Background color for Pie chart/Donut chart now can be set via _**`backgroundColor`**_ parameter through PieChartConfig model, this is done to keep the behaviour consistent with current syntax pattern.
+   * Kotlin-library updates: _**`Kotlin version`**_ has been upgraded to '1.8.10' along with agp, compose-compiler, core-ktx, target sdk, and other compatible library updates. 
+   * Sample App has been updated to showcase more use-cases for each chart type.
 
 ## License
 
