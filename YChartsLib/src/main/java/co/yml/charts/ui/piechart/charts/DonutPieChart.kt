@@ -70,8 +70,8 @@ fun DonutPieChart(
         progressSize.add(sweepAngles[x] + progressSize[x - 1])
     }
 
-    var activePie: PieChartData.Slice? by rememberSaveable {
-        mutableStateOf(null)
+    var activePie by rememberSaveable {
+        mutableStateOf(-1)
     }
     val accessibilitySheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
@@ -143,12 +143,11 @@ fun DonutPieChart(
                             )
                             progressSize.forEachIndexed { index, item ->
                                 if (clickedAngle <= item) {
-                                    val selectedSlice = pieChartData.slices[index]
-                                    activePie = if (activePie != selectedSlice)
-                                        selectedSlice
+                                    activePie = if (activePie != index)
+                                        index
                                     else
-                                        null
-                                    onSliceClick(selectedSlice)
+                                        -1
+                                    onSliceClick(pieChartData.slices[index])
                                     return@detectTapGestures
                                 }
                             }
@@ -176,31 +175,29 @@ fun DonutPieChart(
                         padding = padding,
                         isDonut = pieChartData.plotType == PlotType.Donut,
                         strokeWidth = pieChartConfig.strokeWidth,
-                        isActive = activePie == pieChartData.slices[index],
+                        isActive = activePie == index,
                         pieChartConfig = pieChartConfig
                     )
                     sAngle += arcProgress
                 }
                 when {
-                    activePie != null && pieChartConfig.labelVisible -> {
+                    activePie != -1 && pieChartConfig.labelVisible -> {
+                        val selectedSlice = pieChartData.slices[activePie]
                         drawContext.canvas.nativeCanvas.apply {
                             val fontSize = pieChartConfig.labelFontSize.toPx()
                             var isValue = false
                             val textToDraw = when (pieChartConfig.labelType) {
                                 PieChartConfig.LabelType.PERCENTAGE -> "${
-                                    proportions[pieChartData.slices.indexOf(
-                                        activePie
-                                    )].roundToInt()
+                                    proportions[activePie].roundToInt()
                                 }%"
                                 PieChartConfig.LabelType.VALUE -> {
                                     isValue = true
-                                    // We have already checked that activePie is not null so !! is safe here
-                                    activePie!!.value.toString()
+                                    selectedSlice.value.toString()
                                 }
                             }
                             val labelColor = when (pieChartConfig.labelColorType) {
                                 PieChartConfig.LabelColorType.SPECIFIED_COLOR -> pieChartConfig.labelColor
-                                PieChartConfig.LabelColorType.SLICE_COLOR -> activePie!!.color
+                                PieChartConfig.LabelColorType.SLICE_COLOR -> selectedSlice.color
                             }
                             val shouldShowUnit = isValue && pieChartConfig.sumUnit.isNotEmpty()
                             drawLabel(
@@ -214,7 +211,7 @@ fun DonutPieChart(
                             )
                         }
                     }
-                    activePie == null && pieChartConfig.isSumVisible -> {
+                    activePie == -1 && pieChartConfig.isSumVisible -> {
                         drawContext.canvas.nativeCanvas.apply {
                             val fontSize = pieChartConfig.labelFontSize.toPx()
                             val textToDraw = "$sumOfValues"
