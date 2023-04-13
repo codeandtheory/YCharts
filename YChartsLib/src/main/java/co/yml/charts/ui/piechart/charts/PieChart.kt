@@ -38,6 +38,7 @@ import co.yml.charts.common.extensions.collectIsTalkbackEnabledAsState
 import co.yml.charts.common.extensions.getTextHeight
 import co.yml.charts.common.model.PlotType
 import co.yml.charts.ui.piechart.PieChartConstants.MINIMUM_PERCENTAGE_FOR_SLICE_LABELS
+import co.yml.charts.ui.piechart.PieChartConstants.NO_SELECTED_SLICE
 import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
 import co.yml.charts.ui.piechart.utils.convertTouchEventPointToAngle
@@ -80,7 +81,7 @@ fun PieChart(
     }
 
     var activePie by rememberSaveable {
-        mutableStateOf(-1)
+        mutableStateOf(NO_SELECTED_SLICE)
     }
     val accessibilitySheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
@@ -98,7 +99,7 @@ fun PieChart(
     ) {
         val boxModifier = if (pieChartConfig.isClickOnSliceEnabled) {
             modifier
-                .aspectRatio(1f)
+                .aspectRatio(ratio = 1f)
                 .background(pieChartConfig.backgroundColor)
                 .semantics {
                     contentDescription = pieChartConfig.accessibilityConfig.chartDescription
@@ -152,7 +153,7 @@ fun PieChart(
                                     activePie = if (activePie != index)
                                         index
                                     else
-                                        -1
+                                        NO_SELECTED_SLICE
                                     onSliceClick(pieChartData.slices[index])
                                     return@detectTapGestures
                                 }

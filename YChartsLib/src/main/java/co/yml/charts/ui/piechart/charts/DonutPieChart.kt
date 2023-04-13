@@ -31,6 +31,7 @@ import co.yml.charts.common.components.accessibility.AccessibilityBottomSheetDia
 import co.yml.charts.common.components.accessibility.SliceInfo
 import co.yml.charts.common.extensions.collectIsTalkbackEnabledAsState
 import co.yml.charts.common.model.PlotType
+import co.yml.charts.ui.piechart.PieChartConstants.NO_SELECTED_SLICE
 import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
 import co.yml.charts.ui.piechart.utils.convertTouchEventPointToAngle
@@ -38,7 +39,6 @@ import co.yml.charts.ui.piechart.utils.proportion
 import co.yml.charts.ui.piechart.utils.sweepAngles
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
-
 
 /**
  * Compose function for Drawing Donut chart
@@ -72,7 +72,7 @@ fun DonutPieChart(
     }
 
     var activePie by rememberSaveable {
-        mutableStateOf(-1)
+        mutableStateOf(NO_SELECTED_SLICE)
     }
     val accessibilitySheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
@@ -92,7 +92,7 @@ fun DonutPieChart(
     ) {
         val boxModifier = if (pieChartConfig.isClickOnSliceEnabled) {
             modifier
-                .aspectRatio(1f)
+                .aspectRatio(ratio = 1f)
                 .background(pieChartConfig.backgroundColor)
                 .semantics {
                     contentDescription = pieChartConfig.accessibilityConfig.chartDescription
@@ -148,7 +148,7 @@ fun DonutPieChart(
                                     activePie = if (activePie != index)
                                         index
                                     else
-                                        -1
+                                        NO_SELECTED_SLICE
                                     onSliceClick(pieChartData.slices[index])
                                     return@detectTapGestures
                                 }
