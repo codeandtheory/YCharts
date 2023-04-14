@@ -19,6 +19,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.NativeCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
@@ -26,18 +27,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import co.yml.charts.common.components.accessibility.AccessibilityBottomSheetDialog
+import co.yml.charts.common.components.accessibility.SliceInfo
+import co.yml.charts.common.extensions.collectIsTalkbackEnabledAsState
+import co.yml.charts.common.model.PlotType
+import co.yml.charts.ui.piechart.PieChartConstants.NO_SELECTED_SLICE
 import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
 import co.yml.charts.ui.piechart.utils.convertTouchEventPointToAngle
 import co.yml.charts.ui.piechart.utils.proportion
 import co.yml.charts.ui.piechart.utils.sweepAngles
-import co.yml.charts.common.components.accessibility.AccessibilityBottomSheetDialog
-import co.yml.charts.common.components.accessibility.SliceInfo
-import co.yml.charts.common.extensions.collectIsTalkbackEnabledAsState
-import co.yml.charts.common.model.PlotType
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
-
 
 /**
  * Compose function for Drawing Donut chart
@@ -71,7 +72,7 @@ fun DonutPieChart(
     }
 
     var activePie by rememberSaveable {
-        mutableStateOf(-1)
+        mutableStateOf(NO_SELECTED_SLICE)
     }
     val accessibilitySheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
@@ -89,9 +90,9 @@ fun DonutPieChart(
     Surface(
         modifier = modifier
     ) {
-        BoxWithConstraints(
-            modifier = modifier
-                .aspectRatio(1f)
+        val boxModifier = if (pieChartConfig.isClickOnSliceEnabled) {
+            modifier
+                .aspectRatio(ratio = 1f)
                 .background(pieChartConfig.backgroundColor)
                 .semantics {
                     contentDescription = pieChartConfig.accessibilityConfig.chartDescription
@@ -102,7 +103,17 @@ fun DonutPieChart(
                             accessibilitySheetState.show()
                         }
                     }
-                }) {
+                }
+        } else {
+            modifier
+                .aspectRatio(1f)
+                .semantics {
+                    contentDescription = pieChartConfig.accessibilityConfig.chartDescription
+                }
+        }
+        BoxWithConstraints(
+            modifier = boxModifier
+        ) {
 
             val sideSize = Integer.min(constraints.maxWidth, constraints.maxHeight)
             val padding = (sideSize * pieChartConfig.chartPadding) / 100f
@@ -120,12 +131,11 @@ fun DonutPieChart(
                 }
             }
 
-            Canvas(
-                modifier = Modifier
+            val canvasModifier = if (pieChartConfig.isClickOnSliceEnabled) {
+                Modifier
                     .width(sideSize.dp)
                     .height(sideSize.dp)
                     .pointerInput(true) {
-
                         detectTapGestures {
                             val clickedAngle = convertTouchEventPointToAngle(
                                 sideSize.toFloat(),
@@ -135,14 +145,23 @@ fun DonutPieChart(
                             )
                             progressSize.forEachIndexed { index, item ->
                                 if (clickedAngle <= item) {
-                                    if (activePie != index)
-                                        activePie = index
+                                    activePie = if (activePie != index)
+                                        index
+                                    else
+                                        NO_SELECTED_SLICE
                                     onSliceClick(pieChartData.slices[index])
                                     return@detectTapGestures
                                 }
                             }
                         }
                     }
+            } else {
+                Modifier
+                    .width(sideSize.dp)
+                    .height(sideSize.dp)
+            }
+            Canvas(
+                modifier = canvasModifier
 
             ) {
 
@@ -163,22 +182,54 @@ fun DonutPieChart(
                     )
                     sAngle += arcProgress
                 }
-
-                if (activePie != -1 && pieChartConfig.percentVisible)
-                    drawContext.canvas.nativeCanvas.apply {
-                        val fontSize = pieChartConfig.percentageFontSize.toPx()
-                        drawText(
-                            "${proportions[activePie].roundToInt()}%",
-                            (sideSize / 2) + fontSize / 4, (sideSize / 2) + fontSize / 3,
-                            Paint().apply {
-                                color = pieChartConfig.percentColor.toArgb()
-                                textSize = fontSize
-                                textAlign = Paint.Align.CENTER
-                                typeface = pieChartConfig.percentageTypeface
-
+                when {
+                    activePie != -1 && pieChartConfig.labelVisible -> {
+                        val selectedSlice = pieChartData.slices[activePie]
+                        drawContext.canvas.nativeCanvas.apply {
+                            val fontSize = pieChartConfig.labelFontSize.toPx()
+                            var isValue = false
+                            val textToDraw = when (pieChartConfig.labelType) {
+                                PieChartConfig.LabelType.PERCENTAGE -> "${
+                                    proportions[activePie].roundToInt()
+                                }%"
+                                PieChartConfig.LabelType.VALUE -> {
+                                    isValue = true
+                                    selectedSlice.value.toString()
+                                }
                             }
-                        )
+                            val labelColor = when (pieChartConfig.labelColorType) {
+                                PieChartConfig.LabelColorType.SPECIFIED_COLOR -> pieChartConfig.labelColor
+                                PieChartConfig.LabelColorType.SLICE_COLOR -> selectedSlice.color
+                            }
+                            val shouldShowUnit = isValue && pieChartConfig.sumUnit.isNotEmpty()
+                            drawLabel(
+                                canvas = this,
+                                pieChartConfig = pieChartConfig,
+                                labelColor = labelColor,
+                                shouldShowUnit = shouldShowUnit,
+                                fontSize = fontSize,
+                                textToDraw = textToDraw,
+                                sideSize = sideSize
+                            )
+                        }
                     }
+                    activePie == -1 && pieChartConfig.isSumVisible -> {
+                        drawContext.canvas.nativeCanvas.apply {
+                            val fontSize = pieChartConfig.labelFontSize.toPx()
+                            val textToDraw = "$sumOfValues"
+                            drawLabel(
+                                canvas = this,
+                                pieChartConfig = pieChartConfig,
+                                labelColor = pieChartConfig.labelColor,
+                                shouldShowUnit = pieChartConfig.sumUnit.isNotEmpty(),
+                                fontSize = fontSize,
+                                textToDraw = textToDraw,
+                                sideSize = sideSize
+                            )
+                        }
+                    }
+
+                }
             }
         }
         if (isTalkBackEnabled) {
@@ -203,4 +254,37 @@ fun DonutPieChart(
             }
         }
     }
+}
+
+private fun drawLabel(
+    canvas: NativeCanvas,
+    pieChartConfig: PieChartConfig,
+    labelColor: Color,
+    shouldShowUnit: Boolean,
+    fontSize: Float,
+    textToDraw: String,
+    sideSize: Int
+) {
+    val paint = Paint().apply {
+        color = labelColor.toArgb()
+        textSize = fontSize
+        textAlign = Paint.Align.CENTER
+        typeface = pieChartConfig.labelTypeface
+    }
+    val x = (sideSize / 2).toFloat()
+    var y: Float = (sideSize / 2).toFloat() + fontSize / 3
+    if (shouldShowUnit)
+        y -= (paint.fontSpacing / 4)
+    canvas.drawText(
+        textToDraw,
+        x, y,
+        paint
+    )
+    y += paint.fontSpacing
+    canvas.drawText(
+        pieChartConfig.sumUnit,
+        x,
+        y,
+        paint
+    )
 }
