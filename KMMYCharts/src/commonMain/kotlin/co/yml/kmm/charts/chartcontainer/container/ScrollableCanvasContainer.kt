@@ -2,28 +2,26 @@ package co.yml.kmm.charts.chartcontainer.container
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.round
 import co.yml.kmm.charts.chartcontainer.gestures.detectZoomGesture
+import co.yml.kmm.charts.util.LoggingFile
 
 /**
  *
@@ -72,6 +70,10 @@ internal fun ScrollableCanvasContainer(
         onScroll()
     }
 
+    var offset by remember { mutableStateOf(IntOffset.Zero) }
+    var prevZoom by remember { mutableStateOf(1f) }
+    var prevOffset by remember { mutableStateOf(Offset.Zero) }
+
     CompositionLocalProvider(
         LocalLayoutDirection provides layoutDirection,
     ) {
@@ -88,13 +90,15 @@ internal fun ScrollableCanvasContainer(
                 )
                 .pointerInput(Unit) {
                     detectTapGestures(onTap = {
+                        LoggingFile().log("Harshaaa - $it value")
                         onPointClicked(it, scrollOffset.value)
                     })
                 }
                 .pointerInput(Unit) {
-                    detectZoomGesture(
-                        isZoomAllowed = isPinchZoomEnabled,
-                        onZoom = { zoom ->
+                    detectTransformGestures(
+                        panZoomLock = isPinchZoomEnabled,
+                        onGesture = { _, _, zoom,_ ->
+                            LoggingFile().log("Harshaaa - $zoom zoom value")
                             xZoom.value *= zoom
                             onZoomInAndOut()
                         }

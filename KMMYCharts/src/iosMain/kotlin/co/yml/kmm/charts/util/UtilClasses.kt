@@ -11,3 +11,9 @@ actual class DecimalFormat {
         return formatter.stringFromNumber(NSNumber(double))!!
     }
 }
+
+actual class LoggingFile {
+    actual fun log(string: String) {
+        print("Harshaaaa - $string")
+    }
+}
