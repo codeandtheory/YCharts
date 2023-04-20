@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerInputChange
+import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.IntOffset
@@ -79,6 +80,7 @@ internal fun ScrollableCanvasContainer(
     val scale = remember { mutableStateOf(1f) }
     val minScale = 1f
     val maxScale = 3f
+    var prevCentroid = 0f
 
     CompositionLocalProvider(
         LocalLayoutDirection provides layoutDirection,
@@ -101,9 +103,14 @@ internal fun ScrollableCanvasContainer(
                     })
                 }
                .pointerInput(Unit) {
-                // Listen for the zoom gesture events
-                detectTransformGestures { _, _, zoom, _ ->
-                    xZoom.value *= zoom
+                detectTransformGestures { centroid, pan, zoom, rotation ->
+                    LoggingFile().log("Harshaaa - $centroid centroid value\n")
+                    if (prevCentroid != 0f) {
+                        xZoom.value *= centroid.x / prevCentroid
+                    } else {
+                        xZoom.value *= zoom
+                    }
+                    prevCentroid = centroid.x
                 }
             }
                 ,onDraw = {
