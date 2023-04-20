@@ -13,8 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.IntOffset
@@ -74,6 +76,10 @@ internal fun ScrollableCanvasContainer(
     var prevZoom by remember { mutableStateOf(1f) }
     var prevOffset by remember { mutableStateOf(Offset.Zero) }
 
+    val scale = remember { mutableStateOf(1f) }
+    val minScale = 1f
+    val maxScale = 3f
+
     CompositionLocalProvider(
         LocalLayoutDirection provides layoutDirection,
     ) {
@@ -94,16 +100,13 @@ internal fun ScrollableCanvasContainer(
                         onPointClicked(it, scrollOffset.value)
                     })
                 }
-                .pointerInput(Unit) {
-                    detectTransformGestures(
-                        onGesture = { _, _, zoom,_ ->
-                            LoggingFile().log("Harshaaa - $zoom zoom value")
-                            xZoom.value *= zoom
-                            onZoomInAndOut()
-                        }
-                    )
-                },
-                onDraw = {
+               .pointerInput(Unit) {
+                // Listen for the zoom gesture events
+                detectTransformGestures { _, _, zoom, _ ->
+                    xZoom.value *= zoom
+                }
+            }
+                ,onDraw = {
                     maxScrollOffset.value = calculateMaxDistance(xZoom.value)
                     onDraw(scrollOffset.value, xZoom.value)
                 })
