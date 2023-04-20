@@ -96,7 +96,6 @@ internal fun ScrollableCanvasContainer(
                 }
                 .pointerInput(Unit) {
                     detectTransformGestures(
-                        panZoomLock = isPinchZoomEnabled,
                         onGesture = { _, _, zoom,_ ->
                             LoggingFile().log("Harshaaa - $zoom zoom value")
                             xZoom.value *= zoom
