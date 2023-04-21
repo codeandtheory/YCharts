@@ -52,6 +52,7 @@ internal fun DonutPieChart(
     modifier: Modifier,
     pieChartData: PieChartData,
     pieChartConfig: PieChartConfig,
+    talkBackEnabled: Boolean,
     onSliceClick: (PieChartData.Slice) -> Unit = {}
 ) {
     // Sum of all the values
@@ -77,8 +78,7 @@ internal fun DonutPieChart(
     val accessibilitySheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
-    val isTalkBackEnabled = false
-    if (accessibilitySheetState.isVisible && isTalkBackEnabled
+    if (accessibilitySheetState.isVisible && talkBackEnabled
         && pieChartConfig.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
     ) {
         // todo handle accessibility bottomsheet dismissal
@@ -93,7 +93,7 @@ internal fun DonutPieChart(
                     contentDescription = pieChartConfig.accessibilityConfig.chartDescription
                 }
                 .clickable {
-                    if (isTalkBackEnabled) {
+                    if (talkBackEnabled) {
                         scope.launch {
                             accessibilitySheetState.animateTo(
                                 ModalBottomSheetValue.Expanded
@@ -102,7 +102,8 @@ internal fun DonutPieChart(
                     }
                 }) {
 
-            val sideSize = if (constraints.maxWidth < constraints.maxHeight) constraints.maxWidth else constraints.maxHeight
+            val sideSize =
+                if (constraints.maxWidth < constraints.maxHeight) constraints.maxWidth else constraints.maxHeight
             val padding = (sideSize * pieChartConfig.chartPadding) / 100f
             val size = Size(sideSize.toFloat() - padding, sideSize.toFloat() - padding)
 
@@ -164,14 +165,18 @@ internal fun DonutPieChart(
 
                 if (activePie != -1 && pieChartConfig.percentVisible)
                     drawContext.canvas.nativeCanvas.apply {
-                        val percentageText = AnnotatedString("${proportions[activePie].roundToInt()}%")
+                        val percentageText =
+                            AnnotatedString("${proportions[activePie].roundToInt()}%")
                         val textHeight = textMeasurer.measure(percentageText).size.height
                         val textWidth = textMeasurer.measure(percentageText).size.width
 
                         drawText(
                             textMeasurer = textMeasurer,
                             text = percentageText,
-                            topLeft = Offset(((sideSize / 2) - textWidth).toFloat(), ((sideSize / 2) - textHeight).toFloat()),
+                            topLeft = Offset(
+                                ((sideSize / 2) - textWidth).toFloat(),
+                                ((sideSize / 2) - textHeight).toFloat()
+                            ),
                             maxSize = IntSize(1440, 1050),
                             style = TextStyle(
                                 color = pieChartConfig.percentColor,
@@ -183,7 +188,7 @@ internal fun DonutPieChart(
                     }
             }
         }
-        if (isTalkBackEnabled) {
+        if (talkBackEnabled) {
             with(pieChartConfig) {
                 AccessibilityBottomSheetDialog(
                     modifier = Modifier.fillMaxSize(),

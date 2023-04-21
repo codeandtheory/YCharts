@@ -55,11 +55,10 @@ import kotlinx.coroutines.launch
  */
 @OptIn(ExperimentalMaterialApi::class, ExperimentalTextApi::class)
 @Composable
-internal fun BarChart(modifier: Modifier, barChartData: BarChartData) {
+internal fun BarChart(modifier: Modifier, barChartData: BarChartData, talkBackEnabled: Boolean) {
     val accessibilitySheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
-    val isTalkBackEnabled = false
 
     // todo find a better solution for back handling
 //    if (accessibilitySheetState.isVisible && isTalkBackEnabled
@@ -90,10 +89,12 @@ internal fun BarChart(modifier: Modifier, barChartData: BarChartData) {
             val (xMin, xMax) = getXMaxAndMinPoints(points)
             val (_, yMax) = getYMaxAndMinPoints(points)
 
-            val xAxisData = xAxisData.copy(axisStepSize = barStyle.barWidth + barStyle.paddingBetweenBars,
-                steps = chartData.size - 1,
-                startDrawPadding = LocalDensity.current.run { columnWidth.toDp() })
-            val yAxisData = yAxisData.copy(axisBottomPadding = LocalDensity.current.run { rowHeight.toDp() })
+            val xAxisData =
+                xAxisData.copy(axisStepSize = barStyle.barWidth + barStyle.paddingBetweenBars,
+                    steps = chartData.size - 1,
+                    startDrawPadding = LocalDensity.current.run { columnWidth.toDp() })
+            val yAxisData =
+                yAxisData.copy(axisBottomPadding = LocalDensity.current.run { rowHeight.toDp() })
             val maxElementInYAxis = getMaxElementInYAxis(yMax, yAxisData.steps)
 
             if (!showXAxis) {
@@ -105,7 +106,7 @@ internal fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                     contentDescription = barChartData.accessibilityConfig.chartDescription
                 }
                 .clickable {
-                    if (isTalkBackEnabled) {
+                    if (talkBackEnabled) {
                         scope.launch {
                             accessibilitySheetState.animateTo(
                                 ModalBottomSheetValue.Expanded
@@ -146,29 +147,29 @@ internal fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                         // store the tap points for selection
                         if (isTapped && middleOffset.isTapped(
                                 tapOffset, barStyle.barWidth.toPx(), yBottom, tapPadding.toPx()
-                        )
-                    ) {
-                        dragLocks[0] = barData to drawOffset
+                            )
+                        ) {
+                            dragLocks[0] = barData to drawOffset
+                        }
                     }
-                }
 
-                drawUnderScrollMask(columnWidth, paddingRight, bgColor)
+                    drawUnderScrollMask(columnWidth, paddingRight, bgColor)
 
-                if (barStyle.selectionHighlightData != null) {
-                    // highlighting the selected bar and showing the data points
-                    identifiedPoint = highlightBar(
-                        dragLocks,
-                        barHighlightVisibility,
-                        identifiedPoint,
-                        barChartData.barStyle,
-                        isTapped,
-                        columnWidth,
-                        yBottom,
-                        paddingRight,
-                        yOffset,
-                        textMeasurer
-                    )
-                }
+                    if (barStyle.selectionHighlightData != null) {
+                        // highlighting the selected bar and showing the data points
+                        identifiedPoint = highlightBar(
+                            dragLocks,
+                            barHighlightVisibility,
+                            identifiedPoint,
+                            barChartData.barStyle,
+                            isTapped,
+                            columnWidth,
+                            yBottom,
+                            paddingRight,
+                            yOffset,
+                            textMeasurer
+                        )
+                    }
                 },
                 drawXAndYAxis = { scrollOffset, xZoom ->
                     if (showXAxis) {
@@ -197,26 +198,26 @@ internal fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                     }
 
                     if (showYAxis) {
-                    YAxis(
-                        modifier = Modifier
-                            .align(Alignment.TopStart)
-                            .fillMaxHeight()
-                            .wrapContentWidth()
-                            .onGloballyPositioned {
-                                columnWidth = it.size.width.toFloat()
-                            }, yAxisData = yAxisData
-                    )
-                }
-            }, onPointClicked = { offset: Offset, _: Float ->
-                isTapped = true
-                barHighlightVisibility = true
-                tapOffset = offset
-            }, onScroll = {
-                isTapped = false
-                barHighlightVisibility = false
-            })
+                        YAxis(
+                            modifier = Modifier
+                                .align(Alignment.TopStart)
+                                .fillMaxHeight()
+                                .wrapContentWidth()
+                                .onGloballyPositioned {
+                                    columnWidth = it.size.width.toFloat()
+                                }, yAxisData = yAxisData
+                        )
+                    }
+                }, onPointClicked = { offset: Offset, _: Float ->
+                    isTapped = true
+                    barHighlightVisibility = true
+                    tapOffset = offset
+                }, onScroll = {
+                    isTapped = false
+                    barHighlightVisibility = false
+                })
         }
-        if (isTalkBackEnabled) {
+        if (talkBackEnabled) {
             with(barChartData) {
                 AccessibilityBottomSheetDialog(
                     modifier = Modifier.fillMaxSize(),

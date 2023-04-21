@@ -36,7 +36,7 @@ import co.yml.kmm.charts.ui.wavechart.model.WavePlotData
 import kotlin.random.Random
 
 @Composable
-internal fun WaveChartScreen() {
+internal fun WaveChartScreen(talkBackEnabled: Boolean) {
     Scaffold(modifier = Modifier.fillMaxSize(),
         backgroundColor = Color.White,
         topBar = {
@@ -93,14 +93,15 @@ internal fun WaveChartScreen() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(300.dp),
-                waveChartData = data
+                waveChartData = data,
+                talkBackEnabled
             )
         }
     }
 }
 
 @Composable
-internal fun BarChartScreen() {
+internal fun BarChartScreen(talkBackEnabled: Boolean) {
     Scaffold(modifier = Modifier.fillMaxSize(),
         backgroundColor = Color.White,
         topBar = {
@@ -141,13 +142,13 @@ internal fun BarChartScreen() {
                 showXAxis = true,
                 horizontalExtraSpace = 10.dp,
             )
-            BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
+            BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData, talkBackEnabled)
         }
     }
 }
 
 @Composable
-internal fun LineChartScreen() {
+internal fun LineChartScreen(talkBackEnabled: Boolean) {
     val pointsData =  getLineChartData(100, start = 0, maxRange = 100)
     Scaffold(modifier = Modifier.fillMaxSize(),
         backgroundColor = Color.White,
@@ -198,7 +199,8 @@ internal fun LineChartScreen() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(300.dp),
-                lineChartData = data
+                lineChartData = data,
+                talkBackEnabled
             )
         }
     }
@@ -281,7 +283,7 @@ fun getDonutChartData(): PieChartData {
 
 
 @Composable
-internal fun PieChartScreen()  {
+internal fun PieChartScreen(talkBackEnabled: Boolean) {
     Scaffold(modifier = Modifier.fillMaxSize(),
         backgroundColor = Color.White,
         topBar = {
@@ -312,7 +314,8 @@ internal fun PieChartScreen()  {
                             .width(400.dp)
                             .height(400.dp),
                         pieChartData,
-                        pieChartConfig
+                        pieChartConfig,
+                        talkBackEnabled
                     ) { slice ->
                     }
                 }
@@ -324,7 +327,7 @@ internal fun PieChartScreen()  {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-internal fun DonutPieChartScreen()  {
+internal fun DonutPieChartScreen(talkBackEnabled: Boolean) {
     val data = getDonutChartData()
     // Sum of all the values
     val sumOfValues = data.totalLength
@@ -349,7 +352,8 @@ internal fun DonutPieChartScreen()  {
                 .fillMaxWidth()
                 .height(500.dp),
             data,
-            pieChartConfig
+            pieChartConfig,
+            talkBackEnabled
         ) { slice ->
 
         }

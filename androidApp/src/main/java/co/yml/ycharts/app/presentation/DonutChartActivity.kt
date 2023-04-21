@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import co.yml.charts.common.extensions.collectIsTalkbackEnabledAsState
 import co.yml.kmm.charts.ChartScreen
 import co.yml.ycharts.app.R
 import co.yml.ycharts.app.ui.compositions.AppBarWithBackButton
@@ -20,6 +21,8 @@ class DonutChartActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             YChartsTheme {
+                val isTalkBackEnabled = LocalContext.current.collectIsTalkbackEnabledAsState()
+
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     backgroundColor = YChartsTheme.colors.background,
@@ -38,7 +41,7 @@ class DonutChartActivity : ComponentActivity() {
                             .fillMaxSize()
                     ) {
                         Spacer(modifier = Modifier.height(20.dp))
-                        ChartScreen(chartType = 5)
+                        ChartScreen(chartType = 5, isTalkBackEnabled = isTalkBackEnabled)
                     }
                 }
             }

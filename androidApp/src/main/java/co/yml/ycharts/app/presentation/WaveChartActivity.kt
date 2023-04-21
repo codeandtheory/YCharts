@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import co.yml.charts.common.extensions.collectIsTalkbackEnabledAsState
 import co.yml.kmm.charts.ChartScreen
 import co.yml.ycharts.app.R
 import co.yml.ycharts.app.ui.compositions.AppBarWithBackButton
@@ -19,6 +21,7 @@ class WaveChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val isTalkBackEnabled = LocalContext.current.collectIsTalkbackEnabledAsState()
             YChartsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize(),
                     backgroundColor = YChartsTheme.colors.background,
@@ -36,7 +39,7 @@ class WaveChartActivity : ComponentActivity() {
                             .padding(it),
                         contentAlignment = Alignment.TopCenter
                     ) {
-                        ChartScreen(chartType = 2)
+                        ChartScreen(chartType = 2, isTalkBackEnabled = isTalkBackEnabled)
                     }
                 }
             }

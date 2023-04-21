@@ -5,7 +5,7 @@ import androidx.compose.ui.window.Application
 import co.yml.kmm.charts.StartScreenIOS
 import platform.UIKit.UIViewController
 
-fun MainViewController(chartType: Int): UIViewController =
+fun MainViewController(chartType: Int, isTalkbackEnabled: Boolean): UIViewController =
     Application("KMM YCharts") {
         Column {
             // To skip upper part of screen.
@@ -13,6 +13,6 @@ fun MainViewController(chartType: Int): UIViewController =
                 modifier = Modifier
                     .height(40.dp)
             )
-            StartScreenIOS(chartType)
+            StartScreenIOS(chartType, isTalkbackEnabled)
         }
     }

@@ -95,9 +95,10 @@ struct ContentView: View {
 struct MainView: UIViewControllerRepresentable {
     typealias UIViewControllerType = UIViewController
     @State var chartType: Int
+    private let talkBackStateObserver = TalkBackStateObserver()
 
     func makeUIViewController(context: Context) -> UIViewController {
-        let vc = Main_iosKt.MainViewController(chartType: Int32(chartType))
+        let vc = Main_iosKt.MainViewController(chartType: Int32(chartType), isTalkbackEnabled: talkBackStateObserver.isTalkBackEnabled)
         return vc
     }
 

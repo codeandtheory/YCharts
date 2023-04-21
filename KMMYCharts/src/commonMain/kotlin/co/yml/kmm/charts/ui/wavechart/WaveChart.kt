@@ -49,11 +49,10 @@ import co.yml.kmm.charts.ui.linechart.getMaxElementInYAxis as getMaxElementInLin
  */
 @OptIn(ExperimentalMaterialApi::class, ExperimentalTextApi::class)
 @Composable
-internal fun WaveChart(modifier: Modifier, waveChartData: WaveChartData) {
+internal fun WaveChart(modifier: Modifier, waveChartData: WaveChartData, talkBackEnabled: Boolean) {
     val accessibilitySheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
-    val isTalkBackEnabled = false
     Surface(modifier = modifier.testTag("wave_chart").background(Color.Black)) {
         with(waveChartData) {
             var columnWidth by remember { mutableStateOf(300f) }
@@ -87,7 +86,7 @@ internal fun WaveChart(modifier: Modifier, waveChartData: WaveChartData) {
                 }
                 .testTag("scrollable_container")
                 .clickable {
-                    if (isTalkBackEnabled) {
+                    if (talkBackEnabled) {
                         scope.launch {
                             accessibilitySheetState.animateTo(
                                 ModalBottomSheetValue.Expanded
@@ -235,7 +234,7 @@ internal fun WaveChart(modifier: Modifier, waveChartData: WaveChartData) {
                     selectionTextVisibility = false
                 })
         }
-        if (isTalkBackEnabled) {
+        if (talkBackEnabled) {
             with(waveChartData) {
                 AccessibilityBottomSheetDialog(
                     modifier = Modifier.fillMaxSize(),

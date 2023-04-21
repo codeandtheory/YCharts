@@ -50,12 +50,11 @@ import kotlinx.coroutines.launch
  */
 @OptIn(ExperimentalTextApi::class)
 @Composable
-internal fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
+internal fun LineChart(modifier: Modifier, lineChartData: LineChartData, talkBackEnabled: Boolean) {
     val accessibilitySheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
-    val isTalkBackEnabled = false
-    if (accessibilitySheetState.isVisible && isTalkBackEnabled
+    if (accessibilitySheetState.isVisible && talkBackEnabled
         && lineChartData.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
     ) {
 
@@ -86,7 +85,7 @@ internal fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                     contentDescription = lineChartData.accessibilityConfig.chartDescription
                 }
                 .clickable {
-                    if (isTalkBackEnabled) {
+                    if (talkBackEnabled) {
                         scope.launch {
                             accessibilitySheetState.animateTo(
                                 ModalBottomSheetValue.Expanded
@@ -222,7 +221,7 @@ internal fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                     selectionTextVisibility = false
                 })
         }
-        if (isTalkBackEnabled) {
+        if (talkBackEnabled) {
             with(lineChartData) {
                 AccessibilityBottomSheetDialog(
                     modifier = Modifier.fillMaxSize(),

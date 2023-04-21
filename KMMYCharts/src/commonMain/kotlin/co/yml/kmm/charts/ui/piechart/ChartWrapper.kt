@@ -34,7 +34,8 @@ object ChartWrapper {
                     modifier = modifier,
                     pieChartData = pieChartData,
                     pieChartConfig = pieChartConfig,
-                    onSliceClick = onSliceClick
+                    onSliceClick = onSliceClick,
+                    talkBackEnabled = false
                 )
             }
             is PlotType.Donut -> {
@@ -42,7 +43,8 @@ object ChartWrapper {
                     modifier = modifier,
                     pieChartData = pieChartData,
                     pieChartConfig = pieChartConfig,
-                    onSliceClick = onSliceClick
+                    onSliceClick = onSliceClick,
+                    talkBackEnabled = false
                 )
             }
             else -> { // T0DO Handle if required for other types

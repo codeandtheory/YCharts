@@ -15,9 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import co.yml.charts.axis.AxisData
+import co.yml.charts.common.extensions.collectIsTalkbackEnabledAsState
 import co.yml.charts.common.extensions.formatToSinglePrecision
 import co.yml.charts.common.model.Point
 import co.yml.charts.ui.linechart.LineChart
@@ -40,6 +42,7 @@ class LineChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val isTalkBackEnabled = LocalContext.current.collectIsTalkbackEnabledAsState()
             YChartsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize(),
                     backgroundColor = YChartsTheme.colors.background,
@@ -52,7 +55,7 @@ class LineChartActivity : ComponentActivity() {
                     })
                 {
                     Box(modifier = Modifier.padding(it)) {
-                        ChartScreen(3)
+                        ChartScreen(3, isTalkBackEnabled)
                     }
                 }
             }

@@ -225,7 +225,7 @@ fun DrawScope.drawGridLines(
  * Returns true if accessibility services are enabled else false
  */
 @Composable
-internal fun Context.collectIsTalkbackEnabledAsState(): State<Boolean> {
+fun Context.collectIsTalkbackEnabledAsState(): State<Boolean> {
     val accessibilityManager =
         this.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
     fun isTalkbackEnabled(): Boolean {

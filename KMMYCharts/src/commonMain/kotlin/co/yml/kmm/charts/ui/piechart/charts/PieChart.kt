@@ -56,6 +56,7 @@ internal fun PieChart(
     modifier: Modifier,
     pieChartData: PieChartData,
     pieChartConfig: PieChartConfig,
+    talkBackEnabled: Boolean,
     onSliceClick: (PieChartData.Slice) -> Unit = {}
 ) {
     // Sum of all the values
@@ -81,8 +82,7 @@ internal fun PieChart(
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
     val textMeasurer = rememberTextMeasurer()
-    val isTalkBackEnabled = false
-    if (accessibilitySheetState.isVisible && isTalkBackEnabled && pieChartConfig.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown) {
+    if (accessibilitySheetState.isVisible && talkBackEnabled && pieChartConfig.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown) {
         // todo handle back nav
     }
     Surface(
@@ -95,7 +95,7 @@ internal fun PieChart(
                     contentDescription = pieChartConfig.accessibilityConfig.chartDescription
                 }
                 .clickable {
-                    if (isTalkBackEnabled) {
+                    if (talkBackEnabled) {
                         scope.launch {
                             accessibilitySheetState.animateTo(
                                 ModalBottomSheetValue.Expanded
@@ -105,7 +105,8 @@ internal fun PieChart(
                 },
         ) {
 
-            val sideSize = if (constraints.maxWidth < constraints.maxHeight) constraints.maxWidth else constraints.maxHeight
+            val sideSize =
+                if (constraints.maxWidth < constraints.maxHeight) constraints.maxWidth else constraints.maxHeight
             val padding = (sideSize * pieChartConfig.chartPadding) / 100f
             val size = Size(sideSize.toFloat() - padding, sideSize.toFloat() - padding)
 
@@ -155,7 +156,12 @@ internal fun PieChart(
                     //  if percentage is less than 5 width of slice will be very small
                     if (pieChartConfig.showSliceLabels && proportions[index] >= MINIMUM_PERCENTAGE_FOR_SLICE_LABELS) {
 
-                        val (arcCenter, x, y) = getSliceCenterPoints(sAngle, arcProgress, size, padding)
+                        val (arcCenter, x, y) = getSliceCenterPoints(
+                            sAngle,
+                            arcProgress,
+                            size,
+                            padding
+                        )
 
                         var label = pieChartData.slices[index].label
 
@@ -188,7 +194,7 @@ internal fun PieChart(
                 }
             }
         }
-        if (isTalkBackEnabled) {
+        if (talkBackEnabled) {
             with(pieChartConfig) {
                 AccessibilityBottomSheetDialog(
                     modifier = Modifier.fillMaxSize(),

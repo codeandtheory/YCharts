@@ -12,11 +12,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import co.yml.ycharts.app.ui.compositions.AppBarWithBackButton
 import co.yml.ycharts.app.ui.theme.YChartsTheme
 import co.yml.charts.axis.AxisData
+import co.yml.charts.common.extensions.collectIsTalkbackEnabledAsState
 import co.yml.charts.ui.barchart.BarChart
 import co.yml.charts.ui.barchart.models.BarChartData
 import co.yml.charts.ui.barchart.models.BarStyle
@@ -30,6 +32,7 @@ class BarChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val isTalkBackEnabled = LocalContext.current.collectIsTalkbackEnabledAsState()
             YChartsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize(),
                     backgroundColor = YChartsTheme.colors.background,
@@ -55,7 +58,7 @@ class BarChartActivity : ComponentActivity() {
 //                                }
 //                            }
 //                        })
-                        ChartScreen(1)
+                        ChartScreen(1, isTalkBackEnabled)
                     }
                 }
             }
