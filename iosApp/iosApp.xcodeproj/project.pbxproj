@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		84173FBB29B1F17700C6315A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84173FBA29B1F17700C6315A /* ContentView.swift */; };
+		8464056E29F26DA50097C060 /* TalkbackStateObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8464056D29F26DA50097C060 /* TalkbackStateObserver.swift */; };
 		8484E59529B0B36300355174 /* iosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8484E59429B0B36300355174 /* iosApp.swift */; };
 		8484E5A729B0B36500355174 /* iosAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8484E5A629B0B36500355174 /* iosAppTests.swift */; };
 		8484E5B129B0B36500355174 /* iosAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8484E5B029B0B36500355174 /* iosAppUITests.swift */; };
@@ -35,6 +36,7 @@
 /* Begin PBXFileReference section */
 		7220F87734E7AB13AFDEA5CC /* Pods_iosApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iosApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		84173FBA29B1F17700C6315A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		8464056D29F26DA50097C060 /* TalkbackStateObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TalkbackStateObserver.swift; sourceTree = "<group>"; };
 		8484E59129B0B36300355174 /* iosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8484E59429B0B36300355174 /* iosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iosApp.swift; sourceTree = "<group>"; };
 		8484E59829B0B36500355174 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 				8484E59829B0B36500355174 /* Assets.xcassets */,
 				8484E59B29B0B36500355174 /* Preview Content */,
 				84173FBA29B1F17700C6315A /* ContentView.swift */,
+				8464056D29F26DA50097C060 /* TalkbackStateObserver.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -324,6 +327,7 @@
 			files = (
 				84173FBB29B1F17700C6315A /* ContentView.swift in Sources */,
 				8484E59529B0B36300355174 /* iosApp.swift in Sources */,
+				8464056E29F26DA50097C060 /* TalkbackStateObserver.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
