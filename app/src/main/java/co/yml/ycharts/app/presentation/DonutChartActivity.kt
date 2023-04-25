@@ -22,11 +22,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import co.yml.charts.common.components.Legends
+import co.yml.charts.common.utils.DataUtils
 import co.yml.charts.ui.piechart.charts.DonutPieChart
 import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.utils.proportion
-import co.yml.charts.common.components.Legends
-import co.yml.charts.common.utils.DataUtils
 import co.yml.ycharts.app.R
 import co.yml.ycharts.app.ui.compositions.AppBarWithBackButton
 import co.yml.ycharts.app.ui.theme.YChartsTheme
@@ -110,15 +110,15 @@ private fun SimpleDonutChart(context: Context) {
     val proportions = data.slices.proportion(sumOfValues)
     val pieChartConfig =
         PieChartConfig(
-            percentVisible = true,
+            labelVisible = true,
             strokeWidth = 120f,
-            percentColor = Color.Black,
+            labelColor = Color.Black,
             activeSliceAlpha = .9f,
             isEllipsizeEnabled = true,
-            percentageTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
+            labelTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
             isAnimationEnable = true,
             chartPadding = 25,
-            percentageFontSize = 42.sp
+            labelFontSize = 42.sp,
         )
     Column(
         modifier = Modifier
@@ -129,7 +129,7 @@ private fun SimpleDonutChart(context: Context) {
         DonutPieChart(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(500.dp),
+                .height(400.dp),
             data,
             pieChartConfig
         ) { slice ->
@@ -157,42 +157,46 @@ private fun MultipleSmallDonutCharts(context: Context) {
     val proportions = data.slices.proportion(sumOfValues)
     val firstPieChartConfig =
         PieChartConfig(
-            percentVisible = true,
+            labelVisible = true,
             strokeWidth = 50f,
-            percentColor = Color.Black,
+            labelColor = Color.Black,
             backgroundColor = Color.Yellow,
             activeSliceAlpha = .9f,
             isEllipsizeEnabled = true,
-            percentageTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
+            labelTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
             isAnimationEnable = true,
             chartPadding = 25,
-            percentageFontSize = 16.sp
+            labelFontSize = 16.sp
         )
     val secondPieChartConfig =
         PieChartConfig(
-            percentVisible = true,
+            labelVisible = true,
             strokeWidth = 50f,
-            percentColor = Color.White,
-            backgroundColor = Color.Black,
+            labelColor = Color.Black,
             activeSliceAlpha = .9f,
             isEllipsizeEnabled = true,
-            percentageTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
+            backgroundColor = Color.Black,
+            labelTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
             isAnimationEnable = true,
             chartPadding = 25,
-            percentageFontSize = 16.sp
+            labelFontSize = 16.sp,
+            isSumVisible = true,
+            sumUnit = "unit",
+            labelColorType = PieChartConfig.LabelColorType.SLICE_COLOR,
+            labelType = PieChartConfig.LabelType.VALUE
         )
     val thirdPieChartConfig =
         PieChartConfig(
-            percentVisible = true,
+            labelVisible = true,
             strokeWidth = 50f,
-            percentColor = Color.Black,
+            labelColor = Color.Black,
             activeSliceAlpha = .9f,
             backgroundColor = Color.LightGray,
             isEllipsizeEnabled = true,
-            percentageTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
+            labelTypeface = Typeface.defaultFromStyle(Typeface.BOLD),
             isAnimationEnable = true,
             chartPadding = 25,
-            percentageFontSize = 16.sp
+            labelFontSize = 16.sp
         )
     Column(
         modifier = Modifier

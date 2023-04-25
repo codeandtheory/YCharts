@@ -10,4 +10,5 @@ object PieChartConstants {
     const val TOTAL_ANGLE = 360
     const val ONE_HUNDRED = 100
     const val DESCRIPTION = "Double tap to know the chart in detail"
+    const val NO_SELECTED_SLICE = -1
 }

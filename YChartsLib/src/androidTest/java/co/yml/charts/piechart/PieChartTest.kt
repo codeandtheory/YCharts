@@ -21,9 +21,9 @@ class PieChartTest {
     val composeTestRule = createComposeRule()
 
     private val pieChartConfig = PieChartConfig(
-        percentVisible = false,
+        labelVisible = false,
         strokeWidth = 120f,
-        percentColor = Color.Black
+        labelColor = Color.Black
     )
     private val pieChartData = PieChartData(
         slices = listOf(

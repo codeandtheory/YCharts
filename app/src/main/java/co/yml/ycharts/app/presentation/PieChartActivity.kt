@@ -20,10 +20,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import co.yml.charts.ui.piechart.charts.PieChart
-import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.common.components.Legends
 import co.yml.charts.common.utils.DataUtils
+import co.yml.charts.ui.piechart.charts.PieChart
+import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.ycharts.app.R
 import co.yml.ycharts.app.ui.compositions.AppBarWithBackButton
 import co.yml.ycharts.app.ui.theme.YChartsTheme
@@ -95,7 +95,7 @@ private fun SimplePiechart(context: Context) {
     val pieChartData = DataUtils.getPieChartData()
     val pieChartConfig =
         PieChartConfig(
-            percentVisible = true,
+            labelVisible = true,
             activeSliceAlpha = .9f,
             isEllipsizeEnabled = true,
             sliceLabelEllipsizeAt = TextUtils.TruncateAt.MIDDLE,
@@ -139,7 +139,7 @@ private fun PiechartWithSliceLables(context: Context) {
             isAnimationEnable = true,
             chartPadding = 20,
             showSliceLabels = true,
-            percentVisible = true
+            labelVisible = true
         )
     Column(modifier = Modifier.height(500.dp)) {
         Legends(legendsConfig = DataUtils.getLegendsConfigFromPieChartData(pieChartData, 3))
@@ -154,4 +154,3 @@ private fun PiechartWithSliceLables(context: Context) {
         }
     }
 }
-
