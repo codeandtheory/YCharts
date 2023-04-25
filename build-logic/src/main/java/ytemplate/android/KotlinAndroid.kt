@@ -15,8 +15,7 @@ internal fun Project.configureKotlinAndroid(
 ) {
     commonExtension.apply {
         compileSdk = 33
-
-        packagingOptions {
+        packaging {
             resources {
                 excludes += "/META-INF/{AL2.0,LGPL2.1}"
                 excludes += "META-INF/DEPENDENCIES"
@@ -27,18 +26,16 @@ internal fun Project.configureKotlinAndroid(
         }
 
         defaultConfig {
-            minSdk = 21
-            testInstrumentationRunner = "ytemplate.android.core.test.HiltTestRunner"
+            minSdk = 26
             testHandleProfiling = true
             testFunctionalTest = true
             vectorDrawables {
                 useSupportLibrary = true
             }
         }
-
         compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_11
-            targetCompatibility = JavaVersion.VERSION_11
+            sourceCompatibility = JavaVersion.VERSION_17
+            targetCompatibility = JavaVersion.VERSION_17
             isCoreLibraryDesugaringEnabled = false
         }
 
@@ -54,7 +51,7 @@ internal fun Project.configureKotlinAndroid(
                 "-opt-in=kotlin.Experimental",
             )
 
-            jvmTarget = JavaVersion.VERSION_11.toString()
+            jvmTarget = JavaVersion.VERSION_17.toString()
         }
     }
 }

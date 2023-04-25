@@ -5,6 +5,7 @@ plugins {
 
 android {
     compileSdk = 33
+    namespace = "com.example.piechartcontainer"
 
     defaultConfig {
         applicationId = "com.example.piechartcontainer"
@@ -41,7 +42,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = co.ycharts.dependency.Version.KOTLIN_COMPILER_EXT
     }
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }

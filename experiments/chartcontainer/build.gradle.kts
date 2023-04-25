@@ -5,7 +5,7 @@ plugins {
 
 android {
     compileSdk = 33
-
+    namespace = "com.app.chartcontainer"
     defaultConfig {
         applicationId = "com.app.chartcontainer"
         minSdk = 26
@@ -28,8 +28,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -40,7 +40,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = co.ycharts.dependency.Version.KOTLIN_COMPILER_EXT
     }
-    packagingOptions {
+    packaging {
         resources {
           excludes.add("/META-INF/{AL2.0,LGPL2.1}")
         }
