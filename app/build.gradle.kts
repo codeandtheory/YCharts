@@ -1,6 +1,7 @@
 plugins {
     id("ycharts.android.application")
     id("ycharts.android.application.compose")
+    id("ycharts.android.test")
 }
 
 android {

@@ -1,6 +1,7 @@
 plugins {
     id("ycharts.android.library")
     id("ycharts.android.library.compose")
+    id("ycharts.android.test")
     id("maven-publish")
     id("signing")
     alias(versionCatalogLibs.plugins.dokka)

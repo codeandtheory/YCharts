@@ -17,9 +17,10 @@ class AndroidTestConventionPlugin : Plugin<Project> {
         with(target) {
             val libs = extensions.getByType<VersionCatalogsExtension>().named("versionCatalogLibs")
             dependencies {
-                add("implementation", libs.findBundle("test").get())
-                add("implementation", libs.findBundle("coroutine.test").get())
-                add("implementation", libs.findLibrary("androidx.junit").get())
+                add("testImplementation", libs.findBundle("test").get())
+                add("testImplementation", libs.findBundle("mock").get())
+                add("testImplementation", libs.findBundle("coroutine.test").get())
+                add("testImplementation", libs.findLibrary("androidx.junit").get())
                 add("androidTestImplementation", kotlin("test"))
                 add("testImplementation", kotlin("test"))
             }

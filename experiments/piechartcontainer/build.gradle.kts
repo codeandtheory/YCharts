@@ -1,19 +1,15 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    id("ycharts.android.application")
+    id("ycharts.android.application.compose")
+    id("ycharts.android.test")
 }
 
 android {
-    compileSdk = 33
     namespace = "com.example.piechartcontainer"
-
     defaultConfig {
         applicationId = "com.example.piechartcontainer"
-        minSdk = 26
-        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -29,38 +25,9 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = co.ycharts.dependency.Version.KOTLIN_COMPILER_EXT
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
 }
 
 dependencies {
 
     implementation(project(":YChartsLib"))
-    implementation(co.ycharts.dependency.YChartDependency.CORE_KTX)
-    implementation(co.ycharts.dependency.YChartDependency.COMPOSE_UI)
-    implementation(co.ycharts.dependency.YChartDependency.COMPOSE_MATERIAL)
-    implementation(co.ycharts.dependency.YChartDependency.COMPOSE_TOOLING_PREVIEW)
-    implementation(co.ycharts.dependency.YChartDependency.RUNTIME_KTX)
-    implementation(co.ycharts.dependency.YChartDependency.COMPOSE_ACTIVITY)
-    testImplementation(co.ycharts.dependency.YChartDependency.JUNIT)
-    androidTestImplementation(co.ycharts.dependency.YChartDependency.TEST_EXTN)
-    androidTestImplementation(co.ycharts.dependency.YChartDependency.ESPRESSO_CORE)
-    androidTestImplementation(co.ycharts.dependency.YChartDependency.COMPOSE_JUNIT)
-    debugImplementation(co.ycharts.dependency.YChartDependency.COMPOSE_UI_TOOLING)
-    debugImplementation(co.ycharts.dependency.YChartDependency.COMPOSE_UI_TEST_MANIFEST)}
+}
