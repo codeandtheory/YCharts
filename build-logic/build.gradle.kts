@@ -2,7 +2,7 @@ plugins {
     `kotlin-dsl`
 }
 
-group = "ytemplate.android.buildlogic"
+group = "ycharts.android.buildlogic"
 
 repositories {
     mavenCentral()
