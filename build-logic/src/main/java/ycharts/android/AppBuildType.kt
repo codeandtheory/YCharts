@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package ytemplate.android
+package ycharts.android
 
 /**
  * This is shared between :app and :benchmarks module to provide configurations type safety.

@@ -6,8 +6,7 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.getByType
-import ytemplate.android.configureFlavors
-import ytemplate.android.configureKotlinAndroid
+import ycharts.android.configureKotlinAndroid
 
 /**
  * Application convention plugin

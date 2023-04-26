@@ -2,7 +2,7 @@ plugins {
     `kotlin-dsl`
 }
 
-group = "ycharts.android.buildlogic"
+group = "ycharts.android"
 
 repositories {
     mavenCentral()
@@ -19,6 +19,11 @@ dependencies {
     compileOnly(versionCatalogLibs.kotlin.gradle.plugin)
 }
 
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = versionCatalogLibs.versions.kotlinJvmTarget.get()
+    }
+}
 gradlePlugin {
     plugins {
         register("androidApplication") {

@@ -8,8 +8,7 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.kotlin
-import ytemplate.android.configureFlavors
-import ytemplate.android.configureKotlinAndroid
+import ycharts.android.configureKotlinAndroid
 
 /**
  * Library convention plugin
