@@ -23,7 +23,7 @@ class ApplicationConventionPlugin : Plugin<Project> {
             }
             extensions.configure<ApplicationExtension> {
                 configureKotlinAndroid(this)
-                packaging {
+                packagingOptions {
                     resources {
                         excludes += "/META-INF/{AL2.0,LGPL2.1}"
                         excludes += "META-INF/DEPENDENCIES"
