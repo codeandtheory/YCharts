@@ -7,6 +7,7 @@ import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.getByType
 import ycharts.android.configureComposeApplication
 
+
 /**
  * Compose application convention plugin
  *

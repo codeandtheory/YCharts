@@ -2,8 +2,7 @@
 # Define the dependency versions
 #Project
 #kotlin
-kotlinVersion = "1.8.20"
-kotlinJvmTarget = "17"
+kotlinVersion = "1.8.10"
 kotlinxCoroutines = "1.6.4"
 kotlinxSerializationJson = "1.5.0"
 #gradle

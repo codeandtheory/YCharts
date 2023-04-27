@@ -2,7 +2,7 @@ plugins {
     `kotlin-dsl`
 }
 
-group = "ycharts.android"
+group = "ycharts.android.buildlogic"
 
 repositories {
     mavenCentral()
@@ -10,8 +10,8 @@ repositories {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
 dependencies {
@@ -21,7 +21,7 @@ dependencies {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
-        jvmTarget = versionCatalogLibs.versions.kotlinJvmTarget.get()
+        jvmTarget = JavaVersion.VERSION_11.toString()
     }
 }
 gradlePlugin {
