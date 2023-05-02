@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterialApi::class)
+@file:OptIn(ExperimentalMaterialApi::class, ExperimentalMaterialApi::class)
 
 package co.yml.charts.ui.linechart
 
@@ -139,7 +139,7 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                         xStart = columnWidth,
                         scrollOffset = scrollOffset,
                         zoomScale = xZoom,
-                        chartData = linePoints)
+                        chartData = linePoints,axisStart = columnWidth)
                 },
                 onDraw = { scrollOffset, xZoom ->
                     linePlotData.lines.forEach {  line->
@@ -375,7 +375,7 @@ fun DrawScope.drawStraightOrCubicLine(
  * @param lineType : Type of the line [LineType]
  * @param lineStyle : The style for the path [lineStyle]
  */
-private fun getDrawStyleForPath(
+internal fun getDrawStyleForPath(
     lineType: LineType, lineStyle: LineStyle
 ): DrawStyle = if (lineType.isDotted) Stroke(
     width = lineStyle.width, pathEffect = PathEffect.dashPathEffect(lineType.intervals)
@@ -387,7 +387,7 @@ private fun getDrawStyleForPath(
  * DrawScope.drawPointOnLine extension method  used for drawing a circle/mark on a line for a given Point(x,y).
  * @param offset : Point at which circle/mark has to be drawn.
  */
-private fun DrawScope.drawPointOnLine(offset: Offset, intersectionPoint: IntersectionPoint?) {
+internal fun DrawScope.drawPointOnLine(offset: Offset, intersectionPoint: IntersectionPoint?) {
     intersectionPoint?.draw?.let { it(this, offset) }
 }
 

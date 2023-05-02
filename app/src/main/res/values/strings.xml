@@ -2,11 +2,13 @@
     <string name="app_name">YCharts</string>
     <string name="title_activity_bar_chart">BarChartActivity</string>
     <string name="title_activity_line_chart">LineChartActivity</string>
+    <string name="title_activity_wave_chart">WaveChartActivity</string>
     <string name="title_activity_pie_chart">PieChartActivity</string>
     <string name="title_activity_donut_chart">DonutChartActivity</string>
     <string name="title_activity_combined_line_bar_chart">CombinedLineAndBarChartActivity</string>
     <string name="title_bar_chart">Bar Chart</string>
     <string name="title_line_chart">Line Chart</string>
+    <string name="title_wave_chart">Wave Chart</string>
     <string name="title_pie_chart">Pie Chart</string>
     <string name="title_donut_chart">Donut Chart</string>
     <string name="title_bar_with_line_chart">Combined Chart</string>
@@ -25,5 +27,8 @@
     <string name="multiple_donuts">Multiple Donutcharts</string>
     <string name="simple_piechart">Simple Piechart</string>
     <string name="piechart_with_lables">"Piechart with slice-labels "</string>
+    <string name="horizontal_bar_chart">Horizontal Barchart</string>
+    <string name="grouped_bar_chart">Grouped Barchart</string>
+    <string name="stacked_barchart">Stacked Barchart</string>
 
 </resources>

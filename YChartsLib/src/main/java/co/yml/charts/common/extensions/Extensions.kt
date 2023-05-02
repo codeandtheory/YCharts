@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import co.yml.charts.common.model.Point
 import co.yml.charts.ui.linechart.model.GridLines
 import java.text.DecimalFormat
+import kotlin.math.roundToInt
 
 
 /**
@@ -116,9 +117,9 @@ fun getYMaxAndMinPoints(
 ): Pair<Float, Float> {
     if (points.isEmpty())
         return Pair(0f, 0f)
-    val xMin = points.minOf { it.y }
-    val xMax = points.maxOf { it.y }
-    return Pair(xMin, xMax)
+    val yMin = points.minOf { it.y }
+    val yMax = points.maxOf { it.y }
+    return Pair(yMin, yMax)
 }
 
 /**
@@ -232,7 +233,9 @@ internal fun Context.collectIsTalkbackEnabledAsState(): State<Boolean> {
         val accessibilityServiceInfoList =
             accessibilityManager?.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_SPOKEN)
         return accessibilityServiceInfoList?.any {
-            it.resolveInfo.serviceInfo.processName.equals(TALKBACK_PACKAGE_NAME)
+            it.resolveInfo.serviceInfo.processName.equals(TALKBACK_PACKAGE_NAME) || it.resolveInfo.serviceInfo.processName.equals(
+                TALKBACK_PACKAGE_NAME_SAMSUNG
+            )
         } ?: false
     }
 
@@ -249,3 +252,86 @@ internal fun Context.collectIsTalkbackEnabledAsState(): State<Boolean> {
 }
 
 private const val TALKBACK_PACKAGE_NAME = "com.google.android.marvin.talkback"
+private const val TALKBACK_PACKAGE_NAME_SAMSUNG = "com.samsung.android.accessibility.talkback"
+
+
+/**
+return the shape that is used to mask a particular area for given top & bottom
+ */
+internal class ColumnClip(
+    private val leftPadding: Float = 0f,
+    private val topPadding: Float = 0f,
+    private val rightPadding: Float,
+    private val bottomPadding: Float
+) : Shape {
+    override fun createOutline(
+        size: Size,
+        layoutDirection: LayoutDirection,
+        density: Density
+    ): Outline {
+        return Outline.Rectangle(
+            androidx.compose.ui.geometry.Rect(
+                leftPadding,
+                topPadding,
+                rightPadding,
+                size.height - bottomPadding
+            )
+        )
+    }
+}
+
+/**
+ * Returns the maximum value of X axis
+ * @param xMax Maximum value in the X axis
+ * @param xStepSize size of one step in the X axis
+ */
+fun getMaxElementInXAxis(xMax: Float, xStepSize: Int): Int {
+    var reqYLabelsQuo =
+        (xMax / xStepSize)
+    val reqYLabelsRem = xMax.rem(xStepSize)
+    if (reqYLabelsRem > 0f) {
+        reqYLabelsQuo += 1
+    }
+    return reqYLabelsQuo.toInt() * xStepSize
+}
+
+/**
+ * Return true if the point is selected
+ * @param tapOffset Tapped offset
+ * @param yOffset in the Y axis
+ * @param left left Value
+ * @param tapPadding plus or minus padding from the point or clickable padding
+ * @param xAxisWidth width of horizontal bar
+ */
+fun Offset.isYAxisTapped(
+    tapOffset: Offset,
+    yOffset: Float,
+    left: Float,
+    tapPadding: Float,
+    xAxisWidth: Float
+) =
+    ((tapOffset.y) < y + (yOffset + tapPadding) / 2) && ((tapOffset.y) > y - (yOffset + tapPadding) / 2) &&
+            ((tapOffset.plus(Offset(tapPadding, 0f))).x < xAxisWidth) && ((tapOffset.x) > left)
+
+/**
+ * Round double value to 2 decimal point
+ */
+fun Double.roundTwoDecimal(): Double {
+    return (this * 100.0).roundToInt() / 100.0
+}
+
+/**
+ * Return true if the point is selected
+ * @param tapOffset Tapped offset
+ * @param barWidth width of the bar
+ * @param barHeight height of the bar
+ * @param tapPadding plus or minus padding from the point or clickable padding
+ */
+fun Offset.isStackedBarTapped(
+    tapOffset: Offset,
+    barWidth: Float,
+    barHeight: Float,
+    tapPadding: Float
+) =
+    ((tapOffset.x) > x - (barWidth + tapPadding) / 2) && ((tapOffset.x) < x + (barWidth + tapPadding) / 2) &&
+            (tapOffset.y > y) && ((tapOffset.y) < barHeight)

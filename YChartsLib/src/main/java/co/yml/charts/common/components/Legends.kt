@@ -27,8 +27,7 @@ fun Legends(modifier: Modifier = Modifier, legendsConfig: LegendsConfig) {
                 modifier = modifier
                     .fillMaxWidth()
                     .padding(
-                        horizontal = gridPaddingHorizontal,
-                        vertical = gridPaddingVertical
+                        horizontal = gridPaddingHorizontal, vertical = gridPaddingVertical
                     ),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -48,16 +47,16 @@ private fun Legend(config: LegendsConfig, legendLabel: LegendLabel) {
         horizontalArrangement = config.legendsArrangement,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(
-            modifier = Modifier
-                .background(legendLabel.color)
-                .size(config.colorBoxSize)
-        )
+        val boxModifier = Modifier.size(config.colorBoxSize)
+        if (legendLabel.brush != null) {
+            Box(modifier = boxModifier.background(legendLabel.brush))
+        } else {
+            Box(modifier = boxModifier.background(legendLabel.color))
+        }
+
         Spacer(modifier = Modifier.padding(config.spaceBWLabelAndColorBox))
         Text(
-            text = legendLabel.name,
-            style = config.textStyle,
-            overflow = TextOverflow.Ellipsis
+            text = legendLabel.name, style = config.textStyle, overflow = TextOverflow.Ellipsis
         )
     }
 }

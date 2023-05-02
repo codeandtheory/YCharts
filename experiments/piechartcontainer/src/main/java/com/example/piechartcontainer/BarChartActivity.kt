@@ -13,14 +13,14 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.piechartcontainer.ui.theme.YChartsTheme
-import co.yml.charts.ui.barchart.GroupBarChart
-import co.yml.charts.ui.barchart.models.BarPlotData
-import co.yml.charts.ui.barchart.models.GroupBarChartData
 import co.yml.charts.common.components.Legends
 import co.yml.charts.common.model.LegendsConfig
 import co.yml.charts.common.utils.DataUtils
 import co.yml.charts.common.utils.DataUtils.getGroupBarChartData
+import co.yml.charts.ui.barchart.GroupBarChart
+import co.yml.charts.ui.barchart.models.BarPlotData
+import co.yml.charts.ui.barchart.models.GroupBarChartData
+import com.example.piechartcontainer.ui.theme.YChartsTheme
 
 class BarChartActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
