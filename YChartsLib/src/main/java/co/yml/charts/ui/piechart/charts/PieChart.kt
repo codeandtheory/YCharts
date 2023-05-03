@@ -16,10 +16,16 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Surface
 import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.runtime.*
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -80,9 +86,7 @@ fun PieChart(
         progressSize.add(sweepAngles[x] + progressSize[x - 1])
     }
 
-    var activePie by rememberSaveable {
-        mutableStateOf(NO_SELECTED_SLICE)
-    }
+    var activePie by rememberSaveable { mutableStateOf(NO_SELECTED_SLICE) }
     val accessibilitySheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
@@ -192,7 +196,12 @@ fun PieChart(
                     //  if percentage is less than 5 width of slice will be very small
                     if (pieChartConfig.showSliceLabels && proportions[index] >= MINIMUM_PERCENTAGE_FOR_SLICE_LABELS) {
 
-                        val (arcCenter, x, y) = getSliceCenterPoints(sAngle, arcProgress, size, padding)
+                        val (arcCenter, x, y) = getSliceCenterPoints(
+                            sAngle,
+                            arcProgress,
+                            size,
+                            padding
+                        )
 
                         // find the height of text
                         val height = pieChartData.slices[index].label.getTextHeight(sliceLabelPaint)

@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         gradlePluginPortal()
         google()
@@ -10,6 +11,12 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven("https://kotlin.bintray.com/kotlinx")
+    }
+    versionCatalogs {
+        create("versionCatalogLibs") {
+            from(files("./gradle/libs.versions.toml"))
+        }
     }
 }
 rootProject.name = "YCharts"

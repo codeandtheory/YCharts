@@ -2,5 +2,120 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:base"
+  ],
+  "baseBranches": [
+    "main"
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "org.jetbrains.kotlin:kotlin-gradle-plugin",
+        "org.jetbrains.kotlin:kotlin-android-extensions",
+        "org.jetbrains.kotlin:kotlin-stdlib-common",
+        "org.jetbrains.kotlin.android",
+        "org.jetbrains.kotlin.jvm"
+      ],
+      "groupName": "kotlin",
+      "schedule": [
+        "on the first day of the month"
+      ]
+    },   {
+      "matchPackageNames": [
+        "com.android.application",
+        "com.android.library",
+        "com.android.tools.build:gradle"
+      ],
+      "groupName": "android",
+      "schedule": [
+        "on the first day of the month"
+      ]
+    },
+    {
+      "matchPackageNames": [
+        "androidx.core:core-ktx",
+        "androidx.lifecycle:lifecycle-runtime-ktx",
+        "androidx.navigation:navigation-testing",
+        "androidx.lifecycle:lifecycle-viewmodel-ktx",
+        "androidx.core:core-ktx",
+        "androidx.appcompat:appcompat"
+      ],
+      "groupName": "androidx",
+      "schedule": [
+        "on the first day of the month"
+      ]
+    }, {
+      "matchPackageNames": [
+        "androidx.activity:activity-compose",
+        "androidx.compose:compose-bom",
+        "androidx.compose.foundation",
+        "androidx.compose.ui:ui-test-manifest",
+        "androidx.compose.ui:ui-util",
+        "androidx.compose.ui:ui-tooling",
+        "androidx.compose.ui:ui-tooling-preview",
+        "androidx.compose.ui:ui-test-junit4",
+        "androidx.compose.material",
+        "androidx.compose.material3",
+        "androidx.compose.material3:material3-window-size-class",
+        "androidx.compose.runtime:runtime",
+        "androidx.compose.runtime:runtime-livedata",
+        "androidx.navigation:navigation-compose",
+        "androidx.lifecycle:lifecycle-viewmodel-compose"
+      ],
+      "groupName": "androidxCompose",
+      "schedule": [
+        "on the first day of the month"
+      ]
+    },
+    {
+      "matchPackageNames": [
+        "org.jetbrains.kotlin:kotlin-test-common",
+        "com.android.test",
+        "androidx.test:runner",
+        "androidx.test:core",
+        "androidx.test:core-ktx",
+        "androidx.test.espresso:espresso-core",
+        "androidx.test.ext:junit",
+        "androidx.test.ext:junit-ktx",
+        "androidx.test:rules",
+        "androidx.test:monitor",
+        "io.mockk:mockk-android",
+        "androidx.annotation:annotation",
+        "org.junit.jupiter:junit-jupiter"
+      ],
+      "groupName": "test",
+      "schedule": [
+        "on the first day of the month"
+      ]
+    },    {
+      "matchPackageNames": [
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-android",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-test",
+        "app.cash.turbine:turbine",
+        "androidx.test:core-ktx"
+      ],
+      "groupName": "coroutine",
+      "schedule": [
+        "on the first day of the month"
+      ]
+    } ,{
+      "matchPackageNames": [
+        "org.jlleitschuh.gradle.ktlint",
+        "org.jetbrains.dokka",
+        "org.sonarqube",
+        "org.jetbrains.dokka:dokka-gradle-plugin",
+        "androidx.test:core-ktx"
+      ],
+      "groupName": "others",
+      "schedule": [
+        "on the first day of the month"
+      ]
+    }
+  ],
+  "ignoreDeps": [
+    "org.jetbrains.kotlin:kotlin-gradle-plugin",
+    "androidx.annotation:annotation",
+    "androidx.test.core-ktx",
+    "androidx.test.core"
   ]
 }
