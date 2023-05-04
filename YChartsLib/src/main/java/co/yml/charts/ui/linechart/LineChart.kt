@@ -247,7 +247,8 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                     modifier = Modifier.fillMaxSize(),
                     backgroundColor = Color.White,
                     content = {
-                        val linePoints = linePlotData.lines.firstOrNull()?.dataPoints
+                        val linePoints: List<Point> = linePlotData.lines.flatMap { line -> line.dataPoints.map { it } }
+                        val lineColors: List<Color> = linePlotData.lines.map { line -> line.lineStyle.color }
                         LazyColumn {
                             items(linePoints?.size ?: 0) { index ->
                                 Column {
@@ -257,9 +258,8 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                                                 index
                                             )
                                         ),
-                                        linePoints?.get(index)?.description ?: "",
-                                        linePlotData.lines.firstOrNull()?.lineStyle?.color
-                                            ?: Color.Transparent
+                                        linePoints[index].description ?: "",
+                                        lineColors[index]
                                     )
                                     ItemDivider(
                                         thickness = accessibilityConfig.dividerThickness,
