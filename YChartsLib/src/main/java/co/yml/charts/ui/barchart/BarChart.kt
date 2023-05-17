@@ -6,10 +6,25 @@ package co.yml.charts.ui.barchart
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ModalBottomSheetState
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,10 +46,22 @@ import co.yml.charts.chartcontainer.container.ScrollableCanvasContainer
 import co.yml.charts.common.components.ItemDivider
 import co.yml.charts.common.components.accessibility.AccessibilityBottomSheetDialog
 import co.yml.charts.common.components.accessibility.BarInfo
-import co.yml.charts.common.extensions.*
+import co.yml.charts.common.extensions.ColumnClip
+import co.yml.charts.common.extensions.RowClip
+import co.yml.charts.common.extensions.collectIsTalkbackEnabledAsState
+import co.yml.charts.common.extensions.getMaxElementInXAxis
+import co.yml.charts.common.extensions.getMaxElementInYAxis
+import co.yml.charts.common.extensions.getXMaxAndMinPoints
+import co.yml.charts.common.extensions.getYMaxAndMinPoints
+import co.yml.charts.common.extensions.isTapped
+import co.yml.charts.common.extensions.isYAxisTapped
 import co.yml.charts.common.model.Point
 import co.yml.charts.common.utils.ChartConstants.DEFAULT_YAXIS_BOTTOM_PADDING
-import co.yml.charts.ui.barchart.models.*
+import co.yml.charts.ui.barchart.models.BarChartData
+import co.yml.charts.ui.barchart.models.BarChartType
+import co.yml.charts.ui.barchart.models.BarData
+import co.yml.charts.ui.barchart.models.BarStyle
+import co.yml.charts.ui.barchart.models.SelectionHighlightData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -145,7 +172,7 @@ fun VerticalBarChart(
         var rowHeight by remember { mutableStateOf(0f) }
         val paddingRight = paddingEnd
         val points = chartData.map { it.point }
-        val bgColor = MaterialTheme.colors.surface
+        val bgColor = MaterialTheme.colorScheme.surface
 
         val (xMin, xMax) = getXMaxAndMinPoints(points)
         val (_, yMax) = getYMaxAndMinPoints(points)
@@ -315,7 +342,7 @@ fun HorizontalBarChart(
         var horizontalGap by remember { mutableStateOf(0f) }
         var rowHeight by remember { mutableStateOf(0f) }
         val points = chartData.map { it.point }
-        val bgColor = MaterialTheme.colors.surface
+        val bgColor = MaterialTheme.colorScheme.surface
 
         val (_, xMax) = getXMaxAndMinPoints(points)
         val (yMin, yMax) = getYMaxAndMinPoints(points)
