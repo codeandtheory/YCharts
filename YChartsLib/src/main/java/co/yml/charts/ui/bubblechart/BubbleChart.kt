@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterialApi::class)
 
-package co.yml.charts.ui.linechart
+package co.yml.charts.ui.bubblechart
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
@@ -27,7 +27,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.DrawStyle
@@ -50,11 +49,15 @@ import co.yml.charts.common.extensions.collectIsTalkbackEnabledAsState
 import co.yml.charts.common.extensions.drawGridLines
 import co.yml.charts.common.extensions.isNotNull
 import co.yml.charts.common.model.Point
+import co.yml.charts.ui.bubblechart.model.Bubble
+import co.yml.charts.ui.bubblechart.model.BubbleChartData
+import co.yml.charts.ui.bubblechart.model.BubbleStyle
+import co.yml.charts.ui.bubblechart.model.BubbleType
+import co.yml.charts.ui.linechart.getMaxElementInYAxis
+import co.yml.charts.ui.linechart.getYAxisScale
+import co.yml.charts.ui.linechart.isTapped
 import co.yml.charts.ui.linechart.model.IntersectionPoint
-import co.yml.charts.ui.linechart.model.Line
 import co.yml.charts.ui.linechart.model.LineChartData
-import co.yml.charts.ui.linechart.model.LineStyle
-import co.yml.charts.ui.linechart.model.LineType
 import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 import kotlinx.coroutines.launch
@@ -66,14 +69,15 @@ import kotlinx.coroutines.launch
  * Data class [LineChartData] to save all params needed to draw the line chart.
  * @param lineChartData : Add data related to line chart.
  */
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
+fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
     val accessibilitySheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
     val isTalkBackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
     if (accessibilitySheetState.isVisible && isTalkBackEnabled
-        && lineChartData.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
+        && bubbleChartData.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
     ) {
         BackHandler {
             scope.launch {
@@ -82,7 +86,7 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
         }
     }
     Surface(modifier = modifier) {
-        with(lineChartData) {
+        with(bubbleChartData) {
             var columnWidth by remember { mutableStateOf(0f) }
             var rowHeight by remember { mutableStateOf(0f) }
             var xOffset by remember { mutableStateOf(0f) }
@@ -92,10 +96,10 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
             var selectionTextVisibility by remember { mutableStateOf(false) }
             var identifiedPoint by remember { mutableStateOf(Point(0f, 0f)) }
             // Update must required values
-            val linePoints: List<Point> = linePlotData.lines.flatMap { line -> line.dataPoints.map { it } }
+            val bubblePoints: List<Point> = bubblePlotData.bubbles.flatMap { bubble -> bubble.dataPoints.map { it } }
 
-            val (xMin, xMax, xAxisScale) = getXAxisScale(linePoints, xAxisData.steps)
-                val (yMin, _, yAxisScale) = getYAxisScale(linePoints, yAxisData.steps)
+            val (xMin, xMax, xAxisScale) = getXAxisScale(bubblePoints, xAxisData.steps)
+                val (yMin, _, yAxisScale) = getYAxisScale(bubblePoints, yAxisData.steps)
                 val maxElementInYAxis = getMaxElementInYAxis(yAxisScale, yAxisData.steps)
                 val xAxisData = xAxisData.copy(axisBottomPadding = bottomPadding)
             val yAxisData = yAxisData.copy(
@@ -105,7 +109,7 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
 
             ScrollableCanvasContainer(modifier = modifier
                 .semantics {
-                    contentDescription = lineChartData.accessibilityConfig.chartDescription
+                    contentDescription = bubbleChartData.accessibilityConfig.chartDescription
                 }
                 .clickable {
                     if (isTalkBackEnabled) {
@@ -152,10 +156,10 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                         xStart = columnWidth,
                         scrollOffset = scrollOffset,
                         zoomScale = xZoom,
-                        chartData = linePoints)
+                        chartData = bubblePoints)
                 },
                 onDraw = { scrollOffset, xZoom ->
-                    linePlotData.lines.forEach {  line->
+                    bubblePlotData.bubbles.forEach { line->
                     val yBottom = size.height - rowHeight
                     val yOffset = ((yBottom - paddingTop.toPx()) / maxElementInYAxis)
                     xOffset = xAxisData.axisStepSize.toPx() * xZoom
@@ -183,16 +187,9 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                         )
                     }
 
-                    // Draw cubic line using the points and form a line graph
-                    val cubicPath = drawStraightOrCubicLine(
-                        pointsData, cubicPoints1, cubicPoints2, line.lineStyle
-                    )
-
                     // Draw Lines and Points and AreaUnderLine
                     // Draw area under curve
-                    drawShadowUnderLineAndIntersectionPoint(
-                        cubicPath, pointsData, yBottom, line
-                    )
+                    drawShadowUnderLineAndIntersectionPoint(pointsData, yBottom, line)
 
                     // Draw column to make graph look scrollable under Yaxis
                     drawUnderScrollMask(columnWidth, paddingRight, bgColor)
@@ -242,12 +239,12 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
 
         }
         if (isTalkBackEnabled) {
-            with(lineChartData) {
+            with(bubbleChartData) {
                 AccessibilityBottomSheetDialog(
                     modifier = Modifier.fillMaxSize(),
                     backgroundColor = Color.White,
                     content = {
-                        val linePoints = linePlotData.lines.firstOrNull()?.dataPoints
+                        val linePoints = bubblePlotData.bubbles.firstOrNull()?.dataPoints
                         LazyColumn {
                             items(linePoints?.size ?: 0) { index ->
                                 Column {
@@ -258,7 +255,7 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                                             )
                                         ),
                                         linePoints?.get(index)?.description ?: "",
-                                        linePlotData.lines.firstOrNull()?.lineStyle?.color
+                                        bubblePlotData.bubbles.firstOrNull()?.bubbleStyle?.color
                                             ?: Color.Transparent
                                     )
                                     ItemDivider(
@@ -342,62 +339,50 @@ fun getMaxScrollDistance(
  * @param pointsData : List of points to be drawn on the canvas
  * @param cubicPoints1 : List of average left side values for a given Point(x,y).
  * @param cubicPoints2 : List of average right side values for a given Point(x,y).
- * @param lineStyle : All styles related to the path are included in [LineStyle].
+ * @param bubbleStyle : All styles related to the path are included in [LineStyle].
  */
 fun DrawScope.drawStraightOrCubicLine(
     pointsData: MutableList<Offset>,
     cubicPoints1: MutableList<Offset>,
     cubicPoints2: MutableList<Offset>,
-    lineStyle: LineStyle
-): Path {
-    val path = Path()
-    path.moveTo(pointsData.first().x, pointsData.first().y)
+    bubbleStyle: BubbleStyle
+) {
     for (i in 1 until pointsData.size) {
-        when (lineStyle.lineType) {
-            is LineType.Straight -> {
-                path.lineTo(pointsData[i].x, pointsData[i].y)
+        if(i%2==0) {
+            with(bubbleStyle) {
+                drawCircle(
+                    color = color,
+                    alpha = alpha, colorFilter = colorFilter, blendMode = blendMode, radius = 12f
+                )
             }
-            is LineType.SmoothCurve -> {
-                path.cubicTo(
-                    cubicPoints1[i - 1].x,
-                    cubicPoints1[i - 1].y,
-                    cubicPoints2[i - 1].x,
-                    cubicPoints2[i - 1].y,
-                    pointsData[i].x,
-                    pointsData[i].y
+        }else{
+            with(bubbleStyle) {
+                drawCircle(
+                    color = color,
+                    alpha = alpha, colorFilter = colorFilter, blendMode = blendMode, radius = 6f
                 )
             }
         }
     }
-    with(lineStyle) {
-        drawPath(
-            path,
-            color = color,
-            style = getDrawStyleForPath(lineStyle.lineType, lineStyle),
-            alpha = alpha,
-            colorFilter = colorFilter,
-            blendMode = blendMode
-        )
-    }
-    return path
+
 }
 
 /**
  *
  * Returns the Drawstyle for the path.
- * @param lineType : Type of the line [LineType]
- * @param lineStyle : The style for the path [lineStyle]
+ * @param bubbleType : Type of the bubble [bubbleType]
+ * @param bubbleStyle : The style for the path [bubbleStyle]
  */
 private fun getDrawStyleForPath(
-    lineType: LineType, lineStyle: LineStyle
-): DrawStyle = if (lineType.isDotted) Stroke(
-    width = lineStyle.width, pathEffect = PathEffect.dashPathEffect(lineType.intervals)
-) else lineStyle.style
+    bubbleType: BubbleType, bubbleStyle: BubbleStyle
+): DrawStyle = if (bubbleType.isDotted) Stroke(
+    width = bubbleStyle.width, pathEffect = PathEffect.dashPathEffect(bubbleType.intervals)
+) else bubbleStyle.style
 
 
 /**
  *
- * DrawScope.drawPointOnLine extension method  used for drawing a circle/mark on a line for a given Point(x,y).
+ * DrawScope.drawPointOnbubble extension method  used for drawing a circle/mark on a bubble for a given Point(x,y).
  * @param offset : Point at which circle/mark has to be drawn.
  */
 private fun DrawScope.drawPointOnLine(offset: Offset, intersectionPoint: IntersectionPoint?) {
@@ -431,17 +416,10 @@ private fun DrawScope.drawUnderScrollMask(columnWidth: Float, paddingRight: Dp, 
  * @param yBottom : Offset of X-Axis starting position i.e shade to be drawn until.
  * @param line : line on which shadow & intersectionPoints has to be drawn.
  */
-fun DrawScope.drawShadowUnderLineAndIntersectionPoint(
-    cubicPath: Path, pointsData: MutableList<Offset>, yBottom: Float, line: Line
-) {
-    if (line.shadowUnderLine.isNotNull()) {
-        cubicPath.lineTo(pointsData.last().x, yBottom)
-        cubicPath.lineTo(pointsData.first().x, yBottom)
-        line.shadowUnderLine?.draw?.let { it(this, cubicPath) }
-    }
-    if (line.intersectionPoint.isNotNull()) {
+fun DrawScope.drawShadowUnderLineAndIntersectionPoint( pointsData: MutableList<Offset>, yBottom: Float, bubble: Bubble) {
+    if (bubble.intersectionPoint.isNotNull()) {
         pointsData.forEach { offset ->
-            drawPointOnLine(offset, line.intersectionPoint)
+            drawPointOnLine(offset, bubble.intersectionPoint)
         }
     }
 }

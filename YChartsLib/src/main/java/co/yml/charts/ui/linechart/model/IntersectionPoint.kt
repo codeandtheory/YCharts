@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
  */
 data class IntersectionPoint(
     val color: Color = Color.Black,
-    val radius: Dp = 6.dp,
+    val radius: Dp = 26.dp,
     val alpha: Float = 1.0f,
     val style: DrawStyle = Fill,
     val colorFilter: ColorFilter? = null,

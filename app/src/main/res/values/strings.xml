@@ -25,5 +25,7 @@
     <string name="multiple_donuts">Multiple Donutcharts</string>
     <string name="simple_piechart">Simple Piechart</string>
     <string name="piechart_with_lables">"Piechart with slice-labels "</string>
+    <string name="title_activity_bubble_chart">Bubble Chart</string>
+    <string name="bubble_chart">Bubblechart</string>
 
 </resources>

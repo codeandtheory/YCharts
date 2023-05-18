@@ -1,4 +1,4 @@
-package co.yml.charts.ui.linechart.model
+package co.yml.charts.ui.bubblechart.model
 
 import co.yml.charts.common.model.PlotData
 import co.yml.charts.common.model.PlotType
@@ -8,12 +8,12 @@ import co.yml.charts.common.model.PlotType
  * @param plotType : Defines the type of plot/graph
  * @param lines : Data related to the list of lines to be drawn.
  */
-data class LinePlotData(
+data class BubblePlotData(
     override val plotType: PlotType = PlotType.Line,
-    val lines: List<Line>
+    val bubbles: List<Bubble>
 ) : PlotData {
     companion object {
         fun default() =
-            LinePlotData(lines = listOf())
+            BubblePlotData(bubbles = listOf())
     }
 }

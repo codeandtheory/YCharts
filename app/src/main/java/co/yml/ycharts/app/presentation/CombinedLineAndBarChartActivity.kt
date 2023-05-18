@@ -25,15 +25,15 @@ import co.yml.charts.ui.barchart.models.BarPlotData
 import co.yml.charts.ui.barchart.models.BarStyle
 import co.yml.charts.ui.combinedchart.CombinedChart
 import co.yml.charts.ui.combinedchart.model.CombinedChartData
+import co.yml.charts.common.components.Legends
+import co.yml.charts.common.model.LegendsConfig
+import co.yml.charts.common.utils.DataUtils
 import co.yml.charts.ui.linechart.model.IntersectionPoint
 import co.yml.charts.ui.linechart.model.Line
 import co.yml.charts.ui.linechart.model.LinePlotData
 import co.yml.charts.ui.linechart.model.LineStyle
 import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
-import co.yml.charts.common.components.Legends
-import co.yml.charts.common.model.LegendsConfig
-import co.yml.charts.common.utils.DataUtils
 import co.yml.ycharts.app.R
 
 /**

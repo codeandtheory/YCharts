@@ -53,7 +53,6 @@ import co.yml.charts.ui.linechart.drawShadowUnderLineAndIntersectionPoint
 import co.yml.charts.ui.linechart.drawStraightOrCubicLine
 import co.yml.charts.ui.linechart.getCubicPoints
 import co.yml.charts.ui.linechart.getMappingPointsToGraph
-import co.yml.charts.ui.linechart.model.LinePlotData
 import co.yml.charts.common.components.ItemDivider
 import co.yml.charts.common.components.accessibility.AccessibilityBottomSheetDialog
 import co.yml.charts.common.components.accessibility.CombinedChartInfo
@@ -66,6 +65,7 @@ import co.yml.charts.common.extensions.isTapped
 import co.yml.charts.common.model.PlotData
 import co.yml.charts.common.model.PlotType
 import co.yml.charts.common.model.Point
+import co.yml.charts.ui.linechart.model.LinePlotData
 import kotlinx.coroutines.launch
 
 /**
