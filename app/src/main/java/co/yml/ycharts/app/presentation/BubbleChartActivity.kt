@@ -16,9 +16,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.ColorUtils
 import co.yml.charts.axis.AxisData
 import co.yml.charts.common.extensions.formatToSinglePrecision
 import co.yml.charts.common.model.Point
@@ -27,6 +29,7 @@ import co.yml.charts.ui.bubblechart.BubbleChart
 import co.yml.charts.ui.bubblechart.model.Bubble
 import co.yml.charts.ui.bubblechart.model.BubbleChartData
 import co.yml.charts.ui.bubblechart.model.BubblePlotData
+import co.yml.charts.ui.bubblechart.model.BubblePoint
 import co.yml.charts.ui.bubblechart.model.BubbleStyle
 import co.yml.charts.ui.linechart.model.GridLines
 import co.yml.charts.ui.linechart.model.IntersectionPoint
@@ -51,7 +54,7 @@ class BubbleChartActivity : ComponentActivity() {
                     backgroundColor = YChartsTheme.colors.background,
                     topBar = {
                         AppBarWithBackButton(
-                            stringResource(id = R.string.title_line_chart),
+                            stringResource(id = R.string.bubble_chart),
                             onBackPressed = {
                                 onBackPressed()
                             })
@@ -117,17 +120,13 @@ private fun BubbleChartWithGrid(pointsData: List<Point>) {
         bubblePlotData = BubblePlotData(
             bubbles = listOf(
                 Bubble(
-                    dataPoints = DataUtils.getLineChartData(
-                        20,
-                        start = 0,
-                        maxRange = 50
-                    ),
-                    BubbleStyle(),
-                    IntersectionPoint(),
-                    SelectionHighlightPoint(),
-                    ShadowUnderLine(),
-                    SelectionHighlightPopUp()
-                )
+                    dataPoint = DataUtils.getBubbleChartData(start = 0, maxRange = 50),
+                    density = (0 until 20).random().toFloat(),
+                    bubbleStyle = BubbleStyle(color = Color.LightGray),
+                    selectionHighlightPoint = SelectionHighlightPoint(),
+                   selectionHighlightPopUp =  SelectionHighlightPopUp(),
+                    intersectionPoint = BubblePoint(),
+                    )
             )
         ),
         xAxisData = xAxisData,

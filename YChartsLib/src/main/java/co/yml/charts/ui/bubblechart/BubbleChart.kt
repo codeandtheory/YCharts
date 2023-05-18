@@ -51,12 +51,12 @@ import co.yml.charts.common.extensions.isNotNull
 import co.yml.charts.common.model.Point
 import co.yml.charts.ui.bubblechart.model.Bubble
 import co.yml.charts.ui.bubblechart.model.BubbleChartData
+import co.yml.charts.ui.bubblechart.model.BubblePoint
 import co.yml.charts.ui.bubblechart.model.BubbleStyle
 import co.yml.charts.ui.bubblechart.model.BubbleType
 import co.yml.charts.ui.linechart.getMaxElementInYAxis
 import co.yml.charts.ui.linechart.getYAxisScale
 import co.yml.charts.ui.linechart.isTapped
-import co.yml.charts.ui.linechart.model.IntersectionPoint
 import co.yml.charts.ui.linechart.model.LineChartData
 import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
@@ -95,8 +95,8 @@ fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
             var tapOffset by remember { mutableStateOf(Offset(0f, 0f)) }
             var selectionTextVisibility by remember { mutableStateOf(false) }
             var identifiedPoint by remember { mutableStateOf(Point(0f, 0f)) }
-            // Update must required values
-            val bubblePoints: List<Point> = bubblePlotData.bubbles.flatMap { bubble -> bubble.dataPoints.map { it } }
+
+            val bubblePoints: List<Point> = bubblePlotData.bubbles.map { bubble -> bubble.dataPoint}
 
             val (xMin, xMax, xAxisScale) = getXAxisScale(bubblePoints, xAxisData.steps)
                 val (yMin, _, yAxisScale) = getYAxisScale(bubblePoints, yAxisData.steps)
@@ -159,13 +159,13 @@ fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
                         chartData = bubblePoints)
                 },
                 onDraw = { scrollOffset, xZoom ->
-                    bubblePlotData.bubbles.forEach { line->
+                    bubblePlotData.bubbles.forEach { bubble->
                     val yBottom = size.height - rowHeight
                     val yOffset = ((yBottom - paddingTop.toPx()) / maxElementInYAxis)
                     xOffset = xAxisData.axisStepSize.toPx() * xZoom
                     val xLeft = columnWidth // To add extra space if needed
                     val pointsData = getMappingPointsToGraph(
-                        line.dataPoints, xMin, xOffset, xLeft, scrollOffset, yBottom, yMin, yOffset
+                        listOf(bubble.dataPoint), xMin, xOffset, xLeft, scrollOffset, yBottom, yMin, yOffset
                     )
                     val (cubicPoints1, cubicPoints2) = getCubicPoints(pointsData)
                     val tapPointLocks = mutableMapOf<Int, Pair<Point, Offset>>()
@@ -186,18 +186,25 @@ fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
                             it
                         )
                     }
-
-                    // Draw Lines and Points and AreaUnderLine
-                    // Draw area under curve
-                    drawShadowUnderLineAndIntersectionPoint(pointsData, yBottom, line)
+//                        val pointsData = co.yml.charts.ui.linechart.getMappingPointsToGraph(
+//                            line.dataPoints,
+//                            xMin,
+//                            xOffset,
+//                            xLeft,
+//                            scrollOffset,
+//                            yBottom,
+//                            yMin,
+//                            yOffset
+//                        )
 
                     // Draw column to make graph look scrollable under Yaxis
                     drawUnderScrollMask(columnWidth, paddingRight, bgColor)
 
                     pointsData.forEachIndexed { index, point ->
+                        bubble.draw(this,point)
                         if (isTapped && point.isTapped(tapOffset.x, xOffset)) {
                             // Dealing with only one line graph hence tapPointLocks[0]
-                            tapPointLocks[0] = line.dataPoints[index] to point
+                            tapPointLocks[0] = Pair(bubble.dataPoint,tapOffset)
                         }
                     }
 
@@ -206,7 +213,7 @@ fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
                         drawHighlightText(
                             identifiedPoint,
                             selectedOffset ?: Offset(0f, 0f),
-                            line.selectionHighlightPopUp
+                            bubble.selectionHighlightPopUp
                         )
                     }
                     if (isTapped) {
@@ -218,7 +225,7 @@ fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
                             columnWidth,
                             paddingRight,
                             yBottom,
-                            line.selectionHighlightPoint
+                            bubble.selectionHighlightPoint
                         )
                     }
                 }
@@ -244,17 +251,17 @@ fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
                     modifier = Modifier.fillMaxSize(),
                     backgroundColor = Color.White,
                     content = {
-                        val linePoints = bubblePlotData.bubbles.firstOrNull()?.dataPoints
+                        val dataPoint = bubblePlotData.bubbles.firstOrNull()?.dataPoint
                         LazyColumn {
-                            items(linePoints?.size ?: 0) { index ->
+                            item {
                                 Column {
                                     LinePointInfo(
                                         xAxisData.axisLabelDescription(
                                             xAxisData.labelData(
-                                                index
+                                                dataPoint?.x?.toInt() ?: 0
                                             )
                                         ),
-                                        linePoints?.get(index)?.description ?: "",
+                                        dataPoint?.description ?: "",
                                         bubblePlotData.bubbles.firstOrNull()?.bubbleStyle?.color
                                             ?: Color.Transparent
                                     )
@@ -385,7 +392,7 @@ private fun getDrawStyleForPath(
  * DrawScope.drawPointOnbubble extension method  used for drawing a circle/mark on a bubble for a given Point(x,y).
  * @param offset : Point at which circle/mark has to be drawn.
  */
-private fun DrawScope.drawPointOnLine(offset: Offset, intersectionPoint: IntersectionPoint?) {
+private fun DrawScope.drawPointOnLine(offset: Offset, intersectionPoint: BubblePoint?) {
     intersectionPoint?.draw?.let { it(this, offset) }
 }
 
@@ -416,11 +423,9 @@ private fun DrawScope.drawUnderScrollMask(columnWidth: Float, paddingRight: Dp, 
  * @param yBottom : Offset of X-Axis starting position i.e shade to be drawn until.
  * @param line : line on which shadow & intersectionPoints has to be drawn.
  */
-fun DrawScope.drawShadowUnderLineAndIntersectionPoint( pointsData: MutableList<Offset>, yBottom: Float, bubble: Bubble) {
-    if (bubble.intersectionPoint.isNotNull()) {
-        pointsData.forEach { offset ->
-            drawPointOnLine(offset, bubble.intersectionPoint)
-        }
+fun DrawScope.drawBubble( bubble: Bubble) {
+    with(bubble){
+        drawCircle(color = bubbleStyle.color, radius = density,)
     }
 }
 

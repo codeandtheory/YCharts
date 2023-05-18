@@ -32,6 +32,14 @@ object DataUtils {
         return list
     }
 
+
+    fun getBubbleChartData(start: Int = 0, maxRange: Int): Point {
+        return  Point(
+            (start until maxRange).random().toFloat(),
+            (start until maxRange).random().toFloat()
+        )
+    }
+
     /**
      * Return the sample bar chart data
      * @param listSize Size of the list

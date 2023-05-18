@@ -1,4 +1,4 @@
-package co.yml.charts.ui.linechart.model
+package co.yml.charts.ui.bubblechart.model
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
@@ -23,9 +23,9 @@ import androidx.compose.ui.unit.dp
  * @param draw override this to change the default drawCircle implementation. You are provided
  * with the actual [Point] that represents the intersection.
  */
-data class IntersectionPoint(
+data class BubblePoint(
     val color: Color = Color.Black,
-    val radius: Dp = 6.dp,
+    val radius: Dp = 26.dp,
     val alpha: Float = 1.0f,
     val style: DrawStyle = Fill,
     val colorFilter: ColorFilter? = null,

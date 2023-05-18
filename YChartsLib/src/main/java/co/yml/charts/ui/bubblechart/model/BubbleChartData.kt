@@ -1,6 +1,8 @@
 package co.yml.charts.ui.bubblechart.model
 
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import co.yml.charts.axis.AxisData
@@ -14,19 +16,20 @@ import co.yml.charts.ui.linechart.model.ShadowUnderLine
 
 
 /**
+ * Bubble chart data
  *
- * LineGraphData data class that contains all params user need to define to draw a line graph.
- * @param bubblePlotData: The path to be drawn on the graph represented by a line.
- * @param xAxisData: All the configurations related to X-Axis to be defined here in [AxisData]
- * @param yAxisData: All the configurations related to Y-Axis to be defined here in [AxisData]
- * @param isZoomAllowed: True if zoom in for all vertical graph components is allowed else false.
- * @param paddingTop: Padding from the top of the canvas to start of the graph container.
- * @param paddingRight: Padding from the end of the canvas to end of the graph container.
- * @param bottomPadding: Padding from the bottom of the canvas to bottom of the graph container.
- * @param containerPaddingEnd: Container inside padding end after the last point of the graph.
- * @param backgroundColor: Background color of the Y & X components,
- * @param gridLines: This enables graph to draw horizontal and vertical grid lines
- * @param accessibilityConfig: Configs related to accessibility service defined here in [AccessibilityConfig]
+ * @property bubblePlotData
+ * @property xAxisData
+ * @property yAxisData
+ * @property isZoomAllowed
+ * @property paddingTop
+ * @property bottomPadding
+ * @property paddingRight
+ * @property containerPaddingEnd
+ * @property backgroundColor
+ * @property gridLines
+ * @property accessibilityConfig
+ * @constructor Create empty Bubble chart data
  */
 data class BubbleChartData(
     val bubblePlotData: BubblePlotData,
@@ -43,22 +46,32 @@ data class BubbleChartData(
 )
 
 /**
- * Represent a Line in the [co.yml.charts.ui.linechart]
+ * Bubble
  *
- * @param dataPoints list of points [Point] in the line
- * @param bubbleStyle Adds styling options in [LineStyle] to the line path drawn.
- * @param intersectionPoint drawing logic to draw the point itself in [IntersectionPoint].
- * If null, the point is not drawn.
- * @param selectionHighlightPoint drawing logic to draw the highlight at the point when it is selected
- * in [SelectionHighlightPoint] If null, the point won't be highlighted on selection
- * @param shadowUnderLine drawing logic for the section under the line in [ShadowUnderLine].
- * @param selectionHighlightPopUp All prams related to selection popup to be added here in [SelectionHighlightPopUp]
+ * @property dataPoint
+ * @property density
+ * @property bubbleStyle
+ * @property intersectionPoint
+ * @property selectionHighlightPoint
+ * @property selectionHighlightPopUp
+ * @constructor Create empty Bubble
  */
 data class Bubble(
-    val dataPoints: List<Point>,
+    val dataPoint: Point,
+    val density: Float,
     val bubbleStyle: BubbleStyle = BubbleStyle(),
-    val intersectionPoint: IntersectionPoint? = null,
+    val intersectionPoint: BubblePoint? = null,
     val selectionHighlightPoint: SelectionHighlightPoint? = null,
-    val shadowUnderLine: ShadowUnderLine? = null,
-    val selectionHighlightPopUp: SelectionHighlightPopUp? = null
+    val selectionHighlightPopUp: SelectionHighlightPopUp? = null,
+    val draw: DrawScope.(Offset) -> Unit = { center ->
+        drawCircle(
+            bubbleStyle.color,
+            density.dp.toPx(),
+            center,
+            bubbleStyle.alpha,
+            bubbleStyle.style,
+            bubbleStyle.colorFilter,
+            bubbleStyle.blendMode
+        )
+    }
 )
