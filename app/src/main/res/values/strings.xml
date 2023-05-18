@@ -30,5 +30,8 @@
     <string name="horizontal_bar_chart">Horizontal Barchart</string>
     <string name="grouped_bar_chart">Grouped Barchart</string>
     <string name="stacked_barchart">Stacked Barchart</string>
+    <string name="simple_wave_chart">Simple Wave Chart</string>
+    <string name="sine_wave_chart">Sine-Wave Chart</string>
+    <string name="amplitude_wave_chart">Amplitude Wave Chart</string>
 
 </resources>

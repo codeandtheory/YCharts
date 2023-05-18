@@ -6,7 +6,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,6 +16,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import co.yml.charts.axis.AxisData
 import co.yml.charts.common.extensions.formatToSinglePrecision
@@ -54,6 +57,12 @@ class WaveChartActivity : ComponentActivity() {
                             items(3) { item ->
                                 when (item) {
                                     0 -> {
+                                        Text(
+                                            modifier = Modifier.padding(12.dp),
+                                            text = getString(R.string.simple_wave_chart),
+                                            style = MaterialTheme.typography.subtitle1,
+                                            fontWeight = FontWeight.Bold
+                                        )
                                         WaveGraph1(
                                             DataUtils.getWaveChartData(
                                                 15.0,
@@ -62,21 +71,38 @@ class WaveChartActivity : ComponentActivity() {
                                             )
                                         )
                                     }
-                                    1 -> WaveGraph2(
-                                        DataUtils.getWaveChartData(
-                                            15.0,
-                                            50.0,
-                                            0.2
-                                        )
-                                    )
 
-                                    2 -> WaveGraph3(
-                                        DataUtils.getWaveChartData(
-                                            20.0,
-                                            5.0,
-                                            1.0
+                                    1 -> {
+                                        Text(
+                                            modifier=Modifier.padding(12.dp),
+                                            text = getString(R.string.sine_wave_chart),
+                                            style = MaterialTheme.typography.subtitle1,
+                                            fontWeight = FontWeight.Bold
                                         )
-                                    )
+                                        WaveGraph2(
+                                            DataUtils.getWaveChartData(
+                                                15.0,
+                                                50.0,
+                                                0.2
+                                            )
+                                        )
+                                    }
+
+                                    2 -> {
+                                        Text(
+                                            modifier = Modifier.padding(12.dp),
+                                            text = getString(R.string.amplitude_wave_chart),
+                                            style = MaterialTheme.typography.subtitle1,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        WaveGraph3(
+                                            DataUtils.getWaveChartData(
+                                                20.0,
+                                                5.0,
+                                                1.0
+                                            )
+                                        )
+                                    }
                                 }
                             }
                         })
