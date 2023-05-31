@@ -25,4 +25,4 @@ jobs:
     - name: Clean Gradle
       run: ./gradlew clean
     - name: Build with Gradle
-      run: ./gradlew build --scan 
+      run: ./gradlew build --scan
