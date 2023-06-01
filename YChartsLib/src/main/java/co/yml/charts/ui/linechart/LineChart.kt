@@ -51,6 +51,7 @@ import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 import co.yml.charts.common.components.ItemDivider
 import co.yml.charts.common.components.accessibility.AccessibilityBottomSheetDialog
+import co.yml.charts.common.components.accessibility.CombinedChartInfo
 import co.yml.charts.common.components.accessibility.LinePointInfo
 import co.yml.charts.common.extensions.RowClip
 import co.yml.charts.common.extensions.collectIsTalkbackEnabledAsState
@@ -239,41 +240,42 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                     isTapped = false
                     selectionTextVisibility = false
                 })
-
-        }
-        if (isTalkBackEnabled) {
-            with(lineChartData) {
-                AccessibilityBottomSheetDialog(
-                    modifier = Modifier.fillMaxSize(),
-                    backgroundColor = Color.White,
-                    content = {
-                        val linePoints = linePlotData.lines.firstOrNull()?.dataPoints
-                        LazyColumn {
-                            items(linePoints?.size ?: 0) { index ->
-                                Column {
-                                    LinePointInfo(
-                                        xAxisData.axisLabelDescription(
-                                            xAxisData.labelData(
-                                                index
+            if (isTalkBackEnabled) {
+                    AccessibilityBottomSheetDialog(
+                        modifier = Modifier.fillMaxSize(),
+                        backgroundColor = Color.White,
+                        content = {
+                            LazyColumn {
+                                items(count = linePlotData.lines.size) { lineIndex ->
+                                    linePlotData.lines[lineIndex].dataPoints.forEachIndexed { pointIndex, point ->
+                                        Column {
+                                            LinePointInfo(
+                                                xAxisData.axisLabelDescription(
+                                                    xAxisData.labelData(
+                                                        pointIndex
+                                                    )
+                                                ),
+                                                point.description,
+                                               linePlotData.lines[lineIndex].lineStyle.color
                                             )
-                                        ),
-                                        linePoints?.get(index)?.description ?: "",
-                                        linePlotData.lines.firstOrNull()?.lineStyle?.color
-                                            ?: Color.Transparent
-                                    )
-                                    ItemDivider(
-                                        thickness = accessibilityConfig.dividerThickness,
-                                        dividerColor = accessibilityConfig.dividerColor
-                                    )
+
+                                            ItemDivider(
+                                                thickness = accessibilityConfig.dividerThickness,
+                                                dividerColor = accessibilityConfig.dividerColor
+                                            )
+                                        }
+
+                                    }
                                 }
                             }
-                        }
-                    },
-                    popUpTopRightButtonTitle = accessibilityConfig.popUpTopRightButtonTitle,
-                    popUpTopRightButtonDescription = accessibilityConfig.popUpTopRightButtonDescription,
-                    sheetState = accessibilitySheetState
-                )
+                        },
+                        popUpTopRightButtonTitle = accessibilityConfig.popUpTopRightButtonTitle,
+                        popUpTopRightButtonDescription = accessibilityConfig.popUpTopRightButtonDescription,
+                        sheetState = accessibilitySheetState
+                    )
+
             }
+
         }
     }
 }
