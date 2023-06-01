@@ -22,7 +22,6 @@ import co.yml.charts.common.components.Legends
 import co.yml.charts.common.extensions.getMaxElementInYAxis
 import co.yml.charts.common.model.LegendsConfig
 import co.yml.charts.common.utils.DataUtils
-import co.yml.charts.ui.barchart.BarChart
 import co.yml.charts.ui.barchart.GroupBarChart
 import co.yml.charts.ui.barchart.StackedBarChart
 import co.yml.charts.ui.barchart.models.*
@@ -158,7 +157,7 @@ private fun BarchartWithSolidBars() {
         showXAxis = true,
         horizontalExtraSpace = 10.dp,
     )
-    BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
+//    BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
 }
 
 /**
@@ -199,7 +198,7 @@ private fun BarchartWithGradientBars() {
         showXAxis = true,
         horizontalExtraSpace = 20.dp
     )
-    BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
+//    BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
 }
 
 /**
@@ -243,7 +242,7 @@ private fun BarchartWithBackgroundColor() {
         horizontalExtraSpace = 20.dp,
         backgroundColor = backgroundColor
     )
-    BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
+//    BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
 }
 
 @Composable
@@ -296,7 +295,7 @@ private fun VerticalBarChart() {
             }
         }
     )
-    BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
+//    BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
 }
 
 @Composable
@@ -351,10 +350,10 @@ private fun HorizontalBarChart() {
         horizontalExtraSpace = 20.dp,
         barChartType = BarChartType.HORIZONTAL
     )
-    BarChart(
-        modifier = Modifier.height(350.dp),
-        barChartData = barChartData
-    )
+//    BarChart(
+//        modifier = Modifier.height(350.dp),
+//        barChartData = barChartData
+//    )
 }
 
 @Composable

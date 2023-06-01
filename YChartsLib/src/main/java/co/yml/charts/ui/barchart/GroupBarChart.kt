@@ -462,3 +462,50 @@ private fun DrawScope.drawGroupSeparator(
         blendMode = barGraphData.groupSeparatorConfig.separatorBlendMode
     )
 }
+
+/**
+ *
+ * returns the max scrollable distance based on the points to be drawn along with padding etc.
+ * @param columnWidth : Width of the Y-Axis.
+ * @param xMax : Max X-Axis value.
+ * @param xMin: Min X-Axis value.
+ * @param xOffset: Total distance between two X-Axis points.
+ * @param xLeft: Total Left padding.
+ * @param paddingRight : Padding at the end of the canvas.
+ * @param canvasWidth : Total available canvas width.
+ */
+fun getMaxScrollDistance(
+    columnWidth: Float,
+    xMax: Float,
+    xMin: Float,
+    xOffset: Float,
+    xLeft: Float,
+    paddingRight: Float,
+    canvasWidth: Float
+): Float {
+    val xLastPoint = (xMax - xMin) * xOffset + xLeft + columnWidth + paddingRight
+    return if (xLastPoint > canvasWidth) {
+        xLastPoint - canvasWidth
+    } else 0f
+}
+
+
+/**
+ *
+ * DrawScope.drawUnderScrollMask extension method used  for drawing a rectangular mask to make graph scrollable under the YAxis.
+ * @param columnWidth : Width of the rectangular mask here width of Y Axis is used.
+ * @param paddingRight : Padding given at the end of the graph.
+ * @param bgColor : Background of the rectangular mask.
+ */
+fun DrawScope.drawUnderScrollMask(columnWidth: Float, paddingRight: Dp, bgColor: Color) {
+    // Draw column to make graph look scrollable under Yaxis
+    drawRect(
+        bgColor, Offset(0f, 0f), Size(columnWidth, size.height)
+    )
+    // Draw right padding
+    drawRect(
+        bgColor,
+        Offset(size.width - paddingRight.toPx(), 0f),
+        Size(paddingRight.toPx(), size.height)
+    )
+}
