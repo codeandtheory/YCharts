@@ -1,6 +1,10 @@
 package co.yml.charts.ui.barchart.models
 
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import co.yml.charts.axis.AxisData
@@ -34,5 +38,51 @@ data class GroupBarChartData(
     val showXAxis: Boolean = true,
     val tapPadding: Dp = 10.dp,
     val groupSeparatorConfig: GroupSeparatorConfig = GroupSeparatorConfig(),
-    val accessibilityConfig: AccessibilityConfig = AccessibilityConfig()
+    val accessibilityConfig: AccessibilityConfig = AccessibilityConfig(),
+    val paddingBetweenStackedBars: Dp = 0.dp,
+    val drawBar: (DrawScope, GroupBarChartData, BarStyle, Offset, Float, Int) -> Unit = { drawScope, barChartData, barStyle, drawOffset, height, barIndex ->
+        //default implementation
+        drawGroupBarGraph(
+            drawScope,
+            barChartData,
+            barStyle,
+            drawOffset,
+            height,
+            barPlotData.barColorPaletteList[barIndex],
+            barIndex
+        )
+    }
 )
+
+/**
+ *
+ * Used to draw the individual bar[Used round rec as a default shape]
+ * @param drawScope : Creates a scoped drawing environment
+ * @param barGraphData : all meta data related to the bar graph
+ * @param barStyle : all meta data related to the bar styling
+ * @param drawOffset: topLeft offset for the drawing the bar
+ * @param height : height of the bar graph
+ * @param barIndex : Index of the bar
+ */
+fun drawGroupBarGraph(
+    drawScope: DrawScope,
+    barGraphData: GroupBarChartData,
+    barStyle: BarStyle,
+    drawOffset: Offset,
+    height: Float,
+    barColor: Color,
+    barIndex: Int
+) {
+    with(drawScope) {
+        drawRoundRect(
+            color = barColor,
+            topLeft = drawOffset,
+            size = Size(barStyle.barWidth.toPx(), height),
+            cornerRadius = CornerRadius(
+                barStyle.cornerRadius.toPx(), barStyle.cornerRadius.toPx()
+            ),
+            style = barStyle.barDrawStyle,
+            blendMode = barStyle.barBlendMode
+        )
+    }
+}

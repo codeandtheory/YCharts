@@ -44,6 +44,7 @@ data class AxisData(
     val axisTopPadding: Dp,
     val axisBottomPadding: Dp,
     val axisStartPadding: Dp,
+    val axisEndPadding: Dp,
     val axisStepSize: Dp,
     val axisLabelAngle: Float,
     val axisLineColor: Color,
@@ -56,7 +57,8 @@ data class AxisData(
     val axisConfig: AxisConfig,
     val startDrawPadding: Dp,
     val shouldDrawAxisLineTillEnd: Boolean,
-    val axisLabelDescription: (String) -> String
+    val axisLabelDescription: (String) -> String,
+    val dataCategoryOptions: DataCategoryOptions
 ) {
     class Builder {
         private var steps: Int = 1
@@ -66,6 +68,7 @@ data class AxisData(
         private var axisStartPadding: Dp = 10.dp
         private var axisOffset: Dp = 10.dp
         private var axisTopPadding: Dp = 20.dp
+        private var axisEndPadding: Dp = 20.dp
         private var axisBottomPadding: Dp = 10.dp
         private var axisStepSize: Dp = 30.dp
         private var axisConfig = AxisConfig()
@@ -79,7 +82,9 @@ data class AxisData(
         private var startDrawPadding: Dp = 0.dp
         private var axisLabelAngle: Float = 0f
         private var shouldDrawAxisLineTillEnd: Boolean = false
-        private var axisLabelDescription: (String) -> String = { label -> "X Axis label $label" }
+        private var dataCategoryOptions: DataCategoryOptions = DataCategoryOptions()
+        private var axisLabelDescription: (String) -> String =
+            { label -> if (dataCategoryOptions.isDataCategoryInYAxis) "Y Axis label $label" else "X Axis label $label" }
 
         fun steps(count: Int) = apply { this.steps = count }
 
@@ -102,6 +107,8 @@ data class AxisData(
         fun topPadding(padding: Dp) = apply { this.axisTopPadding = padding }
 
         fun startPadding(padding: Dp) = apply { this.axisStartPadding = padding }
+
+        fun endPadding(padding: Dp) = apply { this.axisEndPadding = padding }
 
         fun bottomPadding(padding: Dp) = apply { this.axisBottomPadding = padding }
 
@@ -126,8 +133,12 @@ data class AxisData(
         fun axisLabelDescription(description: (String) -> String) =
             apply { this.axisLabelDescription = description }
 
+        fun setDataCategoryOptions(dataCategoryOptions: DataCategoryOptions) = apply {
+            this.dataCategoryOptions = dataCategoryOptions
+        }
 
-        fun build() = co.yml.charts.axis.AxisData(
+
+        fun build() = AxisData(
             steps,
             labelData,
             axisPos,
@@ -136,6 +147,7 @@ data class AxisData(
             axisTopPadding,
             axisBottomPadding,
             axisStartPadding,
+            axisEndPadding,
             axisStepSize,
             axisLabelAngle,
             axisLineColor,
@@ -148,7 +160,8 @@ data class AxisData(
             axisConfig,
             startDrawPadding,
             shouldDrawAxisLineTillEnd,
-            axisLabelDescription
+            axisLabelDescription,
+            dataCategoryOptions
         )
     }
 }
@@ -160,11 +173,20 @@ data class AxisData(
  * @param shouldEllipsizeAxisLabel : true if should ellipsize the axis label at end  else false
  * @param minTextWidthToEllipsize : minimum width of the axis label post which label will be ellipsized
  * @param ellipsizeAt : position at which the label will be truncated or ellipsized
-
  */
 data class AxisConfig(
     val isAxisLineRequired: Boolean = true,
     val shouldEllipsizeAxisLabel: Boolean = false,
     val minTextWidthToEllipsize: Dp = 40.dp,
     val ellipsizeAt: TextUtils.TruncateAt = TextUtils.TruncateAt.END
+)
+
+/**
+ * DataCategoryOptions used to hold information about data category like where should draw the data category.
+ * @param isDataCategoryInYAxis: true if data category draws in y axis, false if it draws is in x axis.
+ * @param isDataCategoryStartFromBottom true when data category start from bottom of y axis, false if it start from top of y axis
+ */
+data class DataCategoryOptions(
+    val isDataCategoryInYAxis: Boolean = false,
+    val isDataCategoryStartFromBottom: Boolean = false
 )

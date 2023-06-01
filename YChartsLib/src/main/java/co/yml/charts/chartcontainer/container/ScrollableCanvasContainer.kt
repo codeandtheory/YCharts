@@ -22,6 +22,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.LayoutDirection
 import co.yml.charts.chartcontainer.gestures.detectZoomGesture
 
@@ -39,6 +41,7 @@ import co.yml.charts.chartcontainer.gestures.detectZoomGesture
  * @param onPointClicked: Callback for tap detected along with offset for tap.
  * @param onScroll: Callback when user starts scrolling the graph.
  * @param onZoomInAndOut: Callback when user starts zoomIn and Out w.r.t to the graph
+ * @param scrollOrientation: Used to define the scroll orientation
  */
 
 @Composable
@@ -52,7 +55,8 @@ fun ScrollableCanvasContainer(
     onPointClicked: (Offset, Float) -> Unit = { _, _ -> },
     isPinchZoomEnabled: Boolean = true,
     onScroll: () -> Unit = {},
-    onZoomInAndOut: () -> Unit = {}
+    onZoomInAndOut: () -> Unit = {},
+    scrollOrientation: Orientation = Orientation.Horizontal
 ) {
     val scrollOffset = remember { mutableStateOf(0f) }
     val maxScrollOffset = remember { mutableStateOf(0f) }
@@ -71,18 +75,21 @@ fun ScrollableCanvasContainer(
     }
 
     CompositionLocalProvider(
-        LocalLayoutDirection provides layoutDirection,
+        LocalLayoutDirection provides layoutDirection
     ) {
         Box(
-            modifier = modifier.clipToBounds(),
+            modifier = modifier.clipToBounds()
         ) {
-            Canvas(modifier = Modifier
+            Canvas(modifier = modifier
                 .align(Alignment.Center)
                 .fillMaxHeight()
                 .fillMaxWidth()
+                .semantics {
+                    this.testTag = "chart_canvas"
+                }
                 .background(containerBackgroundColor)
                 .scrollable(
-                    state = scrollState, Orientation.Horizontal, enabled = true
+                    state = scrollState, scrollOrientation, enabled = true
                 )
                 .pointerInput(Unit) {
                     detectTapGestures(onTap = {

@@ -1,6 +1,7 @@
 package co.yml.charts.ui.barchart.models
 
 import androidx.compose.ui.graphics.Color
+import co.yml.charts.axis.DataCategoryOptions
 import co.yml.charts.common.model.Point
 
 
@@ -17,5 +18,11 @@ data class BarData(
     val color: Color = Color.Red,
     val label: String = "",
     val gradientColorList: List<Color> = listOf(Color.Red, Color.Blue),
-    val description: String = "Value of bar $label is value ${String.format("%.2f", point.y)}"
+    val dataCategoryOptions: DataCategoryOptions = DataCategoryOptions(),
+    val description: String = if (dataCategoryOptions.isDataCategoryInYAxis) "Value of bar $label is value ${
+        String.format(
+            "%.2f",
+            point.x
+        )
+    }" else "Value of bar $label is value ${String.format("%.2f", point.y)}"
 )

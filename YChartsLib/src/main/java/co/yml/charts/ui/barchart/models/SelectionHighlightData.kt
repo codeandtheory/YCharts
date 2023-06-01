@@ -62,13 +62,14 @@ data class SelectionHighlightData(
     val backgroundStyle: DrawStyle = Fill,
     val highlightLabelAlignment: Paint.Align = Paint.Align.CENTER,
     val isHighlightBarRequired: Boolean = true,
+    val isHighlightFullBar: Boolean = false,
     val popUpLabel: (Float, Float) -> (String) = { x, y ->
         val xLabel = "x : ${x.toInt()} "
         val yLabel = "y : ${String.format("%.2f", y)}"
         "$xLabel $yLabel"
     },
 
-    val drawPopUp: DrawScope.(Offset, BarData, Float) -> Unit = { selectedOffset, identifiedPoint, centerPointOfBar ->
+    val drawPopUp: DrawScope.(Offset, BarData, Float, Float, BarChartType) -> Unit = { selectedOffset, identifiedPoint, centerPointOfBar, selectedXAxisWidth, barChartType ->
         val highlightTextPaint = TextPaint().apply {
             textSize = highlightTextSize.toPx()
             color = highlightTextColor.toArgb()
@@ -77,9 +78,13 @@ data class SelectionHighlightData(
         }
         val label = popUpLabel(identifiedPoint.point.x, identifiedPoint.point.y)
         drawContext.canvas.nativeCanvas.apply {
+            val x =
+                if (barChartType == BarChartType.VERTICAL) centerPointOfBar else selectedXAxisWidth + highlightTextOffset.toPx()
+            val y =
+                if (barChartType == BarChartType.VERTICAL) selectedOffset.y else centerPointOfBar
             val background = getTextBackgroundRect(
-                centerPointOfBar,
-                selectedOffset.y,
+                x,
+                y,
                 label,
                 highlightTextPaint
             )
@@ -87,7 +92,7 @@ data class SelectionHighlightData(
                 color = highlightTextBackgroundColor,
                 topLeft = Offset(
                     background.left.toFloat(),
-                    background.top.toFloat() - highlightTextOffset.toPx()
+                    if (barChartType == BarChartType.VERTICAL) background.top.toFloat() - highlightTextOffset.toPx() else (y - background.height() / 2)
                 ),
                 size = Size(background.width().toFloat(), background.height().toFloat()),
                 alpha = highlightTextBackgroundAlpha,
@@ -96,20 +101,26 @@ data class SelectionHighlightData(
                 blendMode = backgroundBlendMode,
                 style = backgroundStyle
             )
+            val drawTextX =
+                if (barChartType == BarChartType.VERTICAL) centerPointOfBar else selectedXAxisWidth + highlightTextOffset.toPx()
+            val drawTextY =
+                if (barChartType == BarChartType.VERTICAL) selectedOffset.y - highlightTextOffset.toPx() else (y + background.height() / 2) - (highlightTextPaint.fontMetrics.descent)
             drawText(
                 label,
-                centerPointOfBar,
-                selectedOffset.y - highlightTextOffset.toPx(),
+                drawTextX,
+                drawTextY,
                 highlightTextPaint
             )
         }
     },
 
-    val drawHighlightBar: DrawScope.(Float, Float, Float, Float) -> Unit = { x, y, width, height ->
+    val drawHighlightBar: DrawScope.(Float, Float, Float, Float, BarChartType) -> Unit = { x, y, width, height, barChartType ->
+        val rectWidth = if (barChartType == BarChartType.VERTICAL) width else height
+        val rectHeight = if (barChartType == BarChartType.VERTICAL) height else width
         drawRoundRect(
             color = highlightBarColor,
             topLeft = Offset(x, y),
-            size = Size(width, height),
+            size = Size(rectWidth, rectHeight),
             cornerRadius = CornerRadius(
                 highlightBarCornerRadius.toPx(),
                 highlightBarCornerRadius.toPx()
@@ -132,7 +143,7 @@ data class SelectionHighlightData(
             textAlign = highlightLabelAlignment
             typeface = highlightTextTypeface
         }
-        val xLabel = "B${identifiedPoint.point.x.toInt()}"
+        val xLabel = "${identifiedPoint.point.x.toInt()}"
         val label = groupBarPopUpLabel(xLabel, identifiedPoint.point.y)
         drawContext.canvas.nativeCanvas.apply {
             val background = getTextBackgroundRect(
@@ -161,5 +172,6 @@ data class SelectionHighlightData(
                 highlightTextPaint
             )
         }
-    }
+    },
+    val barChartType: BarChartType = BarChartType.VERTICAL
 )

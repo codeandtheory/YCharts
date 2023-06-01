@@ -15,11 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
-import com.app.chartcontainer.ui.theme.YChartsTheme
 import co.yml.charts.axis.XAxis
 import co.yml.charts.axis.YAxis
 import co.yml.charts.chartcontainer.container.ScrollableCanvasContainer
 import co.yml.charts.common.model.Point
+import com.app.chartcontainer.ui.theme.YChartsTheme
 import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
@@ -97,7 +97,8 @@ private fun ScrollableContainer() {
                         xStart = columnWidth.value,
                         scrollOffset = scrollOffset,
                         zoomScale = xZoom,
-                        chartData = getLineChartData(100, 100)
+                        chartData = getLineChartData(100, 100),
+                        0f
                     )
                 },
                 onDraw = { _, _ ->
