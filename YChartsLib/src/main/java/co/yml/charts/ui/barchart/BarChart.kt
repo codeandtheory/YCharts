@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterialApi::class, ExperimentalMaterialApi::class)
+@file:OptIn(ExperimentalMaterialApi::class)
 
 package co.yml.charts.ui.barchart
 
@@ -33,7 +33,6 @@ import kotlinx.coroutines.launch
  * @param barChartData : All data needed to Bar Chart
  * @see [BarChartData] Data class to save all params related to Bar Chart
  */
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BarChart(modifier: Modifier, barChartData: BarChartData) {
     val accessibilitySheetState =
