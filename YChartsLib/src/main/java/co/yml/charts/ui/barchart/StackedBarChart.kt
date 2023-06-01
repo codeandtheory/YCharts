@@ -330,28 +330,3 @@ fun StackedBarChart(
     }
 }
 
-/**
- * @param barDataList : List of bar details for selected stacked bar
- * @param totalPaddingBtwBars : Total padding stacked bars
- * @param yOffset : Offset of Y axis point
- * @param yBottom : starting y offset  of y Axis
- * @param xPointOffset :  Offset of X axis point
- */
-fun getFullBarDetails(
-    barDataList: List<BarData>,
-    totalPaddingBtwBars: Float,
-    yOffset: Float,
-    yBottom: Float,
-    xPointOffset: Float
-): Pair<BarData, Offset> {
-    var yPoint = 0f
-
-    barDataList.forEach {
-        yPoint += it.point.y
-    }
-    val fullBarYOffset = yBottom - totalPaddingBtwBars - (yPoint * yOffset)
-    val fullBarOffset = Offset(xPointOffset, fullBarYOffset)
-    val fullBarData = BarData(Point(barDataList.first().point.x, yPoint))
-
-    return Pair(fullBarData, fullBarOffset)
-}

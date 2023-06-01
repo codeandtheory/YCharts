@@ -41,7 +41,7 @@ import kotlinx.coroutines.launch
 
 
 /**
- * Horizontal bar chart
+ * compose method for drawing Horizontal bar chart
  *
  * @param barChartData
  * @param modifier

@@ -194,7 +194,11 @@ internal fun DrawScope.highlightHorizontalBar(
  * @param paddingRight : Padding given at the end of the graph.
  * @param bgColor : Background of the rectangular mask.
  */
-internal fun DrawScope.drawUnderXAxisScrollMask(columnWidth: Float, paddingTop: Dp, bgColor: Color) {
+internal fun DrawScope.drawUnderXAxisScrollMask(
+    columnWidth: Float,
+    paddingTop: Dp,
+    bgColor: Color
+) {
     // Draw column to make graph look scrollable under Xaxis
     drawRect(
         bgColor, Offset(0f, size.height - columnWidth), Size(size.width, columnWidth)
@@ -280,9 +284,7 @@ internal fun getDrawHorizontalOffset(
 }
 
 
-
 /////
-
 
 
 /**
@@ -465,4 +467,31 @@ internal fun DrawScope.drawUnderScrollMask(columnWidth: Float, paddingRight: Dp,
         Offset(size.width - paddingRight.toPx(), 0f),
         Size(paddingRight.toPx(), size.height)
     )
+}
+
+
+/**
+ * @param barDataList : List of bar details for selected stacked bar
+ * @param totalPaddingBtwBars : Total padding stacked bars
+ * @param yOffset : Offset of Y axis point
+ * @param yBottom : starting y offset  of y Axis
+ * @param xPointOffset :  Offset of X axis point
+ */
+internal fun getFullBarDetails(
+    barDataList: List<BarData>,
+    totalPaddingBtwBars: Float,
+    yOffset: Float,
+    yBottom: Float,
+    xPointOffset: Float
+): Pair<BarData, Offset> {
+    var yPoint = 0f
+
+    barDataList.forEach {
+        yPoint += it.point.y
+    }
+    val fullBarYOffset = yBottom - totalPaddingBtwBars - (yPoint * yOffset)
+    val fullBarOffset = Offset(xPointOffset, fullBarYOffset)
+    val fullBarData = BarData(Point(barDataList.first().point.x, yPoint))
+
+    return Pair(fullBarData, fullBarOffset)
 }

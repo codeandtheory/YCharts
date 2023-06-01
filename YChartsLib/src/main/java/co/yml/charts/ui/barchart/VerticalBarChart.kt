@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 
 
 /**
- * Vertical bar chart
+ * composable for drawing Vertical bar chart
  *
  * @param barChartData
  * @param modifier
