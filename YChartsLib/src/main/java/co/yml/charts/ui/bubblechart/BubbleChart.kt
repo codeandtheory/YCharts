@@ -156,7 +156,8 @@ fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
                         xStart = columnWidth,
                         scrollOffset = scrollOffset,
                         zoomScale = xZoom,
-                        chartData = bubblePoints)
+                        chartData = bubblePoints,
+                        axisStart = columnWidth)
                 },
                 onDraw = { scrollOffset, xZoom ->
                     bubblePlotData.bubbles.forEach { line->
