@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterialApi::class)
+@file:OptIn(ExperimentalMaterialApi::class, ExperimentalMaterialApi::class)
 
 package co.yml.charts.ui.linechart
 
@@ -44,6 +44,7 @@ import co.yml.charts.axis.getXAxisScale
 import co.yml.charts.chartcontainer.container.ScrollableCanvasContainer
 import co.yml.charts.common.components.ItemDivider
 import co.yml.charts.common.components.accessibility.AccessibilityBottomSheetDialog
+import co.yml.charts.common.components.accessibility.CombinedChartInfo
 import co.yml.charts.common.components.accessibility.LinePointInfo
 import co.yml.charts.common.extensions.RowClip
 import co.yml.charts.common.extensions.collectIsTalkbackEnabledAsState
@@ -152,7 +153,7 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                         xStart = columnWidth,
                         scrollOffset = scrollOffset,
                         zoomScale = xZoom,
-                        chartData = linePoints)
+                        chartData = linePoints,axisStart = columnWidth)
                 },
                 onDraw = { scrollOffset, xZoom ->
                     linePlotData.lines.forEach {  line->
@@ -239,41 +240,42 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                     isTapped = false
                     selectionTextVisibility = false
                 })
-
-        }
-        if (isTalkBackEnabled) {
-            with(lineChartData) {
-                AccessibilityBottomSheetDialog(
-                    modifier = Modifier.fillMaxSize(),
-                    backgroundColor = Color.White,
-                    content = {
-                        val linePoints = linePlotData.lines.firstOrNull()?.dataPoints
-                        LazyColumn {
-                            items(linePoints?.size ?: 0) { index ->
-                                Column {
-                                    LinePointInfo(
-                                        xAxisData.axisLabelDescription(
-                                            xAxisData.labelData(
-                                                index
+            if (isTalkBackEnabled) {
+                    AccessibilityBottomSheetDialog(
+                        modifier = Modifier.fillMaxSize(),
+                        backgroundColor = Color.White,
+                        content = {
+                            LazyColumn {
+                                items(count = linePlotData.lines.size) { lineIndex ->
+                                    linePlotData.lines[lineIndex].dataPoints.forEachIndexed { pointIndex, point ->
+                                        Column {
+                                            LinePointInfo(
+                                                xAxisData.axisLabelDescription(
+                                                    xAxisData.labelData(
+                                                        pointIndex
+                                                    )
+                                                ),
+                                                point.description,
+                                               linePlotData.lines[lineIndex].lineStyle.color
                                             )
-                                        ),
-                                        linePoints?.get(index)?.description ?: "",
-                                        linePlotData.lines.firstOrNull()?.lineStyle?.color
-                                            ?: Color.Transparent
-                                    )
-                                    ItemDivider(
-                                        thickness = accessibilityConfig.dividerThickness,
-                                        dividerColor = accessibilityConfig.dividerColor
-                                    )
+
+                                            ItemDivider(
+                                                thickness = accessibilityConfig.dividerThickness,
+                                                dividerColor = accessibilityConfig.dividerColor
+                                            )
+                                        }
+
+                                    }
                                 }
                             }
-                        }
-                    },
-                    popUpTopRightButtonTitle = accessibilityConfig.popUpTopRightButtonTitle,
-                    popUpTopRightButtonDescription = accessibilityConfig.popUpTopRightButtonDescription,
-                    sheetState = accessibilitySheetState
-                )
+                        },
+                        popUpTopRightButtonTitle = accessibilityConfig.popUpTopRightButtonTitle,
+                        popUpTopRightButtonDescription = accessibilityConfig.popUpTopRightButtonDescription,
+                        sheetState = accessibilitySheetState
+                    )
+
             }
+
         }
     }
 }
@@ -388,7 +390,7 @@ fun DrawScope.drawStraightOrCubicLine(
  * @param lineType : Type of the line [LineType]
  * @param lineStyle : The style for the path [lineStyle]
  */
-private fun getDrawStyleForPath(
+internal fun getDrawStyleForPath(
     lineType: LineType, lineStyle: LineStyle
 ): DrawStyle = if (lineType.isDotted) Stroke(
     width = lineStyle.width, pathEffect = PathEffect.dashPathEffect(lineType.intervals)
@@ -400,7 +402,7 @@ private fun getDrawStyleForPath(
  * DrawScope.drawPointOnLine extension method  used for drawing a circle/mark on a line for a given Point(x,y).
  * @param offset : Point at which circle/mark has to be drawn.
  */
-private fun DrawScope.drawPointOnLine(offset: Offset, intersectionPoint: IntersectionPoint?) {
+internal fun DrawScope.drawPointOnLine(offset: Offset, intersectionPoint: IntersectionPoint?) {
     intersectionPoint?.draw?.let { it(this, offset) }
 }
 

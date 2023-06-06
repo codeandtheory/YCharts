@@ -3,13 +3,16 @@ package co.yml.charts.common.utils
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import co.yml.charts.ui.barchart.models.BarData
-import co.yml.charts.ui.barchart.models.GroupBar
-import co.yml.charts.ui.piechart.models.PieChartData
+import co.yml.charts.axis.DataCategoryOptions
 import co.yml.charts.common.model.LegendLabel
 import co.yml.charts.common.model.LegendsConfig
 import co.yml.charts.common.model.PlotType
 import co.yml.charts.common.model.Point
+import co.yml.charts.ui.barchart.models.BarChartType
+import co.yml.charts.ui.barchart.models.BarData
+import co.yml.charts.ui.barchart.models.GroupBar
+import co.yml.charts.ui.piechart.models.PieChartData
+import kotlin.math.sin
 import kotlin.random.Random
 
 object DataUtils {
@@ -34,22 +37,56 @@ object DataUtils {
 
     /**
      * Return the sample bar chart data
-     * @param listSize Size of the list
-     * @param maxRange Maximum range for the values
+     * @param duration : Duration of the wave in seconds
+     * @param sampleRate : Number of samples per second
+     * @param frequency : Frequency of the wave in Hz
      */
-    fun getBarChartData(listSize: Int, maxRange: Int): List<BarData> {
+    fun getWaveChartData(duration: Double, sampleRate: Double, frequency: Double): List<Point> {
+        val list = mutableListOf<Point>()
+
+        val amplitude = 1.0 // Amplitude of the wave
+        val numSamples = (duration * sampleRate).toInt() // Total number of samples
+
+        for (i in 0 until numSamples) {
+            val time = i.toDouble() / sampleRate // Time at the current sample
+            val sample =
+                amplitude * sin(2.0 * Math.PI * frequency * time) // Calculate the sample value
+            list.add(Point(time.toFloat(), sample.toFloat()))
+        }
+        return list
+    }
+
+    fun getBarChartData(
+        listSize: Int,
+        maxRange: Int,
+        barChartType: BarChartType,
+        dataCategoryOptions: DataCategoryOptions
+    ): List<BarData> {
         val list = arrayListOf<BarData>()
         for (index in 0 until listSize) {
-            list.add(
-                BarData(
+            val point = when (barChartType) {
+                BarChartType.VERTICAL -> {
                     Point(
                         index.toFloat(),
                         "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat()
-                    ),
-                    Color(
+                    )
+                }
+                BarChartType.HORIZONTAL -> {
+                    Point(
+                        "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat(),
+                        index.toFloat()
+                    )
+                }
+            }
+
+            list.add(
+                BarData(
+                    point = point,
+                    color = Color(
                         Random.nextInt(256), Random.nextInt(256), Random.nextInt(256)
                     ),
-                    "Bar$index"
+                    dataCategoryOptions = dataCategoryOptions,
+                    label = "Bar$index",
                 )
             )
         }
@@ -157,11 +194,11 @@ object DataUtils {
                 barList.add(
                     BarData(
                         Point(
-                            i.toFloat(),
+                            index.toFloat(),
                             barValue
                         ),
                         label = "B$i",
-                        description = "Bar at $i with label B$i has value ${
+                        description = "Bar at $index with label B$i has value ${
                             String.format(
                                 "%.2f", barValue
                             )

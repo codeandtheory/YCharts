@@ -1,6 +1,7 @@
 package co.yml.charts.common.model
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
@@ -31,8 +32,10 @@ data class LegendsConfig(
  * LegendLabel data class params used in drawing label in graph.
  * @param color : Color of label.
  * @param name : Name of label.
+ * @param brush : Used for gradient color
  *  */
 data class LegendLabel(
-    val color: Color,
+    val color: Color = Color.Black,
     val name: String,
+    val brush: Brush? = null
 )

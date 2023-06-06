@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="co.yml.ycharts.app">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <application
         android:allowBackup="true"
@@ -22,6 +21,11 @@
             android:name="co.yml.ycharts.app.presentation.LineChartActivity"
             android:exported="false"
             android:label="@string/title_activity_line_chart"
+            android:theme="@style/Theme.YCharts" />
+        <activity
+            android:name="co.yml.ycharts.app.presentation.WaveChartActivity"
+            android:exported="false"
+            android:label="@string/title_activity_wave_chart"
             android:theme="@style/Theme.YCharts" />
         <activity
             android:name="co.yml.ycharts.app.presentation.PieChartActivity"
@@ -46,7 +50,6 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.YCharts">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
