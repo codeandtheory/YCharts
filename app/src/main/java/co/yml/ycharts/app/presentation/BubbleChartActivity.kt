@@ -24,15 +24,8 @@ import co.yml.charts.common.extensions.formatToSinglePrecision
 import co.yml.charts.common.model.Point
 import co.yml.charts.common.utils.DataUtils
 import co.yml.charts.ui.bubblechart.BubbleChart
-import co.yml.charts.ui.bubblechart.model.Bubble
 import co.yml.charts.ui.bubblechart.model.BubbleChartData
-import co.yml.charts.ui.bubblechart.model.BubblePlotData
-import co.yml.charts.ui.bubblechart.model.BubbleStyle
 import co.yml.charts.ui.linechart.model.GridLines
-import co.yml.charts.ui.linechart.model.IntersectionPoint
-import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
-import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
-import co.yml.charts.ui.linechart.model.ShadowUnderLine
 import co.yml.ycharts.app.R
 import co.yml.ycharts.app.ui.compositions.AppBarWithBackButton
 import co.yml.ycharts.app.ui.theme.YChartsTheme
@@ -72,7 +65,7 @@ class BubbleChartActivity : ComponentActivity() {
                                     fontWeight = FontWeight.Bold
                                 )
                                 BubbleChartWithGrid(
-                                    pointsData = DataUtils.getLineChartData(
+                                    pointsData = DataUtils.getRandomPoints(
                                         200,
                                         start = -50,
                                         maxRange = 50
@@ -103,6 +96,7 @@ private fun BubbleChartWithGrid(pointsData: List<Point>) {
         .labelData { i -> i.toString() }
         .labelAndAxisLinePadding(15.dp)
         .build()
+
     val yAxisData = AxisData.Builder()
         .steps(steps)
         .labelAndAxisLinePadding(20.dp)
@@ -113,31 +107,19 @@ private fun BubbleChartWithGrid(pointsData: List<Point>) {
             val yScale = (yMax - yMin) / steps
             ((i * yScale) + yMin).formatToSinglePrecision()
         }.build()
+
     val data = BubbleChartData(
-        bubblePlotData = BubblePlotData(
-            bubbles = listOf(
-                Bubble(
-                    dataPoints = DataUtils.getLineChartData(
-                        20,
-                        start = 0,
-                        maxRange = 50
-                    ),
-                    BubbleStyle(),
-                    IntersectionPoint(),
-                    SelectionHighlightPoint(),
-                    ShadowUnderLine(),
-                    SelectionHighlightPopUp()
-                )
-            )
-        ),
+        DataUtils.getBubbleChartData(pointsData),
         xAxisData = xAxisData,
         yAxisData = yAxisData,
         gridLines = GridLines()
     )
+
     BubbleChart(
         modifier = Modifier
             .fillMaxWidth()
-            .height(300.dp),
+            .height(500.dp),
         bubbleChartData = data
     )
+
 }

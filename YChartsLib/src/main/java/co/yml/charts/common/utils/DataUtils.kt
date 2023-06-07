@@ -11,6 +11,8 @@ import co.yml.charts.common.model.Point
 import co.yml.charts.ui.barchart.models.BarChartType
 import co.yml.charts.ui.barchart.models.BarData
 import co.yml.charts.ui.barchart.models.GroupBar
+import co.yml.charts.ui.bubblechart.model.Bubble
+import co.yml.charts.ui.bubblechart.model.BubbleStyle
 import co.yml.charts.ui.piechart.models.PieChartData
 import kotlin.math.sin
 import kotlin.random.Random
@@ -31,6 +33,51 @@ object DataUtils {
                     (start until maxRange).random().toFloat()
                 )
             )
+        }
+        return list
+    }
+
+    /**
+     * Returns list of points
+     * @param listSize: Size of total number of points needed.
+     * @param start: X values to start from. ex: 50 to 100
+     * @param maxRange: Max range of Y values
+     */
+    fun getRandomPoints(listSize: Int, start: Int = 0, maxRange: Int): List<Point> {
+        val list = arrayListOf<Point>()
+        for (index in 0 until listSize) {
+            list.add(
+                Point(
+                    index.toFloat(),
+                    (start until maxRange).random().toFloat()
+                )
+            )
+        }
+        return list
+    }
+
+    /**
+     * Returns list of points
+     * @param listSize: Size of total number of points needed.
+     * @param start: X values to start from. ex: 50 to 100
+     * @param maxRange: Max range of Y values
+     */
+    fun getBubbleChartData(
+        points: List<Point>,
+        minDensity: Float = 10F,
+        maxDensity: Float = 100F
+    ): List<Bubble> {
+        val list = arrayListOf<Bubble>()
+        points.forEachIndexed { index, point ->
+            val bubbleColor = if (index % 2 == 0) Color.Red else Color.Blue
+            list.add(
+                Bubble(
+                    center = point,
+                    density = (minDensity.toInt() until maxDensity.toInt()).random().toFloat(),
+                    bubbleStyle = BubbleStyle(color = bubbleColor)
+                )
+            )
+
         }
         return list
     }
@@ -71,6 +118,7 @@ object DataUtils {
                         "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat()
                     )
                 }
+
                 BarChartType.HORIZONTAL -> {
                     Point(
                         "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat(),
