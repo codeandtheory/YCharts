@@ -44,7 +44,7 @@ class BubbleChartActivity : ComponentActivity() {
                     backgroundColor = YChartsTheme.colors.background,
                     topBar = {
                         AppBarWithBackButton(
-                            stringResource(id = R.string.title_line_chart),
+                            stringResource(id = R.string.bubble_chart),
                             onBackPressed = {
                                 onBackPressed()
                             })

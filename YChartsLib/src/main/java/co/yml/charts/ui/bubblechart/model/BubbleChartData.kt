@@ -18,8 +18,8 @@ import co.yml.charts.ui.linechart.model.ShadowUnderLine
 
 /**
  *
- * LineGraphData data class that contains all params user need to define to draw a line graph.
- * @param bubblePlotData: The path to be drawn on the graph represented by a line.
+ * BubbleChartData data class that contains all params user need to define to draw a bubble chart.
+ * @param bubbles: A list of Bubbles to be drawn.
  * @param xAxisData: All the configurations related to X-Axis to be defined here in [AxisData]
  * @param yAxisData: All the configurations related to Y-Axis to be defined here in [AxisData]
  * @param isZoomAllowed: True if zoom in for all vertical graph components is allowed else false.
@@ -46,10 +46,10 @@ data class BubbleChartData(
 )
 
 /**
- * Represent a Line in the [co.yml.charts.ui.linechart]
+ * Represent a Bubble in the [co.yml.charts.ui.bubblechart]
  *
- * @param dataPoints list of points [Point] in the line
- * @param bubbleStyle Adds styling options in [LineStyle] to the line path drawn.
+ * @param center center [Point] of the bubble
+ * @param bubbleStyle Adds styling options in [BubbleStyle] to the bubble to be drawn.
  * @param intersectionPoint drawing logic to draw the point itself in [IntersectionPoint].
  * If null, the point is not drawn.
  * @param selectionHighlightPoint drawing logic to draw the highlight at the point when it is selected

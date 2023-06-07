@@ -299,54 +299,6 @@ fun getMaxScrollDistance(
 
 /**
  *
- * DrawScope.drawStraightOrCubicLine extension method used for drawing a straight/cubic line for a given Point(x,y).
- * @param pointsData : List of points to be drawn on the canvas
- * @param cubicPoints1 : List of average left side values for a given Point(x,y).
- * @param cubicPoints2 : List of average right side values for a given Point(x,y).
- * @param bubbleStyle : All styles related to the path are included in [LineStyle].
- */
-fun DrawScope.drawStraightOrCubicLine(
-    pointsData: MutableList<Offset>,
-    cubicPoints1: MutableList<Offset>,
-    cubicPoints2: MutableList<Offset>,
-    bubbleStyle: BubbleStyle
-) {
-    for (i in 1 until pointsData.size) {
-        if (i % 2 == 0) {
-            with(bubbleStyle) {
-                drawCircle(
-                    color = color,
-                    alpha = alpha, colorFilter = colorFilter, blendMode = blendMode, radius = 12f
-                )
-            }
-        } else {
-            with(bubbleStyle) {
-                drawCircle(
-                    color = color,
-                    alpha = alpha, colorFilter = colorFilter, blendMode = blendMode, radius = 6f
-                )
-            }
-        }
-    }
-
-}
-//
-///**
-// *
-// * Returns the Drawstyle for the path.
-// * @param bubbleType : Type of the bubble [bubbleType]
-// * @param bubbleStyle : The style for the path [bubbleStyle]
-// */
-//private fun getDrawStyleForPath(
-//    bubbleType: BubbleType, bubbleStyle: BubbleStyle
-//): DrawStyle = if (bubbleType.isDotted) Stroke(
-//    width = bubbleStyle.width, pathEffect = PathEffect.dashPathEffect(bubbleType.intervals)
-//) else bubbleStyle.style
-//
-
-
-/**
- *
  * DrawScope.drawUnderScrollMask extension method used  for drawing a rectangular mask to make graph scrollable under the YAxis.
  * @param columnWidth : Width of the rectangular mask here width of Y Axis is used.
  * @param paddingRight : Padding given at the end of the graph.
@@ -361,23 +313,6 @@ private fun DrawScope.drawUnderScrollMask(columnWidth: Float, paddingRight: Dp, 
         Offset(size.width - paddingRight.toPx(), 0f),
         Size(paddingRight.toPx(), size.height)
     )
-}
-
-/**
- *
- * DrawScope.drawShadowUnderLineAndIntersectionPoint extension method used  for drawing a
- * shadow below the line graph points and also drawing intersection points on the line graph.
- * @param cubicPath : Path used to draw the shadow
- * @param pointsData : List of the points on the Line graph.
- * @param yBottom : Offset of X-Axis starting position i.e shade to be drawn until.
- * @param line : line on which shadow & intersectionPoints has to be drawn.
- */
-fun DrawScope.drawBubble(pointsData: MutableList<Offset>, bubble: Bubble) {
-    if (bubble.intersectionPoint.isNotNull()) {
-        pointsData.forEach { offset ->
-            bubble.draw(this, offset)
-        }
-    }
 }
 
 
