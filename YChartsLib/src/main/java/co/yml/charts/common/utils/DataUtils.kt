@@ -62,7 +62,7 @@ object DataUtils {
      * @param start: X values to start from. ex: 50 to 100
      * @param maxRange: Max range of Y values
      */
-    fun getBubbleChartData(
+    fun getBubbleChartDataWithGradientStyle(
         points: List<Point>,
         minDensity: Float = 10F,
         maxDensity: Float = 100F
@@ -74,7 +74,33 @@ object DataUtils {
                 Bubble(
                     center = point,
                     density = (minDensity.toInt() until maxDensity.toInt()).random().toFloat(),
-                    bubbleStyle = BubbleStyle(color = bubbleColor)
+                    bubbleStyle = BubbleStyle(gradientColors = listOf(bubbleColor, Color.White), useGradience = true)
+                )
+            )
+
+        }
+        return list
+    }
+
+    /**
+     * Returns list of points
+     * @param listSize: Size of total number of points needed.
+     * @param start: X values to start from. ex: 50 to 100
+     * @param maxRange: Max range of Y values
+     */
+    fun getBubbleChartDataWithSolidStyle(
+        points: List<Point>,
+        minDensity: Float = 10F,
+        maxDensity: Float = 100F
+    ): List<Bubble> {
+        val list = arrayListOf<Bubble>()
+        points.forEachIndexed { index, point ->
+            val bubbleColor = if (index % 2 == 0) Color.Red else Color.Blue
+            list.add(
+                Bubble(
+                    center = point,
+                    density = (minDensity.toInt() until maxDensity.toInt()).random().toFloat(),
+                    bubbleStyle = BubbleStyle(solidColor = bubbleColor, useGradience = false)
                 )
             )
 

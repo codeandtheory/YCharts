@@ -60,11 +60,28 @@ class BubbleChartActivity : ComponentActivity() {
                             item {
                                 Text(
                                     modifier = Modifier.padding(12.dp),
-                                    text = getString(R.string.bubble_chart),
+                                    text = getString(R.string.gradient_bubble_chart),
                                     style = MaterialTheme.typography.subtitle1,
                                     fontWeight = FontWeight.Bold
                                 )
                                 BubbleChartWithGrid(
+                                    pointsData = DataUtils.getRandomPoints(
+                                        200,
+                                        start = -50,
+                                        maxRange = 50
+                                    )
+                                )
+                                Spacer(modifier = Modifier.height(12.dp))
+                            }
+
+                            item {
+                                Text(
+                                    modifier = Modifier.padding(12.dp),
+                                    text = getString(R.string.solid_bubble_chart),
+                                    style = MaterialTheme.typography.subtitle1,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                SolidBubbleChart(
                                     pointsData = DataUtils.getRandomPoints(
                                         200,
                                         start = -50,
@@ -109,7 +126,50 @@ private fun BubbleChartWithGrid(pointsData: List<Point>) {
         }.build()
 
     val data = BubbleChartData(
-        DataUtils.getBubbleChartData(pointsData),
+        DataUtils.getBubbleChartDataWithGradientStyle(pointsData),
+        xAxisData = xAxisData,
+        yAxisData = yAxisData,
+        gridLines = GridLines()
+    )
+
+    BubbleChart(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(500.dp),
+        bubbleChartData = data
+    )
+
+}
+
+
+/**
+ * Bubble chart with grid lines
+ *
+ * @param pointsData
+ */
+@Composable
+private fun SolidBubbleChart(pointsData: List<Point>) {
+    val steps = 5
+    val xAxisData = AxisData.Builder()
+        .axisStepSize(30.dp)
+        .steps(pointsData.size - 1)
+        .labelData { i -> i.toString() }
+        .labelAndAxisLinePadding(15.dp)
+        .build()
+
+    val yAxisData = AxisData.Builder()
+        .steps(steps)
+        .labelAndAxisLinePadding(20.dp)
+        .labelData { i ->
+            // Add yMin to get the negative axis values to the scale
+            val yMin = pointsData.minOf { it.y }
+            val yMax = pointsData.maxOf { it.y }
+            val yScale = (yMax - yMin) / steps
+            ((i * yScale) + yMin).formatToSinglePrecision()
+        }.build()
+
+    val data = BubbleChartData(
+        DataUtils.getBubbleChartDataWithSolidStyle(pointsData),
         xAxisData = xAxisData,
         yAxisData = yAxisData,
         gridLines = GridLines()

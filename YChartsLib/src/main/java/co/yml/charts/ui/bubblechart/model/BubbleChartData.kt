@@ -1,9 +1,10 @@
 package co.yml.charts.ui.bubblechart.model
 
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import co.yml.charts.axis.AxisData
@@ -13,23 +14,23 @@ import co.yml.charts.ui.linechart.model.GridLines
 import co.yml.charts.ui.linechart.model.IntersectionPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
-import co.yml.charts.ui.linechart.model.ShadowUnderLine
 
 
 /**
+ * Bubble chart data
  *
- * BubbleChartData data class that contains all params user need to define to draw a bubble chart.
- * @param bubbles: A list of Bubbles to be drawn.
- * @param xAxisData: All the configurations related to X-Axis to be defined here in [AxisData]
- * @param yAxisData: All the configurations related to Y-Axis to be defined here in [AxisData]
- * @param isZoomAllowed: True if zoom in for all vertical graph components is allowed else false.
- * @param paddingTop: Padding from the top of the canvas to start of the graph container.
- * @param paddingRight: Padding from the end of the canvas to end of the graph container.
- * @param bottomPadding: Padding from the bottom of the canvas to bottom of the graph container.
- * @param containerPaddingEnd: Container inside padding end after the last point of the graph.
- * @param backgroundColor: Background color of the Y & X components,
- * @param gridLines: This enables graph to draw horizontal and vertical grid lines
- * @param accessibilityConfig: Configs related to accessibility service defined here in [AccessibilityConfig]
+ * @property bubbles
+ * @property xAxisData
+ * @property yAxisData
+ * @property isZoomAllowed
+ * @property paddingTop
+ * @property bottomPadding
+ * @property paddingRight
+ * @property containerPaddingEnd
+ * @property backgroundColor
+ * @property gridLines
+ * @property accessibilityConfig
+ * @constructor Create empty Bubble chart data
  */
 data class BubbleChartData(
     val bubbles: List<Bubble>,
@@ -46,32 +47,54 @@ data class BubbleChartData(
 )
 
 /**
- * Represent a Bubble in the [co.yml.charts.ui.bubblechart]
+ * Bubble
  *
- * @param center center [Point] of the bubble
- * @param bubbleStyle Adds styling options in [BubbleStyle] to the bubble to be drawn.
- * @param intersectionPoint drawing logic to draw the point itself in [IntersectionPoint].
- * If null, the point is not drawn.
- * @param selectionHighlightPoint drawing logic to draw the highlight at the point when it is selected
- * in [SelectionHighlightPoint] If null, the point won't be highlighted on selection
- * @param selectionHighlightPopUp All prams related to selection popup to be added here in [SelectionHighlightPopUp]
+ * @property center
+ * @property density
+ * @property bubbleStyle
+ * @property intersectionPoint
+ * @property selectionHighlightPoint
+ * @property selectionHighlightPopUp
+ * @property draw
+ * @constructor Create empty Bubble
  */
 data class Bubble(
-    val center:Point,
+    val center: Point,
     val density: Float,
     val bubbleStyle: BubbleStyle = BubbleStyle(),
     val intersectionPoint: IntersectionPoint? = null,
     val selectionHighlightPoint: SelectionHighlightPoint? = null,
     val selectionHighlightPopUp: SelectionHighlightPopUp? = null,
     val draw: DrawScope.(Offset) -> Unit = { center ->
-        drawCircle(
-            bubbleStyle.color,
-            density,
-            center,
-            bubbleStyle.alpha,
-            bubbleStyle.style,
-            bubbleStyle.colorFilter,
-            bubbleStyle.blendMode
-        )
+        if (bubbleStyle.useGradience) {
+            drawCircle(
+                brush = getBrush(bubbleStyle, center, density),
+                center = center,
+                radius = density,
+                alpha = bubbleStyle.alpha,
+                style = bubbleStyle.style,
+                colorFilter = bubbleStyle.colorFilter,
+                blendMode = bubbleStyle.blendMode
+            )
+        } else {
+            drawCircle(
+                bubbleStyle.solidColor,
+                density,
+                center,
+                bubbleStyle.alpha,
+                bubbleStyle.style,
+                bubbleStyle.colorFilter,
+                bubbleStyle.blendMode
+            )
+        }
     }
 )
+
+private fun getBrush(bubbleStyle: BubbleStyle, center: Offset, density: Float): Brush {
+    return Brush.radialGradient(
+        colors = bubbleStyle.gradientColors,
+        center = center,
+        radius = density,
+        tileMode = TileMode.Decal
+    )
+}

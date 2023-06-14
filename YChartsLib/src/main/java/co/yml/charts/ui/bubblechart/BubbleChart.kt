@@ -251,8 +251,8 @@ fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
                                             )
                                         ),
                                         bubbles[index].center.description,
-                                        bubbles[index].bubbleStyle.color
-                                            ?: Color.Transparent
+                                        bubbles[index].bubbleStyle.solidColor
+                                            ?: bubbles[index].bubbleStyle.gradientColors.first()
                                     )
                                     ItemDivider(
                                         thickness = accessibilityConfig.dividerThickness,

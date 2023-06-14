@@ -35,5 +35,7 @@
     <string name="amplitude_wave_chart">Amplitude Wave Chart</string>
     <string name="title_activity_bubble_chart">Bubble Chart</string>
     <string name="bubble_chart">Bubblechart</string>
+    <string name="gradient_bubble_chart">Gradient Bubblechart</string>
+    <string name="solid_bubble_chart">Solid Bubble chart</string>
 
 </resources>
