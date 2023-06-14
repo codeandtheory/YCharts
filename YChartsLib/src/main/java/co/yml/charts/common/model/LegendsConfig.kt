@@ -5,7 +5,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 /**
  * LegendsConfig data class params used in config label in graph.
@@ -19,6 +21,7 @@ import androidx.compose.ui.unit.dp
  *  */
 data class LegendsConfig(
     val legendLabelList: List<LegendLabel>,
+    val textSize: TextUnit = 14.sp,
     val gridColumnCount: Int = 1,
     val gridPaddingHorizontal: Dp = 8.dp,
     val gridPaddingVertical: Dp = 8.dp,
