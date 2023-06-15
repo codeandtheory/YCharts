@@ -43,6 +43,11 @@
             android:label="@string/title_activity_combined_line_bar_chart"
             android:theme="@style/Theme.YCharts" />
         <activity
+            android:name="co.yml.ycharts.app.presentation.BubbleChartActivity"
+            android:exported="false"
+            android:label="@string/title_activity_bubble_chart"
+            android:theme="@style/Theme.YCharts" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.YCharts">

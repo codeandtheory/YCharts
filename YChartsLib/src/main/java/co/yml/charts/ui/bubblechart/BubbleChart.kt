@@ -1,6 +1,6 @@
-@file:OptIn(ExperimentalMaterialApi::class, ExperimentalMaterialApi::class)
+@file:OptIn(ExperimentalMaterialApi::class)
 
-package co.yml.charts.ui.linechart
+package co.yml.charts.ui.bubblechart
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
@@ -27,11 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.DrawStyle
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -44,37 +40,41 @@ import co.yml.charts.axis.getXAxisScale
 import co.yml.charts.chartcontainer.container.ScrollableCanvasContainer
 import co.yml.charts.common.components.ItemDivider
 import co.yml.charts.common.components.accessibility.AccessibilityBottomSheetDialog
-import co.yml.charts.common.components.accessibility.CombinedChartInfo
-import co.yml.charts.common.components.accessibility.LinePointInfo
+import co.yml.charts.common.components.accessibility.BubblePointInfo
 import co.yml.charts.common.extensions.RowClip
 import co.yml.charts.common.extensions.collectIsTalkbackEnabledAsState
 import co.yml.charts.common.extensions.drawGridLines
 import co.yml.charts.common.extensions.isNotNull
 import co.yml.charts.common.model.Point
-import co.yml.charts.ui.linechart.model.IntersectionPoint
-import co.yml.charts.ui.linechart.model.Line
-import co.yml.charts.ui.linechart.model.LineChartData
-import co.yml.charts.ui.linechart.model.LineStyle
-import co.yml.charts.ui.linechart.model.LineType
+import co.yml.charts.ui.bubblechart.model.Bubble
+import co.yml.charts.ui.bubblechart.model.BubbleChartData
+import co.yml.charts.ui.bubblechart.model.BubbleStyle
+import co.yml.charts.ui.linechart.drawHighLightOnSelectedPoint
+import co.yml.charts.ui.linechart.drawHighlightText
+import co.yml.charts.ui.linechart.getMappingPointsToGraph
+import co.yml.charts.ui.linechart.getMaxElementInYAxis
+import co.yml.charts.ui.linechart.getYAxisScale
+import co.yml.charts.ui.linechart.isTapped
 import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 import kotlinx.coroutines.launch
 
 /**
  *
- * [LineChart] compose method used for drawing a Line Chart.
+ * [BubbleChart] compose method used for drawing a Bubble Chart.
  * @param modifier :All modifier related property.
- * Data class [LineChartData] to save all params needed to draw the line chart.
- * @param lineChartData : Add data related to line chart.
+ * Data class [BubbleChartData] to save all params needed to draw the bubble chart.
+ * @param bubbleChartData : Add data related to bubble chart.
  */
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
+fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
     val accessibilitySheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
     val isTalkBackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
     if (accessibilitySheetState.isVisible && isTalkBackEnabled
-        && lineChartData.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
+        && bubbleChartData.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
     ) {
         BackHandler {
             scope.launch {
@@ -83,7 +83,7 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
         }
     }
     Surface(modifier = modifier) {
-        with(lineChartData) {
+        with(bubbleChartData) {
             var columnWidth by remember { mutableStateOf(0f) }
             var rowHeight by remember { mutableStateOf(0f) }
             var xOffset by remember { mutableStateOf(0f) }
@@ -92,13 +92,13 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
             var tapOffset by remember { mutableStateOf(Offset(0f, 0f)) }
             var selectionTextVisibility by remember { mutableStateOf(false) }
             var identifiedPoint by remember { mutableStateOf(Point(0f, 0f)) }
-            // Update must required values
-            val linePoints: List<Point> = linePlotData.lines.flatMap { line -> line.dataPoints.map { it } }
 
-            val (xMin, xMax, xAxisScale) = getXAxisScale(linePoints, xAxisData.steps)
-                val (yMin, _, yAxisScale) = getYAxisScale(linePoints, yAxisData.steps)
-                val maxElementInYAxis = getMaxElementInYAxis(yAxisScale, yAxisData.steps)
-                val xAxisData = xAxisData.copy(axisBottomPadding = bottomPadding)
+            val bubblePoints: List<Point> = bubbles.map { bubble -> bubble.center }
+
+            val (xMin, xMax, xAxisScale) = getXAxisScale(bubblePoints, xAxisData.steps)
+            val (yMin, _, yAxisScale) = getYAxisScale(bubblePoints, yAxisData.steps)
+            val maxElementInYAxis = getMaxElementInYAxis(yAxisScale, yAxisData.steps)
+            val xAxisData = xAxisData.copy(axisBottomPadding = bottomPadding)
             val yAxisData = yAxisData.copy(
                 axisBottomPadding = LocalDensity.current.run { rowHeight.toDp() },
                 axisTopPadding = paddingTop
@@ -106,7 +106,7 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
 
             ScrollableCanvasContainer(modifier = modifier
                 .semantics {
-                    contentDescription = lineChartData.accessibilityConfig.chartDescription
+                    contentDescription = bubbleChartData.accessibilityConfig.chartDescription
                 }
                 .clickable {
                     if (isTalkBackEnabled) {
@@ -153,20 +153,19 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                         xStart = columnWidth,
                         scrollOffset = scrollOffset,
                         zoomScale = xZoom,
-                        chartData = linePoints,axisStart = columnWidth)
+                        chartData = bubblePoints,
+                        axisStart = columnWidth)
                 },
                 onDraw = { scrollOffset, xZoom ->
-                    linePlotData.lines.forEach {  line->
                     val yBottom = size.height - rowHeight
                     val yOffset = ((yBottom - paddingTop.toPx()) / maxElementInYAxis)
                     xOffset = xAxisData.axisStepSize.toPx() * xZoom
                     val xLeft = columnWidth // To add extra space if needed
                     val pointsData = getMappingPointsToGraph(
-                        line.dataPoints, xMin, xOffset, xLeft, scrollOffset, yBottom, yMin, yOffset
+                        bubblePoints, xMin, xOffset, xLeft, scrollOffset, yBottom, yMin, yOffset
                     )
                     val (cubicPoints1, cubicPoints2) = getCubicPoints(pointsData)
                     val tapPointLocks = mutableMapOf<Int, Pair<Point, Offset>>()
-
                     // Draw guide lines
                     gridLines?.let {
                         drawGridLines(
@@ -175,7 +174,7 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                             xLeft,
                             paddingRight,
                             scrollOffset,
-                            pointsData.size,
+                            bubbles.size,
                             xZoom,
                             xAxisScale,
                             yAxisData.steps,
@@ -183,49 +182,43 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                             it
                         )
                     }
+                    pointsData.forEachIndexed {index,offset->
 
-                    // Draw cubic line using the points and form a line graph
-                    val cubicPath = drawStraightOrCubicLine(
-                        pointsData, cubicPoints1, cubicPoints2, line.lineStyle
-                    )
+                        bubbles[index].draw(this,offset)
 
-                    // Draw Lines and Points and AreaUnderLine
-                    // Draw area under curve
-                    drawShadowUnderLineAndIntersectionPoint(
-                        cubicPath, pointsData, yBottom, line
-                    )
+                        pointsData.forEachIndexed { index, point ->
+                            if (isTapped && point.isTapped(tapOffset.x, xOffset)) {
+                                // Dealing with only one line graph hence tapPointLocks[0]
+                                tapPointLocks[0] = bubbles[index].center to point
+                            }
+                        }
 
-                    // Draw column to make graph look scrollable under Yaxis
+                        val selectedOffset = tapPointLocks.values.firstOrNull()?.second
+
+                        if (selectionTextVisibility && selectedOffset.isNotNull()) {
+                            drawHighlightText(
+                                identifiedPoint,
+                                selectedOffset ?: Offset(0f, 0f),
+                                bubbles[index].selectionHighlightPopUp
+                            )
+                        }
+                        if (isTapped) {
+                            val x = tapPointLocks.values.firstOrNull()?.second?.x
+                            if (x != null) identifiedPoint =
+                                tapPointLocks.values.map { it.first }.first()
+                            drawHighLightOnSelectedPoint(
+                                tapPointLocks,
+                                columnWidth,
+                                paddingRight,
+                                yBottom,
+                                bubbles[index].selectionHighlightPoint
+                            )
+                        }
+
+                    }
                     drawUnderScrollMask(columnWidth, paddingRight, bgColor)
 
-                    pointsData.forEachIndexed { index, point ->
-                        if (isTapped && point.isTapped(tapOffset.x, xOffset)) {
-                            // Dealing with only one line graph hence tapPointLocks[0]
-                            tapPointLocks[0] = line.dataPoints[index] to point
-                        }
-                    }
 
-                    val selectedOffset = tapPointLocks.values.firstOrNull()?.second
-                    if (selectionTextVisibility && selectedOffset.isNotNull()) {
-                        drawHighlightText(
-                            identifiedPoint,
-                            selectedOffset ?: Offset(0f, 0f),
-                            line.selectionHighlightPopUp
-                        )
-                    }
-                    if (isTapped) {
-                        val x = tapPointLocks.values.firstOrNull()?.second?.x
-                        if (x != null) identifiedPoint =
-                            tapPointLocks.values.map { it.first }.first()
-                        drawHighLightOnSelectedPoint(
-                            tapPointLocks,
-                            columnWidth,
-                            paddingRight,
-                            yBottom,
-                            line.selectionHighlightPoint
-                        )
-                    }
-                }
                 },
                 onPointClicked = { offset: Offset, _: Float ->
                     isTapped = true
@@ -240,76 +233,42 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                     isTapped = false
                     selectionTextVisibility = false
                 })
-            if (isTalkBackEnabled) {
-                    AccessibilityBottomSheetDialog(
-                        modifier = Modifier.fillMaxSize(),
-                        backgroundColor = Color.White,
-                        content = {
-                            LazyColumn {
-                                items(count = linePlotData.lines.size) { lineIndex ->
-                                    linePlotData.lines[lineIndex].dataPoints.forEachIndexed { pointIndex, point ->
-                                        Column {
-                                            LinePointInfo(
-                                                xAxisData.axisLabelDescription(
-                                                    xAxisData.labelData(
-                                                        pointIndex
-                                                    )
-                                                ),
-                                                point.description,
-                                               linePlotData.lines[lineIndex].lineStyle.color
-                                            )
-
-                                            ItemDivider(
-                                                thickness = accessibilityConfig.dividerThickness,
-                                                dividerColor = accessibilityConfig.dividerColor
-                                            )
-                                        }
-
-                                    }
-                                }
-                            }
-                        },
-                        popUpTopRightButtonTitle = accessibilityConfig.popUpTopRightButtonTitle,
-                        popUpTopRightButtonDescription = accessibilityConfig.popUpTopRightButtonDescription,
-                        sheetState = accessibilitySheetState
-                    )
-
-            }
 
         }
+        if (isTalkBackEnabled) {
+            with(bubbleChartData) {
+                AccessibilityBottomSheetDialog(
+                    modifier = Modifier.fillMaxSize(),
+                    backgroundColor = Color.White,
+                    content = {
+                        LazyColumn {
+                            items(bubbles?.size ?: 0) { index ->
+                                Column {
+                                    BubblePointInfo(
+                                        xAxisData.axisLabelDescription(
+                                            xAxisData.labelData(
+                                                index
+                                            )
+                                        ),
+                                        bubbles[index].center.description,
+                                        bubbles[index].bubbleStyle.solidColor
+                                            ?: bubbles[index].bubbleStyle.gradientColors.first()
+                                    )
+                                    ItemDivider(
+                                        thickness = accessibilityConfig.dividerThickness,
+                                        dividerColor = accessibilityConfig.dividerColor
+                                    )
+                                }
+                            }
+                        }
+                    },
+                    popUpTopRightButtonTitle = accessibilityConfig.popUpTopRightButtonTitle,
+                    popUpTopRightButtonDescription = accessibilityConfig.popUpTopRightButtonDescription,
+                    sheetState = accessibilitySheetState
+                )
+            }
+        }
     }
-}
-
-/**
- *
- * returns the list of transformed points supported to be drawn on the container using the input points .
- * @param lineChartPoints :Input data points
- * @param xMin: Min X-Axis value.
- * @param xOffset : Total distance between two X-Axis points.
- * @param xLeft: Total left padding in X-Axis.
- * @param scrollOffset : Total scrolled offset.
- * @param yBottom : Bottom start offset for X-Axis.
- * @param yMin : Min Y-Axis value.
- * @param yOffset : Distance between two Y-Axis points.
- */
-fun getMappingPointsToGraph(
-    lineChartPoints: List<Point>,
-    xMin: Float,
-    xOffset: Float,
-    xLeft: Float,
-    scrollOffset: Float,
-    yBottom: Float,
-    yMin: Float,
-    yOffset: Float,
-): MutableList<Offset> {
-    val pointsData = mutableListOf<Offset>()
-    lineChartPoints.forEachIndexed { _, point ->
-        val (x, y) = point
-        val x1 = ((x - xMin) * xOffset) + xLeft - scrollOffset
-        val y1 = yBottom - ((y - yMin) * yOffset)
-        pointsData.add(Offset(x1, y1))
-    }
-    return pointsData
 }
 
 /**
@@ -340,74 +299,6 @@ fun getMaxScrollDistance(
 
 /**
  *
- * DrawScope.drawStraightOrCubicLine extension method used for drawing a straight/cubic line for a given Point(x,y).
- * @param pointsData : List of points to be drawn on the canvas
- * @param cubicPoints1 : List of average left side values for a given Point(x,y).
- * @param cubicPoints2 : List of average right side values for a given Point(x,y).
- * @param lineStyle : All styles related to the path are included in [LineStyle].
- */
-fun DrawScope.drawStraightOrCubicLine(
-    pointsData: MutableList<Offset>,
-    cubicPoints1: MutableList<Offset>,
-    cubicPoints2: MutableList<Offset>,
-    lineStyle: LineStyle
-): Path {
-    val path = Path()
-    path.moveTo(pointsData.first().x, pointsData.first().y)
-    for (i in 1 until pointsData.size) {
-        when (lineStyle.lineType) {
-            is LineType.Straight -> {
-                path.lineTo(pointsData[i].x, pointsData[i].y)
-            }
-            is LineType.SmoothCurve -> {
-                path.cubicTo(
-                    cubicPoints1[i - 1].x,
-                    cubicPoints1[i - 1].y,
-                    cubicPoints2[i - 1].x,
-                    cubicPoints2[i - 1].y,
-                    pointsData[i].x,
-                    pointsData[i].y
-                )
-            }
-        }
-    }
-    with(lineStyle) {
-        drawPath(
-            path,
-            color = color,
-            style = getDrawStyleForPath(lineStyle.lineType, lineStyle),
-            alpha = alpha,
-            colorFilter = colorFilter,
-            blendMode = blendMode
-        )
-    }
-    return path
-}
-
-/**
- *
- * Returns the Drawstyle for the path.
- * @param lineType : Type of the line [LineType]
- * @param lineStyle : The style for the path [lineStyle]
- */
-internal fun getDrawStyleForPath(
-    lineType: LineType, lineStyle: LineStyle
-): DrawStyle = if (lineType.isDotted) Stroke(
-    width = lineStyle.width, pathEffect = PathEffect.dashPathEffect(lineType.intervals)
-) else lineStyle.style
-
-
-/**
- *
- * DrawScope.drawPointOnLine extension method  used for drawing a circle/mark on a line for a given Point(x,y).
- * @param offset : Point at which circle/mark has to be drawn.
- */
-internal fun DrawScope.drawPointOnLine(offset: Offset, intersectionPoint: IntersectionPoint?) {
-    intersectionPoint?.draw?.let { it(this, offset) }
-}
-
-/**
- *
  * DrawScope.drawUnderScrollMask extension method used  for drawing a rectangular mask to make graph scrollable under the YAxis.
  * @param columnWidth : Width of the rectangular mask here width of Y Axis is used.
  * @param paddingRight : Padding given at the end of the graph.
@@ -422,30 +313,6 @@ private fun DrawScope.drawUnderScrollMask(columnWidth: Float, paddingRight: Dp, 
         Offset(size.width - paddingRight.toPx(), 0f),
         Size(paddingRight.toPx(), size.height)
     )
-}
-
-/**
- *
- * DrawScope.drawShadowUnderLineAndIntersectionPoint extension method used  for drawing a
- * shadow below the line graph points and also drawing intersection points on the line graph.
- * @param cubicPath : Path used to draw the shadow
- * @param pointsData : List of the points on the Line graph.
- * @param yBottom : Offset of X-Axis starting position i.e shade to be drawn until.
- * @param line : line on which shadow & intersectionPoints has to be drawn.
- */
-fun DrawScope.drawShadowUnderLineAndIntersectionPoint(
-    cubicPath: Path, pointsData: MutableList<Offset>, yBottom: Float, line: Line
-) {
-    if (line.shadowUnderLine.isNotNull()) {
-        cubicPath.lineTo(pointsData.last().x, yBottom)
-        cubicPath.lineTo(pointsData.first().x, yBottom)
-        line.shadowUnderLine?.draw?.let { it(this, cubicPath) }
-    }
-    if (line.intersectionPoint.isNotNull()) {
-        pointsData.forEach { offset ->
-            drawPointOnLine(offset, line.intersectionPoint)
-        }
-    }
 }
 
 

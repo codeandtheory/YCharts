@@ -88,6 +88,17 @@ class MainActivity : ComponentActivity() {
                                 )
                                 addActivityInOutAnim()
                             })
+                        ChartButton(
+                            title = getString(R.string.bubble_chart),
+                            onClick = {
+                                startActivity(
+                                    Intent(
+                                        this@MainActivity,
+                                        BubbleChartActivity::class.java
+                                    )
+                                )
+                                addActivityInOutAnim()
+                            })
                     }
                 }
             }

@@ -2,6 +2,7 @@ package co.yml.charts.ui.linechart.model
 
 import co.yml.charts.common.model.PlotData
 import co.yml.charts.common.model.PlotType
+
 /**
  * LinePlotData is a data class that holds line graph related data and styling components
  * @param plotType : Defines the type of plot/graph
