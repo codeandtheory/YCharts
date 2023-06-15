@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.LinearGradient
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultBlendMode
 import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Fill
@@ -26,9 +27,10 @@ import co.yml.charts.ui.linechart.model.LineType
  */
 data class BubbleStyle(
     val gradientColors: List<Color> = listOf(Color.Blue, Color.Red),
-    val gradientType: BubbleGradientType = BubbleGradientType.None(),
-    val solidColor: Color = Color.Blue,
+    val gradientType: BubbleGradientType = BubbleGradientType.HorizontalGradient,
+    val tileMode: TileMode = TileMode.Decal,
     val useGradience: Boolean = false,
+    val solidColor: Color = Color.Blue,
     val width: Float = 8f,
     val alpha: Float = 1.0f,
     val style: DrawStyle = Fill,
@@ -70,14 +72,6 @@ sealed class BubbleGradientType {
      *
      * @constructor Create empty Horizontal gradient
      */
-    class HorizontalGradient() : BubbleGradientType()
-
-    /**
-     * None
-     *
-     * @constructor Create empty None
-     */
-    class None() : BubbleGradientType()
-
+    object HorizontalGradient : BubbleGradientType()
 
 }

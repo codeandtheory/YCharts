@@ -91,10 +91,43 @@ data class Bubble(
 )
 
 private fun getBrush(bubbleStyle: BubbleStyle, center: Offset, density: Float): Brush {
-    return Brush.radialGradient(
-        colors = bubbleStyle.gradientColors,
-        center = center,
-        radius = density,
-        tileMode = TileMode.Decal
-    )
+    when (bubbleStyle.gradientType) {
+        BubbleGradientType.RadialGradient -> {
+            return Brush.radialGradient(
+                colors = bubbleStyle.gradientColors,
+                center = center,
+                radius = density,
+                tileMode = bubbleStyle.tileMode
+            )
+        }
+
+        BubbleGradientType.LinearGradient -> {
+            return Brush.linearGradient(
+                colors = bubbleStyle.gradientColors,
+                tileMode = bubbleStyle.tileMode,
+                start = center,
+                end = center
+            )
+        }
+
+        BubbleGradientType.VerticalGradient -> {
+            return Brush.verticalGradient(
+                colors = bubbleStyle.gradientColors,
+                tileMode = bubbleStyle.tileMode,
+                startY = center.y - density / 2,
+                endY = center.y + density / 2,
+            )
+        }
+
+        BubbleGradientType.HorizontalGradient -> {
+            return Brush.horizontalGradient(
+                colors = bubbleStyle.gradientColors,
+                tileMode = bubbleStyle.tileMode,
+                startX = center.x - density / 2,
+                endX = center.x + density / 2,
+            )
+        }
+    }
+
+
 }
