@@ -50,7 +50,7 @@ object DataUtils {
         for (index in 0 until listSize) {
             list.add(
                 Point(
-                    index.toFloat(),
+                    (start until maxRange).random().toFloat(),
                     (start until maxRange).random().toFloat()
                 )
             )
@@ -76,7 +76,7 @@ object DataUtils {
             val bubbleColor3 = Color(Random.nextInt(256), Random.nextInt(256), Random.nextInt(256), Random.nextInt(256))
             val bubbleColor4 = Color(Random.nextInt(256), Random.nextInt(256), Random.nextInt(256), Random.nextInt(256))
 
-            when(Random.nextInt(0,7)){
+            when(Random.nextInt(0,5)){
                 0->{
                     list.add(
                         Bubble(
@@ -118,29 +118,11 @@ object DataUtils {
                         Bubble(
                             center = point,
                             density = (minDensity.toInt() until maxDensity.toInt()).random().toFloat(),
-                            bubbleStyle = BubbleStyle(gradientColors = listOf(bubbleColor1, bubbleColor2), useGradience = true, gradientType = BubbleGradientType.HorizontalGradient, tileMode = TileMode.Decal)
-                        )
-                    )
-                }
-                5->{
-                    list.add(
-                        Bubble(
-                            center = point,
-                            density = (minDensity.toInt() until maxDensity.toInt()).random().toFloat(),
                             bubbleStyle = BubbleStyle(gradientColors = listOf(bubbleColor1, bubbleColor2,bubbleColor3,bubbleColor4), useGradience = true, gradientType = BubbleGradientType.HorizontalGradient,tileMode = TileMode.Repeated)
                         )
                     )
                 }
-                6->{
-                    list.add(
-                        Bubble(
-                            center = point,
-                            density = (minDensity.toInt() until maxDensity.toInt()).random().toFloat(),
-                            bubbleStyle = BubbleStyle(gradientColors = listOf(bubbleColor1, bubbleColor2,bubbleColor3,bubbleColor4), useGradience = true, gradientType = BubbleGradientType.HorizontalGradient,tileMode = TileMode.Clamp)
-                        )
-                    )
-                }
-                7->{
+                5->{
                     list.add(
                         Bubble(
                             center = point,

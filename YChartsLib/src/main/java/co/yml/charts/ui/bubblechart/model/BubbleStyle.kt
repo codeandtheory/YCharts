@@ -28,7 +28,7 @@ import co.yml.charts.ui.linechart.model.LineType
 data class BubbleStyle(
     val gradientColors: List<Color> = listOf(Color.Blue, Color.Red),
     val gradientType: BubbleGradientType = BubbleGradientType.HorizontalGradient,
-    val tileMode: TileMode = TileMode.Decal,
+    val tileMode: TileMode = TileMode.Clamp,
     val useGradience: Boolean = false,
     val solidColor: Color = Color.Blue,
     val width: Float = 8f,

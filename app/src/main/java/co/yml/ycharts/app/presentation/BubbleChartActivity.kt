@@ -67,8 +67,8 @@ class BubbleChartActivity : ComponentActivity() {
                                 BubbleChartWithGrid(
                                     pointsData = DataUtils.getRandomPoints(
                                         200,
-                                        start = -50,
-                                        maxRange = 50
+                                        start = 30,
+                                        maxRange = 100
                                     )
                                 )
                                 Spacer(modifier = Modifier.height(12.dp))
@@ -84,8 +84,8 @@ class BubbleChartActivity : ComponentActivity() {
                                 SolidBubbleChart(
                                     pointsData = DataUtils.getRandomPoints(
                                         200,
-                                        start = -50,
-                                        maxRange = 50
+                                        start = 30,
+                                        maxRange = 900
                                     )
                                 )
                                 Spacer(modifier = Modifier.height(12.dp))
