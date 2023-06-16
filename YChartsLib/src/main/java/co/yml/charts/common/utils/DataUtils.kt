@@ -50,7 +50,7 @@ object DataUtils {
         for (index in 0 until listSize) {
             list.add(
                 Point(
-                    (start until maxRange).random().toFloat(),
+                   index.toFloat(),
                     (start until maxRange).random().toFloat()
                 )
             )
@@ -195,7 +195,7 @@ object DataUtils {
             val point = when (barChartType) {
                 BarChartType.VERTICAL -> {
                     Point(
-                        index.toFloat(),
+                       index.toFloat(),
                         "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat()
                     )
                 }
@@ -203,7 +203,7 @@ object DataUtils {
                 BarChartType.HORIZONTAL -> {
                     Point(
                         "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat(),
-                        index.toFloat()
+                        "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat()
                     )
                 }
             }

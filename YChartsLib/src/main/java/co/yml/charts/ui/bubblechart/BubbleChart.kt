@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ExperimentalMaterialApi
@@ -34,6 +35,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import co.yml.charts.axis.XAxis
 import co.yml.charts.axis.YAxis
 import co.yml.charts.axis.getXAxisScale
@@ -129,13 +131,6 @@ fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
                 containerBackgroundColor = backgroundColor,
                 isPinchZoomEnabled = isZoomAllowed,
                 drawXAndYAxis = { scrollOffset, xZoom ->
-                    YAxis(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .onGloballyPositioned {
-                                columnWidth = it.size.width.toFloat()
-                            }, yAxisData = yAxisData
-                    )
                     XAxis(xAxisData = xAxisData,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -154,6 +149,14 @@ fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
                         zoomScale = xZoom,
                         chartData = bubblePoints,
                         axisStart = columnWidth)
+                    YAxis(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .onGloballyPositioned {
+                                columnWidth = it.size.width.toFloat()
+                            }, yAxisData = yAxisData
+                    )
+
                 },
                 onDraw = { scrollOffset, xZoom ->
                     val yBottom = size.height - rowHeight
