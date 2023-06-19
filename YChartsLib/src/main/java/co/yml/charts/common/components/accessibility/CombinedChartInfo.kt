@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.yml.charts.ui.barchart.models.GroupBar
@@ -32,6 +33,8 @@ import co.yml.charts.common.model.Point
  * @param axisLabelDescription: Axis label description.
  * @param barColorPaletteList: List of each bar colors for a given group bar.
  * @param dividerColor: Divider color between each point items.
+ * @param titleTextSize: TextUnit title font size
+ * @param descriptionTextSize: TextUnit description font size
  */
 @Composable
 fun CombinedChartInfo(
@@ -40,7 +43,9 @@ fun CombinedChartInfo(
     groupBar: GroupBar?,
     axisLabelDescription: String,
     barColorPaletteList: List<Color>,
-    dividerColor: Color
+    dividerColor: Color,
+    titleTextSize: TextUnit,
+    descriptionTextSize: TextUnit
 ) {
     // Merge elements below for accessibility purposes
     Row(modifier = Modifier
@@ -48,7 +53,7 @@ fun CombinedChartInfo(
         .clickable { }
         .semantics(mergeDescendants = true) {}, verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(axisLabelDescription, fontSize = 12.sp)
+        Text(axisLabelDescription, fontSize = titleTextSize)
         Spacer(modifier = Modifier.width(10.dp))
         Column(
             modifier = Modifier
@@ -66,7 +71,7 @@ fun CombinedChartInfo(
                             )
                             .size(10.dp)
                     )
-                    Text(point.description, fontSize = 12.sp)
+                    Text(point.description, fontSize = descriptionTextSize)
                 }
                 Spacer(modifier = Modifier.height(5.dp))
             }
@@ -79,7 +84,7 @@ fun CombinedChartInfo(
                             .background(barColorPaletteList[index])
                             .size(20.dp)
                     )
-                    Text(value.description, fontSize = 12.sp)
+                    Text(value.description, fontSize = descriptionTextSize)
                 }
                 Spacer(modifier = Modifier.height(5.dp))
             }

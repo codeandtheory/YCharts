@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -23,12 +24,16 @@ import androidx.compose.ui.unit.sp
  * @param axisLabelDescription: Axis label description.
  * @param pointDescription: Details of each point on the line.
  * @param bubbleColor: Color of each bubble.
+ * @param titleTextSize: TextUnit title font size
+ * @param descriptionTextSize: TextUnit description font size
  */
 @Composable
 fun BubblePointInfo(
     axisLabelDescription: String,
     pointDescription: String,
-    bubbleColor: Color
+    bubbleColor: Color,
+    titleTextSize: TextUnit,
+    descriptionTextSize: TextUnit
 ) {
     // Merge elements below for accessibility purposes
     Row(modifier = Modifier
@@ -36,7 +41,7 @@ fun BubblePointInfo(
         .clickable { }
         .semantics(mergeDescendants = true) {}, verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(axisLabelDescription, fontSize = 12.sp)
+        Text(axisLabelDescription, fontSize = titleTextSize)
         Spacer(modifier = Modifier.width(5.dp))
         Column(
             modifier = Modifier
@@ -50,7 +55,7 @@ fun BubblePointInfo(
                         .background(bubbleColor)
                         .size(20.dp)
                 )
-                Text(pointDescription, fontSize = 12.sp)
+                Text(pointDescription, fontSize = descriptionTextSize)
             }
         }
     }

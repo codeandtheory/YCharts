@@ -304,7 +304,9 @@ fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartData) {
                                         xAxisData.axisLabelDescription(
                                             xAxisData.labelData(index)
                                         ),
-                                        barPlotData.barColorPaletteList
+                                        barPlotData.barColorPaletteList,
+                                        accessibilityConfig.titleTextSize,
+                                        accessibilityConfig.descriptionTextSize
                                     )
                                     ItemDivider(
                                         thickness = accessibilityConfig.dividerThickness,

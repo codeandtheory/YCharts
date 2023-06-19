@@ -256,7 +256,9 @@ fun WaveChart(modifier: Modifier, waveChartData: WaveChartData) {
                                         ),
                                         linePoints?.get(index)?.description ?: "",
                                         wavePlotData.lines.firstOrNull()?.waveStyle?.color
-                                            ?: Color.Transparent
+                                            ?: Color.Transparent,
+                                        accessibilityConfig.titleTextSize,
+                                        accessibilityConfig.descriptionTextSize
                                     )
                                     ItemDivider(
                                         thickness = accessibilityConfig.dividerThickness,

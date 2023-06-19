@@ -252,7 +252,8 @@ fun DonutPieChart(
                             items(pieChartData.slices.size) { index ->
                                 SliceInfo(
                                     pieChartData.slices[index],
-                                    proportions[index].roundToInt()
+                                    proportions[index].roundToInt(),
+                                    accessibilityConfig.descriptionTextSize
                                 )
                             }
                         }
