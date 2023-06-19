@@ -3,7 +3,6 @@ package co.yml.charts.ui.bubblechart.model
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -20,6 +19,7 @@ import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
  * Bubble chart data
  *
  * @property bubbles
+ * @property maximumBubbleRadius
  * @property xAxisData
  * @property yAxisData
  * @property isZoomAllowed
@@ -34,6 +34,7 @@ import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
  */
 data class BubbleChartData(
     val bubbles: List<Bubble>,
+    val maximumBubbleRadius:Float = 100f,
     val xAxisData: AxisData = AxisData.Builder().build(),
     val yAxisData: AxisData = AxisData.Builder().build(),
     val isZoomAllowed: Boolean = true,
@@ -65,12 +66,13 @@ data class Bubble(
     val intersectionPoint: IntersectionPoint? = null,
     val selectionHighlightPoint: SelectionHighlightPoint? = null,
     val selectionHighlightPopUp: SelectionHighlightPopUp? = null,
-    val draw: DrawScope.(Offset) -> Unit = { center ->
+    val draw: DrawScope.(Offset,Float) -> Unit = { center,maximumRadius ->
+        val drawingRadius:Float = (density / maximumRadius) * 100
         if (bubbleStyle.useGradience) {
             drawCircle(
                 brush = getBrush(bubbleStyle, center, density),
                 center = center,
-                radius = density,
+                radius = drawingRadius,
                 alpha = bubbleStyle.alpha,
                 style = bubbleStyle.style,
                 colorFilter = bubbleStyle.colorFilter,
@@ -79,7 +81,7 @@ data class Bubble(
         } else {
             drawCircle(
                 bubbleStyle.solidColor,
-                density,
+                drawingRadius,
                 center,
                 bubbleStyle.alpha,
                 bubbleStyle.style,
@@ -91,10 +93,43 @@ data class Bubble(
 )
 
 private fun getBrush(bubbleStyle: BubbleStyle, center: Offset, density: Float): Brush {
-    return Brush.radialGradient(
-        colors = bubbleStyle.gradientColors,
-        center = center,
-        radius = density,
-        tileMode = TileMode.Decal
-    )
+    when (bubbleStyle.gradientType) {
+        BubbleGradientType.RadialGradient -> {
+            return Brush.radialGradient(
+                colors = bubbleStyle.gradientColors,
+                center = center,
+                radius = density,
+                tileMode = bubbleStyle.tileMode
+            )
+        }
+
+        BubbleGradientType.LinearGradient -> {
+            return Brush.linearGradient(
+                colors = bubbleStyle.gradientColors,
+                tileMode = bubbleStyle.tileMode,
+                start = center,
+                end = center
+            )
+        }
+
+        BubbleGradientType.VerticalGradient -> {
+            return Brush.verticalGradient(
+                colors = bubbleStyle.gradientColors,
+                tileMode = bubbleStyle.tileMode,
+                startY = center.y - density / 2,
+                endY = center.y + density / 2,
+            )
+        }
+
+        BubbleGradientType.HorizontalGradient -> {
+            return Brush.horizontalGradient(
+                colors = bubbleStyle.gradientColors,
+                tileMode = bubbleStyle.tileMode,
+                startX = center.x - density / 2,
+                endX = center.x + density / 2,
+            )
+        }
+    }
+
+
 }

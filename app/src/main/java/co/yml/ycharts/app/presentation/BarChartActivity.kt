@@ -138,6 +138,7 @@ private fun BarchartWithSolidBars() {
         .steps(barData.size - 1)
         .bottomPadding(40.dp)
         .axisLabelAngle(20f)
+        .startDrawPadding(48.dp)
         .labelData { index -> barData[index].label }
         .build()
     val yAxisData = AxisData.Builder()
@@ -175,6 +176,7 @@ private fun BarchartWithGradientBars() {
         .steps(barData.size - 1)
         .bottomPadding(40.dp)
         .axisLabelAngle(20f)
+        .startDrawPadding(48.dp)
         .labelData { index -> barData[index].label }
         .build()
     val yAxisData = AxisData.Builder()
@@ -216,6 +218,7 @@ private fun BarchartWithBackgroundColor() {
         .axisStepSize(30.dp)
         .steps(barData.size - 1)
         .bottomPadding(40.dp)
+        .startDrawPadding(48.dp)
         .axisLabelAngle(20f)
         .labelData { index -> barData[index].label }
         .backgroundColor(backgroundColor)

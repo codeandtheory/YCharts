@@ -2,6 +2,7 @@ package co.yml.charts.common.utils
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.text.TextStyle
 import co.yml.charts.axis.DataCategoryOptions
 import co.yml.charts.common.model.LegendLabel
@@ -12,6 +13,7 @@ import co.yml.charts.ui.barchart.models.BarChartType
 import co.yml.charts.ui.barchart.models.BarData
 import co.yml.charts.ui.barchart.models.GroupBar
 import co.yml.charts.ui.bubblechart.model.Bubble
+import co.yml.charts.ui.bubblechart.model.BubbleGradientType
 import co.yml.charts.ui.bubblechart.model.BubbleStyle
 import co.yml.charts.ui.piechart.models.PieChartData
 import kotlin.math.sin
@@ -48,7 +50,7 @@ object DataUtils {
         for (index in 0 until listSize) {
             list.add(
                 Point(
-                    index.toFloat(),
+                   index.toFloat(),
                     (start until maxRange).random().toFloat()
                 )
             )
@@ -69,14 +71,68 @@ object DataUtils {
     ): List<Bubble> {
         val list = arrayListOf<Bubble>()
         points.forEachIndexed { index, point ->
-            val bubbleColor = if (index % 2 == 0) Color.Red else Color.Blue
-            list.add(
-                Bubble(
-                    center = point,
-                    density = (minDensity.toInt() until maxDensity.toInt()).random().toFloat(),
-                    bubbleStyle = BubbleStyle(gradientColors = listOf(bubbleColor, Color.White), useGradience = true)
-                )
-            )
+            val bubbleColor1 = Color(Random.nextInt(256), Random.nextInt(256), Random.nextInt(256), Random.nextInt(256))
+            val bubbleColor2 = Color(Random.nextInt(256), Random.nextInt(256), Random.nextInt(256), Random.nextInt(256))
+            val bubbleColor3 = Color(Random.nextInt(256), Random.nextInt(256), Random.nextInt(256), Random.nextInt(256))
+            val bubbleColor4 = Color(Random.nextInt(256), Random.nextInt(256), Random.nextInt(256), Random.nextInt(256))
+
+            when(Random.nextInt(0,5)){
+                0->{
+                    list.add(
+                        Bubble(
+                            center = point,
+                            density = (minDensity.toInt() until maxDensity.toInt()).random().toFloat(),
+                            bubbleStyle = BubbleStyle(gradientColors = listOf(bubbleColor1, bubbleColor2,bubbleColor3,bubbleColor4), useGradience = true, gradientType = BubbleGradientType.RadialGradient)
+                        )
+                    )
+                }
+                1->{
+                    list.add(
+                        Bubble(
+                            center = point,
+                            density = (minDensity.toInt() until maxDensity.toInt()).random().toFloat(),
+                            bubbleStyle = BubbleStyle(gradientColors = listOf(bubbleColor1, bubbleColor2), useGradience = true, gradientType = BubbleGradientType.LinearGradient)
+                        )
+                    )
+                }
+                2->{
+                    list.add(
+                        Bubble(
+                            center = point,
+                            density = (minDensity.toInt() until maxDensity.toInt()).random().toFloat(),
+                            bubbleStyle = BubbleStyle(gradientColors = listOf(bubbleColor1, bubbleColor2), useGradience = true, gradientType = BubbleGradientType.VerticalGradient)
+                        )
+                    )
+                }
+                3->{
+                    list.add(
+                        Bubble(
+                            center = point,
+                            density = (minDensity.toInt() until maxDensity.toInt()).random().toFloat(),
+                            bubbleStyle = BubbleStyle(gradientColors = listOf(bubbleColor1, bubbleColor2), useGradience = true, gradientType = BubbleGradientType.HorizontalGradient)
+                        )
+                    )
+                }
+                4->{
+                    list.add(
+                        Bubble(
+                            center = point,
+                            density = (minDensity.toInt() until maxDensity.toInt()).random().toFloat(),
+                            bubbleStyle = BubbleStyle(gradientColors = listOf(bubbleColor1, bubbleColor2,bubbleColor3,bubbleColor4), useGradience = true, gradientType = BubbleGradientType.HorizontalGradient,tileMode = TileMode.Repeated)
+                        )
+                    )
+                }
+                5->{
+                    list.add(
+                        Bubble(
+                            center = point,
+                            density = (minDensity.toInt() until maxDensity.toInt()).random().toFloat(),
+                            bubbleStyle = BubbleStyle(gradientColors = listOf(bubbleColor1, bubbleColor2,bubbleColor3,bubbleColor4), useGradience = true, gradientType = BubbleGradientType.HorizontalGradient,tileMode = TileMode.Mirror)
+                        )
+                    )
+                }
+            }
+
 
         }
         return list
@@ -95,7 +151,7 @@ object DataUtils {
     ): List<Bubble> {
         val list = arrayListOf<Bubble>()
         points.forEachIndexed { index, point ->
-            val bubbleColor = if (index % 2 == 0) Color.Red else Color.Blue
+            val bubbleColor =Color(red = Random.nextInt(256),green= Random.nextInt(256),blue= Random.nextInt(256), alpha =Random.nextInt(from = 150, until =  256) )
             list.add(
                 Bubble(
                     center = point,
@@ -103,7 +159,6 @@ object DataUtils {
                     bubbleStyle = BubbleStyle(solidColor = bubbleColor, useGradience = false)
                 )
             )
-
         }
         return list
     }
@@ -140,7 +195,7 @@ object DataUtils {
             val point = when (barChartType) {
                 BarChartType.VERTICAL -> {
                     Point(
-                        index.toFloat(),
+                       index.toFloat(),
                         "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat()
                     )
                 }
@@ -148,7 +203,7 @@ object DataUtils {
                 BarChartType.HORIZONTAL -> {
                     Point(
                         "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat(),
-                        index.toFloat()
+                        "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat()
                     )
                 }
             }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ExperimentalMaterialApi
@@ -34,6 +35,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import co.yml.charts.axis.XAxis
 import co.yml.charts.axis.YAxis
 import co.yml.charts.axis.getXAxisScale
@@ -60,11 +62,10 @@ import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 import kotlinx.coroutines.launch
 
 /**
+ * Bubble chart
  *
- * [BubbleChart] compose method used for drawing a Bubble Chart.
- * @param modifier :All modifier related property.
- * Data class [BubbleChartData] to save all params needed to draw the bubble chart.
- * @param bubbleChartData : Add data related to bubble chart.
+ * @param modifier
+ * @param bubbleChartData
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -130,13 +131,6 @@ fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
                 containerBackgroundColor = backgroundColor,
                 isPinchZoomEnabled = isZoomAllowed,
                 drawXAndYAxis = { scrollOffset, xZoom ->
-                    YAxis(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .onGloballyPositioned {
-                                columnWidth = it.size.width.toFloat()
-                            }, yAxisData = yAxisData
-                    )
                     XAxis(xAxisData = xAxisData,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -155,6 +149,14 @@ fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
                         zoomScale = xZoom,
                         chartData = bubblePoints,
                         axisStart = columnWidth)
+                    YAxis(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .onGloballyPositioned {
+                                columnWidth = it.size.width.toFloat()
+                            }, yAxisData = yAxisData
+                    )
+
                 },
                 onDraw = { scrollOffset, xZoom ->
                     val yBottom = size.height - rowHeight
@@ -182,9 +184,9 @@ fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
                             it
                         )
                     }
-                    pointsData.forEachIndexed {index,offset->
+                    pointsData.forEachIndexed { index, offset ->
 
-                        bubbles[index].draw(this,offset)
+                        bubbles[index].draw(this, offset, bubbleChartData.maximumBubbleRadius)
 
                         pointsData.forEachIndexed { index, point ->
                             if (isTapped && point.isTapped(tapOffset.x, xOffset)) {
@@ -272,15 +274,16 @@ fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
 }
 
 /**
+ * Get max scroll distance
  *
- * returns the max scrollable distance based on the points to be drawn along with padding etc.
- * @param columnWidth : Width of the Y-Axis.
- * @param xMax : Max X-Axis value.
- * @param xMin: Min X-Axis value.
- * @param xOffset: Total distance between two X-Axis points.
- * @param paddingRight : Padding at the end of the canvas.
- * @param canvasWidth : Total available canvas width.
- * @param containerPaddingEnd : Container inside padding end after the last point of the graph.
+ * @param columnWidth
+ * @param xMax
+ * @param xMin
+ * @param xOffset
+ * @param paddingRight
+ * @param canvasWidth
+ * @param containerPaddingEnd
+ * @return
  */
 fun getMaxScrollDistance(
     columnWidth: Float,
@@ -317,9 +320,10 @@ private fun DrawScope.drawUnderScrollMask(columnWidth: Float, paddingRight: Dp, 
 
 
 /**
+ * Get cubic points
  *
- * getCubicPoints method provides left and right average value for a given point to get a smooth curve.
- * @param pointsData : List of the points on the Line graph.
+ * @param pointsData
+ * @return
  */
 fun getCubicPoints(pointsData: List<Offset>): Pair<MutableList<Offset>, MutableList<Offset>> {
     val cubicPoints1 = mutableListOf<Offset>()
@@ -341,10 +345,11 @@ fun getCubicPoints(pointsData: List<Offset>): Pair<MutableList<Offset>, MutableL
 }
 
 /**
- * Used to draw the highlighted text
- * @param identifiedPoint : Selected points
- * @param selectedOffset: Offset selected
- * @param selectionHighlightPopUp : Data class with all styling related info [SelectionHighlightPopUp]
+ * Draw highlight text
+ *
+ * @param identifiedPoint
+ * @param selectedOffset
+ * @param selectionHighlightPopUp
  */
 fun DrawScope.drawHighlightText(
     identifiedPoint: Point,
@@ -357,14 +362,13 @@ fun DrawScope.drawHighlightText(
 }
 
 /**
+ * Draw high light on selected point
  *
- * DrawScope.drawHighLightOnSelectedPoint extension method used for drawing and  highlight the selected
- * point when dragging.
- * @param dragLocks : List of points to be drawn on the canvas and that can be selected.
- * @param columnWidth : Width of the Axis in the left or right.
- * @param paddingRight : Padding given to the right side of the canvas.
- * @param yBottom : Start position from below of the canvas.
- * @param selectionHighlightPoint : Data class to define all the styles to be drawn in [SelectionHighlightPoint]
+ * @param dragLocks
+ * @param columnWidth
+ * @param paddingRight
+ * @param yBottom
+ * @param selectionHighlightPoint
  */
 fun DrawScope.drawHighLightOnSelectedPoint(
     dragLocks: MutableMap<Int, Pair<Point, Offset>>,
