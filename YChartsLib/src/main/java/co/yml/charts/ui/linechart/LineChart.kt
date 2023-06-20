@@ -256,7 +256,9 @@ fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                                                     )
                                                 ),
                                                 point.description,
-                                               linePlotData.lines[lineIndex].lineStyle.color
+                                               linePlotData.lines[lineIndex].lineStyle.color,
+                                                accessibilityConfig.titleTextSize,
+                                                accessibilityConfig.descriptionTextSize
                                             )
 
                                             ItemDivider(

@@ -245,7 +245,8 @@ fun PieChart(
                         LazyColumn {
                             items(pieChartData.slices.size) { index ->
                                 SliceInfo(
-                                    pieChartData.slices[index], proportions[index].roundToInt()
+                                    pieChartData.slices[index], proportions[index].roundToInt(),
+                                    accessibilityConfig.descriptionTextSize
                                 )
                             }
                         }

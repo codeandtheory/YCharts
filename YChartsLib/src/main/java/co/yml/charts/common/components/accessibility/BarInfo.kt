@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -22,11 +23,15 @@ import androidx.compose.ui.unit.sp
  * Composable to display each bar item for given bar chart
  * @param axisLabelDescription: Axis label description
  * @param barDescription: Bar description
+ * @param titleTextSize: TextUnit title font size
+ * @param descriptionTextSize: TextUnit description font size
  */
 @Composable
 fun BarInfo(
     axisLabelDescription: String,
-    barDescription: String, barColor: Color
+    barDescription: String, barColor: Color,
+    titleTextSize:TextUnit,
+    descriptionTextSize:TextUnit
 ) {
     // Merge elements below for accessibility purposes
     Row(modifier = Modifier
@@ -34,7 +39,7 @@ fun BarInfo(
         .clickable { }
         .semantics(mergeDescendants = true) {}, verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(axisLabelDescription, fontSize = 12.sp)
+        Text(axisLabelDescription, fontSize = titleTextSize)
         Spacer(modifier = Modifier.width(10.dp))
         Column(
             modifier = Modifier
@@ -48,7 +53,7 @@ fun BarInfo(
                         .background(barColor)
                         .size(20.dp)
                 )
-                Text(barDescription, fontSize = 12.sp)
+                Text(barDescription, fontSize = descriptionTextSize)
             }
         }
     }

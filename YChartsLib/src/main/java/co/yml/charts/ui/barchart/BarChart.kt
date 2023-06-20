@@ -92,7 +92,9 @@ fun BarChart(modifier: Modifier, barChartData: BarChartData) {
                                             )
                                         },
                                         chartData[index].description,
-                                        chartData[index].color
+                                        chartData[index].color,
+                                        accessibilityConfig.titleTextSize,
+                                        accessibilityConfig.descriptionTextSize
                                     )
                                     ItemDivider(
                                         thickness = accessibilityConfig.dividerThickness,

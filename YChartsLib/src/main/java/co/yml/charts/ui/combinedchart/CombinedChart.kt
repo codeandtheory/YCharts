@@ -388,7 +388,9 @@ fun CombinedChart(modifier: Modifier, combinedChartData: CombinedChartData) {
                                             xAxisData.labelData(index)
                                         ),
                                         barColorPaletteList = barPlotData.barColorPaletteList,
-                                        dividerColor = accessibilityConfig.dividerColor
+                                        dividerColor = accessibilityConfig.dividerColor,
+                                        accessibilityConfig.titleTextSize,
+                                        accessibilityConfig.descriptionTextSize
                                     )
                                     ItemDivider(
                                         thickness = accessibilityConfig.dividerThickness,

@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import co.yml.charts.ui.piechart.models.PieChartData
@@ -20,9 +21,10 @@ import co.yml.charts.ui.piechart.models.PieChartData
  * Composable to display each slice for a given pie chart.
  * @param slice: Details of each slice in pie/ donut chart.
  * @param slicePercentage: Percentage of each slice.
+ * @param textSize: TextUnit text font size
  */
 @Composable
-fun SliceInfo(slice: PieChartData.Slice, slicePercentage: Int) {
+fun SliceInfo(slice: PieChartData.Slice, slicePercentage: Int, textSize: TextUnit) {
     // Merge elements below for accessibility purposes
     Row(modifier = Modifier
         .clickable { }
@@ -40,7 +42,7 @@ fun SliceInfo(slice: PieChartData.Slice, slicePercentage: Int) {
                 .weight(1f)
                 .padding(top = 10.dp, bottom = 10.dp)
         ) {
-            Text(slice.sliceDescription(slicePercentage), fontSize = 12.sp)
+            Text(slice.sliceDescription(slicePercentage), fontSize = textSize)
         }
     }
 }
