@@ -380,6 +380,151 @@ Let's see how we can use the chart components and style them with available cust
   </figure>
   <br>
 
+### 7. Wave Chart:
+
+- Wave charts, also referred to as waveform charts or waveform displays, are specialized visualizations used primarily in the field of signal processing and electronics. These charts illustrate the amplitude (vertical axis) and time (horizontal axis) of a waveform.
+
+  ```kotlin
+  val waveChartData = WaveChartData(
+        wavePlotData = WavePlotData(
+            lines = listOf(
+                Wave(
+                    dataPoints = pointsData,
+                    waveStyle = LineStyle(color = Color.Black),
+                    selectionHighlightPoint = SelectionHighlightPoint(),
+                    shadowUnderLine = ShadowUnderLine(),
+                    selectionHighlightPopUp = SelectionHighlightPopUp(),
+                    waveFillColor = WaveFillColor(topColor = Color.Green, bottomColor = Color.Red),
+                )
+            )
+        ),
+        xAxisData = xAxisData,
+        yAxisData = yAxisData,
+        gridLines = GridLines()
+    )
+  ```
+
+- Initialize X and Y Axis builders using the `AxisData` data class.
+
+  ```kotlin
+  val xAxisData = AxisData.Builder()
+    .axisStepSize(30.dp)
+    .steps(maxOf(barChartData.size - 1, lineChartData.size - 1))
+    .bottomPadding(40.dp)
+    .labelData { index -> index.toString() }
+    .build()
+
+  val yAxisData = AxisData.Builder()
+    .steps(yStepSize)
+    .labelAndAxisLinePadding(20.dp)
+    .axisOffset(20.dp)
+    .labelData { index -> (index * (maxRange / yStepSize)).toString() }
+    .build()
+  ```
+
+- Initialize the Wave chart config data with `WaveChartData` data class in order to achieve styling and configurations related to same.
+
+  ```kotlin
+  val waveChartData = WaveChartData(
+        wavePlotData = WavePlotData(
+            lines = listOf(
+                Wave(
+                    dataPoints = pointsData,
+                    waveStyle = LineStyle(color = Color.Black),
+                    selectionHighlightPoint = SelectionHighlightPoint(),
+                    shadowUnderLine = ShadowUnderLine(),
+                    selectionHighlightPopUp = SelectionHighlightPopUp(),
+                    waveFillColor = WaveFillColor(topColor = Color.Green, bottomColor = Color.Red),
+                )
+            )
+        ),
+        xAxisData = xAxisData,
+        yAxisData = yAxisData,
+        gridLines = GridLines()
+    )
+  ```
+
+- Finally, use the _**`WaveChart`**_ component to render the chart.
+  ```kotlin
+  WaveChart(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp),
+        waveChartData = data
+    )
+  ```
+  _Note_ : To show legends infomartion related to bar, `Legends` component can be used.
+  <figure>
+    <div align = "center">
+      <img width=292 src="https://user-images.githubusercontent.com/107846675/192773924-74421edd-7314-4b44-bdb1-13aaf3598796.png" />
+      <p>  Wavechart looks like this!</p>
+    </div>
+  </figure>
+  <br>
+
+### 8. Bubble Chart:
+
+- Bubble charts are a variation of the scatter plot, where the data points are represented as bubbles or circles instead of simple dots. The bubbles' size represents the value of a third variable, in addition to the x-axis and y-axis variables. Bubble charts are effective in visualizing and comparing three different dimensions of data simultaneously.
+  
+  ```kotlin
+    val bubbleChartData = BubbleChartData(
+        DataUtils.getBubbleChartDataWithGradientStyle(pointsData),
+        xAxisData = xAxisData,
+        yAxisData = yAxisData,
+        gridLines = GridLines()
+    )
+  ```
+
+- Initialize X and Y Axis builders using the `AxisData` data class.
+
+  ```kotlin
+  val xAxisData = AxisData.Builder()
+    .axisStepSize(30.dp)
+    .steps(maxOf(barChartData.size - 1, lineChartData.size - 1))
+    .bottomPadding(40.dp)
+    .labelData { index -> index.toString() }
+    .build()
+
+  val yAxisData = AxisData.Builder()
+    .steps(yStepSize)
+    .labelAndAxisLinePadding(20.dp)
+    .axisOffset(20.dp)
+    .labelData { index -> (index * (maxRange / yStepSize)).toString() }
+    .build()
+  ```
+
+- Initialize the Bubble chart config data with `BubbleChartData` data class in order to achieve styling and configurations related to same.
+
+  ```kotlin
+    val bubbleChartData = BubbleChartData(
+        DataUtils.getBubbleChartDataWithGradientStyle(pointsData),
+        xAxisData = xAxisData,
+        yAxisData = yAxisData,
+        gridLines = GridLines()
+    )
+    
+  ```
+
+- Finally, use the _**`BubbleChart`**_ component to render the chart.
+  ```kotlin
+    BubbleChart(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(500.dp),
+        bubbleChartData = data
+    )
+  ```
+  _Note_ : To show legends infomartion related to bar, `Legends` component can be used.
+  <figure>
+    <div align = "center">
+      <img width=292 src="https://user-images.githubusercontent.com/107846675/192773924-74421edd-7314-4b44-bdb1-13aaf3598796.png" />
+      <p>  Bubble looks like this!</p>
+    </div>
+  </figure>
+  <br>
+
+
+
 ## Accessibility Support
 
 To interact with your device with touch and spoken feedback, you can turn on the TalkBack screen reader. TalkBack describes the graphs/charts when tapped on the graph container.
