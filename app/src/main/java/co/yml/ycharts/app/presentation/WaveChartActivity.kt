@@ -118,6 +118,7 @@ private fun WaveGraph1(pointsData: List<Point>) {
     val steps = 5
     val xAxisData = AxisData.Builder()
         .axisStepSize(30.dp)
+        .startDrawPadding(48.dp)
         .steps(pointsData.size - 1)
         .labelData { i -> i.toString() }
         .labelAndAxisLinePadding(15.dp)
@@ -162,6 +163,7 @@ private fun WaveGraph2(pointsData: List<Point>) {
     val steps = 10
     val xAxisData = AxisData.Builder()
         .axisStepSize(40.dp)
+        .startDrawPadding(48.dp)
         .steps(pointsData.size - 1)
         .labelData { i -> (i).toString() }
         .axisLabelAngle(20f)
@@ -219,6 +221,7 @@ private fun WaveGraph3(pointsData: List<Point>) {
     val steps = 10
     val xAxisData = AxisData.Builder()
         .axisStepSize(40.dp)
+        .startDrawPadding(48.dp)
         .steps(pointsData.size - 1)
         .labelData { i -> i.toString() }
         .labelAndAxisLinePadding(15.dp)

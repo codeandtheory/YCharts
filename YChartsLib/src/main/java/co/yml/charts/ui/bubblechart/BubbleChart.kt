@@ -131,6 +131,14 @@ fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
                 containerBackgroundColor = backgroundColor,
                 isPinchZoomEnabled = isZoomAllowed,
                 drawXAndYAxis = { scrollOffset, xZoom ->
+                    YAxis(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .onGloballyPositioned {
+                                columnWidth = it.size.width.toFloat()
+                            }, yAxisData = yAxisData
+                    )
+
                     XAxis(xAxisData = xAxisData,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -149,24 +157,24 @@ fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
                         zoomScale = xZoom,
                         chartData = bubblePoints,
                         axisStart = columnWidth)
-                    YAxis(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .onGloballyPositioned {
-                                columnWidth = it.size.width.toFloat()
-                            }, yAxisData = yAxisData
-                    )
 
                 },
                 onDraw = { scrollOffset, xZoom ->
                     val yBottom = size.height - rowHeight
+
                     val yOffset = ((yBottom - paddingTop.toPx()) / maxElementInYAxis)
                     xOffset = xAxisData.axisStepSize.toPx() * xZoom
                     val xLeft = columnWidth // To add extra space if needed
                     val pointsData = getMappingPointsToGraph(
-                        bubblePoints, xMin, xOffset, xLeft, scrollOffset, yBottom, yMin, yOffset
+                        bubblePoints,
+                        xMin,
+                        xOffset,
+                        xLeft,
+                        scrollOffset,
+                        yBottom,
+                        yMin,
+                        yOffset
                     )
-                    val (cubicPoints1, cubicPoints2) = getCubicPoints(pointsData)
                     val tapPointLocks = mutableMapOf<Int, Pair<Point, Offset>>()
                     // Draw guide lines
                     gridLines?.let {
@@ -184,17 +192,24 @@ fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
                             it
                         )
                     }
+                    drawUnderScrollMask(columnWidth, paddingRight, bgColor)
+
                     pointsData.forEachIndexed { index, offset ->
+                        val drawingOffset = Offset(columnWidth+offset.x,offset.y)
+                        bubbles[index].draw(this, drawingOffset, bubbleChartData.maximumBubbleRadius)
 
-                        bubbles[index].draw(this, offset, bubbleChartData.maximumBubbleRadius)
+                        if (isTapped && offset.isTapped(tapOffset.x, xOffset)) {
+                            tapPointLocks[0] = bubbles[index].center to offset
+                            identifiedPoint = tapPointLocks.values.map { it.first }.first()
+                            drawHighLightOnSelectedPoint(
+                                tapPointLocks,
+                                columnWidth,
+                                paddingRight,
+                                yBottom,
+                                bubbles[index].selectionHighlightPoint
+                            )
 
-                        pointsData.forEachIndexed { index, point ->
-                            if (isTapped && point.isTapped(tapOffset.x, xOffset)) {
-                                // Dealing with only one line graph hence tapPointLocks[0]
-                                tapPointLocks[0] = bubbles[index].center to point
-                            }
                         }
-
                         val selectedOffset = tapPointLocks.values.firstOrNull()?.second
 
                         if (selectionTextVisibility && selectedOffset.isNotNull()) {
@@ -204,22 +219,7 @@ fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
                                 bubbles[index].selectionHighlightPopUp
                             )
                         }
-                        if (isTapped) {
-                            val x = tapPointLocks.values.firstOrNull()?.second?.x
-                            if (x != null) identifiedPoint =
-                                tapPointLocks.values.map { it.first }.first()
-                            drawHighLightOnSelectedPoint(
-                                tapPointLocks,
-                                columnWidth,
-                                paddingRight,
-                                yBottom,
-                                bubbles[index].selectionHighlightPoint
-                            )
-                        }
-
                     }
-                    drawUnderScrollMask(columnWidth, paddingRight, bgColor)
-
 
                 },
                 onPointClicked = { offset: Offset, _: Float ->
@@ -244,23 +244,25 @@ fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
                     backgroundColor = Color.White,
                     content = {
                         LazyColumn {
-                            items(bubbles?.size ?: 0) { index ->
-                                Column {
-                                    BubblePointInfo(
-                                        xAxisData.axisLabelDescription(
-                                            xAxisData.labelData(
-                                                index
-                                            )
-                                        ),
-                                        bubbles[index].center.description,
-                                        bubbles[index].bubbleStyle.solidColor,
-                                        accessibilityConfig.titleTextSize,
-                                        accessibilityConfig.descriptionTextSize
-                                    )
-                                    ItemDivider(
-                                        thickness = accessibilityConfig.dividerThickness,
-                                        dividerColor = accessibilityConfig.dividerColor
-                                    )
+                            bubbles.size?.let {
+                                items(it) { index ->
+                                    Column {
+                                        BubblePointInfo(
+                                            xAxisData.axisLabelDescription(
+                                                xAxisData.labelData(
+                                                    index
+                                                )
+                                            ),
+                                            bubbles[index].center.description,
+                                            bubbles[index].bubbleStyle.solidColor,
+                                            accessibilityConfig.titleTextSize,
+                                            accessibilityConfig.descriptionTextSize
+                                        )
+                                        ItemDivider(
+                                            thickness = accessibilityConfig.dividerThickness,
+                                            dividerColor = accessibilityConfig.dividerColor
+                                        )
+                                    }
                                 }
                             }
                         }
