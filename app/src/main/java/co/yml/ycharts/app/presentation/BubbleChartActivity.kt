@@ -109,16 +109,14 @@ private fun BubbleChartWithGrid(pointsData: List<Point>) {
     val steps = 5
     val xAxisData = AxisData.Builder()
         .axisStepSize(30.dp)
-        .startDrawPadding(55.dp)
-        .startDrawPadding(20.dp)
         .steps(pointsData.size - 1)
-        .labelData { i -> i.toString() }
+        .labelData { i -> pointsData[i].x.toInt().toString() }
         .labelAndAxisLinePadding(15.dp)
         .build()
 
     val yAxisData = AxisData.Builder()
         .steps(steps)
-        .labelAndAxisLinePadding(50.dp)
+        .labelAndAxisLinePadding(15.dp)
         .labelData { i ->
             // Add yMin to get the negative axis values to the scale
             val yMin = pointsData.minOf { it.y }
@@ -155,14 +153,13 @@ private fun SolidBubbleChart(pointsData: List<Point>) {
     val xAxisData = AxisData.Builder()
         .axisStepSize(30.dp)
         .steps(pointsData.size - 1)
-        .labelData { i -> i.toString() }
-        .startDrawPadding(55.dp)
+        .labelData { i ->pointsData[i].x.toInt().toString()}
         .labelAndAxisLinePadding(15.dp)
         .build()
 
     val yAxisData = AxisData.Builder()
         .steps(steps)
-        .labelAndAxisLinePadding(20.dp)
+        .labelAndAxisLinePadding(15.dp)
         .labelData { i ->
             // Add yMin to get the negative axis values to the scale
             val yMin = pointsData.minOf { it.y }

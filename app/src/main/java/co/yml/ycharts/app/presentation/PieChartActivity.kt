@@ -110,7 +110,7 @@ private fun SimplePiechart(context: Context) {
         Legends(legendsConfig = DataUtils.getLegendsConfigFromPieChartData(pieChartData, 3))
         PieChart(
             modifier = Modifier
-                .width(400.dp)
+                .fillMaxWidth()
                 .height(400.dp),
             pieChartData,
             pieChartConfig
@@ -145,7 +145,7 @@ private fun PiechartWithSliceLables(context: Context) {
         Legends(legendsConfig = DataUtils.getLegendsConfigFromPieChartData(pieChartData, 3))
         PieChart(
             modifier = Modifier
-                .width(400.dp)
+                .fillMaxWidth()
                 .height(400.dp),
             pieChartData,
             pieChartConfig

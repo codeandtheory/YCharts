@@ -181,8 +181,9 @@ private fun SingleLineChartWithGridLines(pointsData: List<Point>) {
     val steps = 5
     val xAxisData = AxisData.Builder()
         .axisStepSize(30.dp)
+        .topPadding(105.dp)
         .steps(pointsData.size - 1)
-        .labelData { i -> i.toString() }
+        .labelData { i -> pointsData[i].x.toInt().toString() }
         .labelAndAxisLinePadding(15.dp)
         .build()
     val yAxisData = AxisData.Builder()
@@ -199,11 +200,7 @@ private fun SingleLineChartWithGridLines(pointsData: List<Point>) {
         linePlotData = LinePlotData(
             lines = listOf(
                 Line(
-                    dataPoints = DataUtils.getLineChartData(
-                        20,
-                        start = 0,
-                        maxRange = 50
-                    ),
+                    dataPoints = pointsData,
                     LineStyle(),
                     IntersectionPoint(),
                     SelectionHighlightPoint(),
