@@ -2,14 +2,28 @@ package co.yml.charts.barchart
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.test.*
+import androidx.compose.ui.test.assertCountEquals
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasAnyChild
+import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onChildren
+import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onSiblings
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
 import co.yml.charts.axis.AxisData
 import co.yml.charts.common.extensions.getMaxElementInYAxis
 import co.yml.charts.common.model.Point
 import co.yml.charts.ui.barchart.StackedBarChart
-import co.yml.charts.ui.barchart.models.*
+import co.yml.charts.ui.barchart.models.BarData
+import co.yml.charts.ui.barchart.models.BarPlotData
+import co.yml.charts.ui.barchart.models.BarStyle
+import co.yml.charts.ui.barchart.models.GroupBar
+import co.yml.charts.ui.barchart.models.GroupBarChartData
+import co.yml.charts.ui.barchart.models.SelectionHighlightData
 import org.junit.Rule
 import org.junit.Test
 
