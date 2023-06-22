@@ -601,9 +601,9 @@ Let's see how we can use the chart components and style them with available cust
   <figure>
     <div align = "center">
       <img width=292 src="https://github.com/AkYML/YCharts/assets/102035914/be103f93-8562-4939-add8-1693d76441ef" />
-      <p>  Bubble chart looks like this!</p>
+        <p>  Gradient-Bubble chart looks like this!</p>
       <img width=292 src="https://github.com/AkYML/YCharts/assets/102035914/cb177d4d-3fa8-4171-b3bd-7064458b1964" />
-      <p>  Gradient-Bubble chart looks like this!</p>
+        <p>  Bubble chart looks like this!</p>
     </div>
   </figure>
   <br>
