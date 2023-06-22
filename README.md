@@ -1,6 +1,60 @@
 # YCharts
 
-YCharts is a light and extensible chart library for Jetpack Compose system. It comprises two main modules:
+YCharts is a Jetpack-compose based  charts library which enables developers to easily integrate various types of charts/graphs into their existing ui to visually represent statistical data. YCharts supports both cartesian(XY-charts)  and polar charts(Radial charts), which include:
+
+A. Cartesian charts:
+  1. Line chart 
+    <div>
+    <figure>
+      <img width=100 src="https://github.com/AkYML/YCharts/assets/102035914/58352fc4-8039-46e6-9248-1f338efc705d"/>
+    </figure>
+    </div>
+
+  2. Bar chart
+    <div>
+    <figure>
+      <img width=100 src="https://github.com/AkYML/YCharts/assets/102035914/5af22ba1-232f-4d1a-8067-c08f56a61b13"/>
+    </figure>
+    </div>
+
+  3. Wave chart
+    <div>
+    <figure>
+      <img width=100 src="https://github.com/AkYML/YCharts/assets/102035914/be694054-d5cc-49ec-b7ee-be80c1562df7"/>
+    </figure>
+    </div>
+
+  4. Bubble chart
+    <div>
+    <figure>
+      <img width=100 src="https://github.com/AkYML/YCharts/assets/102035914/cb177d4d-3fa8-4171-b3bd-7064458b1964"/>
+    </figure>
+    </div>
+  5. Combined chart
+    <div>
+    <figure>
+      <img width=100 src="https://github.com/AkYML/YCharts/assets/102035914/809bff58-a857-4ed1-8415-cd1d97be300f"/>
+    </figure>
+    </div>
+
+B.Radial charts:
+  1. Pie chart
+    <div>
+    <figure>
+      <img width=100 src="https://github.com/AkYML/YCharts/assets/102035914/ac6eb6c7-033d-439b-b416-d6083ba0ee83"/>
+    </figure>
+    </div>
+  2. Donut chart
+    <div>
+    <figure>
+      <img width=100 src="https://github.com/AkYML/YCharts/assets/102035914/3296d983-4a9a-4b91-8b46-49f84a80041c"/>
+    </figure>
+    </div>
+
+
+
+
+ It comprises two main modules:
 
 - `YChartslib` (Chart components for Jetpack Compose)
 - `app` (sample app to showcase chart components)
@@ -12,7 +66,7 @@ You can add the library via Maven:
 Gradle:
 
 ```groovy
-implementation 'co.yml:ycharts:2.0.0'
+implementation 'co.yml:ycharts:3.0.0'
 ```
 
 ## Modules
@@ -100,10 +154,17 @@ Let's see how we can use the chart components and style them with available cust
 
   <figure>
     <div align = "center">
-      <img width=317 src="https://user-images.githubusercontent.com/107846675/189699724-c8064338-8894-45e2-b60b-3d830123e813.png" />
-      <p> Line chart looks like this!</p>
+      <img width=317 src="https://github.com/AkYML/YCharts/assets/102035914/58352fc4-8039-46e6-9248-1f338efc705d"/>
+      <p> Line chart looks like this! </p>
+
+  <img width=317 src="https://github.com/AkYML/YCharts/assets/102035914/a5d5c153-c2df-43d7-8d05-41548ed64e5c"/>
+      <p> Line chart with dots looks like this! </p>
+
     </div>
   </figure>
+
+
+
 
 ### 2. Bar Chart:
 
@@ -152,10 +213,14 @@ Let's see how we can use the chart components and style them with available cust
 
   <figure>
     <div align = "center">
-      <img width=347 src="https://user-images.githubusercontent.com/107846675/189836621-eeac8181-f7de-491e-8fd8-7e1276e2fb9f.png" />
+      <img width=347 src="https://github.com/AkYML/YCharts/assets/102035914/0d2a6cfd-98c4-46ee-92a7-b88814f8d186" />
       <p> Bar chart looks like this!</p>
+      <img width=347 src="https://github.com/AkYML/YCharts/assets/102035914/6dec92d7-95ed-4892-89b7-44a03d0711b9" />
+      <p> Horizontal Bar chart looks like this!</p>
+  
     </div>
   </figure>
+
 
 ### 3. Grouped Bar Chart:
 
@@ -208,8 +273,10 @@ Let's see how we can use the chart components and style them with available cust
 
   <figure>
     <div align = "center">
-      <img width=338 src="https://user-images.githubusercontent.com/107846675/189845009-6ef2ccc6-3c75-446e-9273-fe1b1e1e94d0.png" />
+      <img width=338 src="https://github.com/AkYML/YCharts/assets/102035914/55df945d-bcd9-4b08-b47e-5d439a7abf39" />
       <p> Grouped Bar chart looks like this!</p>
+      <img width=338 src="https://github.com/AkYML/YCharts/assets/102035914/00af9045-4054-4544-b4c5-93b568df2b85" />
+      <p> Stacked Bar chart looks like this!</p>
     </div>
   </figure>
 
@@ -253,10 +320,19 @@ Let's see how we can use the chart components and style them with available cust
 
   <figure>
     <div align = "center">
-      <img width=238 src="https://user-images.githubusercontent.com/107846675/189865767-377f3b12-1568-46c9-a248-6454ed9bb96e.png" />
+      <img width=238 src="https://github.com/AkYML/YCharts/assets/102035914/457b6034-eef0-4f70-bd40-0fc0e950298a" />
       <p>  Pie chart looks like this!</p>
+
+      <img width=238 src="https://github.com/AkYML/YCharts/assets/102035914/ac6eb6c7-033d-439b-b416-d6083ba0ee83" />
+      <p>  Pie chart with lables like this!</p>
+
     </div>
   </figure>
+
+
+
+
+
 
 ### 5. Donut Chart:
 
@@ -300,10 +376,13 @@ Let's see how we can use the chart components and style them with available cust
 
   <figure>
     <div align = "center">
-      <img width=233 src="https://user-images.githubusercontent.com/107846675/189868490-cbaecf87-2beb-4788-ba8e-f57b667cbf10.png" />
+      <img width=233 src="https://github.com/AkYML/YCharts/assets/102035914/3296d983-4a9a-4b91-8b46-49f84a80041c" />
       <p>  Donut chart looks like this!</p>
     </div>
   </figure>
+
+
+
 
 ### 6. Combined Chart:
 
@@ -374,11 +453,13 @@ Let's see how we can use the chart components and style them with available cust
   _Note_ : To show legends infomartion related to bar, `Legends` component can be used.
   <figure>
     <div align = "center">
-      <img width=292 src="https://user-images.githubusercontent.com/107846675/192773924-74421edd-7314-4b44-bdb1-13aaf3598796.png" />
+      <img width=292 src="https://github.com/AkYML/YCharts/assets/102035914/809bff58-a857-4ed1-8415-cd1d97be300f" />
       <p>  Combined bar with line chart looks like this!</p>
     </div>
   </figure>
   <br>
+
+
 
 ### 7. Wave Chart:
 
@@ -456,8 +537,10 @@ Let's see how we can use the chart components and style them with available cust
   _Note_ : To show legends infomartion related to bar, `Legends` component can be used.
   <figure>
     <div align = "center">
-      <img width=292 src="https://user-images.githubusercontent.com/107846675/192773924-74421edd-7314-4b44-bdb1-13aaf3598796.png" />
+      <img width=292 src="https://github.com/AkYML/YCharts/assets/102035914/be694054-d5cc-49ec-b7ee-be80c1562df7" />
       <p>  Wavechart looks like this!</p>
+      <img width=292 src="https://github.com/AkYML/YCharts/assets/102035914/2d8b02af-1252-44fb-83e1-06d1f6230733" />
+      <p>  Sinewavechart looks like this!</p>
     </div>
   </figure>
   <br>
@@ -517,12 +600,13 @@ Let's see how we can use the chart components and style them with available cust
   _Note_ : To show legends infomartion related to bar, `Legends` component can be used.
   <figure>
     <div align = "center">
-      <img width=292 src="https://user-images.githubusercontent.com/107846675/192773924-74421edd-7314-4b44-bdb1-13aaf3598796.png" />
+      <img width=292 src="https://github.com/AkYML/YCharts/assets/102035914/be103f93-8562-4939-add8-1693d76441ef" />
+      <p>  Bubble looks like this!</p>
+      <img width=292 src="https://github.com/AkYML/YCharts/assets/102035914/cb177d4d-3fa8-4171-b3bd-7064458b1964" />
       <p>  Bubble looks like this!</p>
     </div>
   </figure>
   <br>
-
 
 
 ## Accessibility Support
