@@ -110,7 +110,7 @@ private fun BubbleChartWithGrid(pointsData: List<Point>) {
     val xAxisData = AxisData.Builder()
         .axisStepSize(30.dp)
         .steps(pointsData.size - 1)
-        .labelData { i -> i.toString() }
+        .labelData { i -> pointsData[i].x.toInt().toString() }
         .labelAndAxisLinePadding(15.dp)
         .build()
 
@@ -153,7 +153,7 @@ private fun SolidBubbleChart(pointsData: List<Point>) {
     val xAxisData = AxisData.Builder()
         .axisStepSize(30.dp)
         .steps(pointsData.size - 1)
-        .labelData { i -> i.toString() }
+        .labelData { i ->pointsData[i].x.toInt().toString()}
         .labelAndAxisLinePadding(15.dp)
         .build()
 

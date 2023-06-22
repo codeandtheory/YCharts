@@ -33,7 +33,7 @@ object DataUtils {
         for (index in 0 until listSize) {
             list.add(
                 Point(
-                    20+index.toFloat(),
+                    index.toFloat(),
                     (start until maxRange).random().toFloat()
                 )
             )
@@ -52,7 +52,7 @@ object DataUtils {
         for (index in 0 until listSize) {
             list.add(
                 Point(
-                    20+index.toFloat(),
+                    index.toFloat(),
                     (start until maxRange).random().toFloat()
                 )
             )

@@ -195,8 +195,12 @@ fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
                     drawUnderScrollMask(columnWidth, paddingRight, bgColor)
 
                     pointsData.forEachIndexed { index, offset ->
-                        val drawingOffset = Offset(columnWidth+offset.x,offset.y)
-                        bubbles[index].draw(this, drawingOffset, bubbleChartData.maximumBubbleRadius)
+                        val drawingOffset = Offset(offset.x, offset.y)
+                        bubbles[index].draw(
+                            this,
+                            drawingOffset,
+                            bubbleChartData.maximumBubbleRadius
+                        )
 
                         if (isTapped && offset.isTapped(tapOffset.x, xOffset)) {
                             tapPointLocks[0] = bubbles[index].center to offset
@@ -253,7 +257,7 @@ fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
                                                     index
                                                 )
                                             ),
-                                            bubbles[index].center.description,
+                                            bubbles[index].center.description + "density is" + { bubbles[index].density },
                                             bubbles[index].bubbleStyle.solidColor,
                                             accessibilityConfig.titleTextSize,
                                             accessibilityConfig.descriptionTextSize
