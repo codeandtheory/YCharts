@@ -4,9 +4,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.hasAnyChild
-import androidx.compose.ui.test.hasClickAction
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
@@ -130,9 +129,7 @@ class StackedBarChartTest {
     @Test
     fun assertIfStackedBarClicked() {
         startStackedBarChart()
-
-        composeTestRule.onNode(hasAnyChild(hasClickAction()), useUnmergedTree = true)
-            .onChildren()
+        composeTestRule.onAllNodesWithTag("chart_canvas", useUnmergedTree = true)
             .onFirst()
             .performClick()
     }
