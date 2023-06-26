@@ -3,14 +3,13 @@
 #Project
 #kotlin
 kotlinVersion = "1.8.20"
-kotlinxCoroutines = "1.6.4"
 kotlinxSerializationJson = "1.5.0"
 #gradle
 androidGradlePlugin = "8.0.2"
 
 #Modules
 #androidx
-androidxComposeBom = "2023.04.00"
+androidxComposeBom = "2023.05.01"
 androidxActivityCompose = "1.7.0"
 androidxAppCompat = "1.6.1"
 androidxComposeCompiler = "1.4.6"
@@ -27,14 +26,14 @@ androidxCrypto = "1.1.0-alpha04"
 androidxDatastore = "1.0.0"
 
 #compose
-compose_ui = "1.4.2"
-compose_ui_testing = "1.4.0-beta01"
+compose_ui = "1.4.3"
+compose_ui_testing = "1.4.3"
 compose_constraint_layout = "1.1.0-alpha05"
 #ktx
 core_ktx = "1.9.0"
 #coroutine
-coroutine = "1.7.0-RC"
-turbine = "0.12.1"
+coroutine = "1.7.1"
+turbine = "1.0.0"
 #android test
 junit4 = "4.13.2"
 android_junit = "1.1.5"
@@ -68,7 +67,7 @@ androidx-compose-material = { group = "androidx.compose.material", name = "mater
 androidx-compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class" }
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
 androidx-compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
-androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "compose_ui_testing"}
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-ui-manifest-test =  { group = "androidx.compose.ui", name = "ui-test-manifest"}
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
