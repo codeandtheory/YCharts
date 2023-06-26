@@ -7,6 +7,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.unit.dp
 import co.yml.charts.axis.AxisData
@@ -102,7 +104,8 @@ class WaveChartTest {
         composeTestRule.setContent {
             WaveChart(modifier = Modifier, waveChartData = data)
         }
-        composeTestRule.onNodeWithTag("scrollable_container").assertIsDisplayed()
+        composeTestRule.onAllNodesWithTag(testTag = "scrollable_container", useUnmergedTree = true)
+            .onFirst().assertIsDisplayed()
     }
 
     @Test
