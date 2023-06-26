@@ -66,7 +66,7 @@ You can add the library via Maven:
 Gradle:
 
 ```groovy
-implementation 'co.yml:ycharts:3.0.0'
+implementation 'co.yml:ycharts:2.1.0'
 ```
 
 ## Modules
