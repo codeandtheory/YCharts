@@ -129,7 +129,8 @@ class StackedBarChartTest {
     @Test
     fun assertIfStackedBarClicked() {
         startStackedBarChart()
-        composeTestRule.onAllNodesWithTag("chart_canvas", useUnmergedTree = true).onFirst()
+        composeTestRule.onAllNodesWithTag("chart_canvas", useUnmergedTree = true)
+            .onFirst()
             .performClick()
     }
 

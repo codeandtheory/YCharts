@@ -105,7 +105,8 @@ class WaveChartTest {
             WaveChart(modifier = Modifier, waveChartData = data)
         }
         composeTestRule.onAllNodesWithTag(testTag = "scrollable_container", useUnmergedTree = true)
-            .onFirst().assertIsDisplayed()
+            .onFirst()
+            .assertIsDisplayed()
     }
 
     @Test
