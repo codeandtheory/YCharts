@@ -219,7 +219,7 @@ object DataUtils {
                 BarChartType.HORIZONTAL -> {
                     Point(
                         "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat(),
-                        "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat()
+                        index.toFloat()
                     )
                 }
             }
