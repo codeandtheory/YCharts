@@ -32,7 +32,7 @@ internal fun Project.configureComposeApplication(
             add("implementation", libs.findBundle("compose").get())
             add("androidTestImplementation", platform(bom))
             add("androidTestImplementation", libs.findLibrary("androidx.compose.ui.test").get())
-
+            add("debugImplementation",libs.findLibrary("androidx.compose.ui-manifest-test").get())
         }
     }
 }
