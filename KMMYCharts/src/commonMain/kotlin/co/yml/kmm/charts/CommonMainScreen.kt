@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalTextApi::class)
+
 package co.yml.kmm.charts
 
 import androidx.compose.foundation.layout.*
@@ -7,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -18,10 +21,15 @@ import co.yml.kmm.charts.common.model.LegendLabel
 import co.yml.kmm.charts.common.model.LegendsConfig
 import co.yml.kmm.charts.common.model.PlotType
 import co.yml.kmm.charts.common.model.Point
+import co.yml.kmm.charts.common.utils.DataUtils
 import co.yml.kmm.charts.ui.barchart.BarChart
+import co.yml.kmm.charts.ui.barchart.GroupBarChart
 import co.yml.kmm.charts.ui.barchart.models.BarChartData
 import co.yml.kmm.charts.ui.barchart.models.BarData
+import co.yml.kmm.charts.ui.barchart.models.BarPlotData
 import co.yml.kmm.charts.ui.barchart.models.BarStyle
+import co.yml.kmm.charts.ui.barchart.models.GroupBarChartData
+import co.yml.kmm.charts.ui.barchart.models.GroupSeparatorConfig
 import co.yml.kmm.charts.ui.linechart.LineChart
 import co.yml.kmm.charts.ui.linechart.model.*
 import co.yml.kmm.charts.ui.piechart.charts.DonutPieChart
@@ -141,8 +149,59 @@ internal fun BarChartScreen() {
                 showXAxis = true,
                 horizontalExtraSpace = 10.dp,
             )
+            Column {
             BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
+                VerticalGroupBarChart()
+            }
         }
+    }
+}
+@Composable
+fun VerticalGroupBarChart() {
+    val maxRange = 100
+    val barSize = 3
+    val groupBarData = DataUtils.getGroupBarChartData(50, maxRange, barSize)
+    val yStepSize = 10
+    val xAxisData = AxisData.Builder()
+        .axisStepSize(30.dp)
+        .bottomPadding(5.dp)
+        .startDrawPadding(48.dp)
+        .labelData { index -> index.toString() }
+        .build()
+    val yAxisData = AxisData.Builder()
+        .steps(yStepSize)
+        .labelAndAxisLinePadding(20.dp)
+        .axisOffset(20.dp)
+        .labelData { index -> (index * (maxRange / yStepSize)).toString() }
+        .build()
+    val colorPaletteList = DataUtils.getColorPaletteList(barSize)
+    val legendsConfig = LegendsConfig(
+        legendLabelList = DataUtils.getLegendsLabelData(colorPaletteList),
+        gridColumnCount = 3
+    )
+    val groupBarPlotData = BarPlotData(
+        groupBarList = groupBarData,
+        barStyle = BarStyle(barWidth = 35.dp),
+        barColorPaletteList = colorPaletteList
+    )
+    val groupBarChartData = GroupBarChartData(
+        barPlotData = groupBarPlotData,
+        xAxisData = xAxisData,
+        yAxisData = yAxisData,
+        groupSeparatorConfig = GroupSeparatorConfig(0.dp)
+    )
+    Column(
+        Modifier
+            .height(450.dp)
+    ) {
+        GroupBarChart(
+            modifier = Modifier
+                .height(400.dp),
+            groupBarChartData = groupBarChartData
+        )
+        Legends(
+            legendsConfig = legendsConfig
+        )
     }
 }
 

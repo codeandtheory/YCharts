@@ -9,11 +9,9 @@
 /.idea/assetWizardSettings.xml
 .DS_Store
 /build
+*/build
 /captures
 .externalNativeBuild
 .cxx
 local.properties
 .idea
-/buildSrc/build
-/YChartsLib/build
-/KMMYCharts/build
