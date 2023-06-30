@@ -53,7 +53,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "co.yml"
             artifactId = "ycharts"
-            version = "1.0.1"
+            version = "2.1.0"
             afterEvaluate {
                 from(components["release"])
             }
