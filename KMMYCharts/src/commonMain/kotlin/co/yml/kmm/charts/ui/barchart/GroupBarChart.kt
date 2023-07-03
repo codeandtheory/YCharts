@@ -211,9 +211,9 @@ internal fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartD
                             identifiedPoint,
                             barStyle.selectionHighlightData,
                             isTapped,
-                            columnWidth,
+                            0f,
                             yBottom,
-                            paddingRight,
+                            0.dp,
                             yOffset,
                             barStyle.barWidth,
                             textMeasurer

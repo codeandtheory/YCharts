@@ -15,3 +15,7 @@
 .cxx
 local.properties
 .idea
+*.xcconfig
+*.plist
+*.xcuserstate
+*.lock

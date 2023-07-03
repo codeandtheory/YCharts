@@ -88,7 +88,7 @@ internal fun WaveChartScreen() {
                             intersectionPoint = IntersectionPoint(color = Color.Red),
                             selectionHighlightPopUp = SelectionHighlightPopUp(popUpLabel = { x, y ->
                                 val xLabel = "x : ${x.toInt()} "
-                                val yLabel = "y : ${y.formatToSinglePrecision().toString()}"
+                                val yLabel = "y : ${y.formatToSinglePrecision()}"
                                 "$xLabel $yLabel"
                             })
                         )
@@ -151,13 +151,15 @@ internal fun BarChartScreen() {
             )
             Column {
             BarChart(modifier = Modifier.height(350.dp), barChartData = barChartData)
-                VerticalGroupBarChart()
+            VerticalGroupBarChart()
             }
+
         }
     }
 }
+
 @Composable
-fun VerticalGroupBarChart() {
+internal fun VerticalGroupBarChart() {
     val maxRange = 100
     val barSize = 3
     val groupBarData = DataUtils.getGroupBarChartData(50, maxRange, barSize)
