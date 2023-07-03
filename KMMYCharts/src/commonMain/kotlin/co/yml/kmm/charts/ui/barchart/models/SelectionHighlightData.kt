@@ -71,17 +71,11 @@ data class SelectionHighlightData @OptIn(ExperimentalTextApi::class) constructor
         val labelHeight = textMeasure.measure(text = AnnotatedString(label)).size.height
         val labelWidth = textMeasure.measure(text = AnnotatedString(label)).size.width
         drawContext.canvas.nativeCanvas.apply {
-            val background = getTextBackgroundRect(
-                centerPointOfBar,
-                selectedOffset.y,
-                label,
-                Paint()
-            )
             drawRoundRect(
                 color = highlightTextBackgroundColor,
                 topLeft = Offset(
-                    background.left,
-                    background.top - highlightTextOffset.toPx()
+                    centerPointOfBar- highlightTextOffset.toPx(),
+                    selectedOffset.y- highlightTextOffset.toPx()
                 ),
                 alpha = highlightTextBackgroundAlpha,
                 cornerRadius = highlightPopUpCornerRadius,
@@ -93,7 +87,7 @@ data class SelectionHighlightData @OptIn(ExperimentalTextApi::class) constructor
             drawText(
                 textMeasurer = textMeasure,
                 text = label,
-                topLeft = Offset(centerPointOfBar, selectedOffset.y - highlightTextOffset.toPx())
+                topLeft = Offset(centerPointOfBar - highlightTextOffset.toPx(), selectedOffset.y - highlightTextOffset.toPx())
             )
         }
     },
@@ -113,7 +107,7 @@ data class SelectionHighlightData @OptIn(ExperimentalTextApi::class) constructor
 
     val groupBarPopUpLabel: (String, Float) -> (String) = { name, value ->
         val xLabel = "Name : $name "
-        val yLabel = "Value : $value}"
+        val yLabel = "Value : $value"
         "$xLabel $yLabel"
     },
 
@@ -121,29 +115,27 @@ data class SelectionHighlightData @OptIn(ExperimentalTextApi::class) constructor
     val drawGroupBarPopUp: DrawScope.(Offset, BarData, Float, TextMeasurer) -> Unit = { selectedOffset, identifiedPoint, centerPointOfBar, textMeasure ->
         val xLabel = "B${identifiedPoint.point.x.toInt()}"
         val label = groupBarPopUpLabel(xLabel, identifiedPoint.point.y)
+        val labelHeight = textMeasure.measure(text = AnnotatedString(label)).size.height
+        val labelWidth = textMeasure.measure(text = AnnotatedString(label)).size.width
+
         drawContext.canvas.nativeCanvas.apply {
-            val background = getTextBackgroundRect(
-                centerPointOfBar,
-                selectedOffset.y,
-                label,
-                Paint()
-            )
             drawRoundRect(
                 color = highlightTextBackgroundColor,
                 topLeft = Offset(
-                    background.left,
-                    background.top - highlightTextOffset.toPx()
+                    centerPointOfBar- highlightTextOffset.toPx(),
+                    selectedOffset.y- highlightTextOffset.toPx()
                 ),
                 alpha = highlightTextBackgroundAlpha,
                 cornerRadius = highlightPopUpCornerRadius,
                 colorFilter = backgroundColorFilter,
                 blendMode = backgroundBlendMode,
-                style = backgroundStyle
+                style = backgroundStyle,
+                size = Size(labelWidth.toFloat(), labelHeight.toFloat())
             )
             drawText(
                 textMeasurer = textMeasure,
                 text = label,
-                topLeft = Offset(centerPointOfBar, selectedOffset.y - highlightTextOffset.toPx())
+                topLeft = Offset(centerPointOfBar- highlightTextOffset.toPx(), selectedOffset.y - highlightTextOffset.toPx())
             )
         }
     }

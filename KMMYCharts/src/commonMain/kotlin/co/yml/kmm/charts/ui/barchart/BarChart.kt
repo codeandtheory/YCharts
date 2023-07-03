@@ -263,7 +263,7 @@ internal fun BarChart(modifier: Modifier, barChartData: BarChartData) {
 private fun DrawScope.drawHighlightText(
     identifiedPoint: BarData, selectedOffset: Offset, barWidth: Dp, highlightData: SelectionHighlightData, textMeasurer: TextMeasurer
 ) {
-    val centerPointOfBar = selectedOffset.x + barWidth.toPx() / 2
+    val centerPointOfBar = selectedOffset.x - (barWidth.toPx() / 2)
     // Drawing the highlighted background and text
     highlightData.drawPopUp(this, selectedOffset, identifiedPoint, centerPointOfBar, textMeasurer)
 }

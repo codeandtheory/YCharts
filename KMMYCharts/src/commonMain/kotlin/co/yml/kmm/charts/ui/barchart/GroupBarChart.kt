@@ -321,7 +321,7 @@ private fun DrawScope.drawGroupHighlightText(
     highlightData: SelectionHighlightData,
     textMeasurer: TextMeasurer
 ) {
-    val centerPointOfBar = selectedOffset.x + barWidth.toPx() / 2
+    val centerPointOfBar = selectedOffset.x - (barWidth.toPx() / 2)
     // Drawing the highlighted background and text
     highlightData.drawGroupBarPopUp(this, selectedOffset, identifiedPoint, centerPointOfBar, textMeasurer)
 }
