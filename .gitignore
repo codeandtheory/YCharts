@@ -18,5 +18,6 @@ local.properties
 *.xcconfig
 *.plist
 *.xcuserstate
+*.xcscheme
 *.lock
 iosApp/iosApp.xcworkspace/xcuserdata/ak.xcuserdatad/UserInterfaceState.xcuserstate
