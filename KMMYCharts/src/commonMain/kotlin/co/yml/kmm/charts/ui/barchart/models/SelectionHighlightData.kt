@@ -47,7 +47,7 @@ import co.yml.kmm.charts.common.extensions.getTextBackgroundRect
  */
 data class SelectionHighlightData @OptIn(ExperimentalTextApi::class) constructor(
     //highlight text 
-    val highlightTextOffset: Dp = 15.dp,
+    val highlightTextOffset: Dp = 25.dp,
     val highlightTextSize: TextUnit = 12.sp,
     val highlightTextColor: Color = Color.Black,
     val highlightTextBackgroundColor: Color = Color.Yellow,
@@ -76,8 +76,8 @@ data class SelectionHighlightData @OptIn(ExperimentalTextApi::class) constructor
             drawRoundRect(
                 color = highlightTextBackgroundColor,
                 topLeft = Offset(
-                    centerPointOfBar- highlightTextOffset.toPx(),
-                    selectedOffset.y- highlightTextOffset.toPx()
+                    centerPointOfBar,
+                    selectedOffset.y - highlightTextOffset.toPx()
                 ),
                 alpha = highlightTextBackgroundAlpha,
                 cornerRadius = highlightPopUpCornerRadius,
@@ -89,7 +89,7 @@ data class SelectionHighlightData @OptIn(ExperimentalTextApi::class) constructor
             drawText(
                 textMeasurer = textMeasure,
                 text = label,
-                topLeft = Offset(centerPointOfBar - highlightTextOffset.toPx(), selectedOffset.y - highlightTextOffset.toPx()))
+                topLeft = Offset(centerPointOfBar , selectedOffset.y - highlightTextOffset.toPx()))
         }
     },
 
@@ -123,7 +123,7 @@ data class SelectionHighlightData @OptIn(ExperimentalTextApi::class) constructor
             drawRoundRect(
                 color = highlightTextBackgroundColor,
                 topLeft = Offset(
-                    centerPointOfBar- highlightTextOffset.toPx(),
+                    centerPointOfBar,
                     selectedOffset.y- highlightTextOffset.toPx()
                 ),
                 alpha = highlightTextBackgroundAlpha,
@@ -136,7 +136,7 @@ data class SelectionHighlightData @OptIn(ExperimentalTextApi::class) constructor
             drawText(
                 textMeasurer = textMeasure,
                 text = label,
-                topLeft = Offset(centerPointOfBar- highlightTextOffset.toPx(), selectedOffset.y - highlightTextOffset.toPx()))
+                topLeft = Offset(centerPointOfBar, selectedOffset.y - highlightTextOffset.toPx()))
         }
     }
 )
