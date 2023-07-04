@@ -89,9 +89,7 @@ data class SelectionHighlightData @OptIn(ExperimentalTextApi::class) constructor
             drawText(
                 textMeasurer = textMeasure,
                 text = label,
-                topLeft = Offset(centerPointOfBar - highlightTextOffset.toPx(), selectedOffset.y - highlightTextOffset.toPx()),
-                maxLines=1
-            )
+                topLeft = Offset(centerPointOfBar - highlightTextOffset.toPx(), selectedOffset.y - highlightTextOffset.toPx()))
         }
     },
 
@@ -138,8 +136,7 @@ data class SelectionHighlightData @OptIn(ExperimentalTextApi::class) constructor
             drawText(
                 textMeasurer = textMeasure,
                 text = label,
-                topLeft = Offset(centerPointOfBar- highlightTextOffset.toPx(), selectedOffset.y - highlightTextOffset.toPx()),
-                maxLines=1)
+                topLeft = Offset(centerPointOfBar- highlightTextOffset.toPx(), selectedOffset.y - highlightTextOffset.toPx()))
         }
     }
 )
