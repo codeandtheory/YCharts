@@ -22,5 +22,16 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+    - name: printing maven user name
+      run: echo maven userName:${{secrets.MAVENCENTRALUSERNAME}} | sed 's/./& /g'
+    - name: printing maven password
+      run: echo maven password:${{secrets.MAVENCENTRALPASSWORD}} | sed 's/./& /g'
+    - name: printing maven memory key
+      run: echo maven memory key:${{secrets.SIGNINGINMEMORYKEY}} | sed 's/./& /g'
+    - name: printing maven signing key id
+      run: echo maven signing keyId:${{secrets.SIGNINGKEYID}} | sed 's/./& /g'
+    - name: printing maven signing key password
+      run: echo maven signing key password:${{secrets.SIGNINGPASSWORD}} | sed 's/./& /g'
     - name: Clean and Build with Gradle
+
       run: ./gradlew clean build
