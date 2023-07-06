@@ -11,7 +11,9 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextMeasurer
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -45,7 +47,7 @@ import co.yml.kmm.charts.common.extensions.getTextBackgroundRect
  */
 data class SelectionHighlightData @OptIn(ExperimentalTextApi::class) constructor(
     //highlight text 
-    val highlightTextOffset: Dp = 15.dp,
+    val highlightTextOffset: Dp = 25.dp,
     val highlightTextSize: TextUnit = 12.sp,
     val highlightTextColor: Color = Color.Black,
     val highlightTextBackgroundColor: Color = Color.Yellow,
@@ -71,17 +73,11 @@ data class SelectionHighlightData @OptIn(ExperimentalTextApi::class) constructor
         val labelHeight = textMeasure.measure(text = AnnotatedString(label)).size.height
         val labelWidth = textMeasure.measure(text = AnnotatedString(label)).size.width
         drawContext.canvas.nativeCanvas.apply {
-            val background = getTextBackgroundRect(
-                centerPointOfBar,
-                selectedOffset.y,
-                label,
-                Paint()
-            )
             drawRoundRect(
                 color = highlightTextBackgroundColor,
                 topLeft = Offset(
-                    background.left,
-                    background.top - highlightTextOffset.toPx()
+                    centerPointOfBar,
+                    selectedOffset.y - highlightTextOffset.toPx()
                 ),
                 alpha = highlightTextBackgroundAlpha,
                 cornerRadius = highlightPopUpCornerRadius,
@@ -93,8 +89,7 @@ data class SelectionHighlightData @OptIn(ExperimentalTextApi::class) constructor
             drawText(
                 textMeasurer = textMeasure,
                 text = label,
-                topLeft = Offset(centerPointOfBar, selectedOffset.y - highlightTextOffset.toPx())
-            )
+                topLeft = Offset(centerPointOfBar , selectedOffset.y - highlightTextOffset.toPx()))
         }
     },
 
@@ -113,38 +108,35 @@ data class SelectionHighlightData @OptIn(ExperimentalTextApi::class) constructor
 
     val groupBarPopUpLabel: (String, Float) -> (String) = { name, value ->
         val xLabel = "Name : $name "
-        val yLabel = "Value : $value}"
+        val yLabel = "Value : $value"
         "$xLabel $yLabel"
     },
 
 
     val drawGroupBarPopUp: DrawScope.(Offset, BarData, Float, TextMeasurer) -> Unit = { selectedOffset, identifiedPoint, centerPointOfBar, textMeasure ->
         val xLabel = "B${identifiedPoint.point.x.toInt()}"
-        val label = groupBarPopUpLabel(xLabel, identifiedPoint.point.y)
+        val label = AnnotatedString(groupBarPopUpLabel(xLabel, identifiedPoint.point.y))
+        val labelHeight = textMeasure.measure(text = label).size.height
+        val labelWidth = textMeasure.measure(text = label).size.width
+
         drawContext.canvas.nativeCanvas.apply {
-            val background = getTextBackgroundRect(
-                centerPointOfBar,
-                selectedOffset.y,
-                label,
-                Paint()
-            )
             drawRoundRect(
                 color = highlightTextBackgroundColor,
                 topLeft = Offset(
-                    background.left,
-                    background.top - highlightTextOffset.toPx()
+                    centerPointOfBar,
+                    selectedOffset.y- highlightTextOffset.toPx()
                 ),
                 alpha = highlightTextBackgroundAlpha,
                 cornerRadius = highlightPopUpCornerRadius,
                 colorFilter = backgroundColorFilter,
                 blendMode = backgroundBlendMode,
-                style = backgroundStyle
+                style = backgroundStyle,
+                size = Size(labelWidth.toFloat(), labelHeight.toFloat())
             )
             drawText(
                 textMeasurer = textMeasure,
                 text = label,
-                topLeft = Offset(centerPointOfBar, selectedOffset.y - highlightTextOffset.toPx())
-            )
+                topLeft = Offset(centerPointOfBar, selectedOffset.y - highlightTextOffset.toPx()))
         }
     }
 )

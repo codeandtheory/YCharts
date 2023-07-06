@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterialApi::class)
+@file:OptIn(ExperimentalMaterialApi::class, ExperimentalMaterialApi::class)
 
 package co.yml.kmm.charts.ui.barchart
 
@@ -211,9 +211,9 @@ internal fun GroupBarChart(modifier: Modifier, groupBarChartData: GroupBarChartD
                             identifiedPoint,
                             barStyle.selectionHighlightData,
                             isTapped,
-                            columnWidth,
+                            0f,
                             yBottom,
-                            paddingRight,
+                            0.dp,
                             yOffset,
                             barStyle.barWidth,
                             textMeasurer
@@ -321,7 +321,7 @@ private fun DrawScope.drawGroupHighlightText(
     highlightData: SelectionHighlightData,
     textMeasurer: TextMeasurer
 ) {
-    val centerPointOfBar = selectedOffset.x + barWidth.toPx() / 2
+    val centerPointOfBar = selectedOffset.x - (barWidth.toPx() / 2)
     // Drawing the highlighted background and text
     highlightData.drawGroupBarPopUp(this, selectedOffset, identifiedPoint, centerPointOfBar, textMeasurer)
 }
