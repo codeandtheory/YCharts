@@ -15,23 +15,25 @@ struct ContentView: View {
     @State private var isLineChartPresented = false
     @State private var isPieChartPresented = false
     @State private var isDonutChartPresented = false
-
-
+    
+    
+    
     var body: some View {
         NavigationStack {
-            VStack(spacing: 20) {
+            VStack() {
                 Button(action: {
                     self.isBarChartPresented.toggle()
                 }) {
                     Text("Bar Chart")
                         .padding()
                         .font(.body)
+                        .frame(maxWidth: .infinity)
                         .foregroundColor(.white)
                         .background(Color.black)
                 }.navigationDestination(isPresented: $isBarChartPresented) {
                     MainView(chartType: 1)
                         .navigationTitle("Bar Chart")
-                }.frame(maxWidth: .infinity)
+                }.frame(maxWidth: .infinity).padding()
                 
                 Button(action: {
                     self.isLineChartPresented.toggle()
@@ -39,12 +41,13 @@ struct ContentView: View {
                     Text("Line Chart")
                         .padding()
                         .font(.body)
+                        .frame(maxWidth: .infinity)
                         .foregroundColor(.white)
                         .background(Color.black)
                 }.navigationDestination(isPresented: $isLineChartPresented) {
                     MainView(chartType: 3)
                         .navigationTitle("Line Chart")
-                }
+                }.frame(maxWidth: .infinity).padding()
                 
                 Button(action: {
                     self.isWaveChartPresented = true
@@ -52,13 +55,14 @@ struct ContentView: View {
                     Text("Wave Chart")
                         .padding()
                         .font(.body)
+                        .frame(maxWidth: .infinity)
                         .foregroundColor(.white)
                         .background(Color.black)
-                        
+                    
                 }.navigationDestination(isPresented: $isWaveChartPresented) {
                     MainView(chartType: 2)
                         .navigationTitle("Wave Chart")
-                }.frame(maxWidth: .infinity)
+                }.frame(maxWidth: .infinity).padding()
                 
                 Button(action: {
                     self.isPieChartPresented = true
@@ -66,27 +70,30 @@ struct ContentView: View {
                     Text("Pie Chart")
                         .padding()
                         .font(.body)
+                        .frame(maxWidth: .infinity)
                         .foregroundColor(.white)
                         .background(Color.black)
-                        
+                    
                 }.navigationDestination(isPresented: $isPieChartPresented) {
                     MainView(chartType: 4)
                         .navigationTitle("Pie Chart")
-                }.frame(maxWidth: .infinity)
+                }.frame(maxWidth: .infinity).padding()
                 
                 Button(action: {
                     self.isDonutChartPresented = true
                 }) {
                     Text("Donut Pie Chart")
                         .padding()
+                        .frame(maxWidth: .infinity)
                         .font(.body)
                         .foregroundColor(.white)
                         .background(Color.black)
-            
+                    
                 }.navigationDestination(isPresented: $isDonutChartPresented) {
                     MainView(chartType: 5)
                         .navigationTitle("Donut Pie Chart")
-                }.frame(maxWidth: .infinity)
+                }.frame(maxWidth: .infinity).padding()
+                
             }
         }
     }

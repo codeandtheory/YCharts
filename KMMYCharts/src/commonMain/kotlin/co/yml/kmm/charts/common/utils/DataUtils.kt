@@ -9,7 +9,7 @@ import co.yml.kmm.charts.ui.barchart.models.GroupBar
 import kotlin.random.Random
 
 object DataUtils {
-    open fun getGroupBarChartData(listSize: Int, maxRange: Int, barSize: Int): List<GroupBar> {
+    fun getGroupBarChartData(listSize: Int, maxRange: Int, barSize: Int): List<GroupBar> {
         val list = mutableListOf<GroupBar>()
         for (index in 0 until listSize) {
             val barList = mutableListOf<BarData>()
