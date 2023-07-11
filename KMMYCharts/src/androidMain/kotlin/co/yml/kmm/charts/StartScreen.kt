@@ -10,5 +10,6 @@ fun ChartScreen(chartType: Int) {
         3 -> LineChartScreen()
         4 -> PieChartScreen()
         5 -> DonutPieChartScreen()
+        6-> BubbleChartWithGrid()
     }
 }

@@ -15,6 +15,8 @@ struct ContentView: View {
     @State private var isLineChartPresented = false
     @State private var isPieChartPresented = false
     @State private var isDonutChartPresented = false
+    @State private var isBubbleChartPresented = false
+    
     
     
     
@@ -92,6 +94,22 @@ struct ContentView: View {
                 }.navigationDestination(isPresented: $isDonutChartPresented) {
                     MainView(chartType: 5)
                         .navigationTitle("Donut Pie Chart")
+                }.frame(maxWidth: .infinity).padding()
+                
+                
+                Button(action: {
+                    self.isDonutChartPresented = true
+                }) {
+                    Text("Bubble Chart")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .font(.body)
+                        .foregroundColor(.white)
+                        .background(Color.black)
+                    
+                }.navigationDestination(isPresented: $isBubbleChartPresented) {
+                    MainView(chartType: 6)
+                        .navigationTitle("Bubble Chart")
                 }.frame(maxWidth: .infinity).padding()
                 
             }
