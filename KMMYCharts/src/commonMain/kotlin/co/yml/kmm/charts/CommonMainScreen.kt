@@ -424,6 +424,7 @@ internal fun DonutPieChartScreen()  {
  *
  * @param pointsData
  */
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 internal fun BubbleChartWithGrid() {
     val pointsData = DataUtils.getRandomPoints(50,0,30)
