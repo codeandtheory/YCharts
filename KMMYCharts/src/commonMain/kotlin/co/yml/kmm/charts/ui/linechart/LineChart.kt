@@ -101,7 +101,7 @@ internal fun LineChart(modifier: Modifier, lineChartData: LineChartData) {
                         xMax,
                         xMin,
                         xOffset,
-                        paddingRight.toPx(),
+                        paddingRight.toSp().toPx(),
                         size.width,
                         containerPaddingEnd.toPx()
                     )

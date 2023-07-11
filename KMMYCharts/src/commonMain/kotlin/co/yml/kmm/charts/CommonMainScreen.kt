@@ -32,6 +32,8 @@ import co.yml.kmm.charts.ui.barchart.models.GroupBarChartData
 import co.yml.kmm.charts.ui.barchart.models.GroupSeparatorConfig
 import co.yml.kmm.charts.ui.bubblechart.BubbleChart
 import co.yml.kmm.charts.ui.bubblechart.model.BubbleChartData
+import co.yml.kmm.charts.ui.combinedchart.CombinedChart
+import co.yml.kmm.charts.ui.combinedchart.model.CombinedChartData
 import co.yml.kmm.charts.ui.linechart.LineChart
 import co.yml.kmm.charts.ui.linechart.model.*
 import co.yml.kmm.charts.ui.piechart.charts.DonutPieChart
@@ -462,4 +464,68 @@ internal fun BubbleChartWithGrid() {
         bubbleChartData = data
     )
 
+}
+
+@Composable
+internal fun BarWithLineChart() {
+    val maxRange = 100
+    val groupBarData = DataUtils.getGroupBarChartData(50, 100, 3)
+    val yStepSize = 10
+    val xAxisData = AxisData.Builder()
+        .axisStepSize(30.dp)
+        .bottomPadding(5.dp)
+        .labelData { index -> index.toString() }
+        .build()
+    val yAxisData = AxisData.Builder()
+        .steps(yStepSize)
+        .labelAndAxisLinePadding(20.dp)
+        .axisOffset(20.dp)
+        .labelData { index -> (index * (maxRange / yStepSize)).toString() }
+        .build()
+    val linePlotData = LinePlotData(
+        lines = listOf(
+            Line(
+                DataUtils.getLineChartData(50, maxRange = 100),
+                lineStyle = LineStyle(color = Color.Blue),
+                intersectionPoint = IntersectionPoint(),
+                selectionHighlightPoint = SelectionHighlightPoint(),
+                selectionHighlightPopUp = SelectionHighlightPopUp()
+            ),
+            Line(
+                DataUtils.getLineChartData(50, maxRange = 100),
+                lineStyle = LineStyle(color = Color.Black),
+                intersectionPoint = IntersectionPoint(),
+                selectionHighlightPoint = SelectionHighlightPoint(),
+                selectionHighlightPopUp = SelectionHighlightPopUp()
+            )
+        )
+    )
+    val colorPaletteList = DataUtils.getColorPaletteList(3)
+    val legendsConfig = LegendsConfig(
+        legendLabelList = DataUtils.getLegendsLabelData(colorPaletteList),
+        gridColumnCount = 3
+    )
+    val barPlotData = BarPlotData(
+        groupBarList = groupBarData,
+        barStyle = BarStyle(barWidth = 35.dp),
+        barColorPaletteList = colorPaletteList
+    )
+    val combinedChartData = CombinedChartData(
+        combinedPlotDataList = listOf(barPlotData, linePlotData),
+        xAxisData = xAxisData,
+        yAxisData = yAxisData
+    )
+    Column(
+        Modifier
+            .height(500.dp)
+    ) {
+        CombinedChart(
+            modifier = Modifier
+                .height(400.dp),
+            combinedChartData = combinedChartData
+        )
+        Legends(
+            legendsConfig = legendsConfig
+        )
+    }
 }

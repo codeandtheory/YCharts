@@ -164,6 +164,27 @@ object DataUtils {
         return list
     }
 
+
+    /**
+     * Returns list of points
+     * @param listSize: Size of total number of points needed.
+     * @param start: X values to start from. ex: 50 to 100
+     * @param maxRange: Max range of Y values
+     */
+    fun getLineChartData(listSize: Int, start: Int = 0, maxRange: Int): List<Point> {
+        val list = arrayListOf<Point>()
+        for (index in 0 until listSize) {
+            list.add(
+                Point(
+                    index.toFloat(),
+                    (start until maxRange).random().toFloat()
+                )
+            )
+        }
+        return list
+    }
+
+
 }
 
 
