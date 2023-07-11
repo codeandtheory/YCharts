@@ -55,7 +55,7 @@ import co.yml.kmm.charts.ui.linechart.model.SelectionHighlightPopUp
  */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
+internal fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
     val accessibilitySheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
