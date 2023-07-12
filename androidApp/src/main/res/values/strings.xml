@@ -12,5 +12,6 @@
     <string name="title_pie_chart">Pie Chart</string>
     <string name="title_donut_chart">Donut Chart</string>
     <string name="title_bar_with_line_chart">Combined Chart</string>
+    <string name="bubble_chart">Bubble chart</string>
 
 </resources>

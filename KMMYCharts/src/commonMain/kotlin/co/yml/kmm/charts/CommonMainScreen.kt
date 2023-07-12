@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalTextApi::class)
+@file:OptIn(ExperimentalTextApi::class, ExperimentalTextApi::class)
 
 package co.yml.kmm.charts
 
@@ -30,6 +30,8 @@ import co.yml.kmm.charts.ui.barchart.models.BarPlotData
 import co.yml.kmm.charts.ui.barchart.models.BarStyle
 import co.yml.kmm.charts.ui.barchart.models.GroupBarChartData
 import co.yml.kmm.charts.ui.barchart.models.GroupSeparatorConfig
+import co.yml.kmm.charts.ui.bubblechart.BubbleChart
+import co.yml.kmm.charts.ui.bubblechart.model.BubbleChartData
 import co.yml.kmm.charts.ui.linechart.LineChart
 import co.yml.kmm.charts.ui.linechart.model.*
 import co.yml.kmm.charts.ui.piechart.charts.DonutPieChart
@@ -415,4 +417,49 @@ internal fun DonutPieChartScreen()  {
 
         }
     }
+}
+
+/**
+ * Bubble chart with grid lines
+ *
+ * @param pointsData
+ */
+@Composable
+internal fun BubbleChartWithGrid() {
+    val pointsData = DataUtils.getRandomPoints(50,0,30)
+    val steps = 5
+    val xAxisData = AxisData.Builder()
+        .axisStepSize(30.dp)
+        .startDrawPadding(55.dp)
+        .startDrawPadding(20.dp)
+        .steps(pointsData.size - 1)
+        .labelData { i -> i.toString() }
+        .labelAndAxisLinePadding(15.dp)
+        .build()
+
+    val yAxisData = AxisData.Builder()
+        .steps(steps)
+        .labelAndAxisLinePadding(50.dp)
+        .labelData { i ->
+            // Add yMin to get the negative axis values to the scale
+            val yMin = pointsData.minOf { it.y }
+            val yMax = pointsData.maxOf { it.y }
+            val yScale = (yMax - yMin) / steps
+            ((i * yScale) + yMin).formatToSinglePrecision()
+        }.build()
+
+    val data = BubbleChartData(
+        DataUtils.getBubbleChartDataWithGradientStyle(pointsData),
+        xAxisData = xAxisData,
+        yAxisData = yAxisData,
+        gridLines = GridLines()
+    )
+
+    BubbleChart(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(500.dp),
+        bubbleChartData = data
+    )
+
 }
