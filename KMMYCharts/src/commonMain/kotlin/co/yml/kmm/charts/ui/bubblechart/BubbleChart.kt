@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalMaterialApi::class, ExperimentalTextApi::class, ExperimentalTextApi::class)
+@file:OptIn(ExperimentalMaterialApi::class)
 
 package co.yml.kmm.charts.ui.bubblechart
 
@@ -53,6 +53,7 @@ import co.yml.kmm.charts.ui.linechart.model.SelectionHighlightPopUp
  * @param modifier
  * @param bubbleChartData
  */
+@ExperimentalTextApi
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 internal fun BubbleChart(modifier: Modifier, bubbleChartData: BubbleChartData) {
@@ -290,6 +291,7 @@ fun getCubicPoints(pointsData: List<Offset>): Pair<MutableList<Offset>, MutableL
  * @param selectedOffset
  * @param selectionHighlightPopUp
  */
+@ExperimentalTextApi
 fun DrawScope.drawHighlightText(
     identifiedPoint: Point,
     selectedOffset: Offset,

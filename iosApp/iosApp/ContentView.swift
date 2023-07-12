@@ -100,7 +100,7 @@ struct ContentView: View {
                 
                 
                 Button(action: {
-                    self.isDonutChartPresented = true
+                    self.isBubbleChartPresented = true
                 }) {
                     Text("Bubble Chart")
                         .padding()
@@ -108,7 +108,7 @@ struct ContentView: View {
                         .font(.body)
                         .foregroundColor(.white)
                         .background(Color.black)
-                    
+
                 }.navigationDestination(isPresented: $isBubbleChartPresented) {
                     MainView(chartType: 6)
                         .navigationTitle("Bubble Chart")
