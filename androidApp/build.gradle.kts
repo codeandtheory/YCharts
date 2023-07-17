@@ -49,7 +49,6 @@ android {
 
 dependencies {
     implementation(project(mapOf("path" to ":KMMYCharts")))
-    implementation(project(mapOf("path" to ":YChartsLib")))
     implementation(co.ycharts.dependency.YChartDependency.CORE_KTX)
     implementation(co.ycharts.dependency.YChartDependency.COMPOSE_UI)
     implementation(co.ycharts.dependency.YChartDependency.COMPOSE_MATERIAL)
