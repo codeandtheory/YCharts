@@ -11,6 +11,8 @@ package co.yml.charts.common.model
 data class Point(
     val x: Float,
     val y: Float,
+    val xLable: String? = "",
+    val yLable: String? = "",
     val description: String = "Value of point is ${String.format("%.2f", y)}"
 )
 

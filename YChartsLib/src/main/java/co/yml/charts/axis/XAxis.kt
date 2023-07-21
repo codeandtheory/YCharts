@@ -190,14 +190,38 @@ private fun DrawScope.drawXAxisLabel(
     drawContext.canvas.nativeCanvas.apply {
         val x =
             if (axisData.dataCategoryOptions.isDataCategoryInYAxis) xStart + (dataValueWidth * index) - (labelWidth / 2) else xPos - (labelWidth / 2)
-        val y = labelHeight / 2 + indicatorLineWidth.toPx() + labelAndAxisLinePadding.toPx()
+        var y = labelHeight / 2 + indicatorLineWidth.toPx() + labelAndAxisLinePadding.toPx()
         withRotation(axisLabelAngle, x, y) {
-            drawText(
-                if (axisConfig.shouldEllipsizeAxisLabel) ellipsizedText.toString() else xLabel,
-                x,
-                y,
-                xAxisTextPaint
-            )
+//            drawText(
+//                if (axisConfig.shouldEllipsizeAxisLabel) ellipsizedText.toString() else xLabel,
+//                x,
+//                y,
+//                xAxisTextPaint
+//            )
+
+            val text = if (axisConfig.shouldEllipsizeAxisLabel) ellipsizedText.toString() else xLabel
+            if (text.contains("\n")) {
+                val texts: Array<String> = text.split("\n").toTypedArray()
+                for (txt in texts) {
+
+                    drawText(
+                        txt,
+                        x + 105, //add extra space for xAxis values
+                        y,
+                        xAxisTextPaint
+                    )
+
+                    y += xAxisTextPaint.getTextSize();
+
+                }
+            } else {
+                drawText(
+                    if (axisConfig.shouldEllipsizeAxisLabel) ellipsizedText.toString() else xLabel,
+                    x,
+                    y,
+                    xAxisTextPaint
+                )
+            }
         }
     }
     calculatedXAxisHeight

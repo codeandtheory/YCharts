@@ -41,6 +41,25 @@ object DataUtils {
         return list
     }
 
+    fun getLineChartDataValues(listSize: Int, start: Int = 0, maxRange: Int): List<Point> {
+        val list = arrayListOf<Point>()
+
+        list.add(Point(0f,90f,"  13 Apr\n11.30 pm", "50"))
+        list.add(Point(1f,100f,"  13 Apr\n12.30 am", "100"))
+        list.add(Point(2f,150f,"  14 Apr\n13.30 am", "150"))
+        list.add(Point(3f,180f,"  15 Apr\n14.30 am", "200"))
+        list.add(Point(4f,90f,"  16 Apr\n15.30 am", "250"))
+        list.add(Point(5f,100f,"  17 Apr\n16.30 am ", "300"))
+        list.add(Point(6f,120f,"  18 Apr\n17.30 am", "350"))
+        list.add(Point(7f,50f,"  19 Apr\n18.30 am", "400"))
+        list.add(Point(8f,140f,"  20 Apr\n19.30 am", "450"))
+        list.add(Point(9f,50f,"  21 Apr\n20.30 am", "500"))
+
+
+        return list
+
+    }
+
     /**
      * Returns list of points
      * @param listSize: Size of total number of points needed.
