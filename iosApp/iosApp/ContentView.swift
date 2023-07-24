@@ -53,6 +53,10 @@ struct ContentView: View {
                         .navigationTitle("Line Chart")
                 }.frame(maxWidth: .infinity).padding()
                 
+                
+                
+                
+                
                 Button(action: {
                     self.isWaveChartPresented = true
                 }) {

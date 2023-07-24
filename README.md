@@ -1,4 +1,4 @@
-# YCharts
+# KMM-YCharts
 
 YCharts is a light and extensible chart library for Jetpack Compose system. It comprises two main modules:
 
@@ -9,10 +9,7 @@ YCharts is a light and extensible chart library for Jetpack Compose system. It c
 
 You can add automatically the library via Maven:
 
-Gradle:
-```groovy
-implementation 'co.yml:ycharts:1.0.0'
-```
+
 
 ## Modules
 

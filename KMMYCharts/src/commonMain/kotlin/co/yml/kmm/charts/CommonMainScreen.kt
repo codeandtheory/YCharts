@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalTextApi::class, ExperimentalTextApi::class)
+@file:OptIn(ExperimentalTextApi::class)
 
 package co.yml.kmm.charts
 
@@ -47,6 +47,80 @@ import co.yml.kmm.charts.ui.wavechart.model.WaveChartData
 import co.yml.kmm.charts.ui.wavechart.model.WavePlotData
 import kotlin.random.Random
 
+
+/***
+ * Displays Linechart with sample data
+ *
+ */
+
+@Composable
+internal fun LineChartScreen() {
+    val pointsData =  getLineChartData(100, start = 0, maxRange = 100)
+    Scaffold(modifier = Modifier.fillMaxSize(),
+        backgroundColor = Color.White,
+        topBar = {
+        })
+    {
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            val steps = 5
+            val xAxisData = AxisData.Builder()
+                .axisStepSize(30.dp)
+                .steps(pointsData.size - 1)
+                .labelData { i -> i.toString() }
+                .labelAndAxisLinePadding(15.dp)
+                .build()
+
+            val yAxisData = AxisData.Builder()
+                .steps(steps)
+                .labelAndAxisLinePadding(30.dp)
+                .labelData { i ->
+                    // Add yMin to get the negative axis values to the scale
+                    val yMin = pointsData.minOf { it.y }
+                    val yMax = pointsData.maxOf { it.y }
+                    val yScale = (yMax - yMin) / steps
+                    ((i * yScale) + yMin).formatToSinglePrecision()
+                }.build()
+
+            val data = LineChartData(
+                linePlotData = LinePlotData(
+                    lines = listOf(
+                        Line(
+                            dataPoints = pointsData,
+                            LineStyle(lineType = LineType.Straight()),
+                            IntersectionPoint(),
+                            SelectionHighlightPoint(),
+                            ShadowUnderLine(),
+                            SelectionHighlightPopUp()
+                        )
+                    )
+                ),
+                xAxisData = xAxisData,
+                yAxisData = yAxisData,
+                gridLines = GridLines()
+            )
+
+
+            LineChart(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                lineChartData = data
+            )
+        }
+    }
+}
+
+
+
+
+
+@OptIn(ExperimentalTextApi::class)
 @Composable
 internal fun WaveChartScreen() {
     Scaffold(modifier = Modifier.fillMaxSize(),
@@ -211,63 +285,7 @@ internal fun VerticalGroupBarChart() {
     }
 }
 
-@Composable
-internal fun LineChartScreen() {
-    val pointsData =  getLineChartData(100, start = 0, maxRange = 100)
-    Scaffold(modifier = Modifier.fillMaxSize(),
-        backgroundColor = Color.White,
-        topBar = {
-        })
-    {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it),
-            contentAlignment = Alignment.TopCenter
-        ) {
-            val steps = 5
-            val xAxisData = AxisData.Builder()
-                .axisStepSize(30.dp)
-                .steps(pointsData.size - 1)
-                .labelData { i -> i.toString() }
-                .labelAndAxisLinePadding(15.dp)
-                .build()
-            val yAxisData = AxisData.Builder()
-                .steps(steps)
-                .labelAndAxisLinePadding(30.dp)
-                .labelData { i ->
-                    // Add yMin to get the negative axis values to the scale
-                    val yMin = pointsData.minOf { it.y }
-                    val yMax = pointsData.maxOf { it.y }
-                    val yScale = (yMax - yMin) / steps
-                    ((i * yScale) + yMin).formatToSinglePrecision()
-                }.build()
-            val data = LineChartData(
-                linePlotData = LinePlotData(
-                    lines = listOf(
-                        Line(
-                            dataPoints = pointsData,
-                            LineStyle(lineType = LineType.Straight()),
-                            IntersectionPoint(),
-                            SelectionHighlightPoint(),
-                            ShadowUnderLine(),
-                            SelectionHighlightPopUp()
-                        )
-                    )
-                ),
-                xAxisData = xAxisData,
-                yAxisData = yAxisData,
-                gridLines = GridLines()
-            )
-            LineChart(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp),
-                lineChartData = data
-            )
-        }
-    }
-}
+
 
 
 /**
@@ -392,10 +410,8 @@ internal fun PieChartScreen()  {
 internal fun DonutPieChartScreen()  {
     val data = getDonutChartData()
     // Sum of all the values
-    val sumOfValues = data.totalLength
 
     // Calculate each proportion value
-    val proportions = data.slices.proportion(sumOfValues)
     val pieChartConfig =
         PieChartConfig(
             percentVisible = true,
