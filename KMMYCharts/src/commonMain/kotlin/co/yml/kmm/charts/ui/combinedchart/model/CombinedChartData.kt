@@ -1,11 +1,11 @@
-package co.yml.charts.ui.combinedchart.model
+package co.yml.kmm.charts.ui.combinedchart.model
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import co.yml.charts.axis.AxisData
-import co.yml.charts.common.model.AccessibilityConfig
-import co.yml.charts.common.model.PlotData
+import co.yml.kmm.charts.axis.AxisData
+import co.yml.kmm.charts.common.model.AccessibilityConfig
+import co.yml.kmm.charts.common.model.PlotData
 
 /**
  *

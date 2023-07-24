@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalTextApi::class, ExperimentalTextApi::class)
+@file:OptIn(ExperimentalTextApi::class)
 
 package co.yml.kmm.charts
 
@@ -32,6 +32,8 @@ import co.yml.kmm.charts.ui.barchart.models.GroupBarChartData
 import co.yml.kmm.charts.ui.barchart.models.GroupSeparatorConfig
 import co.yml.kmm.charts.ui.bubblechart.BubbleChart
 import co.yml.kmm.charts.ui.bubblechart.model.BubbleChartData
+import co.yml.kmm.charts.ui.combinedchart.CombinedChart
+import co.yml.kmm.charts.ui.combinedchart.model.CombinedChartData
 import co.yml.kmm.charts.ui.linechart.LineChart
 import co.yml.kmm.charts.ui.linechart.model.*
 import co.yml.kmm.charts.ui.piechart.charts.DonutPieChart
@@ -45,6 +47,80 @@ import co.yml.kmm.charts.ui.wavechart.model.WaveChartData
 import co.yml.kmm.charts.ui.wavechart.model.WavePlotData
 import kotlin.random.Random
 
+
+/***
+ * Displays Linechart with sample data
+ *
+ */
+
+@Composable
+internal fun LineChartScreen() {
+    val pointsData =  getLineChartData(100, start = 0, maxRange = 100)
+    Scaffold(modifier = Modifier.fillMaxSize(),
+        backgroundColor = Color.White,
+        topBar = {
+        })
+    {
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            val steps = 5
+            val xAxisData = AxisData.Builder()
+                .axisStepSize(30.dp)
+                .steps(pointsData.size - 1)
+                .labelData { i -> i.toString() }
+                .labelAndAxisLinePadding(15.dp)
+                .build()
+
+            val yAxisData = AxisData.Builder()
+                .steps(steps)
+                .labelAndAxisLinePadding(30.dp)
+                .labelData { i ->
+                    // Add yMin to get the negative axis values to the scale
+                    val yMin = pointsData.minOf { it.y }
+                    val yMax = pointsData.maxOf { it.y }
+                    val yScale = (yMax - yMin) / steps
+                    ((i * yScale) + yMin).formatToSinglePrecision()
+                }.build()
+
+            val data = LineChartData(
+                linePlotData = LinePlotData(
+                    lines = listOf(
+                        Line(
+                            dataPoints = pointsData,
+                            LineStyle(lineType = LineType.Straight()),
+                            IntersectionPoint(),
+                            SelectionHighlightPoint(),
+                            ShadowUnderLine(),
+                            SelectionHighlightPopUp()
+                        )
+                    )
+                ),
+                xAxisData = xAxisData,
+                yAxisData = yAxisData,
+                gridLines = GridLines()
+            )
+
+
+            LineChart(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                lineChartData = data
+            )
+        }
+    }
+}
+
+
+
+
+
+@OptIn(ExperimentalTextApi::class)
 @Composable
 internal fun WaveChartScreen() {
     Scaffold(modifier = Modifier.fillMaxSize(),
@@ -209,63 +285,7 @@ internal fun VerticalGroupBarChart() {
     }
 }
 
-@Composable
-internal fun LineChartScreen() {
-    val pointsData =  getLineChartData(100, start = 0, maxRange = 100)
-    Scaffold(modifier = Modifier.fillMaxSize(),
-        backgroundColor = Color.White,
-        topBar = {
-        })
-    {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it),
-            contentAlignment = Alignment.TopCenter
-        ) {
-            val steps = 5
-            val xAxisData = AxisData.Builder()
-                .axisStepSize(30.dp)
-                .steps(pointsData.size - 1)
-                .labelData { i -> i.toString() }
-                .labelAndAxisLinePadding(15.dp)
-                .build()
-            val yAxisData = AxisData.Builder()
-                .steps(steps)
-                .labelAndAxisLinePadding(30.dp)
-                .labelData { i ->
-                    // Add yMin to get the negative axis values to the scale
-                    val yMin = pointsData.minOf { it.y }
-                    val yMax = pointsData.maxOf { it.y }
-                    val yScale = (yMax - yMin) / steps
-                    ((i * yScale) + yMin).formatToSinglePrecision()
-                }.build()
-            val data = LineChartData(
-                linePlotData = LinePlotData(
-                    lines = listOf(
-                        Line(
-                            dataPoints = pointsData,
-                            LineStyle(lineType = LineType.Straight()),
-                            IntersectionPoint(),
-                            SelectionHighlightPoint(),
-                            ShadowUnderLine(),
-                            SelectionHighlightPopUp()
-                        )
-                    )
-                ),
-                xAxisData = xAxisData,
-                yAxisData = yAxisData,
-                gridLines = GridLines()
-            )
-            LineChart(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp),
-                lineChartData = data
-            )
-        }
-    }
-}
+
 
 
 /**
@@ -390,10 +410,8 @@ internal fun PieChartScreen()  {
 internal fun DonutPieChartScreen()  {
     val data = getDonutChartData()
     // Sum of all the values
-    val sumOfValues = data.totalLength
 
     // Calculate each proportion value
-    val proportions = data.slices.proportion(sumOfValues)
     val pieChartConfig =
         PieChartConfig(
             percentVisible = true,
@@ -462,4 +480,68 @@ internal fun BubbleChartWithGrid() {
         bubbleChartData = data
     )
 
+}
+
+@Composable
+internal fun BarWithLineChart() {
+    val maxRange = 100
+    val groupBarData = DataUtils.getGroupBarChartData(50, 100, 3)
+    val yStepSize = 10
+    val xAxisData = AxisData.Builder()
+        .axisStepSize(30.dp)
+        .bottomPadding(5.dp)
+        .labelData { index -> index.toString() }
+        .build()
+    val yAxisData = AxisData.Builder()
+        .steps(yStepSize)
+        .labelAndAxisLinePadding(20.dp)
+        .axisOffset(20.dp)
+        .labelData { index -> (index * (maxRange / yStepSize)).toString() }
+        .build()
+    val linePlotData = LinePlotData(
+        lines = listOf(
+            Line(
+                DataUtils.getLineChartData(50, maxRange = 100),
+                lineStyle = LineStyle(color = Color.Blue),
+                intersectionPoint = IntersectionPoint(),
+                selectionHighlightPoint = SelectionHighlightPoint(),
+                selectionHighlightPopUp = SelectionHighlightPopUp()
+            ),
+            Line(
+                DataUtils.getLineChartData(50, maxRange = 100),
+                lineStyle = LineStyle(color = Color.Black),
+                intersectionPoint = IntersectionPoint(),
+                selectionHighlightPoint = SelectionHighlightPoint(),
+                selectionHighlightPopUp = SelectionHighlightPopUp()
+            )
+        )
+    )
+    val colorPaletteList = DataUtils.getColorPaletteList(3)
+    val legendsConfig = LegendsConfig(
+        legendLabelList = DataUtils.getLegendsLabelData(colorPaletteList),
+        gridColumnCount = 3
+    )
+    val barPlotData = BarPlotData(
+        groupBarList = groupBarData,
+        barStyle = BarStyle(barWidth = 35.dp),
+        barColorPaletteList = colorPaletteList
+    )
+    val combinedChartData = CombinedChartData(
+        combinedPlotDataList = listOf(barPlotData, linePlotData),
+        xAxisData = xAxisData,
+        yAxisData = yAxisData
+    )
+    Column(
+        Modifier
+            .height(500.dp)
+    ) {
+        CombinedChart(
+            modifier = Modifier
+                .height(400.dp),
+            combinedChartData = combinedChartData
+        )
+        Legends(
+            legendsConfig = legendsConfig
+        )
+    }
 }

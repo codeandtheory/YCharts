@@ -16,6 +16,8 @@ struct ContentView: View {
     @State private var isPieChartPresented = false
     @State private var isDonutChartPresented = false
     @State private var isBubbleChartPresented = false
+    @State private var isCombinedChartPresented = false
+    
     
     
     
@@ -50,6 +52,10 @@ struct ContentView: View {
                     MainView(chartType: 3)
                         .navigationTitle("Line Chart")
                 }.frame(maxWidth: .infinity).padding()
+                
+                
+                
+                
                 
                 Button(action: {
                     self.isWaveChartPresented = true
@@ -111,6 +117,24 @@ struct ContentView: View {
                     MainView(chartType: 6)
                         .navigationTitle("Bubble Chart")
                 }.frame(maxWidth: .infinity).padding()
+                
+                
+                    Button(action: {
+                    self.isCombinedChartPresented = true
+                }) {
+                    Text("Combined Chart")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .font(.body)
+                        .foregroundColor(.white)
+                        .background(Color.black)
+                    
+                }.navigationDestination(isPresented: $isCombinedChartPresented) {
+                    MainView(chartType: 7)
+                        .navigationTitle("Combined Chart")
+                }.frame(maxWidth: .infinity).padding()
+                
+                
                 
             }
         }

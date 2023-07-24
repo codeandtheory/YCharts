@@ -12,11 +12,8 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "YCharts"
+rootProject.name = "KMM-YCharts"
 include(
     ":androidApp",
-    ":YChartsLib",
-    ":experiments:chartcontainer",
-    ":experiments:piechartcontainer",
     ":KMMYCharts"
 )

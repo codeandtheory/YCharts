@@ -1,8 +1,7 @@
-@file:OptIn(ExperimentalMaterialApi::class)
+@file:OptIn(ExperimentalMaterialApi::class, ExperimentalTextApi::class)
 
-package co.yml.charts.ui.combinedchart
+package co.yml.kmm.charts.ui.combinedchart
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,41 +16,37 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
-import co.yml.charts.axis.XAxis
-import co.yml.charts.axis.YAxis
-import co.yml.charts.chartcontainer.container.ScrollableCanvasContainer
-import co.yml.charts.ui.barchart.drawUnderScrollMask
-import co.yml.charts.ui.barchart.getGroupBarDrawOffset
-import co.yml.charts.ui.barchart.getMaxScrollDistance
-import co.yml.charts.ui.barchart.highlightGroupBar
-import co.yml.charts.ui.barchart.models.BarData
-import co.yml.charts.ui.barchart.models.BarPlotData
-import co.yml.charts.ui.barchart.models.GroupBar
-import co.yml.charts.ui.combinedchart.model.CombinedChartData
-import co.yml.charts.ui.linechart.drawHighLightOnSelectedPoint
-import co.yml.charts.ui.linechart.drawHighlightText
-import co.yml.charts.ui.linechart.drawShadowUnderLineAndIntersectionPoint
-import co.yml.charts.ui.linechart.drawStraightOrCubicLine
-import co.yml.charts.ui.linechart.getCubicPoints
-import co.yml.charts.ui.linechart.getMappingPointsToGraph
-import co.yml.charts.ui.linechart.model.LinePlotData
-import co.yml.charts.common.components.ItemDivider
-import co.yml.charts.common.components.accessibility.AccessibilityBottomSheetDialog
-import co.yml.charts.common.components.accessibility.CombinedChartInfo
-import co.yml.charts.common.extensions.RowClip
-import co.yml.charts.common.extensions.collectIsTalkbackEnabledAsState
-import co.yml.charts.common.extensions.getMaxElementInYAxis
-import co.yml.charts.common.extensions.isNotNull
-import co.yml.charts.common.extensions.isPointTapped
-import co.yml.charts.common.extensions.isTapped
-import co.yml.charts.common.model.PlotData
-import co.yml.charts.common.model.PlotType
-import co.yml.charts.common.model.Point
+import co.yml.kmm.charts.axis.XAxis
+import co.yml.kmm.charts.axis.YAxis
+import co.yml.kmm.charts.chartcontainer.container.ScrollableCanvasContainer
+import co.yml.kmm.charts.common.extensions.RowClip
+import co.yml.kmm.charts.common.extensions.getMaxElementInYAxis
+import co.yml.kmm.charts.common.extensions.isNotNull
+import co.yml.kmm.charts.common.extensions.isPointTapped
+import co.yml.kmm.charts.common.extensions.isTapped
+import co.yml.kmm.charts.common.model.PlotData
+import co.yml.kmm.charts.common.model.PlotType
+import co.yml.kmm.charts.common.model.Point
+import co.yml.kmm.charts.ui.barchart.drawUnderScrollMask
+import co.yml.kmm.charts.ui.barchart.getGroupBarDrawOffset
+import co.yml.kmm.charts.ui.barchart.highlightGroupBar
+import co.yml.kmm.charts.ui.barchart.models.BarData
+import co.yml.kmm.charts.ui.barchart.models.BarPlotData
+import co.yml.kmm.charts.ui.combinedchart.model.CombinedChartData
+import co.yml.kmm.charts.ui.linechart.drawHighLightOnSelectedPoint
+import co.yml.kmm.charts.ui.linechart.drawHighlightText
+import co.yml.kmm.charts.ui.linechart.drawShadowUnderLineAndIntersectionPoint
+import co.yml.kmm.charts.ui.linechart.drawStraightOrCubicLine
+import co.yml.kmm.charts.ui.linechart.getCubicPoints
+import co.yml.kmm.charts.ui.linechart.getMappingPointsToGraph
+import co.yml.kmm.charts.ui.linechart.getMaxScrollDistance
+import co.yml.kmm.charts.ui.linechart.model.LinePlotData
 import kotlinx.coroutines.launch
 
 /**
@@ -61,22 +56,14 @@ import kotlinx.coroutines.launch
  * @param combinedChartData : All data needed to draw combined chart. [CombinedChartData] Data
  * class to save all params related to combined line and bar chart.
  */
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalTextApi::class)
 @Composable
-fun CombinedChart(modifier: Modifier, combinedChartData: CombinedChartData) {
+internal fun CombinedChart(modifier: Modifier, combinedChartData: CombinedChartData) {
     val accessibilitySheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
-    val isTalkBackEnabled by LocalContext.current.collectIsTalkbackEnabledAsState()
-    if (accessibilitySheetState.isVisible && isTalkBackEnabled
-        && combinedChartData.accessibilityConfig.shouldHandleBackWhenTalkBackPopUpShown
-    ) {
-        BackHandler {
-            scope.launch {
-                accessibilitySheetState.hide()
-            }
-        }
-    }
+    val textMeasure = rememberTextMeasurer()
+
     Surface(modifier) {
         with(combinedChartData) {
             var xOffset by remember { mutableStateOf(0f) }
@@ -126,15 +113,6 @@ fun CombinedChart(modifier: Modifier, combinedChartData: CombinedChartData) {
                 modifier = modifier
                     .semantics {
                         contentDescription = accessibilityConfig.chartDescription
-                    }
-                    .clickable {
-                        if (isTalkBackEnabled) {
-                            scope.launch {
-                                accessibilitySheetState.animateTo(
-                                    ModalBottomSheetValue.Expanded
-                                )
-                            }
-                        }
                     },
                 containerBackgroundColor = backgroundColor,
                 isPinchZoomEnabled = isZoomAllowed,
@@ -177,7 +155,8 @@ fun CombinedChart(modifier: Modifier, combinedChartData: CombinedChartData) {
                         },
                         scrollOffset = scrollOffset,
                         zoomScale = xZoom,
-                        chartData = if(barPoints.isEmpty()) linePoints else axisPoints
+                        chartData = if(barPoints.isEmpty()) linePoints else axisPoints,
+                        axisStart = columnWidth
                     )
                     YAxis(
                         modifier = Modifier
@@ -270,7 +249,8 @@ fun CombinedChart(modifier: Modifier, combinedChartData: CombinedChartData) {
                                                 drawHighlightText(
                                                     identifiedPoint,
                                                     selectedOffset ?: Offset(0f, 0f),
-                                                    line.selectionHighlightPopUp
+                                                    line.selectionHighlightPopUp,
+                                                    textMeasure
                                                 )
                                             }
                                         }
@@ -334,7 +314,8 @@ fun CombinedChart(modifier: Modifier, combinedChartData: CombinedChartData) {
                             yBottom,
                             paddingRight,
                             yOffset,
-                            barPlotData.barStyle.barWidth
+                            barPlotData.barStyle.barWidth,
+                            textMeasure
                         )
                     }
                     drawUnderScrollMask(columnWidth, paddingRight, bgColor)
@@ -347,49 +328,7 @@ fun CombinedChart(modifier: Modifier, combinedChartData: CombinedChartData) {
                     isTapped = false
                 }
             )
-            if (isTalkBackEnabled) {
-                AccessibilityBottomSheetDialog(
-                    modifier = Modifier.fillMaxSize(), backgroundColor = Color.White, content = {
-                        LazyColumn {
-                            items(xMax.toInt()) { index ->
-                                Column {
-                                    val lineData: MutableList<Point> = mutableListOf()
-                                    val lineColors: MutableList<Color> = mutableListOf()
-                                    linePlotData.lines.forEachIndexed { _, line ->
-                                        lineColors.add(line.lineStyle.color)
-                                        line.dataPoints
-                                        line.dataPoints.forEachIndexed { pointIndex, point ->
-                                            if (pointIndex == index) {
-                                                lineData.add(point)
-                                            }
-                                        }
-                                    }
-                                    val groupBarData: GroupBar? =
-                                        barPlotData.groupBarList.filterIndexed { barIndex, _ -> barIndex == index }
-                                            .firstOrNull()
-                                    CombinedChartInfo(
-                                        pointsList = lineData,
-                                        lineColor = lineColors,
-                                        groupBar = groupBarData,
-                                        axisLabelDescription = xAxisData.axisLabelDescription(
-                                            xAxisData.labelData(index)
-                                        ),
-                                        barColorPaletteList = barPlotData.barColorPaletteList,
-                                        dividerColor = accessibilityConfig.dividerColor
-                                    )
-                                    ItemDivider(
-                                        thickness = accessibilityConfig.dividerThickness,
-                                        dividerColor = accessibilityConfig.dividerColor
-                                    )
-                                }
-                            }
-                        }
-                    },
-                    popUpTopRightButtonTitle = accessibilityConfig.popUpTopRightButtonTitle,
-                    popUpTopRightButtonDescription = accessibilityConfig.popUpTopRightButtonDescription,
-                    sheetState = accessibilitySheetState
-                )
-            }
+
         }
     }
 }

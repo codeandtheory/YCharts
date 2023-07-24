@@ -11,5 +11,6 @@ internal fun StartScreenIOS(chartType: Int) {
         4 -> PieChartScreen()
         5 -> DonutPieChartScreen()
         6 -> BubbleChartWithGrid()
+        7 -> BarWithLineChart()
     }
 }
