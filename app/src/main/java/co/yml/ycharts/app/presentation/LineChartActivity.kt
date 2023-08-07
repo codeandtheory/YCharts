@@ -73,11 +73,8 @@ class LineChartActivity : ComponentActivity() {
                             item {
 
                                 SingleLineChartWithGridLines(
-                                    DataUtils.getLineChartDataValues(
-                                        100,
-                                        start = 50,
-                                        maxRange = 100
-                                    )
+                                    DataUtils.getLineChartDataValues(),
+                                    DataUtils.getLineChart2DataValues()
                                 )
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Divider(modifier = Modifier
@@ -98,7 +95,7 @@ class LineChartActivity : ComponentActivity() {
  * @param pointsData
  */
 @Composable
-private fun SingleLineChartWithGridLines(pointsData: List<Point>) {
+private fun SingleLineChartWithGridLines(pointsData: List<Point>, pointsData2: List<Point>) {
     val steps = 5
 
     val xAxisData = AxisData.Builder()
@@ -138,6 +135,15 @@ private fun SingleLineChartWithGridLines(pointsData: List<Point>) {
                     null,
                     null,
                     SelectionHighlightPopUp()
+                ),
+
+                Line(
+                    dataPoints = pointsData2,
+                    LineStyle(color = Color(0xFF2096F3)),
+                    IntersectionPoint(color = Color(0xFF1C7ECC)),
+                    null,
+                    null,
+                    SelectionHighlightPopUp()
                 )
             )
         ),
@@ -146,6 +152,71 @@ private fun SingleLineChartWithGridLines(pointsData: List<Point>) {
         gridLines = null,
         isZoomAllowed = false,
         backgroundColor = MaterialTheme.colors.background
+    )
+    LineChart(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp),
+        lineChartData = data
+    )
+}
+
+
+@Composable
+private fun MultipleToneLinechart(pointsData: List<Point>) {
+    val xAxisData = AxisData.Builder()
+        .axisStepSize(40.dp)
+        .steps(pointsData.size - 1)
+        .labelData { i -> (1900 + i).toString() }
+        .axisLabelAngle(20f)
+        .labelAndAxisLinePadding(15.dp)
+        .axisLabelColor(Color.Blue)
+        .axisLineColor(Color.DarkGray)
+        .typeFace(Typeface.DEFAULT_BOLD)
+        .build()
+    val yAxisData = AxisData.Builder()
+        .steps(10)
+        .labelData { i -> "${(i * 20)}k" }
+        .labelAndAxisLinePadding(30.dp)
+        .axisLabelColor(Color.Blue)
+        .axisLineColor(Color.DarkGray)
+        .typeFace(Typeface.DEFAULT_BOLD)
+        .build()
+    val data = LineChartData(
+        linePlotData = LinePlotData(
+            lines = listOf(
+                Line(
+                    dataPoints = pointsData,
+                    lineStyle = LineStyle(lineType = LineType.Straight(), color = Color.Blue),
+                    intersectionPoint = IntersectionPoint(color = Color.Red),
+                    selectionHighlightPopUp = SelectionHighlightPopUp(popUpLabel = { x, y ->
+                        val xLabel = "x : ${(1900 + x).toInt()} "
+                        val yLabel = "y : ${String.format("%.2f", y)}"
+                        "$xLabel $yLabel"
+                    })
+                ), Line(
+                    dataPoints = pointsData.subList(0, 10),
+                    lineStyle = LineStyle(lineType = LineType.Straight(), color = Color.Magenta),
+                    intersectionPoint = IntersectionPoint(color = Color.Red),
+                    selectionHighlightPopUp = SelectionHighlightPopUp(popUpLabel = { x, y ->
+                        val xLabel = "x : ${(1900 + x).toInt()} "
+                        val yLabel = "y : ${String.format("%.2f", y)}"
+                        "$xLabel $yLabel"
+                    })
+                ), Line(
+                    dataPoints = pointsData.subList(15, 30),
+                    lineStyle = LineStyle(lineType = LineType.Straight(), color = Color.Yellow),
+                    intersectionPoint = IntersectionPoint(color = Color.Red),
+                    selectionHighlightPopUp = SelectionHighlightPopUp(popUpLabel = { x, y ->
+                        val xLabel = "x : ${(1900 + x).toInt()} "
+                        val yLabel = "y : ${String.format("%.2f", y)}"
+                        "$xLabel $yLabel"
+                    })
+                )
+            )
+        ),
+        xAxisData = xAxisData,
+        yAxisData = yAxisData
     )
     LineChart(
         modifier = Modifier
