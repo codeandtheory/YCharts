@@ -54,9 +54,6 @@ publishing {
             groupId = "co.yml"
             artifactId = "ycharts"
             version = "2.1.0"
-            afterEvaluate {
-                from(components["release"])
-            }
             artifact(javadocJar)
             pom {
                 name.set("YCharts")
