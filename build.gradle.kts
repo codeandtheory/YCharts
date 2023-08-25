@@ -11,7 +11,7 @@ buildscript {
     dependencies {
         classpath(versionCatalogLibs.android.gradle.plugin)
         classpath(versionCatalogLibs.kotlin.gradle.plugin)
-        classpath("org.jetbrains.kotlin:kotlin-android-extensions:1.8.20")
+        classpath("org.jetbrains.kotlin:kotlin-android-extensions:1.9.10")
     }
 
     tasks {
