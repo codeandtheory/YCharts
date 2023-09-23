@@ -2,10 +2,10 @@
 # Define the dependency versions
 #Project
 #kotlin
-kotlinVersion = "1.8.20"
+kotlinVersion = "1.9.10"
 kotlinxSerializationJson = "1.5.0"
 #gradle
-androidGradlePlugin = "8.0.2"
+androidGradlePlugin = "8.1.1"
 
 #Modules
 #androidx
@@ -38,10 +38,10 @@ turbine = "1.0.0"
 junit4 = "4.13.2"
 android_junit = "1.1.5"
 espresso = "3.5.0"
-jupiter_junit = "5.9.2"
+jupiter_junit = "5.10.0"
 #Mock
 anotation = "1.6.0"
-mockk_android = "1.13.4"
+mockk_android = "1.13.8"
 test_runner = "1.5.2"
 #sonar
 sonar = "4.0.0.2929"
