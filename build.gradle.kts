@@ -21,5 +21,5 @@ buildscript {
     }
 }
 plugins {
-    id("org.jetbrains.dokka") version "1.8.10" apply false
+    id("org.jetbrains.dokka") version "1.9.0" apply false
 }

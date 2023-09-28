@@ -44,11 +44,11 @@ anotation = "1.6.0"
 mockk_android = "1.13.4"
 test_runner = "1.5.2"
 #sonar
-sonar = "4.0.0.2929"
+sonar = "4.4.0.3356"
 #dokka
-dokka = "1.8.10"
+dokka = "1.9.0"
 #ktlint
-ktlint = "11.3.1"
+ktlint = "11.6.0"
 
 [libraries]
 # Project
