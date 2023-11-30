@@ -59,6 +59,7 @@ import co.yml.charts.ui.linechart.model.LineType
 import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 import kotlinx.coroutines.launch
+import kotlin.math.pow
 
 /**
  *
