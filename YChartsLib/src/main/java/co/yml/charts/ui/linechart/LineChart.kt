@@ -450,10 +450,13 @@ fun DrawScope.drawShadowUnderLineAndIntersectionPoint(
     }
 }
 
-
+private fun getInBetweenSlope(m1: Float, m2: Float) : Float {
+    return (m1 + m2) / ( 1 - m1 * m2  + ((m1.pow(2)+1) * (m2.pow(2) + 1)).pow(0.5f) )
+}
 /**
  *
  * getCubicPoints method provides left and right average value for a given point to get a smooth curve.
+ * Using the Advanced Cubic Bezier method as given in https://medium.com/mobile-app-development-publication/making-graph-plotting-function-in-jetpack-compose-95c80ee6fc7f
  * @param pointsData : List of the points on the Line graph.
  */
 fun getCubicPoints(pointsData: List<Offset>): Pair<MutableList<Offset>, MutableList<Offset>> {
@@ -461,14 +464,30 @@ fun getCubicPoints(pointsData: List<Offset>): Pair<MutableList<Offset>, MutableL
     val cubicPoints2 = mutableListOf<Offset>()
 
     for (i in 1 until pointsData.size) {
+        val p1x = ( (pointsData[i-1].x * 2f) + pointsData[i].x)/3f
+        val nextP = if (i < pointsData.size-1) pointsData[i+1] else null
+        val prevP =  if (i >1 ) pointsData[i-2] else null
+        val currSlope = (pointsData[i].y - pointsData[i-1].y) / (pointsData[i].x - pointsData[i-1].x)
+        val nextSlope = if (nextP!=null) (nextP.y - pointsData[i].y) / (nextP.x - pointsData[i].x) else null
+        val prevSlope = if (prevP!=null) (pointsData[i-1].y - prevP.y) / (pointsData[i-1].x - prevP.x) else null
+
+        val p1slope = if (prevSlope !=null) getInBetweenSlope(prevSlope, currSlope) else currSlope 
+        val p1c = pointsData[i-1].y - (p1slope * pointsData[i-1].x)
+        val p1y = (p1slope * p1x) + p1c
+
+        val p2x = (pointsData[i-1].x + (pointsData[i].x  * 2f))/3f
+        val p2slope = if (nextSlope !=null) getInBetweenSlope(currSlope, nextSlope) else currSlope 
+        val p2c = pointsData[i].y - (p2slope * pointsData[i].x)
+        val p2y = (p2slope * p2x ) + p2c
+
         cubicPoints1.add(
             Offset(
-                (pointsData[i].x + pointsData[i - 1].x) / 2, pointsData[i - 1].y
+                p1x, p1y
             )
         )
         cubicPoints2.add(
             Offset(
-                (pointsData[i].x + pointsData[i - 1].x) / 2, pointsData[i].y
+                p2x, p2y
             )
         )
     }
