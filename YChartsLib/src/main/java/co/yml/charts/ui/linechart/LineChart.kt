@@ -468,17 +468,23 @@ fun getCubicPoints(pointsData: List<Offset>): Pair<MutableList<Offset>, MutableL
     val cubicPoints1 = mutableListOf<Offset>()
     val cubicPoints2 = mutableListOf<Offset>()
 
-    val slopes = FloatArray(pointsData.size+1)
+    val slopes = FloatArray(pointsData.size)
 
     for (i in 1 until pointsData.size) {
         val currSlope = if (i == 1)  getSlope(pointsData[1], pointsData[0]) else slopes [i]
 
-        val nextSlope = if (i < pointsData.size-1) getSlope (pointsData[i+1], pointsData[i]) else currSlope
-        slopes[i+1] = nextSlope
+        val nextSlope: Float
+        if (i < pointsData.size-1) {
+            nextSlope = getSlope(pointsData[i + 1], pointsData[i])
+            slopes[i+1] = nextSlope
+        }
+        else  {
+            nextSlope = currSlope
+        }
 
         val prevSlope = if (i >1 )  slopes[i-1] else currSlope
 
-        val cp1x = ( (pointsData[i-1].x * 2f) + pointsData[i].x)/3f
+        val cp1x = ((pointsData[i-1].x * 2f) + pointsData[i].x)/3f
         val cp1slope = getInBetweenSlope(prevSlope, currSlope)
         val cp1c = pointsData[i-1].y - (cp1slope * pointsData[i-1].x)
         val cp1y = (cp1slope * cp1x) + cp1c
