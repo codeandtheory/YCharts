@@ -59,7 +59,7 @@ import co.yml.charts.ui.linechart.model.LineType
 import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 import kotlinx.coroutines.launch
-import kotlin.math.pow
+import kotlin.math.sqrt
 
 /**
  *
@@ -452,7 +452,7 @@ fun DrawScope.drawShadowUnderLineAndIntersectionPoint(
 }
 
 private fun getInBetweenSlope(m1: Float, m2: Float) : Float {
-    return if (m1 == m2)  m1 else  (m1 + m2) / ( 1 - m1 * m2  + ((m1.pow(2)+1) * (m2.pow(2) + 1)).pow(0.5f) )
+    return if (m1 == m2)  m1 else  (m1 + m2) / ( 1 - m1 * m2  + sqrt(((m1*m1) + 1) * ((m2*m2) + 1)) )
 }
 
 private fun getSlope(p1: Offset, p2: Offset): Float {
