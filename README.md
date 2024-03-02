@@ -201,7 +201,7 @@ Let's see how we can use the chart components and style them with available cust
     xAxisData = xAxisData,
     yAxisData = yAxisData,
     paddingBetweenBars = 20.dp,
-    barWidth = 25.dp
+    barStyle = BarStyle(barWidth = 25.dp)
   )
   ```
 
