@@ -5,11 +5,12 @@ plugins {
     id("ycharts.android.test")
     id("maven-publish")
     id("signing")
+    alias(versionCatalogLibs.plugins.kotlin.compose)
     alias(versionCatalogLibs.plugins.dokka)
 }
 
 android {
-    compileSdk = 33
+    compileSdk = 37
     namespace = "co.yml.charts.components"
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -21,6 +22,13 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+    }
+    publishing {
+        singleVariant("release") {
+            // You can add specific configurations for the 'release' variant here if needed.
+            // For example, to specify components to publish:
+            // from(components.release)
         }
     }
 }

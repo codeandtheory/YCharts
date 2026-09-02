@@ -59,6 +59,7 @@ import co.yml.charts.ui.linechart.model.LineType
 import co.yml.charts.ui.linechart.model.SelectionHighlightPoint
 import co.yml.charts.ui.linechart.model.SelectionHighlightPopUp
 import kotlinx.coroutines.launch
+import kotlin.math.sqrt
 
 /**
  *
@@ -450,25 +451,57 @@ fun DrawScope.drawShadowUnderLineAndIntersectionPoint(
     }
 }
 
+private fun getInBetweenSlope(m1: Float, m2: Float) : Float {
+    return if (m1 == m2)  m1 else  (m1 + m2) / ( 1 - m1 * m2  + sqrt(((m1*m1) + 1) * ((m2*m2) + 1)) )
+}
 
+private fun getSlope(p1: Offset, p2: Offset): Float {
+    return (p2.y-p1.y) / (p2.x-p1.x)
+}
 /**
  *
  * getCubicPoints method provides left and right average value for a given point to get a smooth curve.
+ * Using the Advanced Cubic Bezier method as given in https://medium.com/mobile-app-development-publication/making-graph-plotting-function-in-jetpack-compose-95c80ee6fc7f
  * @param pointsData : List of the points on the Line graph.
  */
 fun getCubicPoints(pointsData: List<Offset>): Pair<MutableList<Offset>, MutableList<Offset>> {
     val cubicPoints1 = mutableListOf<Offset>()
     val cubicPoints2 = mutableListOf<Offset>()
 
+    val slopes = FloatArray(pointsData.size)
+
     for (i in 1 until pointsData.size) {
+        val currSlope = if (i == 1)  getSlope(pointsData[1], pointsData[0]) else slopes [i]
+
+        val nextSlope: Float
+        if (i < pointsData.size-1) {
+            nextSlope = getSlope(pointsData[i + 1], pointsData[i])
+            slopes[i+1] = nextSlope
+        }
+        else  {
+            nextSlope = currSlope
+        }
+
+        val prevSlope = if (i >1 )  slopes[i-1] else currSlope
+
+        val cp1x = ((pointsData[i-1].x * 2f) + pointsData[i].x)/3f
+        val cp1slope = getInBetweenSlope(prevSlope, currSlope)
+        val cp1c = pointsData[i-1].y - (cp1slope * pointsData[i-1].x)
+        val cp1y = (cp1slope * cp1x) + cp1c
+
+        val cp2x = (pointsData[i-1].x + (pointsData[i].x  * 2f))/3f
+        val cp2slope = getInBetweenSlope(currSlope, nextSlope)
+        val cp2c = pointsData[i].y - (cp2slope * pointsData[i].x)
+        val cp2y = (cp2slope * cp2x ) + cp2c
+
         cubicPoints1.add(
             Offset(
-                (pointsData[i].x + pointsData[i - 1].x) / 2, pointsData[i - 1].y
+                cp1x, cp1y
             )
         )
         cubicPoints2.add(
             Offset(
-                (pointsData[i].x + pointsData[i - 1].x) / 2, pointsData[i].y
+                cp2x, cp2y
             )
         )
     }

@@ -1,59 +1,80 @@
 package ycharts.android
 
-import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 /**
- * Configure base Kotlin with Android options
+ * Configure base Kotlin with Android options using BaseExtension
+ * (BaseExtension is non-generic across all AGP versions)
  */
 internal fun Project.configureKotlinAndroid(
-    commonExtension: CommonExtension<*, *, *, *>,
+    extension: ApplicationExtension,
 ) {
-    commonExtension.apply {
-        compileSdk = 33
-        packagingOptions {
-            resources {
-                excludes += "/META-INF/{AL2.0,LGPL2.1}"
-                excludes += "META-INF/DEPENDENCIES"
-                excludes += "META-INF/gradle/*"
-                excludes += "META-INF/LICENSE.*"
-                excludes += "META-INF/LICENSE-notice.md"
-            }
-        }
+    extension.compileSdkVersion(34)
 
-        defaultConfig {
-            minSdk = 26
-            testHandleProfiling = true
-            testFunctionalTest = true
-            vectorDrawables {
-                useSupportLibrary = true
-            }
+    extension.defaultConfig.apply {
+        minSdk = 26
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+    }
+
+    extension.compileOptions.apply {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    tasks.withType<KotlinCompile>().configureEach {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+
+            val warningsAsErrors: String? by project
+            allWarningsAsErrors.set(warningsAsErrors.toBoolean())
+
+            freeCompilerArgs.addAll(
+                "-opt-in=kotlin.RequiresOptIn",
+                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                "-opt-in=kotlinx.coroutines.FlowPreview",
+                "-opt-in=kotlin.Experimental",
+            )
         }
-        compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_11
-            targetCompatibility = JavaVersion.VERSION_11
-        }
-        // Use withType to workaround https://youtrack.jetbrains.com/issue/KT-55947
-        tasks.withType<KotlinCompile>().configureEach {
-            kotlinOptions {
-                // Set JVM target to 17
-                jvmTarget = JavaVersion.VERSION_11.toString()
-                // Treat all Kotlin warnings as errors (disabled by default)
-                // Override by setting warningsAsErrors=true in your ~/.gradle/gradle.properties
-                val warningsAsErrors: String? by project
-                allWarningsAsErrors = warningsAsErrors.toBoolean()
-                freeCompilerArgs = freeCompilerArgs + listOf(
-                    "-opt-in=kotlin.RequiresOptIn",
-                    // Enable experimental coroutines APIs, including Flow
-                    "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-                    "-opt-in=kotlinx.coroutines.FlowPreview",
-                    "-opt-in=kotlin.Experimental",
-                )
-            }
+    }
+}
+
+internal fun Project.configureKotlinAndroid(
+    extension: LibraryExtension,
+) {
+    extension.compileSdkVersion(34)
+
+    extension.defaultConfig.apply {
+        minSdk = 26
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+    }
+
+    extension.compileOptions.apply {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    tasks.withType<KotlinCompile>().configureEach {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+
+            val warningsAsErrors: String? by project
+            allWarningsAsErrors.set(warningsAsErrors.toBoolean())
+
+            freeCompilerArgs.addAll(
+                "-opt-in=kotlin.RequiresOptIn",
+                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                "-opt-in=kotlinx.coroutines.FlowPreview",
+                "-opt-in=kotlin.Experimental",
+            )
         }
     }
 }

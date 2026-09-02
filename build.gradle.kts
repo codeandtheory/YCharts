@@ -11,15 +11,18 @@ buildscript {
     dependencies {
         classpath(versionCatalogLibs.android.gradle.plugin)
         classpath(versionCatalogLibs.kotlin.gradle.plugin)
-        classpath("org.jetbrains.kotlin:kotlin-android-extensions:1.8.20")
+        //classpath("org.jetbrains.kotlin:kotlin-android-extensions:2.2.0")
     }
 
-    tasks {
-        register("clean", Delete::class) {
-            delete(rootProject.buildDir)
-        }
-    }
 }
 plugins {
-    id("org.jetbrains.dokka") version "1.8.10" apply false
+    alias(versionCatalogLibs.plugins.dokka) apply false
+    alias(versionCatalogLibs.plugins.kotlin.compose) apply false
 }
+
+tasks {
+    register("clean", Delete::class) {
+        delete(rootProject.buildDir)
+    }
+}
+

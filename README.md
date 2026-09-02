@@ -1,4 +1,18 @@
 # YCharts
+This is a fork the YCharts library using Advanced Cubic Bezier algorithm for prettier line charts.
+The algorithm is explained in detail at [https://medium.com/mobile-app-development-publication/making-graph-plotting-function-in-jetpack-compose-95c80ee6fc7f](https://medium.com/mobile-app-development-publication/making-graph-plotting-function-in-jetpack-compose-95c80ee6fc7f)
+    <div>
+    <figure>
+      <img width=100 src="https://github.com/codeandtheory/YCharts/assets/6216877/f9bf3760-ca16-4644-8abc-b1326d28b8d3"/>
+    </figure>
+    </div>
+    Advanced Cubic Bezier
+    <div>
+    <figure>
+      <img width=100 src="https://github.com/codeandtheory/YCharts/assets/6216877/12a086eb-3fe0-43e2-b9ed-2e1dafbab8ad"/>
+    </figure>
+    </div>
+    Basic Cubic Bezier
 
 YCharts is a Jetpack-compose based  charts library which enables developers to easily integrate various types of charts/graphs into their existing ui to visually represent statistical data. YCharts supports both cartesian(XY-charts)  and polar charts(Radial charts), which include:
 
