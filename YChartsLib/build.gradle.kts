@@ -5,7 +5,7 @@ plugins {
     id("ycharts.android.test")
     id("maven-publish")
     id("signing")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.2.10"
+    alias(versionCatalogLibs.plugins.kotlin.compose)
     alias(versionCatalogLibs.plugins.dokka)
 }
 
