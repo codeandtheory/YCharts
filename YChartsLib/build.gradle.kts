@@ -5,12 +5,12 @@ plugins {
     id("ycharts.android.test")
     id("maven-publish")
     id("signing")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.2.0"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.2.10"
     alias(versionCatalogLibs.plugins.dokka)
 }
 
 android {
-    compileSdk = 36
+    compileSdk = 37
     namespace = "co.yml.charts.components"
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

@@ -1,7 +1,6 @@
 package conventions
 
 import com.android.build.api.dsl.ApplicationExtension
-import com.android.build.api.dsl.Packaging
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalogsExtension
@@ -24,16 +23,11 @@ class ApplicationConventionPlugin : Plugin<Project> {
             }
             extensions.configure<ApplicationExtension> {
                 configureKotlinAndroid(this)
-                fun Packaging.() {
-                    resources {
-                        excludes += "/META-INF/{AL2.0,LGPL2.1}"
-                        excludes += "META-INF/DEPENDENCIES"
-                        excludes += "META-INF/gradle/*"
-                    }
-                }
-                defaultConfig.targetSdk = 33
+
+
+
+                defaultConfig.targetSdk = 34
             }
         }
     }
-
 }

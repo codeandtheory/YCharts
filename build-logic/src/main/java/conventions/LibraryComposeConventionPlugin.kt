@@ -6,6 +6,7 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.getByType
 import ycharts.android.configureComposeApplication
+import ycharts.android.configureComposeLibrary
 
 /**
  * Library compose convention plugin
@@ -15,10 +16,11 @@ import ycharts.android.configureComposeApplication
 class LibraryComposeConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
+            pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
             val libs = extensions.getByType<VersionCatalogsExtension>().named("versionCatalogLibs")
             pluginManager.apply(libs.findPlugin("android.library").get().get().pluginId)
             val extension = extensions.getByType<LibraryExtension>()
-            configureComposeApplication(extension)
+            configureComposeLibrary(extension)
         }
     }
 

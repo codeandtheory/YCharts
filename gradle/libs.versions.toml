@@ -2,53 +2,53 @@
 # Define the dependency versions
 #Project
 #kotlin
-kotlinVersion = "1.9.21"
+kotlinVersion = "2.4.10"
 kotlinxSerializationJson = "1.5.0"
 #gradle
-androidGradlePlugin = "8.0.2"
+androidGradlePlugin = "8.5.2"
 
 #Modules
 #androidx
-androidxComposeBom = "2024.12.01"
-androidxActivityCompose = "1.9.3"
-androidxAppCompat = "1.7.0"
+androidxComposeBom = "2026.08.00"
+androidxActivityCompose = "1.13.0"
+androidxAppCompat = "1.8.0"
 androidxComposeCompiler = "1.5.7"
-androidxCore = "1.15.0"
-androidxLifecycle = "2.8.7"
-androidxNavigation = "2.8.5"
-androidxEspresso = "3.6.1"
-androidxTestRules = "1.6.1"
-androidxTestRunner = "1.6.2"
-androidxTestMonitor = "1.7.2"
-androidxTestCore = "1.6.1"
-androidxTestExt = "1.2.1"
+androidxCore = "1.19.0"
+androidxLifecycle = "2.11.0"
+androidxNavigation = "2.10.0"
+androidxEspresso = "3.7.0"
+androidxTestRules = "1.7.0"
+androidxTestRunner = "1.7.0"
+androidxTestMonitor = "1.8.0"
+androidxTestCore = "1.7.0"
+androidxTestExt = "1.3.0"
 androidxCrypto = "1.1.0-alpha04"
 androidxDatastore = "1.0.0"
 
 #compose
-compose_ui = "1.7.6"
-compose_ui_testing = "1.7.6"
+compose_ui = "1.12.0"
+compose_ui_testing = "1.12.0"
 compose_constraint_layout = "1.1.0-alpha05"
 #ktx
-core_ktx = "1.15.0"
+core_ktx = "1.19.0"
 #coroutine
-coroutine = "1.8.1"
-turbine = "1.0.0"
+coroutine = "1.11.0"
+turbine = "1.2.1"
 #android test
 junit4 = "4.13.2"
-android_junit = "1.2.1"
+android_junit = "1.3.0"
 espresso = "3.5.0"
-jupiter_junit = "5.9.2"
+jupiter_junit = "6.1.3"
 #Mock
-anotation = "1.9.1"
-mockk_android = "1.13.4"
-test_runner = "1.6.2"
+anotation = "1.10.0"
+mockk_android = "1.14.11"
+test_runner = "1.7.0"
 #sonar
-sonar = "4.0.0.2929"
+sonar = "7.4.0.8496"
 #dokka
-dokka = "1.8.10"
+dokka = "2.2.0"
 #ktlint
-ktlint = "11.3.1"
+ktlint = "14.2.0"
 
 [libraries]
 # Project
@@ -128,5 +128,6 @@ android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlinVersion" }
 sonar = {id= "org.sonarqube", version.ref = "sonar"}
 dokka = {id = "org.jetbrains.dokka", version.ref = "dokka"}
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlinVersion" }
 
 ktlint = {id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint"}

@@ -21,5 +21,7 @@ buildscript {
     }
 }
 plugins {
-    id("org.jetbrains.dokka") version "1.8.10" apply false
+    id("org.jetbrains.dokka") version "2.2.0" apply false
+    id("org.jetbrains.kotlin.plugin.compose") version "2.2.10" apply false // Use your current Kotlin version
 }
+

@@ -16,6 +16,7 @@ import ycharts.android.configureComposeApplication
 class ComposeApplicationConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
+            pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
             val libs = extensions.getByType<VersionCatalogsExtension>().named("versionCatalogLibs")
             pluginManager.apply(libs.findPlugin("android.application").get().get().pluginId)
             val extension = extensions.getByType<ApplicationExtension>()
